@@ -1,0 +1,49 @@
+# Simple check that items references in hrefs exist:
+# cd to root
+# show me how site hrefs overlap generated html files
+# comm \
+#       <(find html/*.html -exec basename {} \; | sort) \
+#       <(egrep '^[^#].*href:' source/_site.yml | awk '{print $2}'| sort) \
+#   | awk -F'\t' 'BEGIN {OFS="\t\t\t\t"; print "in_html_only","in_site_only","in_both"} {print $1,$2,$3}'
+
+name: "Intro to scRNA-Seq Workshop"
+output_dir: ../html
+exclude: ["Example.md"]
+navbar:
+  title: "RNA-Seq Demystified"
+  type: inverse
+  left:
+    - text: "Intro"
+      href: workshop_intro.html
+    - text: "Day 1"
+      menu:
+        - text: "Consider the biology"
+          href: consider_biology.html
+        - text: "Sequencing approaches"
+          href: sequencing_approches.html
+        - text: "CellRanger"
+          href: cell_Ranger.html
+        - text: "Seurat"
+          href: seurat.html
+        - text: "Initial QC"
+          href: qc.html
+    - text: "Day 2"
+      menu:
+        - text: "Principal Component Analysis"
+          href: pca.html
+        - text: "Multisample / Batch correction"
+          href: multisample_batch_correction.html
+        - text: "Projection & Clustering"
+          href: projection_and_clustering.html
+        - text: "Marker identification and visualization"
+          href: marker_identification_and_visualization.html
+    - text: "Day 3"
+      menu:
+        - text: "Cell type annotation"
+          href: cell_type_annotation.html
+        - text: "Differential expression analysis"
+          href: differential_expression_analysis.html
+        - text: "Independent exercise"
+          href: independent_exercise.html
+    - text: "Wrap up"
+      href: workshop_wrap_up.html
