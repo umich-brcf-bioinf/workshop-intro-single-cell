@@ -10,7 +10,7 @@ name: "Intro to scRNA-Seq Workshop"
 output_dir: ../html
 exclude: ["Example.md"]
 navbar:
-  title: "RNA-Seq Demystified"
+  title: "Intro to scRNA-Seq"
   type: inverse
   left:
     - text: "Intro"
