@@ -1,6 +1,6 @@
 ---
-title: "UM Bioinformatics Core Intro to Single-Cell Analysis"
-author: ""
+title: "Workshop: Introduction to Single-Cell Analysis"
+author: "UM Bioinformatics Core"
 output:
         html_document:
             includes:
@@ -19,9 +19,6 @@ body{ /* Normal  */
   }
 </style>
 
-The Bioinf Core Workshop Team is pleased to host a new workshop.
-
-## [Introduction to Single-Cell Analysis](https://www.eventbrite.com/e/intro-to-single-cell-analysis-workshop-registration-779434368177){target="_blank"}
 This workshop is targeted toward researchers who would like to better understand the analysis of single-cell RNA-Seq data. By the end of this workshop, participants will be able to:
 
 * Describe (at a high level) how single-cell samples are sequenced along with strengths of a few popular library preps.
