@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+      - 2024-02-28
 
 jobs:
   copy:
