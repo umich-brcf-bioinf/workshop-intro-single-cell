@@ -30,7 +30,7 @@ This workshop is targeted toward researchers who would like to better understand
 ### More details:
 
 * The workshop runs 9am-1pm ET for three days: 2/28-3/1. (Registration closes 2/21/2024.)
-* The cost is $390/seat. (UM participants can pay with a UM shortcode.)
+* The cost is $390/seat. (University of Michigan (UM) participants can pay with a UM shortcode. Also, the first 30 UM SCSAP members to register receive a $100 discount; see [SCSAP website](https://singlecellspatialanalysis.umich.edu/membership-application/){target=_blank} to apply for SCSAP membership.)
 * The workshop is entirely online and will be conducted over Zoom and Slack.
 * Basic understanding of NGS sequencing protocols and/or familiarity with bulk RNA-Seq analysis is desirable. This workshop assumes some experience working with R/R-Studio. (Previous attendance in a Computational Foundations workshop or Software Carpentry workshop is sufficient.)  
 * The workshop experience is designed to be interactive and includes a combination of lecture, live-coding, and opportunities for questions throughout.
