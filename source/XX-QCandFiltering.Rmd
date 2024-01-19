@@ -1,0 +1,142 @@
+---
+title: "Initial Quality Control"
+author: "UM Bioinformatics Core"
+date: "`r Sys.Date()`"
+output:
+        html_document:
+            includes:
+                in_header: header.html
+            theme: paper
+            toc: true
+            toc_depth: 4
+            toc_float: true
+            number_sections: false
+            fig_caption: true
+            markdown: GFM
+            code_download: true
+---
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+</style>
+
+```{r, include = FALSE}
+source("../bin/chunk-options.R")
+knitr_fig_path("XX")
+```
+
+# Workflow Overview {.unlisted .unnumbered}
+
+# Introduction
+
+<Callback to introductory context (by Chris): How 10x platform works - cell suspension + beads into microfluidics system at concentrations such that most droplets will end up with one cell plus 1 bead>
+
+In this section, our general goal is to use filtering thresholds to remove "cells" that either were poorly measured or not cells at all (or likely doublets). 
+
+<Add specific goals for section>
+
+Similar to many other areas of research, there are often gaps between how single-cell data is presented versus the reality of running an analysis. 
+
+For example, final filtering thresholds might be reported in a paper but our process for choosing those is likely to be more iterative and include some trial and error.
+
+<Challenge for instructors: Every vignette uses different filters, how to harmonize/give guidance? Related, how much to discuss arbitrary cutoffs and continued maturation of field?>
+
+# Initial QC
+
+<Before this section - Getting started (project setup and reading in data)>
+
+<General guidance - likely to be moved to earlier section:
+- Note with each function call what gets added to the Seurat object.
+- Adding checks to ensure object is updated by learners since want to avoid generating copied objects
+- Note what layers should be used for what, for example, counts used for FeaturePlots. RNA vs SCT assay.>
+
+<Main idea: What measures and visualizations will be helpful for deciding what cells to keep?>
+
+## What is in our data?
+
+Along with the expression matrices, our Seurat object stores additional "meta" data:
+
+```{r}
+# Look at our meta data
+```
+
+What are `nFeature` and `nCount`?
+
+### nFeatures and nCounts
+
+For single-cell RNA-seq, `nFeatures` represents the total number of genes measured per cell (rows in expression table), while `nCounts` represents the total number of UMIs / molecules measured per cell (sum of column in expression table).
+
+> Note: for other single-cell data, `nFeatures` would represent what's being measured, such as for scATAC, `nFeatures` represents the total number of peaks (e.g. accessible areas of DNA).
+
+We can plot these metrics across all samples to see what patterns we observe:
+
+```{r}
+VlnPlot(geo_so, features = 'nFeature_RNA')
+VlnPlot(geo_so, features = 'nCount_RNA')
+```
+
+### Why do we count total UMIs instead of total reads? 
+
+Since a single-cell inherently contains a limited amount of RNA molecules, a higher amount of PCR amplification is required to generate the final sequencing library. 
+
+Since PCR can skew proportions of initial input materials, specific sequences are included in the initial capture probes called unique molecule identifiers (UMIs). As each initial probe has a different UMI sequence, each RNA captured will be tagged with a different UMI, which allows those initial RNAs and subsequent PCR duplicates to be identified and duplicates collapsed as part of the initial processing by CellRanger.  
+
+<Matt may have discussed UMIs as part of CellRanger processing and Liv/Tricia may touch on as part of library generation at end of Day 2 (today)>
+
+### Percent Mitochondrial 
+
+To get a sense of how many cells in each sample were stressed or dead, we will calculate the percentage of reads from mitochondrial sequences.
+```{r}
+# add flag to ignore capitalization OR point out difference in species?
+geo_so[['percent.mt']] = PercentageFeatureSet(geo_so, pattern = '^mt-')
+```
+Thinking back to our goal of filtering to keep the real and well-measured cells, what might be a reasonable threshold? Generally, many public tutorial use between 5-10% is cutoff. However, for some experiments high mitochondrial reads would be expected (such as in cases where the condition/treatment or genotype increases cell death), then a relaxed threshold would be necessary to preserve biologically relevant cells.
+
+> Note: we wan also generate similar stats <add link to code or a drop down below?> for ribosomal RNA <but not always used for filtering and then for FLEX kit since it's probe based, there are no probes targeting ribosomal RNAs so can't generate this metric at all> 
+
+
+## QC visualizations
+
+Consider density plots and/or violin plots, and look at the bounds on the empirical distribution that captures X% of the cells, where that's a relatively high number.
+
+Generally choosing thresholds for each dataset, but usually plot starting point of 200-500 on low end and high end primarily based on distribution
+
+Other “advanced” methods: doublet detection packages (but out of scope for course of the workshop), 
+
+Aside - For single-nuclei experiments removing background/ambient RNA with DecontX OR ??? can be important (nuclei are sticky and porous)
+
+## Choosing filtering thresholds
+
+We start with filtered data from CellRanger - so what does cellranger do to filter? (add example plot) 
+CellRanger tries to draw a line between cell and empty bead (or equivalent) while we want to draw lines between single, well measured cells and doublets or poorly measured cells/non-cells
+Future idea: Wanted poster for “one single good cell” at a time
+
+## Evaluating filtering thresholds
+
+Do we know how many cells went into the experiment? Sometimes the answer is yes, so need to take that into consideration when evaluating how well our initial filtering worked
+
+Pre & post-filter cell count table and/or visualization per sample
+
+# Summary
+
+Next steps: dimensionality reduction using PCA
+
+----
+
+These materials have been adapted and extended from materials listed above. These are open access materials distributed under the terms of the [Creative Commons Attribution license (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.
+
+<br/>
+<br/>
+<hr/>
+| [Previous lesson](XXXX.html) | [Top of this lesson](#top) | [Next lesson](XXXX.html) |
+| :--- | :----: | ---: |
+
+

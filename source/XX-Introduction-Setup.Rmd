@@ -1,0 +1,136 @@
+---
+title: "Getting Started with Seurat"
+author: "UM Bioinformatics Core"
+date: "`r Sys.Date()`"
+output:
+        html_document:
+            includes:
+                in_header: header.html
+            theme: paper
+            toc: true
+            toc_depth: 4
+            toc_float: true
+            number_sections: false
+            fig_caption: true
+            markdown: GFM
+            code_download: true
+---
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+</style>
+
+```{r, include = FALSE}
+source("../bin/chunk-options.R")
+knitr_fig_path("XX")
+```
+
+# Workflow Overview {.unlisted .unnumbered}
+
+# Introduction
+
+<How much context to provide here will depend on what Chris includes in his introduction>
+
+The field of single-cell expression measurements is still relatively new <Add early publications & information regarding 10x commercialization> and therefore standards for publication as well as best practices for analysis are continuing to evolve. 
+
+One of the goals of this workshop is to not only provide an example of a start to end single-cell workflow but also explore some of the relatively arbitrary decision points and the rationale for the choices we included in our analysis.
+
+Our specific goals for the hands-on portions of the workshop include <Expect to edit these goals and/or might make sense for Chris to iterate over earlier?:
+- Learn to assess the quality of your data
+- 
+- X
+- X
+>
+
+## Sample information
+
+In this workshop, we will be working with a scRNA-seq data set generated from <add tissue information>. <Add experimental condition summary - expect Chris to give overview in overall workshop introduction>. 
+
+# Project setup
+
+To start, we will log into the AWS service to access our shared RStudio server:
+
+<add link to access AWS server> 
+
+<add image of Rstudio Server upon log-in>
+
+If we look through the file viewer, we'll see some folder that were pre-loaded into our home directory 
+
+<add image of home directory>
+
+Then we'll create directories to organize our results
+
+<add code to create expected output directories (& subdirectories?)>
+
+## Analysis initialization
+
+<create project?>
+
+<create code file?>
+
+Next, we'll load the R libraries that we'll need for our analysis. The first library `Seurat` was developed by the [Satija lab](https://satijalab.org/) and includes functions to support single-cell analysis across a broad range of data types including scRNA-seq. <worth adding list of what types of experiments Seurat can handle?>
+
+<For code - also add random seeds for reproducible analysis...?>
+
+```{r}
+library(Seurat)
+library(BPCells)
+library(tidyverse)
+
+options(future.globals.maxSize = 1e9)
+```
+
+# Input data
+
+<Add image with example of directory content for one sample>
+
+<Add context for expected 10x outputs and how we would usually start with the "filtered" outputs (and add dropdown or link out to 10x resources to contrast between filtered and raw outputs and use cases for each)>
+
+# Create Seurat Object
+
+<Introduce BPCell package and how most recent version of Seurat (Seurat 5) supports more efficient data storage to improve performance and accomodate larger datasets>
+
+```{r}
+# This puts the data "on disk" rather than in memory"
+geo_mat = open_matrix_dir(dir = 'results/10x_mat')
+```
+After pointing to our directory of data, where each subfolder is named by sample and contains three required input files, we can now create a Seurat object.
+
+```{r}
+geo_so = CreateSeuratObject(counts = geo_mat)
+```
+
+<Introduce parts of Seurat Object and explain how initial data is stored. Note - will look at meta data in next section (as part of QC)>
+
+```{r}
+# look at the object?
+```
+
+Since the Seurat object stores data in this specialized container, we may need to use helper functions to access or modify data stored in one part of the object.
+
+<add link to Seurat function page>
+
+As we work through the analysis, we'll check to see how the object has been updated to include additional "layers" of data.
+
+# Summary
+
+<add brief overall take-aways for section>
+
+----
+
+These materials have been adapted and extended from materials listed above. These are open access materials distributed under the terms of the [Creative Commons Attribution license (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.
+
+<br/>
+<br/>
+<hr/>
+| [Previous lesson](XXXX.html) | [Top of this lesson](#top) | [Next lesson](XXXX.html) |
+| :--- | :----: | ---: |
+
