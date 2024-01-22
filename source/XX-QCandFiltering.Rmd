@@ -39,7 +39,7 @@ knitr_fig_path("XX")
 
 <Callback to introductory context (by Chris): How 10x platform works - cell suspension + beads into microfluidics system at concentrations such that most droplets will end up with one cell plus 1 bead>
 
-In this section, our general goal is to use filtering thresholds to remove "cells" that either were poorly measured or not cells at all (or likely doublets). 
+In this section, our goal is to use filtering thresholds to remove "cells" that either were poorly measured or not cells at all (or likely doublets). 
 
 <Add specific goals for section>
 
@@ -62,19 +62,37 @@ For example, final filtering thresholds might be reported in a paper but our pro
 
 ## What is in our data?
 
-Along with the expression matrices, our Seurat object stores additional "meta" data:
+Along with the expression matrices, our Seurat object also holds "meta" data which is stored in <objectname@meta.data> can and be used to hold the following information about a single-cell dataset:
+
+- Sample name
+- Batch or sample for each cell
+- Summary statistics
+- Cell cycle phase for each cell
+- Cluster membership for each cell
+- Other custom annotations for each cell
 
 ```{r}
-# Look at our meta data
+# Look at our meta data - add code here
+
+# Example from Griffith lab tutorial:
+scrna[[]];
+scrna@meta.data;
+str(scrna@meta.data); # Examine structure and contents of meta data
+head(scrna@meta.data$nFeature_RNA); # Access genes (“Features”) for each cell
+head(scrna@meta.data$nCount_RNA); # Access number of UMIs for each cell:
+levels(x=scrna); # List the items in the current default cell identity class
+length(unique(scrna@meta.data$seurat_clusters)); # How many clusters are there? Note that there will not be any clusters in the meta data until you perform clustering.
+unique(scrna@meta.data$Batch); # What batches are included in this data set?
+scrna$NewIdentity <- vector_of_annotations; # Assign new cell annotations to a new "identity class" in the meta data
 ```
 
 What are `nFeature` and `nCount`?
 
 ### nFeatures and nCounts
 
-For single-cell RNA-seq, `nFeatures` represents the total number of genes measured per cell (rows in expression table), while `nCounts` represents the total number of UMIs / molecules measured per cell (sum of column in expression table).
+`nFeature` and `nCount` are metrics automatically calculated for every object by Seurat. For single-cell RNA-seq, `nFeatures` represents the total number of genes measured per cell (non-zero rows in expression table), while `nCounts` represents the total number of UMIs / molecules measured per cell (sum of column for that cell in expression table).
 
-> Note: for other single-cell data, `nFeatures` would represent what's being measured, such as for scATAC, `nFeatures` represents the total number of peaks (e.g. accessible areas of DNA).
+> Note: for other single-cell data types, `nFeatures` would represent what's being measured in that experiment. For single-cell ATAC-seq, `nFeatures` would represents the total number of peaks (e.g. accessible areas of DNA) per cell.
 
 We can plot these metrics across all samples to see what patterns we observe:
 
@@ -93,37 +111,91 @@ Since PCR can skew proportions of initial input materials, specific sequences ar
 
 ### Percent Mitochondrial 
 
-To get a sense of how many cells in each sample were stressed or dead, we will calculate the percentage of reads from mitochondrial sequences.
+To get a sense of how many cells in each sample might have been stressed or dead, we will need to manually calculate the percentage of reads from mitochondrial sequences for each cell and manually add that to the `meta.data` slot of our Seurat object.
+
 ```{r}
 # add flag to ignore capitalization OR point out difference in species?
 geo_so[['percent.mt']] = PercentageFeatureSet(geo_so, pattern = '^mt-')
+
+summary(geo_so$percent.mt)
 ```
-Thinking back to our goal of filtering to keep the real and well-measured cells, what might be a reasonable threshold? Generally, many public tutorial use between 5-10% is cutoff. However, for some experiments high mitochondrial reads would be expected (such as in cases where the condition/treatment or genotype increases cell death), then a relaxed threshold would be necessary to preserve biologically relevant cells.
 
 > Note: we wan also generate similar stats <add link to code or a drop down below?> for ribosomal RNA <but not always used for filtering and then for FLEX kit since it's probe based, there are no probes targeting ribosomal RNAs so can't generate this metric at all> 
+
+<code for calculating % ribo - move to separate page or dropdown within this section>
+```{r}
+ribo.genes <- grep(pattern = "^RP[SL][[:digit:]]", x = rownames(x = scrna), value = TRUE); # update to include flag to ignore case
+percent.ribo <- Matrix::colSums(x = GetAssayData(object = scrna, slot = 'counts')[ribo.genes, ]) / Matrix::colSums(x = GetAssayData(object = scrna, slot = 'counts'));
+scrna[['percent.ribo']] <- percent.ribo;
+```
 
 
 ## QC visualizations
 
-Consider density plots and/or violin plots, and look at the bounds on the empirical distribution that captures X% of the cells, where that's a relatively high number.
+Generating visualizations for our QC metrics can be useful for choosing our thresholds. One option for visualization is a violin plot and Seurat has built in functions to generate violin plots for a single-cell data. 
 
-Generally choosing thresholds for each dataset, but usually plot starting point of 200-500 on low end and high end primarily based on distribution
+<Consider density plots and/or violin plots, and recommend look at the bounds on the empirical distribution that captures X% of the cells, where that's a relatively high number.>
 
-Other “advanced” methods: doublet detection packages (but out of scope for course of the workshop), 
+```{r}
+VlnPlot(geo_so, features = 'nFeature_RNA')
+VlnPlot(geo_so, features = 'nCount_RNA')
+```
 
-Aside - For single-nuclei experiments removing background/ambient RNA with DecontX OR ??? can be important (nuclei are sticky and porous)
+For choosing thresholds for each dataset, we generally use a starting point of 200-500 on low end but also look at our summary plots to determine if that fits well with the data and usually base any cutoff for the high end of `nCount` on the distributions as well.
+
+For the mitochondrial data, we can use a histogram or density plot to summarize this metric:
+
+```{r}
+hist(geo_so$percent.mt)
+```
+
+Thinking back to our goal of filtering to keep the real and well-measured cells, what might be a reasonable threshold for these data? Generally, many public tutorial use between 5-10% is cutoff. However, for some experiments high mitochondrial reads would be expected (such as in cases where the condition/treatment or genotype increases cell death), then a relaxed threshold would be necessary to preserve biologically relevant cells.
+
 
 ## Choosing filtering thresholds
 
-We start with filtered data from CellRanger - so what does cellranger do to filter? (add example plot) 
-CellRanger tries to draw a line between cell and empty bead (or equivalent) while we want to draw lines between single, well measured cells and doublets or poorly measured cells/non-cells
-Future idea: Wanted poster for “one single good cell” at a time
+Since this data was downloaded from GEO, we have limited visibility on how the initial FASTQ files were processed to create the CellRanger output files uploaded for this dataset.
+
+However, we would generally expect to use the CellRanger outputs with the `_filtered` labeled. Since we expect to use "filtered" data, it's important to understand what prior filtering was performed by CellRanger and why would want to filter the data further? <Note - may want to skip some of this context/review depending on Matt's section>
+
+<add example plot>
+
+As shown above, CellRanger tries to draw a line between cells and empty beads (or equivalent) while we want to draw lines between single, well measured cells and doublets or poorly measured cells/non-cells.
+
+<Future idea: Wanted poster for “one good single cell”>
+
+How many cells are we starting with?
+
+<Add table or plot for cells per sample; consider adding summary of total number of cells per sample?>
+
+<What thresholds would we start with based on the plots alone? How does that compare to the thresholds reported in paper?>
+
+<Other “advanced” methods: out of scope for this workshop but there are packages  specifically developed to detect "doublets", e.g. droplets that contained more than one cell, such as DoubleFinder>
+
+<Additional aside - For single-nuclei experiments removing background/ambient RNA with CellBlender OR DecontX is an important additional step since nuclei are both sticky and porous>
+
+## Filtering data
+
+Now that we understand our goals, let's apply our chosen filtering thresholds to our data:
+
+```{r}
+geo_so = subset(geo_so, subset = nFeature_RNA > 500 & percent.mt < 25)
+```
 
 ## Evaluating filtering thresholds
 
-Do we know how many cells went into the experiment? Sometimes the answer is yes, so need to take that into consideration when evaluating how well our initial filtering worked
+To evaluate our filtering threshold choices, let's generate plots for our filtered data:
 
-Pre & post-filter cell count table and/or visualization per sample
+```{r}
+# consider changing to panel style option, instead of three separate plots?
+VlnPlot(geo_so, features = 'nFeature_RNA')
+VlnPlot(geo_so, features = 'nCount_RNA')
+VlnPlot(geo_so, features = 'percent.mt')
+```
+
+It can also be useful to compare the number of cells per sample before and after filtering, particularly if our input data had a larger number of "cells" than expected based on the preparation of the cells. 
+
+<Add post-filter cell count table and/or barplot visualization?>
 
 # Summary
 

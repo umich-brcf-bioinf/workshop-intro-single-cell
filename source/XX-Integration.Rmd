@@ -37,11 +37,23 @@ knitr_fig_path("XX")
 
 # Introduction 
 
-Remind of gaps linear presentation of single-cell data versus the reality of running an analysis. 
+In this section, our goal is to determine if our data has noticeable batch effects and if so, to use an integration technique to reduce those batch effects. 
 
-E.g. A single integration method might be reported in a paper, but many options may have been tested before finding an approach that sufficient corrects batch effects without removing relevant biological variability.
+Like in the previous section, one integration method might be reported while it might be necessary to try several options before determining the approach that sufficiently corrects batch effects without removing expected biological variability.
 
 <Add specific goals for section>
+
+# Unintegrated data
+
+For any single-cell experiment there are several steps that introduce technical variability, including sample isolation, cell dissociation, and running each sample on the instrument <although... there are some library approaches that allow samples to be pooled before running, which our colleagues from the Advanced Genomics Core will likely be discussing at the end of the day.> 
+
+<add figure from Seurat showing batch effects>
+
+If we proceeded with our filtered data through the dimensionality reduction and clustering steps, which we will discuss in the next section, and then labeled the cells with their sample of origin, then we would see the following for our data:
+
+<Add example of UMAP / sample labels for unintegrated data>
+
+In this plot, we <see that while there are distinct clusters, those clusters seem to separate 
 
 # Dimensionality reduction and PCA
 

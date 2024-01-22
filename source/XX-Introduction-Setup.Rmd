@@ -39,7 +39,7 @@ knitr_fig_path("XX")
 
 <How much context to provide here will depend on what Chris includes in his introduction>
 
-The field of single-cell expression measurements is still relatively new <Add early publications & information regarding 10x commercialization> and therefore standards for publication as well as best practices for analysis are continuing to evolve. 
+The field of single-cell expression measurements is still relatively new <add links to early publications & information regarding 10x commercialization> and therefore  best practices for analysis and standards for publication are continuing to evolve. 
 
 One of the goals of this workshop is to not only provide an example of a start to end single-cell workflow but also explore some of the relatively arbitrary decision points and the rationale for the choices we included in our analysis.
 
@@ -56,25 +56,37 @@ In this workshop, we will be working with a scRNA-seq data set generated from <a
 
 # Project setup
 
-To start, we will log into the AWS service to access our shared RStudio server:
+To start, we will access our shared RStudio server by opening a web browser to the following URL:
 
 <add link to access AWS server> 
 
+> <Consider adding dropdown section with explaination of AWS and links to cloud computing resources, such as webpage version of Griffin tutorial (https://github.com/griffithlab/rnabio.org/blob/master/_posts/0000-06-01-Intro_to_AWS.md) and Great Lakes resources ()>
+
+You should now be looking at a page that will allow you to login to the Rstudio server:
+
+<add image of login page>
+
+Enter your user credentials and click <kbd>Sign In</kbd>. The credentials are were provided via an email entitled <TO EDIT "UM BioinfCore Workshop Login">.
+
+However, if you forget yours, a helper can retrieve it for you if you ask in Slack. You should now see the RStudio interface:
+
 <add image of Rstudio Server upon log-in>
 
-If we look through the file viewer, we'll see some folder that were pre-loaded into our home directory 
-
-<add image of home directory>
-
-Then we'll create directories to organize our results
-
-<add code to create expected output directories (& subdirectories?)>
+<consider adding welcome script or example of final goal?>
 
 ## Analysis initialization
 
 <create project?>
 
 <create code file?>
+
+If we use the file viewer, we'll see some folder that were pre-loaded into our home directory 
+
+<add image of home directory>
+
+Then we'll create directories to organize our results
+
+<add code to create expected output directories (& subdirectories?)>
 
 Next, we'll load the R libraries that we'll need for our analysis. The first library `Seurat` was developed by the [Satija lab](https://satijalab.org/) and includes functions to support single-cell analysis across a broad range of data types including scRNA-seq. <worth adding list of what types of experiments Seurat can handle?>
 
@@ -117,6 +129,8 @@ geo_so = CreateSeuratObject(counts = geo_mat)
 Since the Seurat object stores data in this specialized container, we may need to use helper functions to access or modify data stored in one part of the object.
 
 <add link to Seurat function page>
+
+Before we do anything else, we'll save the Seurat object as an RDS file; this allows us to have a copy of the object that we can read back into our session with the `readRDS` commmand.
 
 As we work through the analysis, we'll check to see how the object has been updated to include additional "layers" of data.
 
