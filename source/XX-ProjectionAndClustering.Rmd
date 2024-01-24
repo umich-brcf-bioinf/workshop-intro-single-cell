@@ -1,5 +1,5 @@
 ---
-title: "Module title"
+title: "Clustering and Projection"
 author: "UM Bioinformatics Core"
 date: "`r Sys.Date()`"
 output:
@@ -41,10 +41,26 @@ knitr_fig_path("XX")
 
 # Projection and clustering
 
+Contrast the previous dimensionality reduction/nearest neighbors clustering and plotting the cells in lower dimensionality with the cluster labels.
+
+
+# Cluster plots
+
 Note how dimensionality choices are carried through downstream functions.
-tSNE vs UMAP
-DK- find thread with UMAP vs TSNE
-https://pair-code.github.io/understanding-umap/ 
+
+What's different beteween PCA, tSNE, and UMAP?
+
+Note: tSNE vs UMAP example: https://pair-code.github.io/understanding-umap/ 
+
+# Evaluating clustering
+
+How many clusters should I get and how do I adjust the number?
+
+Show example of 
+
+# Other tools for visualizing scRNA-sq data
+
+
 
 
 ----

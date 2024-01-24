@@ -53,7 +53,14 @@ If we proceeded with our filtered data through the dimensionality reduction and 
 
 <Add example of UMAP / sample labels for unintegrated data>
 
-In this plot, we <see that while there are distinct clusters, those clusters seem to separate 
+In this plot, we <see that while there are distinct clusters, those clusters seem to separate primarily by sample id. This suggests that with filtering and standard normalization, batch effects are outweighing biological variability in our data.>
+
+To combat this, we will need to integrate our samples into a scaled dataset prior to performing dimensionality reduction and clustering.
+
+# Normalization & Integration
+
+<Is PCA and Find Neighbors required prior to SCTransform?>
+
 
 # Dimensionality reduction and PCA
 
