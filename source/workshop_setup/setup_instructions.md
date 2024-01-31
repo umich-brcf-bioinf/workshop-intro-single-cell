@@ -1,5 +1,5 @@
 ---
-title: "RNA-Seq Demystified Workshop: Setup instructions"
+title: "Introduction to Single-Cell Analysis: Setup instructions"
 author: "UM Bioinformatics Core Workshop Team"
 output:
         html_document:
@@ -98,80 +98,12 @@ be happy to lend a hand to get things working.
       Slack invite you can access the Slack channel by pointing your web browser
       here: https://umbioinfcoreworkshops.slack.com
 
-### **Launch a command window**
-
-   - If you are using Windows:
-
-     - Press **Windows Key + R** to launch a command window. Make sure the `Open` field says `cmd` and click OK.
-
-     - You will see a new command window containing something like this
-     (yours may have more text and the last line may look a bit different;
-     that's ok)
-
-        ```
-        Microsoft Windows [Version 10.0.17763.1935]
-       (c) 2018 Microsoft Corporation. All rights reserved.
-
-        H:\>
-        ```
-
-   - If you are using a Mac:
-
-     - Macintosh OSX has a built in command window called **Terminal**. Press
-       **Command + Space** to launch Spotlight. In the search field, type
-       "Terminal" and double-click on the top result.
-
-     - You will see a new Terminal window containing something like this
-       (your may have more text and the last line may look a bit different;
-       that's ok)
-
-       ```
-       Last login: Feb 10 12:44:03 on ttys003\
-       MacBook: \~ your_username\$
-       ```
-
-### **Login to the shared server**
-
-   4.1. In the command window, type the following
-      command, replacing the **YOUR_USERNAME** with the username supplied to you by
-      the workshop hosts; hit **Enter or Return** to execute the command.<br/>
-      *Note: you can copy the command below to the clipboard and then
-      right-click in the command window to paste.*
-
-        ssh YOUR_USERNAME@bfx-workshop01.med.umich.edu
-
-
-   4.2. The first time you run this command, you may see a prompt like the
-   following; type **yes** and hit **Enter/Return** to continue.
-
-      The authenticity of host '...' can't be established.
-      ECDSA key fingerprint is SHA256:nz9lJaGEI5QFy7....
-      Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
-
-   The command will print a warning (e.g. `Warning: Permanently added
-   ‘SERVER_ADDRESS’ (ECDSA) to the list of known hosts`). This is fine.
-
-   4.3. When prompted,  type the password supplied by the workshop hosts followed
-   by **Enter/Return**. (Note that the password is case sensitive. Also note that the server will not echo any characters when you are typing your password; this is ok.)
-
-   After successfully logging in, your command window should end looking something like this:
-
-       ------------------------------
-       Welcome to RNA-Seq Demystified
-       ------------------------------
-       YOUR_USERNAME@cf: $
-
-   If you see the text above, you have successfully logged into the shared server. 
-   (You can close this window by typing **exit** or simply closing the 
-   command window.)
-
-
 ### **Launch R/RStudio (from the web)**
 
-  5.1 Open the following web address: <https://bfx-workshop01.med.umich.edu/>
+  3.1 Open the following web address: <https://bfx-workshop02.med.umich.edu/>
 
-  5.2 When prompted, enter the  username and password supplied by your hosts and
-   click **Sign In**. (Same username and password as the step above.)
+  3.2 When prompted, enter the  username and password supplied by your hosts and
+   click **Sign In**.
 
    You should see a new webpage that looks like something like this:
 

@@ -17,12 +17,12 @@ navbar:
       href: workshop_intro.html
     - text: "Day 1"
       menu:
-        - text: "Consider the biology"
-          href: consider_biology.html
+        - text: "Orienting on scRNA-Seq"
+          href: orienting.html
         - text: "Sequencing approaches"
           href: sequencing_approches.html
         - text: "CellRanger"
-          href: cell_Ranger.html
+          href: cell_ranger.html
         - text: "Seurat"
           href: seurat.html
         - text: "Initial QC"
