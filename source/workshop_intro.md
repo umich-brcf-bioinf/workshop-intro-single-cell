@@ -231,6 +231,16 @@ It is important that you can see:
 <br/>
 
 
+## [Single Cell Spatial Analysis Program](https://singlecellspatialanalysis.umich.edu/){target="_blank"}
+
+  The Single Cell Spatial Analysis Program seeks to develop the University of Michigan into a 
+  recognized leader in applying high-resolution spatially-resolved multi‑omic analysis within 
+  individual cells and in cells within tissues to drive next-generation solutions in biology and 
+  human health.
+<br/>
+<br/>
+
+
 ## Acknowledgements
 
 * TODO Acknowledgements

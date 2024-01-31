@@ -44,9 +44,9 @@ connect to enable single-cell gene expression analysis from single cell RNA-Seq 
 
 ## Housekeeping
 
-- TODO: Please take our optional <a class="external" href="https://forms.gle/rTDtL5ExtvhGryVs6" target="_blank">post-workshop survey</a> (5-10 minutes)
+- TODO: Please take our optional <a class="external" href="https://forms.gle/mafY39iccNRoEAVZ8" target="_blank">post-workshop survey</a> (5-10 minutes)
 
-- TODO: 11/27 11-12 ET: <a class="external" href="https://forms.gle/Rfx1TQ64gw2TnizB9" target="_blank">Virtual office hours</a>
+- TODO: 3/8 11-12 ET: <a class="external" href="https://forms.gle/tJ1fSR4fPgcpPKws5" target="_blank">Virtual office hours</a>
 
 - We will email you a link to the final session recordings by next week.
 
