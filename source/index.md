@@ -33,12 +33,11 @@ body, td {
 #### Day 1
 | Time | Topic : Details |
 | :---  | :---- |
-|  9:00 | [Welcome / Housekeeping](workshop_introduction.html) (Chris & Marci)|
-|  9:30 | Consider the biology (Chris)
-|       | Sequencing approaches (Olivia/Tricia)
+|  9:00 | [Welcome / Housekeeping](workshop_intro.html) (Chris & Marci)|
+|  9:30 | Orienting on scRNA-Seq (Chris)
+|       | CellRanger: execution and outputs (Matt)
 | 11:00 | Break |
-| 11:15 | CellRanger: execution and outputs (Matt)
-|       | Getting started with Seurat (Raymond)
+| 11:15 | Getting started with Seurat (Raymond)
 |       | Initial QC (Raymond)
 |  1:00 | Day 1 concludes |
 
@@ -51,6 +50,7 @@ body, td {
 | 11:00 | Break |
 | 11:15 | Projection & Clustering |
 |       | Marker identification & Visualization |
+|.      | A review of sequencing approaches (Olivia/Tricia) |
 |  1:00 | Day 2 concludes |
 
 #### Day 3 (Dana)
