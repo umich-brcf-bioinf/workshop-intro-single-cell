@@ -92,7 +92,7 @@ Next, we'll load the R libraries that we'll need for our analysis. The first lib
 
 <For code - also add random seeds for reproducible analysis...?>
 
-```{r}
+```{r, eval = FALSE}
 library(Seurat)
 library(BPCells)
 library(tidyverse)
@@ -110,19 +110,19 @@ options(future.globals.maxSize = 1e9)
 
 <Introduce BPCell package and how most recent version of Seurat (Seurat 5) supports more efficient data storage to improve performance and accomodate larger datasets>
 
-```{r}
+```{r, eval = FALSE}
 # This puts the data "on disk" rather than in memory"
 geo_mat = open_matrix_dir(dir = 'results/10x_mat')
 ```
 After pointing to our directory of data, where each subfolder is named by sample and contains three required input files, we can now create a Seurat object.
 
-```{r}
+```{r, eval = FALSE}
 geo_so = CreateSeuratObject(counts = geo_mat)
 ```
 
 <Introduce parts of Seurat Object and explain how initial data is stored. Note - will look at meta data in next section (as part of QC)>
 
-```{r}
+```{r, eval = FALSE}
 # look at the object?
 ```
 
