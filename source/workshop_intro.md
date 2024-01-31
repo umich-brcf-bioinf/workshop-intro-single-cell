@@ -57,6 +57,9 @@ pre {
 | **Chris** | **Marci** | **Raymond** |
 ![](images/headshots/headshot_damki.jpg) | ![](images/headshots/headshot_ncarruth.jpg) | ![](images/headshots/headshot_trsaari.jpg) |
 | **Dana** | **Nick** | **Travis** |
+![](images/headshots/headshot_mkdohert.jpg) | ![](images/headshots/headshot_okoues.jpg) | ![](images/headshots/headshot_phillipa.jpg) |
+| **Matt** | **Olivia** | **Tricia** |
+
 
 <br/>
 
