@@ -175,7 +175,7 @@ Since this data was downloaded from GEO, we have limited visibility on how the i
 
 However, we would generally expect to use the CellRanger outputs with the `_filtered` label as our initial input for a single-cell experiment. 
 
-Since we expect to use "filtered" CellRanger outputs, it's important to understand what prior filtering was performed by CellRanger and why would want to filter the data further? <Note - may want to skip some of this context/review depending on Matt's section>
+Since we expect to use "filtered" CellRanger outputs, it's important to understand what prior filtering was performed by CellRanger and why would want to filter the data further? <!--Note - may want to skip some of this context/review depending on Matt's section-->
 
 <!--As Matt may have discussed--> CellRanger tries to draw a line between cells and empty beads (or equivalent), which we can see in the barcode rank plot from the web summary. However, we want and have the ability to draw lines between single, well measured cells and doublets or poorly measured cells/non-cells.
 

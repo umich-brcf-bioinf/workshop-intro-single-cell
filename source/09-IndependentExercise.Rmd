@@ -35,6 +35,11 @@ knitr_fig_path("XX")
 
 # Workflow Overview {.unlisted .unnumbered}
 
+<br/>
+<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<br/>
+<br/>
+
 # Introduction
 
 Point out possible gaps between how single-cell data is presented versus the reality of running an analysis

@@ -35,9 +35,14 @@ knitr_fig_path("XX")
 
 # Workflow Overview {.unlisted .unnumbered}
 
+<br/>
+<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<br/>
+<br/>
+
 # Introduction
 
-<Add specific goals for section>
+<!--Add specific goals for section-->
 
 # Projection and clustering
 
@@ -56,7 +61,7 @@ Note: tSNE vs UMAP example: https://pair-code.github.io/understanding-umap/
 
 How many clusters should I get and how do I adjust the number?
 
-Show example of 
+Show example of changing resolution?
 
 # Other tools for visualizing scRNA-sq data
 

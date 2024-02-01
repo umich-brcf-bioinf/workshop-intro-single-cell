@@ -34,17 +34,22 @@ knitr_fig_path("XX")
 ```
 # Workflow Overview {.unlisted .unnumbered}
 
+<br/>
+<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<br/>
+<br/>
+
 # Introduction 
 
 Remind of gaps linear presentation of single-cell data versus the reality of running an analysis. 
 
 E.g. The final number of significant principal components might be reported in a paper, but many options may have been tested (and there could be multiple numbers that lead to similar results/conclusions)
 
-<Add specific goals for section>
+<!--Add specific goals for section-->
 
 # Dimensionality reduction and PCA
 
-<Before this section - Day 1: Starting w/ Seurat & Initial QC; will be moving batch correction up to before this in schedule>
+<!--Before this section - Day 1: Starting w/ Seurat & Initial QC; will be moving batch correction up to before this in schedule-->
 
 Each sample can be 10k cells x 19k genes so very high dimensional data - not all of the genes are going to be information for classifying into cell-types/subtypes, so how do we determine what to use and then how to classify?
 
@@ -55,7 +60,7 @@ What expression to use - PCA; How cells are classified into clusters - Nearest N
 
 ## Choosing the number of significant PCs for dimensionality reduction
 
-<Instruction Question: Start only with multisample but unintegrated and later compare in next section as [here](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-021-03957-4)?>
+<!--Instruction Question: Start only with multisample but unintegrated and later compare in next section as [here](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-021-03957-4)?-->
 
 You have a biological question - starting point is understanding the “resolution” of your biological questions
 
