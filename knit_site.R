@@ -34,5 +34,7 @@ render('source/workshop_setup/preworkshop_checklist.md', output_dir='html/worksh
 render_site('source/index.md')
 render_site('source/workshop_intro.md')
 
+## add content pages
+
 render_site('source/workshop_wrap_up.md')
 #clean_site(preview=TRUE)
