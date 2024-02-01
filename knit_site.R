@@ -35,6 +35,16 @@ render_site('source/index.md')
 render_site('source/workshop_intro.md')
 
 ## add content pages
+render_site('source/01-GettingStarted.Rmd')
+render_site('source/02-QCandFiltering.Rmd')
+render_site('source/03-Integration.Rmd')
+render_site('source/04-PCAandDimReduction.Rmd')
+render_site('source/05-ProjectionAndClustering.Rmd')
+render_site('source/06-MarkerVisualization.Rmd')
+render_site('source/07-CellTypeAnnos.Rmd')
+render_site('source/08-DifferentialExpression.Rmdd')
+render_site('source/09-IndependentExercise.Rmd')
+render_site('source/00-ResourcesAndExtendedContent.Rmd')
 
 render_site('source/workshop_wrap_up.md')
 #clean_site(preview=TRUE)
