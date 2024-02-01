@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core" />
+
+<meta name="date" content="2024-02-01" />
+
+<title>PCA and dimensionality reduction</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<!--
+Favicon from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="orienting.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="sequencing_approches.html">Sequencing approaches</a>
+    </li>
+    <li>
+      <a href="cell_ranger.html">CellRanger</a>
+    </li>
+    <li>
+      <a href="seurat.html">Seurat</a>
+    </li>
+    <li>
+      <a href="qc.html">Initial QC</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="pca.html">Principal Component Analysis</a>
+    </li>
+    <li>
+      <a href="multisample_batch_correction.html">Multisample / Batch correction</a>
+    </li>
+    <li>
+      <a href="projection_and_clustering.html">Projection &amp; Clustering</a>
+    </li>
+    <li>
+      <a href="marker_identification_and_visualization.html">Marker identification and visualization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="cell_type_annotation.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="differential_expression_analysis.html">Differential expression analysis</a>
+    </li>
+    <li>
+      <a href="independent_exercise.html">Independent exercise</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">PCA and dimensionality reduction</h1>
+<h4 class="author">UM Bioinformatics Core</h4>
+<h4 class="date">2024-02-01</h4>
+
+</div>
+
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+</style>
+<div id="workflow-overview" class="section level1 unlisted unnumbered">
+<h1 class="unlisted unnumbered">Workflow Overview</h1>
+<p><br/>
+<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<br/> <br/></p>
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Remind of gaps linear presentation of single-cell data versus the
+reality of running an analysis.</p>
+<p>E.g. The final number of significant principal components might be
+reported in a paper, but many options may have been tested (and there
+could be multiple numbers that lead to similar results/conclusions)</p>
+<!--Add specific goals for section-->
+</div>
+<div id="dimensionality-reduction-and-pca" class="section level1">
+<h1>Dimensionality reduction and PCA</h1>
+<!--Before this section - Day 1: Starting w/ Seurat & Initial QC; will be moving batch correction up to before this in schedule-->
+<p>Each sample can be 10k cells x 19k genes so very high dimensional
+data - not all of the genes are going to be information for classifying
+into cell-types/subtypes, so how do we determine what to use and then
+how to classify?</p>
+<p>What expression to use - PCA; How cells are classified into clusters
+- Nearest Neighbors</p>
+<div id="what-is-pca" class="section level2">
+<h2>What is PCA?</h2>
+</div>
+<div
+id="choosing-the-number-of-significant-pcs-for-dimensionality-reduction"
+class="section level2">
+<h2>Choosing the number of significant PCs for dimensionality
+reduction</h2>
+<!--Instruction Question: Start only with multisample but unintegrated and later compare in next section as [here](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-021-03957-4)?-->
+<p>You have a biological question - starting point is understanding the
+“resolution” of your biological questions</p>
+<p>How are you defining a “cell type” or “subtype” should help with
+ambiguity around questions like, “How do I decide how many PCs to
+include?”, “How do I choose a resolution for the UMAP?”, etc.</p>
+<p>Related - how important is that decision to the downstream impact
+(e.g. how much does changing the number of PCs change the
+clustering)?</p>
+<p>Why not use every PC? Higher resolution risks including uninteresting
+variation (biological vs statistical “significance”) and a single-cell
+itself is not a functional unit</p>
+<div id="visualizing-relative-contributions-of-each-pc"
+class="section level3">
+<h3>Visualizing relative contributions of each PC</h3>
+<p>Elbow plot to start, but there are more sophisticated methods (see
+Dana’s code snippet), and then there are even more sophisticated methods
+like the chooseR package or use clustering trees to evaluate
+stablity</p>
+</div>
+</div>
+<div id="dimensionality-reduction" class="section level2">
+<h2>Dimensionality reduction</h2>
+<p>Nearest neighbors algorithm - based on similarity of expression
+pattern (just for genes/PCs selected)</p>
+</div>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>Next steps: Multisample/batch correction</p>
+<p>Note how dimensionality choices are carried through downstream
+functions. tSNE vs UMAP DK- find thread with UMAP vs TSNE <a
+href="https://pair-code.github.io/understanding-umap/"
+class="uri">https://pair-code.github.io/understanding-umap/</a></p>
+<hr />
+<p>These materials have been adapted and extended from materials listed
+above. These are open access materials distributed under the terms of
+the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
+Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
+use, distribution, and reproduction in any medium, provided the original
+author and source are credited.</p>
+<br/> <br/>
+<hr/>
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="XXXX.html">Previous lesson</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="XXXX.html">Next lesson</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUENBIGFuZCBkaW1lbnNpb25hbGl0eSByZWR1Y3Rpb24iCmF1dGhvcjogIlVNIEJpb2luZm9ybWF0aWNzIENvcmUiCmRhdGU6ICJgciBTeXMuRGF0ZSgpYCIKb3V0cHV0OgogICAgICAgIGh0bWxfZG9jdW1lbnQ6CiAgICAgICAgICAgIGluY2x1ZGVzOgogICAgICAgICAgICAgICAgaW5faGVhZGVyOiBoZWFkZXIuaHRtbAogICAgICAgICAgICB0aGVtZTogcGFwZXIKICAgICAgICAgICAgdG9jOiB0cnVlCiAgICAgICAgICAgIHRvY19kZXB0aDogNAogICAgICAgICAgICB0b2NfZmxvYXQ6IHRydWUKICAgICAgICAgICAgbnVtYmVyX3NlY3Rpb25zOiBmYWxzZQogICAgICAgICAgICBmaWdfY2FwdGlvbjogdHJ1ZQogICAgICAgICAgICBtYXJrZG93bjogR0ZNCiAgICAgICAgICAgIGNvZGVfZG93bmxvYWQ6IHRydWUKLS0tCgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgpib2R5LCB0ZCB7CiAgIGZvbnQtc2l6ZTogMThweDsKfQpjb2RlLnJ7CiAgZm9udC1zaXplOiAxMnB4Owp9CnByZSB7CiAgZm9udC1zaXplOiAxMnB4Cn0KPC9zdHlsZT4KCmBgYHtyLCBpbmNsdWRlID0gRkFMU0V9CnNvdXJjZSgiLi4vYmluL2NodW5rLW9wdGlvbnMuUiIpCmtuaXRyX2ZpZ19wYXRoKCJYWCIpCmBgYAojIFdvcmtmbG93IE92ZXJ2aWV3IHsudW5saXN0ZWQgLnVubnVtYmVyZWR9Cgo8YnIvPgo8aW1nIHNyYz0iaW1hZ2VzL3dheWZpbmRlci93YXlmaW5kZXIucG5nIiBhbHQ9IndheWZpbmRlciIgc3R5bGU9ImhlaWdodDogNDAwcHg7Ii8+Cjxici8+Cjxici8+CgojIEludHJvZHVjdGlvbiAKClJlbWluZCBvZiBnYXBzIGxpbmVhciBwcmVzZW50YXRpb24gb2Ygc2luZ2xlLWNlbGwgZGF0YSB2ZXJzdXMgdGhlIHJlYWxpdHkgb2YgcnVubmluZyBhbiBhbmFseXNpcy4gCgpFLmcuIFRoZSBmaW5hbCBudW1iZXIgb2Ygc2lnbmlmaWNhbnQgcHJpbmNpcGFsIGNvbXBvbmVudHMgbWlnaHQgYmUgcmVwb3J0ZWQgaW4gYSBwYXBlciwgYnV0IG1hbnkgb3B0aW9ucyBtYXkgaGF2ZSBiZWVuIHRlc3RlZCAoYW5kIHRoZXJlIGNvdWxkIGJlIG11bHRpcGxlIG51bWJlcnMgdGhhdCBsZWFkIHRvIHNpbWlsYXIgcmVzdWx0cy9jb25jbHVzaW9ucykKCjwhLS1BZGQgc3BlY2lmaWMgZ29hbHMgZm9yIHNlY3Rpb24tLT4KCiMgRGltZW5zaW9uYWxpdHkgcmVkdWN0aW9uIGFuZCBQQ0EKCjwhLS1CZWZvcmUgdGhpcyBzZWN0aW9uIC0gRGF5IDE6IFN0YXJ0aW5nIHcvIFNldXJhdCAmIEluaXRpYWwgUUM7IHdpbGwgYmUgbW92aW5nIGJhdGNoIGNvcnJlY3Rpb24gdXAgdG8gYmVmb3JlIHRoaXMgaW4gc2NoZWR1bGUtLT4KCkVhY2ggc2FtcGxlIGNhbiBiZSAxMGsgY2VsbHMgeCAxOWsgZ2VuZXMgc28gdmVyeSBoaWdoIGRpbWVuc2lvbmFsIGRhdGEgLSBub3QgYWxsIG9mIHRoZSBnZW5lcyBhcmUgZ29pbmcgdG8gYmUgaW5mb3JtYXRpb24gZm9yIGNsYXNzaWZ5aW5nIGludG8gY2VsbC10eXBlcy9zdWJ0eXBlcywgc28gaG93IGRvIHdlIGRldGVybWluZSB3aGF0IHRvIHVzZSBhbmQgdGhlbiBob3cgdG8gY2xhc3NpZnk/CgpXaGF0IGV4cHJlc3Npb24gdG8gdXNlIC0gUENBOyBIb3cgY2VsbHMgYXJlIGNsYXNzaWZpZWQgaW50byBjbHVzdGVycyAtIE5lYXJlc3QgTmVpZ2hib3JzCgojIyBXaGF0IGlzIFBDQT8KCgojIyBDaG9vc2luZyB0aGUgbnVtYmVyIG9mIHNpZ25pZmljYW50IFBDcyBmb3IgZGltZW5zaW9uYWxpdHkgcmVkdWN0aW9uCgo8IS0tSW5zdHJ1Y3Rpb24gUXVlc3Rpb246IFN0YXJ0IG9ubHkgd2l0aCBtdWx0aXNhbXBsZSBidXQgdW5pbnRlZ3JhdGVkIGFuZCBsYXRlciBjb21wYXJlIGluIG5leHQgc2VjdGlvbiBhcyBbaGVyZV0oaHR0cHM6Ly9ibWNiaW9pbmZvcm1hdGljcy5iaW9tZWRjZW50cmFsLmNvbS9hcnRpY2xlcy8xMC4xMTg2L3MxMjg1OS0wMjEtMDM5NTctNCk/LS0+CgpZb3UgaGF2ZSBhIGJpb2xvZ2ljYWwgcXVlc3Rpb24gLSBzdGFydGluZyBwb2ludCBpcyB1bmRlcnN0YW5kaW5nIHRoZSDigJxyZXNvbHV0aW9u4oCdIG9mIHlvdXIgYmlvbG9naWNhbCBxdWVzdGlvbnMKCkhvdyBhcmUgeW91IGRlZmluaW5nIGEg4oCcY2VsbCB0eXBl4oCdIG9yIOKAnHN1YnR5cGXigJ0gc2hvdWxkIGhlbHAgd2l0aCBhbWJpZ3VpdHkgYXJvdW5kIHF1ZXN0aW9ucyBsaWtlLCAiSG93IGRvIEkgZGVjaWRlIGhvdyBtYW55IFBDcyB0byBpbmNsdWRlPyIsICJIb3cgZG8gSSBjaG9vc2UgYSByZXNvbHV0aW9uIGZvciB0aGUgVU1BUD8iLCBldGMuCgpSZWxhdGVkIC0gaG93IGltcG9ydGFudCBpcyB0aGF0IGRlY2lzaW9uIHRvIHRoZSBkb3duc3RyZWFtIGltcGFjdCAoZS5nLiBob3cgbXVjaCBkb2VzIGNoYW5naW5nIHRoZSBudW1iZXIgb2YgUENzIGNoYW5nZSB0aGUgY2x1c3RlcmluZyk/CgpXaHkgbm90IHVzZSBldmVyeSBQQz8gSGlnaGVyIHJlc29sdXRpb24gcmlza3MgaW5jbHVkaW5nIHVuaW50ZXJlc3RpbmcgdmFyaWF0aW9uIChiaW9sb2dpY2FsIHZzIHN0YXRpc3RpY2FsIOKAnHNpZ25pZmljYW5jZeKAnSkgYW5kIGEgc2luZ2xlLWNlbGwgaXRzZWxmIGlzIG5vdCBhIGZ1bmN0aW9uYWwgdW5pdAoKIyMjIFZpc3VhbGl6aW5nIHJlbGF0aXZlIGNvbnRyaWJ1dGlvbnMgb2YgZWFjaCBQQwoKRWxib3cgcGxvdCB0byBzdGFydCwgYnV0IHRoZXJlIGFyZSBtb3JlIHNvcGhpc3RpY2F0ZWQgbWV0aG9kcyAoc2VlIERhbmEncyBjb2RlIHNuaXBwZXQpLCBhbmQgdGhlbiB0aGVyZSBhcmUgZXZlbiBtb3JlIHNvcGhpc3RpY2F0ZWQgbWV0aG9kcyBsaWtlIHRoZSBjaG9vc2VSIHBhY2thZ2Ugb3IgdXNlIGNsdXN0ZXJpbmcgdHJlZXMgdG8gZXZhbHVhdGUgc3RhYmxpdHkKCiMjIERpbWVuc2lvbmFsaXR5IHJlZHVjdGlvbgoKTmVhcmVzdCBuZWlnaGJvcnMgYWxnb3JpdGhtIC0gYmFzZWQgb24gc2ltaWxhcml0eSBvZiBleHByZXNzaW9uIHBhdHRlcm4gKGp1c3QgZm9yIGdlbmVzL1BDcyBzZWxlY3RlZCkKCgoKCiMgU3VtbWFyeQoKTmV4dCBzdGVwczogTXVsdGlzYW1wbGUvYmF0Y2ggY29ycmVjdGlvbiAKCk5vdGUgaG93IGRpbWVuc2lvbmFsaXR5IGNob2ljZXMgYXJlIGNhcnJpZWQgdGhyb3VnaCBkb3duc3RyZWFtIGZ1bmN0aW9ucy4KdFNORSB2cyBVTUFQCkRLLSBmaW5kIHRocmVhZCB3aXRoIFVNQVAgdnMgVFNORQpodHRwczovL3BhaXItY29kZS5naXRodWIuaW8vdW5kZXJzdGFuZGluZy11bWFwLyAKCgotLS0tCgpUaGVzZSBtYXRlcmlhbHMgaGF2ZSBiZWVuIGFkYXB0ZWQgYW5kIGV4dGVuZGVkIGZyb20gbWF0ZXJpYWxzIGxpc3RlZCBhYm92ZS4gVGhlc2UgYXJlIG9wZW4gYWNjZXNzIG1hdGVyaWFscyBkaXN0cmlidXRlZCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIFtDcmVhdGl2ZSBDb21tb25zIEF0dHJpYnV0aW9uIGxpY2Vuc2UgKENDIEJZIDQuMCldKGh0dHA6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC8pLCB3aGljaCBwZXJtaXRzIHVucmVzdHJpY3RlZCB1c2UsIGRpc3RyaWJ1dGlvbiwgYW5kIHJlcHJvZHVjdGlvbiBpbiBhbnkgbWVkaXVtLCBwcm92aWRlZCB0aGUgb3JpZ2luYWwgYXV0aG9yIGFuZCBzb3VyY2UgYXJlIGNyZWRpdGVkLgoKPGJyLz4KPGJyLz4KPGhyLz4KfCBbUHJldmlvdXMgbGVzc29uXShYWFhYLmh0bWwpIHwgW1RvcCBvZiB0aGlzIGxlc3Nvbl0oI3RvcCkgfCBbTmV4dCBsZXNzb25dKFhYWFguaHRtbCkgfAp8IDotLS0gfCA6LS0tLTogfCAtLS06IHwKCgoK</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("04-PCAandDimReduction.Rmd");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core" />
+
+<meta name="date" content="2024-02-01" />
+
+<title>Module title</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<!--
+Favicon from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="orienting.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="sequencing_approches.html">Sequencing approaches</a>
+    </li>
+    <li>
+      <a href="cell_ranger.html">CellRanger</a>
+    </li>
+    <li>
+      <a href="seurat.html">Seurat</a>
+    </li>
+    <li>
+      <a href="qc.html">Initial QC</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="pca.html">Principal Component Analysis</a>
+    </li>
+    <li>
+      <a href="multisample_batch_correction.html">Multisample / Batch correction</a>
+    </li>
+    <li>
+      <a href="projection_and_clustering.html">Projection &amp; Clustering</a>
+    </li>
+    <li>
+      <a href="marker_identification_and_visualization.html">Marker identification and visualization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="cell_type_annotation.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="differential_expression_analysis.html">Differential expression analysis</a>
+    </li>
+    <li>
+      <a href="independent_exercise.html">Independent exercise</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Module title</h1>
+<h4 class="author">UM Bioinformatics Core</h4>
+<h4 class="date">2024-02-01</h4>
+
+</div>
+
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+</style>
+<div id="workflow-overview" class="section level1 unlisted unnumbered">
+<h1 class="unlisted unnumbered">Workflow Overview</h1>
+<p><br/>
+<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<br/> <br/></p>
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Point out possible gaps between how single-cell data is presented
+versus the reality of running an analysis E.g. Papers might report final
+filtering thresholds, but our process for choosing those is likely to be
+more iterative</p>
+<p>General goal: Filtering out the “cells” that either were poorly
+measured or are either not single-cells or not cells at all</p>
+<!-- regular html comment -->
+<!--Add specific goals for section-->
+<p>Per <a href="http://www.website.html">hyperlink text</a> are … either
+<code>plain text</code> or <em>italic</em> or <strong>bold</strong>.</p>
+<Embed an image>
+<p><img src="images/WelcomeScriptOpened.png" alt="rstudio default session" style="width:1000px;"/></p>
+<blockquote>
+<h2 id="reminder-rstudio-code-execution"
+class="unlisted unnumbered">Reminder: RStudio code execution</h2>
+<p><kbd>Ctrl</kbd>+<kbd>Enter</kbd> is a standard shortcut in RStudio to
+send the current line (or selected lines) to the console. If you see
+<code>&gt;</code> in the Console, then R has executed the command. If
+you see a <code>+</code>, this means that the command is not complete, R
+thinks there is more to your command. You can use the <kmd>esc</kmd> to
+get out of this state.</p>
+</blockquote>
+<blockquote>
+<h2 id="reminder-object-naming-conventions"
+class="unlisted unnumbered">Reminder: Object naming conventions</h2>
+<ul>
+<li>Cannot start with numbers</li>
+<li>Cannot include dashes</li>
+<li>Cannot have spaces</li>
+<li>Should not be identical to a named function</li>
+<li>Dots and underscores can separate parts of names, alternatively
+CamelCase accomplishes this</li>
+</ul>
+</blockquote>
+<hr />
+<details>
+<summary>
+<em>Click for additional resources regarding statistical testing and
+tool comparison for RNA-seq data</em>
+</summary>
+To learn more about statistical testing and what distributions best
+model the behavior of RNA-seq data, a good resource is this <a
+href="https://www.youtube.com/watch?v=HK7WKsL3c2w&amp;feature=youtu.be">EdX
+lecture by Rafael Irizarry</a> or this <a
+href="https://www.youtube.com/watch?v=C8RNvWu7pAw">lecture by Kasper
+Hansen</a>. Another helpful guide is this <a
+href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0103207">Comparative
+Study for Differential Expression Analysis by Zhang et al.</a> from
+2014.
+</details>
+<p><br></p>
+<hr />
+<p>These materials have been adapted and extended from materials listed
+above. These are open access materials distributed under the terms of
+the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
+Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
+use, distribution, and reproduction in any medium, provided the original
+author and source are credited.</p>
+<br/> <br/>
+<hr/>
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="XXXX.html">Previous lesson</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="XXXX.html">Next lesson</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiTW9kdWxlIHRpdGxlIgphdXRob3I6ICJVTSBCaW9pbmZvcm1hdGljcyBDb3JlIgpkYXRlOiAiYHIgU3lzLkRhdGUoKWAiCm91dHB1dDoKICAgICAgICBodG1sX2RvY3VtZW50OgogICAgICAgICAgICBpbmNsdWRlczoKICAgICAgICAgICAgICAgIGluX2hlYWRlcjogaGVhZGVyLmh0bWwKICAgICAgICAgICAgdGhlbWU6IHBhcGVyCiAgICAgICAgICAgIHRvYzogdHJ1ZQogICAgICAgICAgICB0b2NfZGVwdGg6IDQKICAgICAgICAgICAgdG9jX2Zsb2F0OiB0cnVlCiAgICAgICAgICAgIG51bWJlcl9zZWN0aW9uczogZmFsc2UKICAgICAgICAgICAgZmlnX2NhcHRpb246IHRydWUKICAgICAgICAgICAgbWFya2Rvd246IEdGTQogICAgICAgICAgICBjb2RlX2Rvd25sb2FkOiB0cnVlCi0tLQoKPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KYm9keSwgdGQgewogICBmb250LXNpemU6IDE4cHg7Cn0KY29kZS5yewogIGZvbnQtc2l6ZTogMTJweDsKfQpwcmUgewogIGZvbnQtc2l6ZTogMTJweAp9Cjwvc3R5bGU+CgpgYGB7ciwgaW5jbHVkZSA9IEZBTFNFfQpzb3VyY2UoIi4uL2Jpbi9jaHVuay1vcHRpb25zLlIiKQprbml0cl9maWdfcGF0aCgiWFgiKQpgYGAKCiMgV29ya2Zsb3cgT3ZlcnZpZXcgey51bmxpc3RlZCAudW5udW1iZXJlZH0KCjxici8+CjxpbWcgc3JjPSJpbWFnZXMvd2F5ZmluZGVyL3dheWZpbmRlci5wbmciIGFsdD0id2F5ZmluZGVyIiBzdHlsZT0iaGVpZ2h0OiA0MDBweDsiLz4KPGJyLz4KPGJyLz4KCiMgSW50cm9kdWN0aW9uCgpQb2ludCBvdXQgcG9zc2libGUgZ2FwcyBiZXR3ZWVuIGhvdyBzaW5nbGUtY2VsbCBkYXRhIGlzIHByZXNlbnRlZCB2ZXJzdXMgdGhlIHJlYWxpdHkgb2YgcnVubmluZyBhbiBhbmFseXNpcwpFLmcuIFBhcGVycyBtaWdodCByZXBvcnQgZmluYWwgZmlsdGVyaW5nIHRocmVzaG9sZHMsIGJ1dCBvdXIgcHJvY2VzcyBmb3IgY2hvb3NpbmcgdGhvc2UgaXMgbGlrZWx5IHRvIGJlIG1vcmUgaXRlcmF0aXZlCgpHZW5lcmFsIGdvYWw6IEZpbHRlcmluZyBvdXQgdGhlICJjZWxscyIgdGhhdCBlaXRoZXIgd2VyZSBwb29ybHkgbWVhc3VyZWQgb3IgYXJlIGVpdGhlciBub3Qgc2luZ2xlLWNlbGxzIG9yIG5vdCBjZWxscyBhdCBhbGwKCjwhLS0gcmVndWxhciBodG1sIGNvbW1lbnQgLS0+IAo8IS0tQWRkIHNwZWNpZmljIGdvYWxzIGZvciBzZWN0aW9uLS0+CgpQZXIgW2h5cGVybGluayB0ZXh0XShodHRwOi8vd3d3LndlYnNpdGUuaHRtbCkgYXJlIC4uLiBlaXRoZXIgYHBsYWluIHRleHRgIG9yICppdGFsaWMqIG9yICoqYm9sZCoqLgoKPEVtYmVkIGFuIGltYWdlPgo8aW1nIHNyYz0iaW1hZ2VzL1dlbGNvbWVTY3JpcHRPcGVuZWQucG5nIiBhbHQ9InJzdHVkaW8gZGVmYXVsdCBzZXNzaW9uIiBzdHlsZT0id2lkdGg6MTAwMHB4OyIvPgoKPiAjIyBSZW1pbmRlcjogUlN0dWRpbyBjb2RlIGV4ZWN1dGlvbiB7LnVubGlzdGVkIC51bm51bWJlcmVkfQo+Cj4gPGtiZD5DdHJsPC9rYmQ+KzxrYmQ+RW50ZXI8L2tiZD4gaXMgYSBzdGFuZGFyZCBzaG9ydGN1dCBpbiBSU3R1ZGlvIHRvIHNlbmQgdGhlIGN1cnJlbnQgbGluZSAob3Igc2VsZWN0ZWQgbGluZXMpIHRvIHRoZSBjb25zb2xlLiBJZiB5b3Ugc2VlIGA+YCBpbiB0aGUgQ29uc29sZSwgdGhlbiBSIGhhcyBleGVjdXRlZCB0aGUgY29tbWFuZC4gSWYgeW91IHNlZSBhIGArYCwgdGhpcyBtZWFucyB0aGF0IHRoZSBjb21tYW5kIGlzIG5vdCBjb21wbGV0ZSwgUiB0aGlua3MgdGhlcmUgaXMgbW9yZSB0byB5b3VyIGNvbW1hbmQuIFlvdSBjYW4gdXNlIHRoZSA8a21kPmVzYzwva21kPiB0byBnZXQgb3V0IG9mIHRoaXMgc3RhdGUuCgo+ICMjIFJlbWluZGVyOiBPYmplY3QgbmFtaW5nIGNvbnZlbnRpb25zIHsudW5saXN0ZWQgLnVubnVtYmVyZWR9Cj4gKiBDYW5ub3Qgc3RhcnQgd2l0aCBudW1iZXJzCj4gKiBDYW5ub3QgaW5jbHVkZSBkYXNoZXMKPiAqIENhbm5vdCBoYXZlIHNwYWNlcwo+ICogU2hvdWxkIG5vdCBiZSBpZGVudGljYWwgdG8gYSBuYW1lZCBmdW5jdGlvbgo+ICogRG90cyBhbmQgdW5kZXJzY29yZXMgY2FuIHNlcGFyYXRlIHBhcnRzIG9mIG5hbWVzLCBhbHRlcm5hdGl2ZWx5IENhbWVsQ2FzZSBhY2NvbXBsaXNoZXMgdGhpcwoKLS0tLQoKPGRldGFpbHM+CiAgICA8c3VtbWFyeT4qQ2xpY2sgZm9yIGFkZGl0aW9uYWwgcmVzb3VyY2VzIHJlZ2FyZGluZyBzdGF0aXN0aWNhbCB0ZXN0aW5nIGFuZCB0b29sIGNvbXBhcmlzb24gZm9yIFJOQS1zZXEgZGF0YSo8L3N1bW1hcnk+CiAgICBUbyBsZWFybiBtb3JlIGFib3V0IHN0YXRpc3RpY2FsIHRlc3RpbmcgYW5kIHdoYXQgZGlzdHJpYnV0aW9ucyBiZXN0IG1vZGVsIHRoZSBiZWhhdmlvciBvZiBSTkEtc2VxIGRhdGEsIGEgZ29vZCByZXNvdXJjZSBpcyB0aGlzIFtFZFggbGVjdHVyZSBieSBSYWZhZWwgSXJpemFycnldKGh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9SEs3V0tzTDNjMncmZmVhdHVyZT15b3V0dS5iZSkgb3IgdGhpcyBbbGVjdHVyZSBieSBLYXNwZXIgSGFuc2VuXShodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PUM4Uk52V3U3cEF3KS4gQW5vdGhlciBoZWxwZnVsIGd1aWRlIGlzIHRoaXMgW0NvbXBhcmF0aXZlIFN0dWR5IGZvciBEaWZmZXJlbnRpYWwgRXhwcmVzc2lvbiBBbmFseXNpcyBieSBaaGFuZyBldCBhbC5dKGh0dHBzOi8vam91cm5hbHMucGxvcy5vcmcvcGxvc29uZS9hcnRpY2xlP2lkPTEwLjEzNzEvam91cm5hbC5wb25lLjAxMDMyMDcpIGZyb20gMjAxNC4KPC9kZXRhaWxzPgo8YnI+CgotLS0tCgpUaGVzZSBtYXRlcmlhbHMgaGF2ZSBiZWVuIGFkYXB0ZWQgYW5kIGV4dGVuZGVkIGZyb20gbWF0ZXJpYWxzIGxpc3RlZCBhYm92ZS4gVGhlc2UgYXJlIG9wZW4gYWNjZXNzIG1hdGVyaWFscyBkaXN0cmlidXRlZCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIFtDcmVhdGl2ZSBDb21tb25zIEF0dHJpYnV0aW9uIGxpY2Vuc2UgKENDIEJZIDQuMCldKGh0dHA6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC8pLCB3aGljaCBwZXJtaXRzIHVucmVzdHJpY3RlZCB1c2UsIGRpc3RyaWJ1dGlvbiwgYW5kIHJlcHJvZHVjdGlvbiBpbiBhbnkgbWVkaXVtLCBwcm92aWRlZCB0aGUgb3JpZ2luYWwgYXV0aG9yIGFuZCBzb3VyY2UgYXJlIGNyZWRpdGVkLgoKPGJyLz4KPGJyLz4KPGhyLz4KfCBbUHJldmlvdXMgbGVzc29uXShYWFhYLmh0bWwpIHwgW1RvcCBvZiB0aGlzIGxlc3Nvbl0oI3RvcCkgfCBbTmV4dCBsZXNzb25dKFhYWFguaHRtbCkgfAp8IDotLS0gfCA6LS0tLTogfCAtLS06IHwKCg==</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("06-MarkerVisualization.Rmd");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
