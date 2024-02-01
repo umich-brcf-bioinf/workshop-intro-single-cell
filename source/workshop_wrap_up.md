@@ -44,9 +44,9 @@ connect to enable single-cell gene expression analysis from single cell RNA-Seq 
 
 ## Housekeeping
 
-- TODO: Please take our optional <a class="external" href="https://forms.gle/rTDtL5ExtvhGryVs6" target="_blank">post-workshop survey</a> (5-10 minutes)
+- TODO: Please take our optional <a class="external" href="https://forms.gle/mafY39iccNRoEAVZ8" target="_blank">post-workshop survey</a> (5-10 minutes)
 
-- TODO: 11/27 11-12 ET: <a class="external" href="https://forms.gle/Rfx1TQ64gw2TnizB9" target="_blank">Virtual office hours</a>
+- TODO: 3/8 11-12 ET: <a class="external" href="https://forms.gle/tJ1fSR4fPgcpPKws5" target="_blank">Virtual office hours</a>
 
 - We will email you a link to the final session recordings by next week.
 
@@ -120,6 +120,8 @@ for 90 days.
 | **Chris** | **Marci** | **Raymond** |
 ![](images/headshots/headshot_damki.jpg) | ![](images/headshots/headshot_ncarruth.jpg) | ![](images/headshots/headshot_trsaari.jpg) |
 | **Dana** | **Nick** | **Travis** |
+![](images/headshots/headshot_mkdohert.jpg) | ![](images/headshots/headshot_okoues.jpg) | ![](images/headshots/headshot_phillipa.jpg) |
+| **Matt** | **Olivia** | **Tricia** |
 
 <br/>
 
