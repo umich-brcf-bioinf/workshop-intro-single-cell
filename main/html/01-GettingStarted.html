@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core" />
+
+<meta name="date" content="2024-02-01" />
+
+<title>Getting Started with Seurat</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<!--
+Favicon from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="orienting.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="sequencing_approches.html">Sequencing approaches</a>
+    </li>
+    <li>
+      <a href="cell_ranger.html">CellRanger</a>
+    </li>
+    <li>
+      <a href="seurat.html">Seurat</a>
+    </li>
+    <li>
+      <a href="qc.html">Initial QC</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="pca.html">Principal Component Analysis</a>
+    </li>
+    <li>
+      <a href="multisample_batch_correction.html">Multisample / Batch correction</a>
+    </li>
+    <li>
+      <a href="projection_and_clustering.html">Projection &amp; Clustering</a>
+    </li>
+    <li>
+      <a href="marker_identification_and_visualization.html">Marker identification and visualization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="cell_type_annotation.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="differential_expression_analysis.html">Differential expression analysis</a>
+    </li>
+    <li>
+      <a href="independent_exercise.html">Independent exercise</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Getting Started with Seurat</h1>
+<h4 class="author">UM Bioinformatics Core</h4>
+<h4 class="date">2024-02-01</h4>
+
+</div>
+
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+</style>
+<div id="workflow-overview" class="section level1 unlisted unnumbered">
+<h1 class="unlisted unnumbered">Workflow Overview</h1>
+<p><br/>
+<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<br/> <br/></p>
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p><How much context to provide here will depend on what Chris includes in his introduction></p>
+<p>The field of single-cell expression measurements is still relatively
+new &lt;add links to early publications &amp; information regarding 10x
+commercialization&gt; and therefore best practices for analysis and
+standards for publication are continuing to evolve.</p>
+<p>One of the goals of this workshop is to not only provide an example
+of a start to end single-cell workflow but also explore some of the
+relatively arbitrary decision points and the rationale for the choices
+we included in our analysis.</p>
+<p>Our specific goals for the hands-on portions of the workshop include
+&lt;Expect to edit these goals and/or might make sense for Chris to
+iterate over earlier?: - Learn to assess the quality of your data - - X
+- X &gt;</p>
+<div id="sample-information" class="section level2">
+<h2>Sample information</h2>
+<p>In this workshop, we will be working with a scRNA-seq data set
+generated from
+<!--add tissue information>. <Add experimental condition summary - expect Chris to give overview in overall workshop introduction-->.</p>
+</div>
+</div>
+<div id="project-setup" class="section level1">
+<h1>Project setup</h1>
+<p>To start, we will access our shared RStudio server by opening a web
+browser to the following URL:</p>
+<!--add link to access AWS server-->
+<!--Consider adding dropdown section with explaination of AWS and links to cloud computing resources, such as webpage version of Griffin tutorial (https://github.com/griffithlab/rnabio.org/blob/master/_posts/0000-06-01-Intro_to_AWS.md) and Great Lakes resources ()-->
+<p>You should now be looking at a page that will allow you to login to
+the Rstudio server:</p>
+<!--add image of login page-->
+<p>Enter your user credentials and click <kbd>Sign In</kbd>. The
+credentials are were provided via an email entitled
+<!--TO EDIT "UM BioinfCore Workshop Login"-->.</p>
+<p>However, if you forget yours, a helper can retrieve it for you if you
+ask in Slack. You should now see the RStudio interface:</p>
+<!--add image of Rstudio Server upon log-in-->
+<!--consider adding welcome script or example of final goal?-->
+<div id="analysis-initialization" class="section level2">
+<h2>Analysis initialization</h2>
+<!--create project?-->
+<!--create code file?-->
+<p>If we use the file viewer, we’ll see some folder that were pre-loaded
+into our home directory</p>
+<!--add image of home directory-->
+<p>Then we’ll create directories to organize our results</p>
+<!--add code to create expected output directories (& subdirectories?)-->
+<p>Next, we’ll load the R libraries that we’ll need for our analysis.
+The first library <code>Seurat</code> was developed by the <a
+href="https://satijalab.org/">Satija lab</a> and includes functions to
+support single-cell analysis across a broad range of data types
+including scRNA-seq. &lt;worth adding list of what types of experiments
+Seurat can handle?&gt;</p>
+<!--For code - also add random seeds for reproducible analysis...?-->
+<pre class="r"><code>library(Seurat)
+library(BPCells)
+library(tidyverse)
+
+options(future.globals.maxSize = 1e9)</code></pre>
+</div>
+</div>
+<div id="input-data" class="section level1">
+<h1>Input data</h1>
+<!--Add image with example of directory content for one sample-->
+<!--Add context for expected 10x outputs and how we would usually start with the "filtered" outputs (and add dropdown or link out to 10x resources to contrast between filtered and raw outputs and use cases for each)-->
+</div>
+<div id="create-seurat-object" class="section level1">
+<h1>Create Seurat Object</h1>
+<!--Introduce BPCell package and how most recent version of Seurat (Seurat 5) supports more efficient data storage to improve performance and accomodate larger datasets-->
+<pre class="r"><code># This puts the data &quot;on disk&quot; rather than in memory&quot;
+geo_mat = open_matrix_dir(dir = &#39;results/10x_mat&#39;)</code></pre>
+<p>After pointing to our directory of data, where each subfolder is
+named by sample and contains three required input files, we can now
+create a Seurat object.</p>
+<pre class="r"><code>geo_so = CreateSeuratObject(counts = geo_mat)</code></pre>
+<!--Introduce parts of Seurat Object and explain how initial data is stored. Note - will look at meta data in next section (as part of QC)-->
+<pre class="r"><code># look at the object?</code></pre>
+<p>Since the Seurat object stores data in this specialized container, we
+may need to use helper functions to access or modify data stored in one
+part of the object.</p>
+<!--add link to Seurat function page-->
+<p>Before we do anything else, we’ll save the Seurat object as an RDS
+file; this allows us to have a copy of the object that we can read back
+into our session with the <code>readRDS</code> commmand.</p>
+<p>As we work through the analysis, we’ll check to see how the object
+has been updated to include additional “layers” of data.</p>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<!--add brief overall take-aways for section-->
+<hr />
+<p>These materials have been adapted and extended from materials listed
+above. These are open access materials distributed under the terms of
+the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
+Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
+use, distribution, and reproduction in any medium, provided the original
+author and source are credited.</p>
+<br/> <br/>
+<hr/>
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="XXXX.html">Previous lesson</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="XXXX.html">Next lesson</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiR2V0dGluZyBTdGFydGVkIHdpdGggU2V1cmF0IgphdXRob3I6ICJVTSBCaW9pbmZvcm1hdGljcyBDb3JlIgpkYXRlOiAiYHIgU3lzLkRhdGUoKWAiCm91dHB1dDoKICAgICAgICBodG1sX2RvY3VtZW50OgogICAgICAgICAgICBpbmNsdWRlczoKICAgICAgICAgICAgICAgIGluX2hlYWRlcjogaGVhZGVyLmh0bWwKICAgICAgICAgICAgdGhlbWU6IHBhcGVyCiAgICAgICAgICAgIHRvYzogdHJ1ZQogICAgICAgICAgICB0b2NfZGVwdGg6IDQKICAgICAgICAgICAgdG9jX2Zsb2F0OiB0cnVlCiAgICAgICAgICAgIG51bWJlcl9zZWN0aW9uczogZmFsc2UKICAgICAgICAgICAgZmlnX2NhcHRpb246IHRydWUKICAgICAgICAgICAgbWFya2Rvd246IEdGTQogICAgICAgICAgICBjb2RlX2Rvd25sb2FkOiB0cnVlCi0tLQoKPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KYm9keSwgdGQgewogICBmb250LXNpemU6IDE4cHg7Cn0KY29kZS5yewogIGZvbnQtc2l6ZTogMTJweDsKfQpwcmUgewogIGZvbnQtc2l6ZTogMTJweAp9Cjwvc3R5bGU+CgpgYGB7ciwgaW5jbHVkZSA9IEZBTFNFfQpzb3VyY2UoIi4uL2Jpbi9jaHVuay1vcHRpb25zLlIiKQprbml0cl9maWdfcGF0aCgiWFgiKQpgYGAKCiMgV29ya2Zsb3cgT3ZlcnZpZXcgey51bmxpc3RlZCAudW5udW1iZXJlZH0KCjxici8+CjxpbWcgc3JjPSJpbWFnZXMvd2F5ZmluZGVyL3dheWZpbmRlci5wbmciIGFsdD0id2F5ZmluZGVyIiBzdHlsZT0iaGVpZ2h0OiA0MDBweDsiLz4KPGJyLz4KPGJyLz4KCiMgSW50cm9kdWN0aW9uCgo8SG93IG11Y2ggY29udGV4dCB0byBwcm92aWRlIGhlcmUgd2lsbCBkZXBlbmQgb24gd2hhdCBDaHJpcyBpbmNsdWRlcyBpbiBoaXMgaW50cm9kdWN0aW9uPgoKVGhlIGZpZWxkIG9mIHNpbmdsZS1jZWxsIGV4cHJlc3Npb24gbWVhc3VyZW1lbnRzIGlzIHN0aWxsIHJlbGF0aXZlbHkgbmV3IDxhZGQgbGlua3MgdG8gZWFybHkgcHVibGljYXRpb25zICYgaW5mb3JtYXRpb24gcmVnYXJkaW5nIDEweCBjb21tZXJjaWFsaXphdGlvbj4gYW5kIHRoZXJlZm9yZSAgYmVzdCBwcmFjdGljZXMgZm9yIGFuYWx5c2lzIGFuZCBzdGFuZGFyZHMgZm9yIHB1YmxpY2F0aW9uIGFyZSBjb250aW51aW5nIHRvIGV2b2x2ZS4gCgpPbmUgb2YgdGhlIGdvYWxzIG9mIHRoaXMgd29ya3Nob3AgaXMgdG8gbm90IG9ubHkgcHJvdmlkZSBhbiBleGFtcGxlIG9mIGEgc3RhcnQgdG8gZW5kIHNpbmdsZS1jZWxsIHdvcmtmbG93IGJ1dCBhbHNvIGV4cGxvcmUgc29tZSBvZiB0aGUgcmVsYXRpdmVseSBhcmJpdHJhcnkgZGVjaXNpb24gcG9pbnRzIGFuZCB0aGUgcmF0aW9uYWxlIGZvciB0aGUgY2hvaWNlcyB3ZSBpbmNsdWRlZCBpbiBvdXIgYW5hbHlzaXMuCgpPdXIgc3BlY2lmaWMgZ29hbHMgZm9yIHRoZSBoYW5kcy1vbiBwb3J0aW9ucyBvZiB0aGUgd29ya3Nob3AgaW5jbHVkZSA8RXhwZWN0IHRvIGVkaXQgdGhlc2UgZ29hbHMgYW5kL29yIG1pZ2h0IG1ha2Ugc2Vuc2UgZm9yIENocmlzIHRvIGl0ZXJhdGUgb3ZlciBlYXJsaWVyPzoKLSBMZWFybiB0byBhc3Nlc3MgdGhlIHF1YWxpdHkgb2YgeW91ciBkYXRhCi0gCi0gWAotIFgKPgoKIyMgU2FtcGxlIGluZm9ybWF0aW9uCgpJbiB0aGlzIHdvcmtzaG9wLCB3ZSB3aWxsIGJlIHdvcmtpbmcgd2l0aCBhIHNjUk5BLXNlcSBkYXRhIHNldCBnZW5lcmF0ZWQgZnJvbSA8IS0tYWRkIHRpc3N1ZSBpbmZvcm1hdGlvbj4uIDxBZGQgZXhwZXJpbWVudGFsIGNvbmRpdGlvbiBzdW1tYXJ5IC0gZXhwZWN0IENocmlzIHRvIGdpdmUgb3ZlcnZpZXcgaW4gb3ZlcmFsbCB3b3Jrc2hvcCBpbnRyb2R1Y3Rpb24tLT4uIAoKIyBQcm9qZWN0IHNldHVwCgpUbyBzdGFydCwgd2Ugd2lsbCBhY2Nlc3Mgb3VyIHNoYXJlZCBSU3R1ZGlvIHNlcnZlciBieSBvcGVuaW5nIGEgd2ViIGJyb3dzZXIgdG8gdGhlIGZvbGxvd2luZyBVUkw6Cgo8IS0tYWRkIGxpbmsgdG8gYWNjZXNzIEFXUyBzZXJ2ZXItLT4gCgo8IS0tQ29uc2lkZXIgYWRkaW5nIGRyb3Bkb3duIHNlY3Rpb24gd2l0aCBleHBsYWluYXRpb24gb2YgQVdTIGFuZCBsaW5rcyB0byBjbG91ZCBjb21wdXRpbmcgcmVzb3VyY2VzLCBzdWNoIGFzIHdlYnBhZ2UgdmVyc2lvbiBvZiBHcmlmZmluIHR1dG9yaWFsIChodHRwczovL2dpdGh1Yi5jb20vZ3JpZmZpdGhsYWIvcm5hYmlvLm9yZy9ibG9iL21hc3Rlci9fcG9zdHMvMDAwMC0wNi0wMS1JbnRyb190b19BV1MubWQpIGFuZCBHcmVhdCBMYWtlcyByZXNvdXJjZXMgKCktLT4KCllvdSBzaG91bGQgbm93IGJlIGxvb2tpbmcgYXQgYSBwYWdlIHRoYXQgd2lsbCBhbGxvdyB5b3UgdG8gbG9naW4gdG8gdGhlIFJzdHVkaW8gc2VydmVyOgoKPCEtLWFkZCBpbWFnZSBvZiBsb2dpbiBwYWdlLS0+CgpFbnRlciB5b3VyIHVzZXIgY3JlZGVudGlhbHMgYW5kIGNsaWNrIDxrYmQ+U2lnbiBJbjwva2JkPi4gVGhlIGNyZWRlbnRpYWxzIGFyZSB3ZXJlIHByb3ZpZGVkIHZpYSBhbiBlbWFpbCBlbnRpdGxlZCA8IS0tVE8gRURJVCAiVU0gQmlvaW5mQ29yZSBXb3Jrc2hvcCBMb2dpbiItLT4uCgpIb3dldmVyLCBpZiB5b3UgZm9yZ2V0IHlvdXJzLCBhIGhlbHBlciBjYW4gcmV0cmlldmUgaXQgZm9yIHlvdSBpZiB5b3UgYXNrIGluIFNsYWNrLiBZb3Ugc2hvdWxkIG5vdyBzZWUgdGhlIFJTdHVkaW8gaW50ZXJmYWNlOgoKPCEtLWFkZCBpbWFnZSBvZiBSc3R1ZGlvIFNlcnZlciB1cG9uIGxvZy1pbi0tPgoKPCEtLWNvbnNpZGVyIGFkZGluZyB3ZWxjb21lIHNjcmlwdCBvciBleGFtcGxlIG9mIGZpbmFsIGdvYWw/LS0+CgojIyBBbmFseXNpcyBpbml0aWFsaXphdGlvbgoKPCEtLWNyZWF0ZSBwcm9qZWN0Py0tPgoKPCEtLWNyZWF0ZSBjb2RlIGZpbGU/LS0+CgpJZiB3ZSB1c2UgdGhlIGZpbGUgdmlld2VyLCB3ZSdsbCBzZWUgc29tZSBmb2xkZXIgdGhhdCB3ZXJlIHByZS1sb2FkZWQgaW50byBvdXIgaG9tZSBkaXJlY3RvcnkgCgo8IS0tYWRkIGltYWdlIG9mIGhvbWUgZGlyZWN0b3J5LS0+CgpUaGVuIHdlJ2xsIGNyZWF0ZSBkaXJlY3RvcmllcyB0byBvcmdhbml6ZSBvdXIgcmVzdWx0cwoKPCEtLWFkZCBjb2RlIHRvIGNyZWF0ZSBleHBlY3RlZCBvdXRwdXQgZGlyZWN0b3JpZXMgKCYgc3ViZGlyZWN0b3JpZXM/KS0tPgoKTmV4dCwgd2UnbGwgbG9hZCB0aGUgUiBsaWJyYXJpZXMgdGhhdCB3ZSdsbCBuZWVkIGZvciBvdXIgYW5hbHlzaXMuIFRoZSBmaXJzdCBsaWJyYXJ5IGBTZXVyYXRgIHdhcyBkZXZlbG9wZWQgYnkgdGhlIFtTYXRpamEgbGFiXShodHRwczovL3NhdGlqYWxhYi5vcmcvKSBhbmQgaW5jbHVkZXMgZnVuY3Rpb25zIHRvIHN1cHBvcnQgc2luZ2xlLWNlbGwgYW5hbHlzaXMgYWNyb3NzIGEgYnJvYWQgcmFuZ2Ugb2YgZGF0YSB0eXBlcyBpbmNsdWRpbmcgc2NSTkEtc2VxLiA8d29ydGggYWRkaW5nIGxpc3Qgb2Ygd2hhdCB0eXBlcyBvZiBleHBlcmltZW50cyBTZXVyYXQgY2FuIGhhbmRsZT8+Cgo8IS0tRm9yIGNvZGUgLSBhbHNvIGFkZCByYW5kb20gc2VlZHMgZm9yIHJlcHJvZHVjaWJsZSBhbmFseXNpcy4uLj8tLT4KCmBgYHtyLCBldmFsID0gRkFMU0V9CmxpYnJhcnkoU2V1cmF0KQpsaWJyYXJ5KEJQQ2VsbHMpCmxpYnJhcnkodGlkeXZlcnNlKQoKb3B0aW9ucyhmdXR1cmUuZ2xvYmFscy5tYXhTaXplID0gMWU5KQpgYGAKCiMgSW5wdXQgZGF0YQoKPCEtLUFkZCBpbWFnZSB3aXRoIGV4YW1wbGUgb2YgZGlyZWN0b3J5IGNvbnRlbnQgZm9yIG9uZSBzYW1wbGUtLT4KCjwhLS1BZGQgY29udGV4dCBmb3IgZXhwZWN0ZWQgMTB4IG91dHB1dHMgYW5kIGhvdyB3ZSB3b3VsZCB1c3VhbGx5IHN0YXJ0IHdpdGggdGhlICJmaWx0ZXJlZCIgb3V0cHV0cyAoYW5kIGFkZCBkcm9wZG93biBvciBsaW5rIG91dCB0byAxMHggcmVzb3VyY2VzIHRvIGNvbnRyYXN0IGJldHdlZW4gZmlsdGVyZWQgYW5kIHJhdyBvdXRwdXRzIGFuZCB1c2UgY2FzZXMgZm9yIGVhY2gpLS0+CgojIENyZWF0ZSBTZXVyYXQgT2JqZWN0Cgo8IS0tSW50cm9kdWNlIEJQQ2VsbCBwYWNrYWdlIGFuZCBob3cgbW9zdCByZWNlbnQgdmVyc2lvbiBvZiBTZXVyYXQgKFNldXJhdCA1KSBzdXBwb3J0cyBtb3JlIGVmZmljaWVudCBkYXRhIHN0b3JhZ2UgdG8gaW1wcm92ZSBwZXJmb3JtYW5jZSBhbmQgYWNjb21vZGF0ZSBsYXJnZXIgZGF0YXNldHMtLT4KCmBgYHtyLCBldmFsID0gRkFMU0V9CiMgVGhpcyBwdXRzIHRoZSBkYXRhICJvbiBkaXNrIiByYXRoZXIgdGhhbiBpbiBtZW1vcnkiCmdlb19tYXQgPSBvcGVuX21hdHJpeF9kaXIoZGlyID0gJ3Jlc3VsdHMvMTB4X21hdCcpCmBgYApBZnRlciBwb2ludGluZyB0byBvdXIgZGlyZWN0b3J5IG9mIGRhdGEsIHdoZXJlIGVhY2ggc3ViZm9sZGVyIGlzIG5hbWVkIGJ5IHNhbXBsZSBhbmQgY29udGFpbnMgdGhyZWUgcmVxdWlyZWQgaW5wdXQgZmlsZXMsIHdlIGNhbiBub3cgY3JlYXRlIGEgU2V1cmF0IG9iamVjdC4KCmBgYHtyLCBldmFsID0gRkFMU0V9Cmdlb19zbyA9IENyZWF0ZVNldXJhdE9iamVjdChjb3VudHMgPSBnZW9fbWF0KQpgYGAKCjwhLS1JbnRyb2R1Y2UgcGFydHMgb2YgU2V1cmF0IE9iamVjdCBhbmQgZXhwbGFpbiBob3cgaW5pdGlhbCBkYXRhIGlzIHN0b3JlZC4gTm90ZSAtIHdpbGwgbG9vayBhdCBtZXRhIGRhdGEgaW4gbmV4dCBzZWN0aW9uIChhcyBwYXJ0IG9mIFFDKS0tPgoKYGBge3IsIGV2YWwgPSBGQUxTRX0KIyBsb29rIGF0IHRoZSBvYmplY3Q/CmBgYAoKU2luY2UgdGhlIFNldXJhdCBvYmplY3Qgc3RvcmVzIGRhdGEgaW4gdGhpcyBzcGVjaWFsaXplZCBjb250YWluZXIsIHdlIG1heSBuZWVkIHRvIHVzZSBoZWxwZXIgZnVuY3Rpb25zIHRvIGFjY2VzcyBvciBtb2RpZnkgZGF0YSBzdG9yZWQgaW4gb25lIHBhcnQgb2YgdGhlIG9iamVjdC4KCjwhLS1hZGQgbGluayB0byBTZXVyYXQgZnVuY3Rpb24gcGFnZS0tPgoKQmVmb3JlIHdlIGRvIGFueXRoaW5nIGVsc2UsIHdlJ2xsIHNhdmUgdGhlIFNldXJhdCBvYmplY3QgYXMgYW4gUkRTIGZpbGU7IHRoaXMgYWxsb3dzIHVzIHRvIGhhdmUgYSBjb3B5IG9mIHRoZSBvYmplY3QgdGhhdCB3ZSBjYW4gcmVhZCBiYWNrIGludG8gb3VyIHNlc3Npb24gd2l0aCB0aGUgYHJlYWRSRFNgIGNvbW1tYW5kLgoKQXMgd2Ugd29yayB0aHJvdWdoIHRoZSBhbmFseXNpcywgd2UnbGwgY2hlY2sgdG8gc2VlIGhvdyB0aGUgb2JqZWN0IGhhcyBiZWVuIHVwZGF0ZWQgdG8gaW5jbHVkZSBhZGRpdGlvbmFsICJsYXllcnMiIG9mIGRhdGEuCgojIFN1bW1hcnkKCjwhLS1hZGQgYnJpZWYgb3ZlcmFsbCB0YWtlLWF3YXlzIGZvciBzZWN0aW9uLS0+CgotLS0tCgpUaGVzZSBtYXRlcmlhbHMgaGF2ZSBiZWVuIGFkYXB0ZWQgYW5kIGV4dGVuZGVkIGZyb20gbWF0ZXJpYWxzIGxpc3RlZCBhYm92ZS4gVGhlc2UgYXJlIG9wZW4gYWNjZXNzIG1hdGVyaWFscyBkaXN0cmlidXRlZCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIFtDcmVhdGl2ZSBDb21tb25zIEF0dHJpYnV0aW9uIGxpY2Vuc2UgKENDIEJZIDQuMCldKGh0dHA6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC8pLCB3aGljaCBwZXJtaXRzIHVucmVzdHJpY3RlZCB1c2UsIGRpc3RyaWJ1dGlvbiwgYW5kIHJlcHJvZHVjdGlvbiBpbiBhbnkgbWVkaXVtLCBwcm92aWRlZCB0aGUgb3JpZ2luYWwgYXV0aG9yIGFuZCBzb3VyY2UgYXJlIGNyZWRpdGVkLgoKPGJyLz4KPGJyLz4KPGhyLz4KfCBbUHJldmlvdXMgbGVzc29uXShYWFhYLmh0bWwpIHwgW1RvcCBvZiB0aGlzIGxlc3Nvbl0oI3RvcCkgfCBbTmV4dCBsZXNzb25dKFhYWFguaHRtbCkgfAp8IDotLS0gfCA6LS0tLTogfCAtLS06IHwKCg==</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("01-GettingStarted.Rmd");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
