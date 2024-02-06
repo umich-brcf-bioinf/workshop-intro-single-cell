@@ -41,19 +41,19 @@ body, td {
 |       | Initial QC (Raymond)
 |  1:00 | Day 1 concludes |
 
-#### Day 2 (Raymond)
+#### Day 2 (Raymond & friends)
 | | |
 | :---  | :---- |
 |  9:00 | Housekeeping, Review and Questions (Chris) |
-|  9:20 | Principal Component Analysis |
-|       | Multisample / Batch correction |
+|  9:20 | Intergration |
+|       | Principal Component Analysis |
 | 11:00 | Break |
 | 11:15 | Projection & Clustering |
 |       | Marker identification & Visualization |
 |.      | A review of sequencing approaches (Olivia/Tricia) |
 |  1:00 | Day 2 concludes |
 
-#### Day 3 (Dana)
+#### Day 3 (Dana & friends)
 | | |
 | :---  | :---- |
 |  9:00 | Housekeeping, Review and Questions (Chris) |
