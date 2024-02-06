@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core" />
+
+<meta name="date" content="2024-02-01" />
+
+<title>Integration and batch correction</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<!--
+Favicon from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="orienting.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="sequencing_approches.html">Sequencing approaches</a>
+    </li>
+    <li>
+      <a href="cell_ranger.html">CellRanger</a>
+    </li>
+    <li>
+      <a href="seurat.html">Seurat</a>
+    </li>
+    <li>
+      <a href="qc.html">Initial QC</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="pca.html">Principal Component Analysis</a>
+    </li>
+    <li>
+      <a href="multisample_batch_correction.html">Multisample / Batch correction</a>
+    </li>
+    <li>
+      <a href="projection_and_clustering.html">Projection &amp; Clustering</a>
+    </li>
+    <li>
+      <a href="marker_identification_and_visualization.html">Marker identification and visualization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="cell_type_annotation.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="differential_expression_analysis.html">Differential expression analysis</a>
+    </li>
+    <li>
+      <a href="independent_exercise.html">Independent exercise</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Integration and batch correction</h1>
+<h4 class="author">UM Bioinformatics Core</h4>
+<h4 class="date">2024-02-01</h4>
+
+</div>
+
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+</style>
+<div id="workflow-overview" class="section level1 unlisted unnumbered">
+<h1 class="unlisted unnumbered">Workflow Overview</h1>
+<p><br/>
+<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<br/> <br/></p>
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>In this section, our goal is to determine if our data has noticeable
+batch effects and if so, to use an integration technique to reduce those
+batch effects.</p>
+<p>Like in the previous section, one integration method might be
+reported while it might be necessary to try several options before
+determining the approach that sufficiently corrects batch effects
+without removing expected biological variability.</p>
+<!--Add specific goals for section-->
+</div>
+<div id="unintegrated-data" class="section level1">
+<h1>Unintegrated data</h1>
+<p>For any single-cell experiment there are several steps that introduce
+technical variability, including sample isolation, cell dissociation,
+and running each sample on the instrument
+<!--although... there are some library approaches that allow samples to be pooled before running, which our colleagues from the Advanced Genomics Core will likely be discussing at the end of the day.--></p>
+<!--add figure from Seurat showing batch effects-->
+<p>If we proceeded with our filtered data through the dimensionality
+reduction and clustering steps, which we will discuss in the next
+section, and then labeled the cells with their sample of origin, then we
+would see the following for our data:</p>
+<!--Add example of UMAP / sample labels for unintegrated data-->
+<p>In this plot, we … see that while there are distinct clusters, those
+clusters seem to separate primarily by sample id. This suggests that
+with filtering and standard normalization, batch effects are outweighing
+biological variability in our data.
+<!--move this section to end of Projection module to contrast with integrated results--></p>
+<p>To combat this, we will need to integrate our samples into a scaled
+dataset prior to performing dimensionality reduction and clustering.</p>
+</div>
+<div id="normalization-integration" class="section level1">
+<h1>Normalization &amp; Integration</h1>
+<!--Is PCA and Find Neighbors required prior to SCTransform?-->
+</div>
+<div id="dimensionality-reduction-and-pca" class="section level1">
+<h1>Dimensionality reduction and PCA</h1>
+<!--Before this section - Day 1: Starting w/ Seurat & Initial QC; expect to only show example of what clustering of unintegrated data would have looked like-->
+<p>Each sample can be 10k cells x 19k genes so very high dimensional
+data - not all of the genes are going to be information for classifying
+into cell-types/subtypes, so how do we determine what to use and then
+how to classify?</p>
+<p>What genes to consider the expression of - PCA; How cells are
+classified into clusters - Nearest Neighbors</p>
+<div id="what-is-pca" class="section level2">
+<h2>What is PCA?</h2>
+</div>
+<div
+id="choosing-the-number-of-significant-pcs-for-dimensionality-reduction"
+class="section level2">
+<h2>Choosing the number of significant PCs for dimensionality
+reduction</h2>
+<!--Instruction Question: Start only with multisample but unintegrated and later compare in next section as [here](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-021-03957-4)?-->
+<p>You have a biological question - starting point is understanding the
+“resolution” of your biological questions</p>
+<p>How are you defining a “cell type” or “subtype” should help with
+ambiguity around questions like, “How do I decide how many PCs to
+include?”, “How do I choose a resolution for the UMAP?”, etc.</p>
+<p>Related - how important is that decision to the downstream impact
+(e.g. how much does changing the number of PCs change the
+clustering)?</p>
+<p>Why not use every PC? Higher resolution risks including uninteresting
+variation (biological vs statistical “significance”) and a single-cell
+itself is not a functional unit</p>
+<div id="visualizing-relative-contributions-of-each-pc"
+class="section level3">
+<h3>Visualizing relative contributions of each PC</h3>
+<p>Elbow plot to start, but there are more sophisticated methods (see
+Dana’s code snippet), and then there are even more sophisticated methods
+like the chooseR package or use clustering trees to evaluate
+stablity</p>
+</div>
+</div>
+<div id="dimensionality-reduction" class="section level2">
+<h2>Dimensionality reduction</h2>
+<p>Nearest neighbors algorithm - based on similarity of expression
+pattern (just for genes/PCs selected)</p>
+</div>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>Next steps: Multisample/batch correction</p>
+<p>Note how dimensionality choices are carried through downstream
+functions. tSNE vs UMAP DK- find thread with UMAP vs TSNE <a
+href="https://pair-code.github.io/understanding-umap/"
+class="uri">https://pair-code.github.io/understanding-umap/</a></p>
+<hr />
+<p>These materials have been adapted and extended from materials listed
+above. These are open access materials distributed under the terms of
+the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
+Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
+use, distribution, and reproduction in any medium, provided the original
+author and source are credited.</p>
+<br/> <br/>
+<hr/>
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="XXXX.html">Previous lesson</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="XXXX.html">Next lesson</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiSW50ZWdyYXRpb24gYW5kIGJhdGNoIGNvcnJlY3Rpb24iCmF1dGhvcjogIlVNIEJpb2luZm9ybWF0aWNzIENvcmUiCmRhdGU6ICJgciBTeXMuRGF0ZSgpYCIKb3V0cHV0OgogICAgICAgIGh0bWxfZG9jdW1lbnQ6CiAgICAgICAgICAgIGluY2x1ZGVzOgogICAgICAgICAgICAgICAgaW5faGVhZGVyOiBoZWFkZXIuaHRtbAogICAgICAgICAgICB0aGVtZTogcGFwZXIKICAgICAgICAgICAgdG9jOiB0cnVlCiAgICAgICAgICAgIHRvY19kZXB0aDogNAogICAgICAgICAgICB0b2NfZmxvYXQ6IHRydWUKICAgICAgICAgICAgbnVtYmVyX3NlY3Rpb25zOiBmYWxzZQogICAgICAgICAgICBmaWdfY2FwdGlvbjogdHJ1ZQogICAgICAgICAgICBtYXJrZG93bjogR0ZNCiAgICAgICAgICAgIGNvZGVfZG93bmxvYWQ6IHRydWUKLS0tCgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgpib2R5LCB0ZCB7CiAgIGZvbnQtc2l6ZTogMThweDsKfQpjb2RlLnJ7CiAgZm9udC1zaXplOiAxMnB4Owp9CnByZSB7CiAgZm9udC1zaXplOiAxMnB4Cn0KPC9zdHlsZT4KCmBgYHtyLCBpbmNsdWRlID0gRkFMU0V9CnNvdXJjZSgiLi4vYmluL2NodW5rLW9wdGlvbnMuUiIpCmtuaXRyX2ZpZ19wYXRoKCJYWCIpCmBgYAoKIyBXb3JrZmxvdyBPdmVydmlldyB7LnVubGlzdGVkIC51bm51bWJlcmVkfQoKPGJyLz4KPGltZyBzcmM9ImltYWdlcy93YXlmaW5kZXIvd2F5ZmluZGVyLnBuZyIgYWx0PSJ3YXlmaW5kZXIiIHN0eWxlPSJoZWlnaHQ6IDQwMHB4OyIvPgo8YnIvPgo8YnIvPgoKIyBJbnRyb2R1Y3Rpb24gCgpJbiB0aGlzIHNlY3Rpb24sIG91ciBnb2FsIGlzIHRvIGRldGVybWluZSBpZiBvdXIgZGF0YSBoYXMgbm90aWNlYWJsZSBiYXRjaCBlZmZlY3RzIGFuZCBpZiBzbywgdG8gdXNlIGFuIGludGVncmF0aW9uIHRlY2huaXF1ZSB0byByZWR1Y2UgdGhvc2UgYmF0Y2ggZWZmZWN0cy4gCgpMaWtlIGluIHRoZSBwcmV2aW91cyBzZWN0aW9uLCBvbmUgaW50ZWdyYXRpb24gbWV0aG9kIG1pZ2h0IGJlIHJlcG9ydGVkIHdoaWxlIGl0IG1pZ2h0IGJlIG5lY2Vzc2FyeSB0byB0cnkgc2V2ZXJhbCBvcHRpb25zIGJlZm9yZSBkZXRlcm1pbmluZyB0aGUgYXBwcm9hY2ggdGhhdCBzdWZmaWNpZW50bHkgY29ycmVjdHMgYmF0Y2ggZWZmZWN0cyB3aXRob3V0IHJlbW92aW5nIGV4cGVjdGVkIGJpb2xvZ2ljYWwgdmFyaWFiaWxpdHkuCgo8IS0tQWRkIHNwZWNpZmljIGdvYWxzIGZvciBzZWN0aW9uLS0+CgojIFVuaW50ZWdyYXRlZCBkYXRhCgpGb3IgYW55IHNpbmdsZS1jZWxsIGV4cGVyaW1lbnQgdGhlcmUgYXJlIHNldmVyYWwgc3RlcHMgdGhhdCBpbnRyb2R1Y2UgdGVjaG5pY2FsIHZhcmlhYmlsaXR5LCBpbmNsdWRpbmcgc2FtcGxlIGlzb2xhdGlvbiwgY2VsbCBkaXNzb2NpYXRpb24sIGFuZCBydW5uaW5nIGVhY2ggc2FtcGxlIG9uIHRoZSBpbnN0cnVtZW50IDwhLS1hbHRob3VnaC4uLiB0aGVyZSBhcmUgc29tZSBsaWJyYXJ5IGFwcHJvYWNoZXMgdGhhdCBhbGxvdyBzYW1wbGVzIHRvIGJlIHBvb2xlZCBiZWZvcmUgcnVubmluZywgd2hpY2ggb3VyIGNvbGxlYWd1ZXMgZnJvbSB0aGUgQWR2YW5jZWQgR2Vub21pY3MgQ29yZSB3aWxsIGxpa2VseSBiZSBkaXNjdXNzaW5nIGF0IHRoZSBlbmQgb2YgdGhlIGRheS4tLT4gCgo8IS0tYWRkIGZpZ3VyZSBmcm9tIFNldXJhdCBzaG93aW5nIGJhdGNoIGVmZmVjdHMtLT4KCklmIHdlIHByb2NlZWRlZCB3aXRoIG91ciBmaWx0ZXJlZCBkYXRhIHRocm91Z2ggdGhlIGRpbWVuc2lvbmFsaXR5IHJlZHVjdGlvbiBhbmQgY2x1c3RlcmluZyBzdGVwcywgd2hpY2ggd2Ugd2lsbCBkaXNjdXNzIGluIHRoZSBuZXh0IHNlY3Rpb24sIGFuZCB0aGVuIGxhYmVsZWQgdGhlIGNlbGxzIHdpdGggdGhlaXIgc2FtcGxlIG9mIG9yaWdpbiwgdGhlbiB3ZSB3b3VsZCBzZWUgdGhlIGZvbGxvd2luZyBmb3Igb3VyIGRhdGE6Cgo8IS0tQWRkIGV4YW1wbGUgb2YgVU1BUCAvIHNhbXBsZSBsYWJlbHMgZm9yIHVuaW50ZWdyYXRlZCBkYXRhLS0+CgpJbiB0aGlzIHBsb3QsIHdlIC4uLiBzZWUgdGhhdCB3aGlsZSB0aGVyZSBhcmUgZGlzdGluY3QgY2x1c3RlcnMsIHRob3NlIGNsdXN0ZXJzIHNlZW0gdG8gc2VwYXJhdGUgcHJpbWFyaWx5IGJ5IHNhbXBsZSBpZC4gVGhpcyBzdWdnZXN0cyB0aGF0IHdpdGggZmlsdGVyaW5nIGFuZCBzdGFuZGFyZCBub3JtYWxpemF0aW9uLCBiYXRjaCBlZmZlY3RzIGFyZSBvdXR3ZWlnaGluZyBiaW9sb2dpY2FsIHZhcmlhYmlsaXR5IGluIG91ciBkYXRhLiA8IS0tbW92ZSB0aGlzIHNlY3Rpb24gdG8gZW5kIG9mIFByb2plY3Rpb24gbW9kdWxlIHRvIGNvbnRyYXN0IHdpdGggaW50ZWdyYXRlZCByZXN1bHRzLS0+CgpUbyBjb21iYXQgdGhpcywgd2Ugd2lsbCBuZWVkIHRvIGludGVncmF0ZSBvdXIgc2FtcGxlcyBpbnRvIGEgc2NhbGVkIGRhdGFzZXQgcHJpb3IgdG8gcGVyZm9ybWluZyBkaW1lbnNpb25hbGl0eSByZWR1Y3Rpb24gYW5kIGNsdXN0ZXJpbmcuCgojIE5vcm1hbGl6YXRpb24gJiBJbnRlZ3JhdGlvbgoKPCEtLUlzIFBDQSBhbmQgRmluZCBOZWlnaGJvcnMgcmVxdWlyZWQgcHJpb3IgdG8gU0NUcmFuc2Zvcm0/LS0+CgoKIyBEaW1lbnNpb25hbGl0eSByZWR1Y3Rpb24gYW5kIFBDQQoKPCEtLUJlZm9yZSB0aGlzIHNlY3Rpb24gLSBEYXkgMTogU3RhcnRpbmcgdy8gU2V1cmF0ICYgSW5pdGlhbCBRQzsgZXhwZWN0IHRvIG9ubHkgc2hvdyBleGFtcGxlIG9mIHdoYXQgY2x1c3RlcmluZyBvZiB1bmludGVncmF0ZWQgZGF0YSB3b3VsZCBoYXZlIGxvb2tlZCBsaWtlLS0+CgpFYWNoIHNhbXBsZSBjYW4gYmUgMTBrIGNlbGxzIHggMTlrIGdlbmVzIHNvIHZlcnkgaGlnaCBkaW1lbnNpb25hbCBkYXRhIC0gbm90IGFsbCBvZiB0aGUgZ2VuZXMgYXJlIGdvaW5nIHRvIGJlIGluZm9ybWF0aW9uIGZvciBjbGFzc2lmeWluZyBpbnRvIGNlbGwtdHlwZXMvc3VidHlwZXMsIHNvIGhvdyBkbyB3ZSBkZXRlcm1pbmUgd2hhdCB0byB1c2UgYW5kIHRoZW4gaG93IHRvIGNsYXNzaWZ5PwoKV2hhdCBnZW5lcyB0byBjb25zaWRlciB0aGUgZXhwcmVzc2lvbiBvZiAtIFBDQTsgSG93IGNlbGxzIGFyZSBjbGFzc2lmaWVkIGludG8gY2x1c3RlcnMgLSBOZWFyZXN0IE5laWdoYm9ycwoKIyMgV2hhdCBpcyBQQ0E/CgoKIyMgQ2hvb3NpbmcgdGhlIG51bWJlciBvZiBzaWduaWZpY2FudCBQQ3MgZm9yIGRpbWVuc2lvbmFsaXR5IHJlZHVjdGlvbgoKPCEtLUluc3RydWN0aW9uIFF1ZXN0aW9uOiBTdGFydCBvbmx5IHdpdGggbXVsdGlzYW1wbGUgYnV0IHVuaW50ZWdyYXRlZCBhbmQgbGF0ZXIgY29tcGFyZSBpbiBuZXh0IHNlY3Rpb24gYXMgW2hlcmVdKGh0dHBzOi8vYm1jYmlvaW5mb3JtYXRpY3MuYmlvbWVkY2VudHJhbC5jb20vYXJ0aWNsZXMvMTAuMTE4Ni9zMTI4NTktMDIxLTAzOTU3LTQpPy0tPgoKWW91IGhhdmUgYSBiaW9sb2dpY2FsIHF1ZXN0aW9uIC0gc3RhcnRpbmcgcG9pbnQgaXMgdW5kZXJzdGFuZGluZyB0aGUg4oCccmVzb2x1dGlvbuKAnSBvZiB5b3VyIGJpb2xvZ2ljYWwgcXVlc3Rpb25zCgpIb3cgYXJlIHlvdSBkZWZpbmluZyBhIOKAnGNlbGwgdHlwZeKAnSBvciDigJxzdWJ0eXBl4oCdIHNob3VsZCBoZWxwIHdpdGggYW1iaWd1aXR5IGFyb3VuZCBxdWVzdGlvbnMgbGlrZSwgIkhvdyBkbyBJIGRlY2lkZSBob3cgbWFueSBQQ3MgdG8gaW5jbHVkZT8iLCAiSG93IGRvIEkgY2hvb3NlIGEgcmVzb2x1dGlvbiBmb3IgdGhlIFVNQVA/IiwgZXRjLgoKUmVsYXRlZCAtIGhvdyBpbXBvcnRhbnQgaXMgdGhhdCBkZWNpc2lvbiB0byB0aGUgZG93bnN0cmVhbSBpbXBhY3QgKGUuZy4gaG93IG11Y2ggZG9lcyBjaGFuZ2luZyB0aGUgbnVtYmVyIG9mIFBDcyBjaGFuZ2UgdGhlIGNsdXN0ZXJpbmcpPwoKV2h5IG5vdCB1c2UgZXZlcnkgUEM/IEhpZ2hlciByZXNvbHV0aW9uIHJpc2tzIGluY2x1ZGluZyB1bmludGVyZXN0aW5nIHZhcmlhdGlvbiAoYmlvbG9naWNhbCB2cyBzdGF0aXN0aWNhbCDigJxzaWduaWZpY2FuY2XigJ0pIGFuZCBhIHNpbmdsZS1jZWxsIGl0c2VsZiBpcyBub3QgYSBmdW5jdGlvbmFsIHVuaXQKCiMjIyBWaXN1YWxpemluZyByZWxhdGl2ZSBjb250cmlidXRpb25zIG9mIGVhY2ggUEMKCkVsYm93IHBsb3QgdG8gc3RhcnQsIGJ1dCB0aGVyZSBhcmUgbW9yZSBzb3BoaXN0aWNhdGVkIG1ldGhvZHMgKHNlZSBEYW5hJ3MgY29kZSBzbmlwcGV0KSwgYW5kIHRoZW4gdGhlcmUgYXJlIGV2ZW4gbW9yZSBzb3BoaXN0aWNhdGVkIG1ldGhvZHMgbGlrZSB0aGUgY2hvb3NlUiBwYWNrYWdlIG9yIHVzZSBjbHVzdGVyaW5nIHRyZWVzIHRvIGV2YWx1YXRlIHN0YWJsaXR5CgojIyBEaW1lbnNpb25hbGl0eSByZWR1Y3Rpb24KCk5lYXJlc3QgbmVpZ2hib3JzIGFsZ29yaXRobSAtIGJhc2VkIG9uIHNpbWlsYXJpdHkgb2YgZXhwcmVzc2lvbiBwYXR0ZXJuIChqdXN0IGZvciBnZW5lcy9QQ3Mgc2VsZWN0ZWQpCgoKIyBTdW1tYXJ5CgpOZXh0IHN0ZXBzOiBNdWx0aXNhbXBsZS9iYXRjaCBjb3JyZWN0aW9uIAoKTm90ZSBob3cgZGltZW5zaW9uYWxpdHkgY2hvaWNlcyBhcmUgY2FycmllZCB0aHJvdWdoIGRvd25zdHJlYW0gZnVuY3Rpb25zLgp0U05FIHZzIFVNQVAKREstIGZpbmQgdGhyZWFkIHdpdGggVU1BUCB2cyBUU05FCmh0dHBzOi8vcGFpci1jb2RlLmdpdGh1Yi5pby91bmRlcnN0YW5kaW5nLXVtYXAvIAoKLS0tLQoKVGhlc2UgbWF0ZXJpYWxzIGhhdmUgYmVlbiBhZGFwdGVkIGFuZCBleHRlbmRlZCBmcm9tIG1hdGVyaWFscyBsaXN0ZWQgYWJvdmUuIFRoZXNlIGFyZSBvcGVuIGFjY2VzcyBtYXRlcmlhbHMgZGlzdHJpYnV0ZWQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBbQ3JlYXRpdmUgQ29tbW9ucyBBdHRyaWJ1dGlvbiBsaWNlbnNlIChDQyBCWSA0LjApXShodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9saWNlbnNlcy9ieS80LjAvKSwgd2hpY2ggcGVybWl0cyB1bnJlc3RyaWN0ZWQgdXNlLCBkaXN0cmlidXRpb24sIGFuZCByZXByb2R1Y3Rpb24gaW4gYW55IG1lZGl1bSwgcHJvdmlkZWQgdGhlIG9yaWdpbmFsIGF1dGhvciBhbmQgc291cmNlIGFyZSBjcmVkaXRlZC4KCjxici8+Cjxici8+Cjxoci8+CnwgW1ByZXZpb3VzIGxlc3Nvbl0oWFhYWC5odG1sKSB8IFtUb3Agb2YgdGhpcyBsZXNzb25dKCN0b3ApIHwgW05leHQgbGVzc29uXShYWFhYLmh0bWwpIHwKfCA6LS0tIHwgOi0tLS06IHwgLS0tOiB8CgoKCgo=</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("03-Integration.Rmd");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

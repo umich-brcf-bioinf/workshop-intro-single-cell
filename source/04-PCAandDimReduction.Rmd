@@ -1,0 +1,105 @@
+---
+title: "PCA and dimensionality reduction"
+author: "UM Bioinformatics Core"
+date: "`r Sys.Date()`"
+output:
+        html_document:
+            includes:
+                in_header: header.html
+            theme: paper
+            toc: true
+            toc_depth: 4
+            toc_float: true
+            number_sections: false
+            fig_caption: true
+            markdown: GFM
+            code_download: true
+---
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+</style>
+
+```{r, include = FALSE}
+source("../bin/chunk-options.R")
+knitr_fig_path("XX")
+```
+# Workflow Overview {.unlisted .unnumbered}
+
+<br/>
+<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<br/>
+<br/>
+
+# Introduction 
+
+Remind of gaps linear presentation of single-cell data versus the reality of running an analysis. 
+
+E.g. The final number of significant principal components might be reported in a paper, but many options may have been tested (and there could be multiple numbers that lead to similar results/conclusions)
+
+<!--Add specific goals for section-->
+
+# Dimensionality reduction and PCA
+
+<!--Before this section - Day 1: Starting w/ Seurat & Initial QC; will be moving batch correction up to before this in schedule-->
+
+Each sample can be 10k cells x 19k genes so very high dimensional data - not all of the genes are going to be information for classifying into cell-types/subtypes, so how do we determine what to use and then how to classify?
+
+What expression to use - PCA; How cells are classified into clusters - Nearest Neighbors
+
+## What is PCA?
+
+
+## Choosing the number of significant PCs for dimensionality reduction
+
+<!--Instruction Question: Start only with multisample but unintegrated and later compare in next section as [here](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-021-03957-4)?-->
+
+You have a biological question - starting point is understanding the “resolution” of your biological questions
+
+How are you defining a “cell type” or “subtype” should help with ambiguity around questions like, "How do I decide how many PCs to include?", "How do I choose a resolution for the UMAP?", etc.
+
+Related - how important is that decision to the downstream impact (e.g. how much does changing the number of PCs change the clustering)?
+
+Why not use every PC? Higher resolution risks including uninteresting variation (biological vs statistical “significance”) and a single-cell itself is not a functional unit
+
+### Visualizing relative contributions of each PC
+
+Elbow plot to start, but there are more sophisticated methods (see Dana's code snippet), and then there are even more sophisticated methods like the chooseR package or use clustering trees to evaluate stablity
+
+## Dimensionality reduction
+
+Nearest neighbors algorithm - based on similarity of expression pattern (just for genes/PCs selected)
+
+
+
+
+# Summary
+
+Next steps: Multisample/batch correction 
+
+Note how dimensionality choices are carried through downstream functions.
+tSNE vs UMAP
+DK- find thread with UMAP vs TSNE
+https://pair-code.github.io/understanding-umap/ 
+
+
+----
+
+These materials have been adapted and extended from materials listed above. These are open access materials distributed under the terms of the [Creative Commons Attribution license (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.
+
+<br/>
+<br/>
+<hr/>
+| [Previous lesson](XXXX.html) | [Top of this lesson](#top) | [Next lesson](XXXX.html) |
+| :--- | :----: | ---: |
+
+
+

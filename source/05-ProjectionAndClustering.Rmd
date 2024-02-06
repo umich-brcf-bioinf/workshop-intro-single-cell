@@ -1,0 +1,80 @@
+---
+title: "Clustering and Projection"
+author: "UM Bioinformatics Core"
+date: "`r Sys.Date()`"
+output:
+        html_document:
+            includes:
+                in_header: header.html
+            theme: paper
+            toc: true
+            toc_depth: 4
+            toc_float: true
+            number_sections: false
+            fig_caption: true
+            markdown: GFM
+            code_download: true
+---
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+</style>
+
+```{r, include = FALSE}
+source("../bin/chunk-options.R")
+knitr_fig_path("XX")
+```
+
+# Workflow Overview {.unlisted .unnumbered}
+
+<br/>
+<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<br/>
+<br/>
+
+# Introduction
+
+<!--Add specific goals for section-->
+
+# Projection and clustering
+
+Contrast the previous dimensionality reduction/nearest neighbors clustering and plotting the cells in lower dimensionality with the cluster labels.
+
+
+# Cluster plots
+
+Note how dimensionality choices are carried through downstream functions.
+
+What's different beteween PCA, tSNE, and UMAP?
+
+Note: tSNE vs UMAP example: https://pair-code.github.io/understanding-umap/ 
+
+# Evaluating clustering
+
+How many clusters should I get and how do I adjust the number?
+
+Show example of changing resolution?
+
+# Other tools for visualizing scRNA-sq data
+
+
+
+
+----
+
+These materials have been adapted and extended from materials listed above. These are open access materials distributed under the terms of the [Creative Commons Attribution license (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.
+
+<br/>
+<br/>
+<hr/>
+| [Previous lesson](XXXX.html) | [Top of this lesson](#top) | [Next lesson](XXXX.html) |
+| :--- | :----: | ---: |
+
