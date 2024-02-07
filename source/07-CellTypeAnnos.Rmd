@@ -1,5 +1,5 @@
 ---
-title: "Module title"
+title: "Cell Type Annotation"
 author: "UM Bioinformatics Core"
 date: "`r Sys.Date()`"
 output:
@@ -81,6 +81,6 @@ These materials have been adapted and extended from materials listed above. Thes
 <br/>
 <br/>
 <hr/>
-| [Previous lesson](XXXX.html) | [Top of this lesson](#top) | [Next lesson](XXXX.html) |
+| [Previous lesson](06-MarkerVisualization.html) | [Top of this lesson](#top) | [Next lesson](08-DifferentialExpression.html) |
 | :--- | :----: | ---: |
 

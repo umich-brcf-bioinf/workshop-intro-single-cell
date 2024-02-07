@@ -1,5 +1,5 @@
 ---
-title: "Module title"
+title: "Differential Expression Analysis"
 author: "UM Bioinformatics Core"
 date: "`r Sys.Date()`"
 output:
@@ -81,6 +81,6 @@ These materials have been adapted and extended from materials listed above. Thes
 <br/>
 <br/>
 <hr/>
-| [Previous lesson](XXXX.html) | [Top of this lesson](#top) | [Next lesson](XXXX.html) |
+| [Previous lesson](07-CellTypeAnnos.html) | [Top of this lesson](#top) | [Next lesson](09-IndependentExercise.html) |
 | :--- | :----: | ---: |
 
