@@ -236,7 +236,7 @@ These materials have been adapted and extended from materials listed above. Thes
 <br/>
 <br/>
 <hr/>
-| [Previous lesson](XXXX.html) | [Top of this lesson](#top) | [Next lesson](XXXX.html) |
+| [Previous lesson](01-GettingStarted.html) | [Top of this lesson](#top) | [Next lesson](03-Integration.html) |
 | :--- | :----: | ---: |
 
 

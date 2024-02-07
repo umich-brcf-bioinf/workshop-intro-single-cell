@@ -71,6 +71,6 @@ These materials have been adapted and extended from materials listed above. Thes
 <br/>
 <br/>
 <hr/>
-| [Previous lesson](Module05_Additional_Details.html) | [Top of this lesson](#top) | [Next lesson](Module07_DESeq2Init.html) |
+| [Back to introduction](workshop_intro) | [Top of this lesson](#top) | [Next lesson](01-GettingStarted.html) |
 | :--- | :----: | ---: |
 
