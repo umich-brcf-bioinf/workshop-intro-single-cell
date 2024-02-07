@@ -13,7 +13,7 @@
 
 <meta name="date" content="2024-02-07" />
 
-<title>Cell Type Annotation</title>
+<title>Orienting on scRNA-Seq</title>
 
 <script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -428,7 +428,7 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Cell Type Annotation</h1>
+<h1 class="title toc-ignore">Orienting on scRNA-Seq</h1>
 <h4 class="author">UM Bioinformatics Core</h4>
 <h4 class="date">2024-02-07</h4>
 
@@ -446,72 +446,92 @@ pre {
   font-size: 12px
 }
 </style>
-<div id="workflow-overview" class="section level1 unlisted unnumbered">
-<h1 class="unlisted unnumbered">Workflow Overview</h1>
-<p><br/>
-<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
-<br/> <br/></p>
-</div>
-<div id="introduction" class="section level1">
-<h1>Introduction</h1>
-<p>Point out possible gaps between how single-cell data is presented
-versus the reality of running an analysis E.g. Papers might report final
-filtering thresholds, but our process for choosing those is likely to be
-more iterative</p>
-<p>General goal: Filtering out the “cells” that either were poorly
-measured or are either not single-cells or not cells at all</p>
-<!-- regular html comment -->
-<!--Add specific goals for section-->
-<p>Per <a href="http://www.website.html">hyperlink text</a> are … either
-<code>plain text</code> or <em>italic</em> or <strong>bold</strong>.</p>
-<Embed an image>
-<p><img src="images/WelcomeScriptOpened.png" alt="rstudio default session" style="width:1000px;"/></p>
-<blockquote>
-<h2 id="reminder-rstudio-code-execution"
-class="unlisted unnumbered">Reminder: RStudio code execution</h2>
-<p><kbd>Ctrl</kbd>+<kbd>Enter</kbd> is a standard shortcut in RStudio to
-send the current line (or selected lines) to the console. If you see
-<code>&gt;</code> in the Console, then R has executed the command. If
-you see a <code>+</code>, this means that the command is not complete, R
-thinks there is more to your command. You can use the <kmd>esc</kmd> to
-get out of this state.</p>
-</blockquote>
-<blockquote>
-<h2 id="reminder-object-naming-conventions"
-class="unlisted unnumbered">Reminder: Object naming conventions</h2>
+<div id="objectives" class="section level1">
+<h1>Objectives</h1>
 <ul>
-<li>Cannot start with numbers</li>
-<li>Cannot include dashes</li>
-<li>Cannot have spaces</li>
-<li>Should not be identical to a named function</li>
-<li>Dots and underscores can separate parts of names, alternatively
-CamelCase accomplishes this</li>
+<li>Compare and contrast the capabilities and approach in scRNA-Seq vs
+bulk RNA-Seq approaches.</li>
+<li>Review the details of the 10x Genomics approach to single-cell
+sequencing</li>
+<li>Introduce a specific experimental model to guide discussion and
+learning</li>
+<li>Outline the high-level steps to analyze scRNA-Seq</li>
 </ul>
-</blockquote>
-<hr />
-<details>
-<summary>
-<em>Click for additional resources regarding statistical testing and
-tool comparison for RNA-seq data</em>
-</summary>
-To learn more about statistical testing and what distributions best
-model the behavior of RNA-seq data, a good resource is this <a
-href="https://www.youtube.com/watch?v=HK7WKsL3c2w&amp;feature=youtu.be">EdX
-lecture by Rafael Irizarry</a> or this <a
-href="https://www.youtube.com/watch?v=C8RNvWu7pAw">lecture by Kasper
-Hansen</a>. Another helpful guide is this <a
-href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0103207">Comparative
-Study for Differential Expression Analysis by Zhang et al.</a> from
-2014.
-</details>
-<p><br></p>
-<hr />
-<p>These materials have been adapted and extended from materials listed
-above. These are open access materials distributed under the terms of
-the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
-Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
-use, distribution, and reproduction in any medium, provided the original
-author and source are credited.</p>
+<div id="bulk-rna-seq-and-scrna-seq" class="section level2">
+<h2>Bulk RNA-seq and scRNA-Seq</h2>
+<p>Bulk RNA-seq typically involves comparing the expression levels of
+genes between sets of tissues, such as untreated and treated mice. It
+allows researchers to characterize gene expression differences across
+entire tissues, providing a snapshot of the average expression
+program.</p>
+<p><img src="images/00A-OrientingOnScRNASeq/bulk-rna-seq.png" /></p>
+<p>scRNA-seq leverages the approaches and protocols of bulk RNA-seq, but
+instead at the level of cells instead of tissues/bulk samples. There are
+several distinct ways to do this, but common steps include <img
+src="images/00A-OrientingOnScRNASeq/scRNA-Seq.png" /></p>
+<div id="key-advantages-of-single-cell-rna-seq" class="section level3">
+<h3>Key Advantages of Single-Cell RNA-Seq</h3>
+<ol style="list-style-type: decimal">
+<li><strong>Cell-Level Insights:</strong> Unlike bulk RNA-seq,
+single-cell analysis provides insights into expression programs at the
+individual cell or cell group level.</li>
+<li><strong>Heterogeneity Detection:</strong> Single-cell RNA-seq
+reveals variations in gene expression among different cell types within
+a tissue.</li>
+<li><strong>Response to Interventions:</strong> It enables the
+examination of cell-level responses to interventions, offering a
+detailed understanding of how individual cells react to stimuli.</li>
+<li><strong>Temporal Analysis:</strong> It allows the study of how cell
+states change over time and how cells differentiate.</li>
+</ol>
+</div>
+<div id="challenges-of-single-cell-rna-seq" class="section level3">
+<h3>Challenges of Single-Cell RNA-Seq</h3>
+<p>While powerful, single-cell RNA-seq comes with added complexity and
+cost. The protocol requires nuanced decision-making, iterative analysis,
+and considerations for data storage and computational resources.</p>
+<p><img src="images/00A-OrientingOnScRNASeq/forest_trees.png" /></p>
+</div>
+</div>
+<div id="a-practical-example" class="section level2">
+<h2>A Practical Example</h2>
+<p>The blog post concludes with a focus on a specific experiment
+involving mice that underwent a soft tissue injury. The researchers aim
+to identify cell types associated with an aberrant injury response using
+single-cell RNA-seq techniques.</p>
+<p><img src="images/00A-OrientingOnScRNASeq/mouse_injury.png" /></p>
+</div>
+<div id="workshop-overview" class="section level2">
+<h2>Workshop Overview</h2>
+<p>The steps of the workshop, including running cell ranger to transform
+raw sequence data, generating a count matrix, and performing quality
+control evaluations. Further steps involve data analysis in RStudio,
+dimensional reduction to separate signal from noise, and potential
+projections to visualize cell populations.</p>
+<p><img src="images/00A-OrientingOnScRNASeq/sc_analysis.png" /></p>
+<p>Represented Another way:
+<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/></p>
+</div>
+<div id="a-whirlwind-intro-to-10x-genomics-basics"
+class="section level2">
+<h2>A whirlwind intro to 10x Genomics basics</h2>
+<p>One common microfluidic approach, like the 10X Genomics method, uses
+beads with unique identifiers. These beads, along with cells, pass
+through a microfluidic device, creating isolated reaction vessels.</p>
+<p>The bead contains oligomers with a PCR handle, a cell barcode, and a
+unique molecular identifier (UMI). After cell lysis, transcripts are
+reverse transcribed, incorporating the cell-specific barcode. This
+enables the association of each transcript with a specific cell.
+Computational analysis of these barcodes allows the separation of
+transcripts into constituent cells.</p>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>Conclusion</h1>
+<p>scRNA-seq offers a powerful and nuanced approach to studying gene
+expression at the cellular level. This technique can elaborate our
+understanding of cellular heterogeneity, responses to interventions, and
+the cell state dynamics.</p>
 <br/> <br/>
 <hr/>
 <table style="width:100%;">
@@ -522,10 +542,10 @@ author and source are credited.</p>
 </colgroup>
 <thead>
 <tr class="header">
-<th align="left"><a href="06-MarkerVisualization.html">Previous
-lesson</a></th>
+<th align="left"><a href="workshop_intro.html">Back to
+introduction</a></th>
 <th align="center"><a href="#top">Top of this lesson</a></th>
-<th align="right"><a href="08-DifferentialExpression.html">Next
+<th align="right"><a href="00B-CellRangerInAction.html">Next
 lesson</a></th>
 </tr>
 </thead>
@@ -534,7 +554,7 @@ lesson</a></th>
 </table>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiQ2VsbCBUeXBlIEFubm90YXRpb24iCmF1dGhvcjogIlVNIEJpb2luZm9ybWF0aWNzIENvcmUiCmRhdGU6ICJgciBTeXMuRGF0ZSgpYCIKb3V0cHV0OgogICAgICAgIGh0bWxfZG9jdW1lbnQ6CiAgICAgICAgICAgIGluY2x1ZGVzOgogICAgICAgICAgICAgICAgaW5faGVhZGVyOiBoZWFkZXIuaHRtbAogICAgICAgICAgICB0aGVtZTogcGFwZXIKICAgICAgICAgICAgdG9jOiB0cnVlCiAgICAgICAgICAgIHRvY19kZXB0aDogNAogICAgICAgICAgICB0b2NfZmxvYXQ6IHRydWUKICAgICAgICAgICAgbnVtYmVyX3NlY3Rpb25zOiBmYWxzZQogICAgICAgICAgICBmaWdfY2FwdGlvbjogdHJ1ZQogICAgICAgICAgICBtYXJrZG93bjogR0ZNCiAgICAgICAgICAgIGNvZGVfZG93bmxvYWQ6IHRydWUKLS0tCgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgpib2R5LCB0ZCB7CiAgIGZvbnQtc2l6ZTogMThweDsKfQpjb2RlLnJ7CiAgZm9udC1zaXplOiAxMnB4Owp9CnByZSB7CiAgZm9udC1zaXplOiAxMnB4Cn0KPC9zdHlsZT4KCmBgYHtyLCBpbmNsdWRlID0gRkFMU0V9CnNvdXJjZSgiLi4vYmluL2NodW5rLW9wdGlvbnMuUiIpCmtuaXRyX2ZpZ19wYXRoKCJYWCIpCmBgYAoKIyBXb3JrZmxvdyBPdmVydmlldyB7LnVubGlzdGVkIC51bm51bWJlcmVkfQoKPGJyLz4KPGltZyBzcmM9ImltYWdlcy93YXlmaW5kZXIvd2F5ZmluZGVyLnBuZyIgYWx0PSJ3YXlmaW5kZXIiIHN0eWxlPSJoZWlnaHQ6IDQwMHB4OyIvPgo8YnIvPgo8YnIvPgoKIyBJbnRyb2R1Y3Rpb24KClBvaW50IG91dCBwb3NzaWJsZSBnYXBzIGJldHdlZW4gaG93IHNpbmdsZS1jZWxsIGRhdGEgaXMgcHJlc2VudGVkIHZlcnN1cyB0aGUgcmVhbGl0eSBvZiBydW5uaW5nIGFuIGFuYWx5c2lzCkUuZy4gUGFwZXJzIG1pZ2h0IHJlcG9ydCBmaW5hbCBmaWx0ZXJpbmcgdGhyZXNob2xkcywgYnV0IG91ciBwcm9jZXNzIGZvciBjaG9vc2luZyB0aG9zZSBpcyBsaWtlbHkgdG8gYmUgbW9yZSBpdGVyYXRpdmUKCkdlbmVyYWwgZ29hbDogRmlsdGVyaW5nIG91dCB0aGUgImNlbGxzIiB0aGF0IGVpdGhlciB3ZXJlIHBvb3JseSBtZWFzdXJlZCBvciBhcmUgZWl0aGVyIG5vdCBzaW5nbGUtY2VsbHMgb3Igbm90IGNlbGxzIGF0IGFsbAoKPCEtLSByZWd1bGFyIGh0bWwgY29tbWVudCAtLT4gCjwhLS1BZGQgc3BlY2lmaWMgZ29hbHMgZm9yIHNlY3Rpb24tLT4KClBlciBbaHlwZXJsaW5rIHRleHRdKGh0dHA6Ly93d3cud2Vic2l0ZS5odG1sKSBhcmUgLi4uIGVpdGhlciBgcGxhaW4gdGV4dGAgb3IgKml0YWxpYyogb3IgKipib2xkKiouCgo8RW1iZWQgYW4gaW1hZ2U+CjxpbWcgc3JjPSJpbWFnZXMvV2VsY29tZVNjcmlwdE9wZW5lZC5wbmciIGFsdD0icnN0dWRpbyBkZWZhdWx0IHNlc3Npb24iIHN0eWxlPSJ3aWR0aDoxMDAwcHg7Ii8+Cgo+ICMjIFJlbWluZGVyOiBSU3R1ZGlvIGNvZGUgZXhlY3V0aW9uIHsudW5saXN0ZWQgLnVubnVtYmVyZWR9Cj4KPiA8a2JkPkN0cmw8L2tiZD4rPGtiZD5FbnRlcjwva2JkPiBpcyBhIHN0YW5kYXJkIHNob3J0Y3V0IGluIFJTdHVkaW8gdG8gc2VuZCB0aGUgY3VycmVudCBsaW5lIChvciBzZWxlY3RlZCBsaW5lcykgdG8gdGhlIGNvbnNvbGUuIElmIHlvdSBzZWUgYD5gIGluIHRoZSBDb25zb2xlLCB0aGVuIFIgaGFzIGV4ZWN1dGVkIHRoZSBjb21tYW5kLiBJZiB5b3Ugc2VlIGEgYCtgLCB0aGlzIG1lYW5zIHRoYXQgdGhlIGNvbW1hbmQgaXMgbm90IGNvbXBsZXRlLCBSIHRoaW5rcyB0aGVyZSBpcyBtb3JlIHRvIHlvdXIgY29tbWFuZC4gWW91IGNhbiB1c2UgdGhlIDxrbWQ+ZXNjPC9rbWQ+IHRvIGdldCBvdXQgb2YgdGhpcyBzdGF0ZS4KCj4gIyMgUmVtaW5kZXI6IE9iamVjdCBuYW1pbmcgY29udmVudGlvbnMgey51bmxpc3RlZCAudW5udW1iZXJlZH0KPiAqIENhbm5vdCBzdGFydCB3aXRoIG51bWJlcnMKPiAqIENhbm5vdCBpbmNsdWRlIGRhc2hlcwo+ICogQ2Fubm90IGhhdmUgc3BhY2VzCj4gKiBTaG91bGQgbm90IGJlIGlkZW50aWNhbCB0byBhIG5hbWVkIGZ1bmN0aW9uCj4gKiBEb3RzIGFuZCB1bmRlcnNjb3JlcyBjYW4gc2VwYXJhdGUgcGFydHMgb2YgbmFtZXMsIGFsdGVybmF0aXZlbHkgQ2FtZWxDYXNlIGFjY29tcGxpc2hlcyB0aGlzCgotLS0tCgo8ZGV0YWlscz4KICAgIDxzdW1tYXJ5PipDbGljayBmb3IgYWRkaXRpb25hbCByZXNvdXJjZXMgcmVnYXJkaW5nIHN0YXRpc3RpY2FsIHRlc3RpbmcgYW5kIHRvb2wgY29tcGFyaXNvbiBmb3IgUk5BLXNlcSBkYXRhKjwvc3VtbWFyeT4KICAgIFRvIGxlYXJuIG1vcmUgYWJvdXQgc3RhdGlzdGljYWwgdGVzdGluZyBhbmQgd2hhdCBkaXN0cmlidXRpb25zIGJlc3QgbW9kZWwgdGhlIGJlaGF2aW9yIG9mIFJOQS1zZXEgZGF0YSwgYSBnb29kIHJlc291cmNlIGlzIHRoaXMgW0VkWCBsZWN0dXJlIGJ5IFJhZmFlbCBJcml6YXJyeV0oaHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1ISzdXS3NMM2MydyZmZWF0dXJlPXlvdXR1LmJlKSBvciB0aGlzIFtsZWN0dXJlIGJ5IEthc3BlciBIYW5zZW5dKGh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9QzhSTnZXdTdwQXcpLiBBbm90aGVyIGhlbHBmdWwgZ3VpZGUgaXMgdGhpcyBbQ29tcGFyYXRpdmUgU3R1ZHkgZm9yIERpZmZlcmVudGlhbCBFeHByZXNzaW9uIEFuYWx5c2lzIGJ5IFpoYW5nIGV0IGFsLl0oaHR0cHM6Ly9qb3VybmFscy5wbG9zLm9yZy9wbG9zb25lL2FydGljbGU/aWQ9MTAuMTM3MS9qb3VybmFsLnBvbmUuMDEwMzIwNykgZnJvbSAyMDE0Lgo8L2RldGFpbHM+Cjxicj4KCi0tLS0KClRoZXNlIG1hdGVyaWFscyBoYXZlIGJlZW4gYWRhcHRlZCBhbmQgZXh0ZW5kZWQgZnJvbSBtYXRlcmlhbHMgbGlzdGVkIGFib3ZlLiBUaGVzZSBhcmUgb3BlbiBhY2Nlc3MgbWF0ZXJpYWxzIGRpc3RyaWJ1dGVkIHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgW0NyZWF0aXZlIENvbW1vbnMgQXR0cmlidXRpb24gbGljZW5zZSAoQ0MgQlkgNC4wKV0oaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbGljZW5zZXMvYnkvNC4wLyksIHdoaWNoIHBlcm1pdHMgdW5yZXN0cmljdGVkIHVzZSwgZGlzdHJpYnV0aW9uLCBhbmQgcmVwcm9kdWN0aW9uIGluIGFueSBtZWRpdW0sIHByb3ZpZGVkIHRoZSBvcmlnaW5hbCBhdXRob3IgYW5kIHNvdXJjZSBhcmUgY3JlZGl0ZWQuCgo8YnIvPgo8YnIvPgo8aHIvPgp8IFtQcmV2aW91cyBsZXNzb25dKDA2LU1hcmtlclZpc3VhbGl6YXRpb24uaHRtbCkgfCBbVG9wIG9mIHRoaXMgbGVzc29uXSgjdG9wKSB8IFtOZXh0IGxlc3Nvbl0oMDgtRGlmZmVyZW50aWFsRXhwcmVzc2lvbi5odG1sKSB8CnwgOi0tLSB8IDotLS0tOiB8IC0tLTogfAoK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiT3JpZW50aW5nIG9uIHNjUk5BLVNlcSIKYXV0aG9yOiAiVU0gQmlvaW5mb3JtYXRpY3MgQ29yZSIKZGF0ZTogImByIFN5cy5EYXRlKClgIgpvdXRwdXQ6CiAgICAgICAgaHRtbF9kb2N1bWVudDoKICAgICAgICAgICAgaW5jbHVkZXM6CiAgICAgICAgICAgICAgICBpbl9oZWFkZXI6IGhlYWRlci5odG1sCiAgICAgICAgICAgIHRoZW1lOiBwYXBlcgogICAgICAgICAgICB0b2M6IHRydWUKICAgICAgICAgICAgdG9jX2RlcHRoOiA0CiAgICAgICAgICAgIHRvY19mbG9hdDogdHJ1ZQogICAgICAgICAgICBudW1iZXJfc2VjdGlvbnM6IGZhbHNlCiAgICAgICAgICAgIGZpZ19jYXB0aW9uOiB0cnVlCiAgICAgICAgICAgIG1hcmtkb3duOiBHRk0KICAgICAgICAgICAgY29kZV9kb3dubG9hZDogdHJ1ZQotLS0KCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+CmJvZHksIHRkIHsKICAgZm9udC1zaXplOiAxOHB4Owp9CmNvZGUucnsKICBmb250LXNpemU6IDEycHg7Cn0KcHJlIHsKICBmb250LXNpemU6IDEycHgKfQo8L3N0eWxlPgoKCiMgT2JqZWN0aXZlcwoKLSBDb21wYXJlIGFuZCBjb250cmFzdCB0aGUgY2FwYWJpbGl0aWVzIGFuZCBhcHByb2FjaCBpbiBzY1JOQS1TZXEgdnMgYnVsayBSTkEtU2VxIGFwcHJvYWNoZXMuCi0gUmV2aWV3IHRoZSBkZXRhaWxzIG9mIHRoZSAxMHggR2Vub21pY3MgYXBwcm9hY2ggdG8gc2luZ2xlLWNlbGwgc2VxdWVuY2luZwotIEludHJvZHVjZSBhIHNwZWNpZmljIGV4cGVyaW1lbnRhbCBtb2RlbCB0byBndWlkZSBkaXNjdXNzaW9uIGFuZCBsZWFybmluZwotIE91dGxpbmUgdGhlIGhpZ2gtbGV2ZWwgc3RlcHMgdG8gYW5hbHl6ZSBzY1JOQS1TZXEKCiMjIEJ1bGsgUk5BLXNlcSBhbmQgc2NSTkEtU2VxCkJ1bGsgUk5BLXNlcSB0eXBpY2FsbHkgaW52b2x2ZXMgY29tcGFyaW5nIHRoZSBleHByZXNzaW9uIGxldmVscyBvZiBnZW5lcyBiZXR3ZWVuIHNldHMgb2YgdGlzc3Vlcywgc3VjaCBhcyB1bnRyZWF0ZWQgYW5kIHRyZWF0ZWQgbWljZS4gSXQgYWxsb3dzIHJlc2VhcmNoZXJzIHRvIGNoYXJhY3Rlcml6ZSBnZW5lIGV4cHJlc3Npb24gZGlmZmVyZW5jZXMgYWNyb3NzIGVudGlyZSB0aXNzdWVzLCBwcm92aWRpbmcgYSBzbmFwc2hvdCBvZiB0aGUgYXZlcmFnZSBleHByZXNzaW9uIHByb2dyYW0uCgohW10oaW1hZ2VzLzAwQS1PcmllbnRpbmdPblNjUk5BU2VxL2J1bGstcm5hLXNlcS5wbmcpCgoKc2NSTkEtc2VxIGxldmVyYWdlcyB0aGUgYXBwcm9hY2hlcyBhbmQgcHJvdG9jb2xzIG9mIGJ1bGsgUk5BLXNlcSwgYnV0IGluc3RlYWQgYXQgdGhlIGxldmVsIG9mIGNlbGxzIGluc3RlYWQgb2YgdGlzc3Vlcy9idWxrIHNhbXBsZXMuIFRoZXJlIGFyZSBzZXZlcmFsIGRpc3RpbmN0IHdheXMgdG8gZG8gdGhpcywgYnV0IGNvbW1vbiBzdGVwcyBpbmNsdWRlCiFbXShpbWFnZXMvMDBBLU9yaWVudGluZ09uU2NSTkFTZXEvc2NSTkEtU2VxLnBuZykKCgojIyMgS2V5IEFkdmFudGFnZXMgb2YgU2luZ2xlLUNlbGwgUk5BLVNlcQoKMS4gKipDZWxsLUxldmVsIEluc2lnaHRzOioqIFVubGlrZSBidWxrIFJOQS1zZXEsIHNpbmdsZS1jZWxsIGFuYWx5c2lzIHByb3ZpZGVzIGluc2lnaHRzIGludG8gZXhwcmVzc2lvbiBwcm9ncmFtcyBhdCB0aGUgaW5kaXZpZHVhbCBjZWxsIG9yIGNlbGwgZ3JvdXAgbGV2ZWwuCjEuICoqSGV0ZXJvZ2VuZWl0eSBEZXRlY3Rpb246KiogU2luZ2xlLWNlbGwgUk5BLXNlcSByZXZlYWxzIHZhcmlhdGlvbnMgaW4gZ2VuZSBleHByZXNzaW9uIGFtb25nIGRpZmZlcmVudCBjZWxsIHR5cGVzIHdpdGhpbiBhIHRpc3N1ZS4KMS4gKipSZXNwb25zZSB0byBJbnRlcnZlbnRpb25zOioqIEl0IGVuYWJsZXMgdGhlIGV4YW1pbmF0aW9uIG9mIGNlbGwtbGV2ZWwgcmVzcG9uc2VzIHRvIGludGVydmVudGlvbnMsIG9mZmVyaW5nIGEgZGV0YWlsZWQgdW5kZXJzdGFuZGluZyBvZiBob3cgaW5kaXZpZHVhbCBjZWxscyByZWFjdCB0byBzdGltdWxpLgoxLiAqKlRlbXBvcmFsIEFuYWx5c2lzOioqIEl0IGFsbG93cyB0aGUgc3R1ZHkgb2YgaG93IGNlbGwgc3RhdGVzIGNoYW5nZSBvdmVyIHRpbWUgYW5kIGhvdyBjZWxscyBkaWZmZXJlbnRpYXRlLgoKIyMjIENoYWxsZW5nZXMgb2YgU2luZ2xlLUNlbGwgUk5BLVNlcQoKV2hpbGUgcG93ZXJmdWwsIHNpbmdsZS1jZWxsIFJOQS1zZXEgY29tZXMgd2l0aCBhZGRlZCBjb21wbGV4aXR5IGFuZCBjb3N0LiBUaGUgcHJvdG9jb2wgcmVxdWlyZXMgbnVhbmNlZCBkZWNpc2lvbi1tYWtpbmcsIGl0ZXJhdGl2ZSBhbmFseXNpcywgYW5kIGNvbnNpZGVyYXRpb25zIGZvciBkYXRhIHN0b3JhZ2UgYW5kIGNvbXB1dGF0aW9uYWwgcmVzb3VyY2VzLgoKIVtdKGltYWdlcy8wMEEtT3JpZW50aW5nT25TY1JOQVNlcS9mb3Jlc3RfdHJlZXMucG5nKQoKIyMgQSBQcmFjdGljYWwgRXhhbXBsZQoKVGhlIGJsb2cgcG9zdCBjb25jbHVkZXMgd2l0aCBhIGZvY3VzIG9uIGEgc3BlY2lmaWMgZXhwZXJpbWVudCBpbnZvbHZpbmcgbWljZSB0aGF0IHVuZGVyd2VudCBhIHNvZnQgdGlzc3VlIGluanVyeS4gVGhlIHJlc2VhcmNoZXJzIGFpbSB0byBpZGVudGlmeSBjZWxsIHR5cGVzIGFzc29jaWF0ZWQgd2l0aCBhbiBhYmVycmFudCBpbmp1cnkgcmVzcG9uc2UgdXNpbmcgc2luZ2xlLWNlbGwgUk5BLXNlcSB0ZWNobmlxdWVzLgoKIVtdKGltYWdlcy8wMEEtT3JpZW50aW5nT25TY1JOQVNlcS9tb3VzZV9pbmp1cnkucG5nKQoKCiMjIFdvcmtzaG9wIE92ZXJ2aWV3CgpUaGUgc3RlcHMgb2YgdGhlIHdvcmtzaG9wLCBpbmNsdWRpbmcgcnVubmluZyBjZWxsIHJhbmdlciB0byB0cmFuc2Zvcm0gcmF3IHNlcXVlbmNlIGRhdGEsIGdlbmVyYXRpbmcgYSBjb3VudCBtYXRyaXgsIGFuZCBwZXJmb3JtaW5nIHF1YWxpdHkgY29udHJvbCBldmFsdWF0aW9ucy4gRnVydGhlciBzdGVwcyBpbnZvbHZlIGRhdGEgYW5hbHlzaXMgaW4gUlN0dWRpbywgZGltZW5zaW9uYWwgcmVkdWN0aW9uIHRvIHNlcGFyYXRlIHNpZ25hbCBmcm9tIG5vaXNlLCBhbmQgcG90ZW50aWFsIHByb2plY3Rpb25zIHRvIHZpc3VhbGl6ZSBjZWxsIHBvcHVsYXRpb25zLgoKIVtdKGltYWdlcy8wMEEtT3JpZW50aW5nT25TY1JOQVNlcS9zY19hbmFseXNpcy5wbmcpCgpSZXByZXNlbnRlZCBBbm90aGVyIHdheToKPGltZyBzcmM9ImltYWdlcy93YXlmaW5kZXIvd2F5ZmluZGVyLnBuZyIgYWx0PSJ3YXlmaW5kZXIiIHN0eWxlPSJoZWlnaHQ6IDQwMHB4OyIvPgoKCiMjIEEgd2hpcmx3aW5kIGludHJvIHRvIDEweCBHZW5vbWljcyBiYXNpY3MKCk9uZSBjb21tb24gbWljcm9mbHVpZGljIGFwcHJvYWNoLCBsaWtlIHRoZSAxMFggR2Vub21pY3MgbWV0aG9kLCB1c2VzIGJlYWRzIHdpdGggdW5pcXVlIGlkZW50aWZpZXJzLiBUaGVzZSBiZWFkcywgYWxvbmcgd2l0aCBjZWxscywgcGFzcyB0aHJvdWdoIGEgbWljcm9mbHVpZGljIGRldmljZSwgY3JlYXRpbmcgaXNvbGF0ZWQgcmVhY3Rpb24gdmVzc2Vscy4KClRoZSBiZWFkIGNvbnRhaW5zIG9saWdvbWVycyB3aXRoIGEgUENSIGhhbmRsZSwgYSBjZWxsIGJhcmNvZGUsIGFuZCBhIHVuaXF1ZSBtb2xlY3VsYXIgaWRlbnRpZmllciAoVU1JKS4gQWZ0ZXIgY2VsbCBseXNpcywgdHJhbnNjcmlwdHMgYXJlIHJldmVyc2UgdHJhbnNjcmliZWQsIGluY29ycG9yYXRpbmcgdGhlIGNlbGwtc3BlY2lmaWMgYmFyY29kZS4gVGhpcyBlbmFibGVzIHRoZSBhc3NvY2lhdGlvbiBvZiBlYWNoIHRyYW5zY3JpcHQgd2l0aCBhIHNwZWNpZmljIGNlbGwuIENvbXB1dGF0aW9uYWwgYW5hbHlzaXMgb2YgdGhlc2UgYmFyY29kZXMgYWxsb3dzIHRoZSBzZXBhcmF0aW9uIG9mIHRyYW5zY3JpcHRzIGludG8gY29uc3RpdHVlbnQgY2VsbHMuCgoKIyBDb25jbHVzaW9uCgpzY1JOQS1zZXEgb2ZmZXJzIGEgcG93ZXJmdWwgYW5kIG51YW5jZWQgYXBwcm9hY2ggdG8gc3R1ZHlpbmcgZ2VuZSBleHByZXNzaW9uIGF0IHRoZSBjZWxsdWxhciBsZXZlbC4gVGhpcyB0ZWNobmlxdWUgY2FuIGVsYWJvcmF0ZSBvdXIgdW5kZXJzdGFuZGluZyBvZiBjZWxsdWxhciBoZXRlcm9nZW5laXR5LCByZXNwb25zZXMgdG8gaW50ZXJ2ZW50aW9ucywgYW5kIHRoZSBjZWxsIHN0YXRlIGR5bmFtaWNzLgoKCjxici8+Cjxici8+Cjxoci8+CnwgW0JhY2sgdG8gaW50cm9kdWN0aW9uXSh3b3Jrc2hvcF9pbnRyby5odG1sKSB8IFtUb3Agb2YgdGhpcyBsZXNzb25dKCN0b3ApIHwgW05leHQgbGVzc29uXSgwMEItQ2VsbFJhbmdlckluQWN0aW9uLmh0bWwpIHwKfCA6LS0tIHwgOi0tLS06IHwgLS0tOiB8Cgo=</div>
 
 
 </div>
@@ -572,7 +592,7 @@ $(document).ready(function () {
 <!-- code folding -->
 <script>
 $(document).ready(function () {
-  window.initializeSourceEmbed("07-CellTypeAnnos.Rmd");
+  window.initializeSourceEmbed("00A-OrientingOnScRNASeq.Rmd");
 });
 </script>
 

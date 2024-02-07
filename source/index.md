@@ -34,8 +34,8 @@ body, td {
 | Time | Topic : Details |
 | :---  | :---- |
 |  9:00 | [Welcome / Housekeeping](workshop_intro.html) (Chris & Marci)|
-|  9:30 | [Orienting on scRNA-Seq](orienting.html) (Chris)
-|       | [CellRanger in Action](cell_ranger.html) (Matt)
+|  9:30 | [Orienting on scRNA-Seq](00A-OrientingOnScRNASeq) (Chris)
+|       | [Cell Ranger in Action](00B-CellRangerInAction.html) (Matt)
 | 11:00 | Break |
 | 11:15 | [Getting started with Seurat](01-GettingStarted.html) (Raymond)
 |       | [Initial QC & Filtering](02-QCandFiltering.html) (Raymond)

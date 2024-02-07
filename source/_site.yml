@@ -18,9 +18,9 @@ navbar:
     - text: "Day 1"
       menu:
         - text: "Orienting on scRNA-Seq"
-          href: orienting.html
-        - text: "CellRanger in Action"
-          href: cell_ranger.html
+          href: 00A-OrientingOnScRNASeq.html
+        - text: "Cell Ranger in Action"
+          href: 00B-CellRangerInAction.html
         - text: "Seurat"
           href: 01-GettingStarted.html
         - text: "Initial QC & Filtering"
