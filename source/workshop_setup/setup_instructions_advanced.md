@@ -1,5 +1,5 @@
 ---
-title: "RNA-Seq Demystified Workshop: Advanced setup instructions"
+title: "Intro to scRNA-Seq Workshop: Advanced setup instructions"
 author: "UM Bioinformatics Core Workshop Team"
 output:
         html_document:
