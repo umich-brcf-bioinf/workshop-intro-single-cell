@@ -25,62 +25,28 @@ output:
   to install R/RStudio; you may need to coordinate with your
   System Admin/IT Support team to get these installed.
 
+- Note that these instructions are focused on R/RStudio and dependent libraries 
+  (e.g. Seurat). Seperate instructions on downloading and installing Cell Ranger
+  can be found here: 
+  https://www.10xgenomics.com/support/software/cell-ranger/latest/tutorials/cr-tutorial-in 
+
   #### Table of Contents
   -   [Windows setup](#windows-setup)
-      -   Git-Bash
       -   Installing R/RStudio
       -   Notes
   -   [Macintosh setup](#macintosh-setup)
-      -   Terminal
       -   Installing R/RStudio
       -   Notes
 
 
 ## Windows setup
 
-### Windows PowerShell / git-bash
-
-Git-bash and Windows Subsystem for Linux (WSL) are programs that enable
-you to connect to our workshop Linux environment. WSL is a powerful
-option, but can be difficult to install/configure. If you have WSL
-installed and you are comfortable using it, you can use that and skip to
-the next section.
-
-1.  To download git-bash, in a web browser, go to:
-    <https://git-scm.com/downloads>
-    and click on **Windows**. Save and open the executable file to launch
-    the installer.
-
-2.  The git-bash installer presents *many* options; repeatedly click
-    **Next** to simply accept all the default options. At the end of
-    this series of questions, you can click **Install**.
-
-3.  The installer will show a progress bar; this should take less than a
-    minute. *Note: you may see a warning towards the end "Unable to run
-    post-install scripts; no output?"; this will not impact your
-    installation and you can ignore it by clicking **Ok**.*
-
-4.  On the final screen (Completing the Git Setup Wizard) you can
-    uncheck **View Release Notes** option and click **Finish**. The
-    installer will close.
-
-5.  To launch git-bash, from Start Menu, select "Git Bash"; this will
-    create a new window with a command prompt that looks something like
-    this:
-
--   your_username\@WSRTS001 MINGW64 \~ \$
-
-
-If you can't install or launch git-bash, or if it returns an
-    unexpected result, please see [**How to get
-    help**](#how-to-get-help) for more assistance.
-
 ### Installing R/RStudio (Windows)
 
 1.  RStudio depends on the R programming environment, so we have to
     install that first. In a web browser, open:
     <https://cran.rstudio.com/bin/windows/base/>
-    and click "Download R 4.0.3 for Windows" (the version may be
+    and click "Download R 4.3.2 for Windows" (the version may be
     slightly different). Open the downloaded executable to launch the R
     installer.
 
@@ -111,85 +77,97 @@ If you can't install or launch git-bash, or if it returns an
     left pane shows the **Console** tab and will show some text followed
     by a command prompt (\>):
 
-> R version 4.0.3 (2020-10-10) \-- \"Bunny-Wunnies Freak Out\"\
-    Copyright (C) 2020 The R Foundation for Statistical Computing\
-    Platform: x86_64-w64-mingw32/x64 (64-bit)\
-    \
-    R is free software and comes with ABSOLUTELY NO WARRANTY.\
-    You are welcome to redistribute it under certain conditions.\
-    Type \'license()\' or \'licence()\' for distribution details.\
-    \
-    Natural language support but running in an English locale\
-    \
-    R is a collaborative project with many contributors.\
-    Type \'contributors()\' for more information and\
-    \'citation()\' on how to cite R or R packages in publications.\
-    \
-    Type \'demo()\' for some demos, \'help()\' for on-line help, or\
-    \'help.start()\' for an HTML browser interface to help.\
-    Type \'q()\' to quit R.\
-    \
-    \>
+> R version 4.3.2 (2023-10-31) -- "Eye Holes"
+  Copyright (C) 2023 The R Foundation for Statistical Computing
+  Platform: x86_64-pc-linux-gnu (64-bit)
+  \
+  R is free software and comes with ABSOLUTELY NO WARRANTY.
+  You are welcome to redistribute it under certain conditions.
+  Type 'license()' or 'licence()' for distribution details.
+  \
+  R is a collaborative project with many contributors.
+  Type 'contributors()' for more information and
+  'citation()' on how to cite R or R packages in publications.
+  \
+  Type 'demo()' for some demos, 'help()' for on-line help, or
+  'help.start()' for an HTML browser interface to help.
+  Type 'q()' to quit R.
+  \
+
 
 7.  The workshop exercises requires the installation of special R
-    libraries. To install them into RStudio, copy the block of text
-    below, paste into the RStudio **Console** tab, and press **Enter**
-    to execute. *(Note: These installations automatically trigger the
+    libraries. To install them into RStudio: 
+    
+    - one at a time, copy the blocks of code below and paste into the RStudio 
+      **Console** tab
+    - make sure the block you just pasted is highlighted and press **Enter** 
+      to execute.
+    - as the installation progresses, you might see red text flash by 
+      and that's ok (typically an informative blurb or minor warning that has
+      no downstream impact). 
+      
+```
+if (!requireNamespace(\"BiocManager\", quietly = TRUE)) {\
+    install.packages(\"BiocManager\")\
+    requireNamespace(\"BiocManager\", quietly = TRUE)
+}
+install.packages("devtools")
+install.packages("remotes")
+```
+
+```
+remotes::install_github("satijalab/seurat", "seurat5")
+remotes::install_github("satijalab/seurat-data", "seurat5")
+remotes::install_github("satijalab/seurat-wrappers", "seurat5")
+```
+
+```
+devtools::install_github("immunogenomics/presto")
+BiocManager::install("glmGamPoi")
+```
+
+8. Note: These installations automatically trigger the
     installation of a litany of dependent libraries so you will see
     repeated progress bars and code flying by in the Console window.
-    This step takes about 15 minutes, so now is a good time to get
-    coffee/tea while RStudio cooks.)*
+    The large set of dependencies mean that if you are installing from scratch
+    **it can take several hours**. So now is a good time to make some
+    coffee/tea (or a loaf of bread) while RStudio cooks.
 
->  install.packages(\"tidyr\")\
-    install.packages(\"ggplot2\")\
-    install.packages(\"pheatmap\")\
-    install.packages(\"ggrepel\")\
-    install.packages(\"formattable\")\
-    install.packages(\"RColorBrewer\")\
-    install.packages(\"matrixStats\")\
-    install.packages(\"dplyr\")\
-    if (!requireNamespace(\"BiocManager\", quietly = TRUE))\
-    install.packages(\"BiocManager\")\
-    BiocManager::install(\"biomaRt\", ask=FALSE)\
-    BiocManager::install(\"DESeq2\", ask=FALSE)\
-    missing \<- setdiff(c(\"tidyr\", \"ggplot2\", \"pheatmap\",
-    \"ggrepel\", \"formattable\", \"RColorBrewer\", \"matrixStats\",
-    \"dplyr\", \"biomaRt\", \"DESeq2\"),
-    rownames(installed.packages()))\
-    if (!length(missing)) { cat(\"Ready for Computational Foundations workshop\\n\")}
-    else {cat(\"PROBLEM: could not install:\", missing, \"\\n\")}
+9. If there was a problem during the installation, R will
+    display a block like this:
+    
+> Warning in install.packages:
+  Installation of package 'xxx' has non-zero exit status.
 
-8.  The Console output should conclude with the text:\
-    **Ready for Computational Foundations workshop**.
+  If this comes up, you will need to troubleshoot the install based on the error
+  or the specific package that failed.
+  
+10. If you don't see the above warning, and the output ends like below then you 
+   the libraries were successfully installed:
 
-9.  Press **Control-Q** close RStudio; when prompted to *Save workspace
+> The downloaded binary packages are in
+  C:\\Users\\some\\path\\Temp\\downloaded_packages
+
+   You can check this with the following code block:
+```
+# Quietly load Seurat and print the version
+# It should be version 5 or later
+suppressPackageStartupMessages(library(Seurat))
+sessionInfo()$otherPkgs$Seurat$Version
+```   
+
+11. Press **Control-Q** close RStudio; when prompted to *Save workspace
     image...*, click **Don't Save**.
 
 #### Your Windows workstation is ready for the workshop. Thank you for your patience and fortitude.
 
 ### Notes (Windows)
 
--   Following the workshop, you can remove any of Git-bash, R and
+-   Following the workshop, you can remove R and
     RStudio. As an Admin user, go Start \> Settings \> Apps & Features.
     Click on the program to remove and click Uninstall.
 
 ## Macintosh setup
-
-### Terminal
-
-1.  Macintosh has a built in command window called Terminal. Press
-    Command + Space to launch Spotlight. In the search field, type
-    "Terminal" and double-click on the top result.
-
-    You will see a new Terminal window containing something like this
-    (your may have more text and the last line may look a bit different;
-    that's ok)
-
-> Last login: Thu Dec 10 12:44:03 on ttys003\
-   MacBook: \~ your_username\$
-
-2.  At the command prompt, type **date** and press **Return**.
-     The Terminal should print the current date and time.
 
 ### Installing R/RStudio (Macintosh)
 
@@ -198,7 +176,7 @@ If you can't install or launch git-bash, or if it returns an
 
 -   <https://cran.rstudio.com/bin/macosx/>
 
-    and click the link "R-4.0.3.pkg" (the version may be slightly
+    and click the link "R-4.3.2.pkg" (the version may be slightly
     different). Open the downloaded executable to launch the R
     installer.
 
@@ -233,64 +211,92 @@ If you can't install or launch git-bash, or if it returns an
     into several panes. The lower left pane shows the **Console** tab and
     will show some text followed by a command prompt (\>):
 
->  R version 4.0.3 (2020-10-10) \-- \"Bunny-Wunnies Freak Out\"\
-    Copyright (C) 2020 The R Foundation for Statistical Computing\
-    Platform: x86_64-apple-darwin17.0 (64-bit)\
-    \
-    R is free software and comes with ABSOLUTELY NO WARRANTY.\
-    You are welcome to redistribute it under certain conditions.\
-    Type \'license()\' or \'licence()\' for distribution details.\
-    \
-    Natural language support but running in an English locale\
-    \
-    R is a collaborative project with many contributors.\
-    Type \'contributors()\' for more information and\
-    \'citation()\' on how to cite R or R packages in publications.\
-    \
-    Type \'demo()\' for some demos, \'help()\' for on-line help, or\
-    \'help.start()\' for an HTML browser interface to help.\
-    Type \'q()\' to quit R.\
-    \
-    \>
+> R version 4.3.2 (2023-10-31) -- "Eye Holes"
+  Copyright (C) 2023 The R Foundation for Statistical Computing
+  Platform: x86_64-pc-linux-gnu (64-bit)
+  \
+  R is free software and comes with ABSOLUTELY NO WARRANTY.
+  You are welcome to redistribute it under certain conditions.
+  Type 'license()' or 'licence()' for distribution details.
+  \
+  R is a collaborative project with many contributors.
+  Type 'contributors()' for more information and
+  'citation()' on how to cite R or R packages in publications.
+  \
+  Type 'demo()' for some demos, 'help()' for on-line help, or
+  'help.start()' for an HTML browser interface to help.
+  Type 'q()' to quit R.
+  \
 
-7.  The workshop exercises require the installation of special R
-    libraries. To install them into RStudio, copy the block of text
-    below, paste into the RStudio **Console** tab, and press **Enter**
-    to execute. *(Note: These installations automatically trigger the
-    installation of a litany of dependent libraries so you may see
-    repeated progress bars and lots of code flying by in the Console
-    window. This step takes about 15 minutes, so now is a good time to
-    get coffee/tea while RStudio cooks.)*
 
->   install.packages(\"tidyr\")\
-    install.packages(\"ggplot2\")\
-    install.packages(\"pheatmap\")\
-    install.packages(\"ggrepel\")\
-    install.packages(\"formattable\")\
-    install.packages(\"RColorBrewer\")\
-    install.packages(\"matrixStats\")\
-    install.packages(\"dplyr\")\
-    if (!requireNamespace(\"BiocManager\", quietly = TRUE))\
+7.  The workshop exercises requires the installation of special R
+    libraries. To install them into RStudio: 
+    
+    - one at a time, copy the blocks of code below and paste into the RStudio 
+      **Console** tab
+    - make sure the block you just pasted is highlighted and press **Enter** 
+      to execute.
+    - as the installation progresses, you might see red text flash by 
+      and that's ok (typically an informative blurb or minor warning that has
+      no downstream impact). 
+      
+```
+if (!requireNamespace(\"BiocManager\", quietly = TRUE)) {\
     install.packages(\"BiocManager\")\
-    BiocManager::install(c(\"biomaRt\",\"DESeq2\"), update=FALSE,
-    ask=FALSE)\
-    missing \<- setdiff(c(\"tidyr\", \"ggplot2\", \"pheatmap\",
-    \"ggrepel\", \"formattable\", \"RColorBrewer\", \"matrixStats\",
-    \"dplyr\", \"biomaRt\", \"DESeq2\"),
-    rownames(installed.packages()))\
-    if (!length(missing)) { cat(\"Ready for Computational Foundations workshop\\n\")}
-    else {cat(\"PROBLEM: could not install:\", missing, \"\\n\")}
+    requireNamespace(\"BiocManager\", quietly = TRUE)
+}
+install.packages("devtools")
+install.packages("remotes")
+```
 
-8.  The Console output should conclude with the text
-  **Ready for Computational Foundations workshop**
+```
+remotes::install_github("satijalab/seurat", "seurat5")
+remotes::install_github("satijalab/seurat-data", "seurat5")
+remotes::install_github("satijalab/seurat-wrappers", "seurat5")
+```
 
-9.  Press **Command-Q** close RStudio; when prompted to *Save workspace
+```
+devtools::install_github("immunogenomics/presto")
+BiocManager::install("glmGamPoi")
+```
+
+8. Note: These installations automatically trigger the
+    installation of a litany of dependent libraries so you will see
+    repeated progress bars and code flying by in the Console window.
+    The large set of dependencies mean that if you are installing from scratch
+    **it can take several hours**. So now is a good time to make some
+    coffee/tea (or a loaf of bread) while RStudio cooks.
+
+9. If there was a problem during the installation, R will
+    display a block like this:
+    
+> Warning in install.packages:
+  Installation of package 'xxx' has non-zero exit status.
+
+  If this comes up, you will need to troubleshoot the install based on the error
+  or the specific package that failed.
+  
+10. If you don't see the above warning, and the output ends like below then you 
+   the libraries were successfully installed:
+
+> The downloaded binary packages are in
+  C:\\Users\\some\\path\\Temp\\downloaded_packages
+
+   You can check this with the following code block:
+```
+# Quietly load Seurat and print the version
+# It should be version 5 or later
+suppressPackageStartupMessages(library(Seurat))
+sessionInfo()$otherPkgs$Seurat$Version
+```   
+
+11. Press **Control-Q** close RStudio; when prompted to *Save workspace
     image...*, click **Don't Save**.
 
 ####  Your Macintosh workstation is ready for the workshop. Thank you for your patience and fortitude.
 
 ### Notes (Macintosh)
 
--   Following the workshop, you can remove any of R and RStudio. Open
-    your Applications directory, and drag the R or RStudio application
+-   Following the workshop, you can remove R and RStudio. Open
+    your Applications directory, and drag the R and RStudio application
     into the Trash.
