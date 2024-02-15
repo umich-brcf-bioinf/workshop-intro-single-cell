@@ -26,7 +26,7 @@ library(rmarkdown)
 render('source/workshop_setup/preregistration_info.md', output_dir='html/workshop_setup/')
 render('source/workshop_setup/preworkshop_checklist.md', output_dir='html/workshop_setup/')
 render('source/workshop_setup/setup_instructions.md', output_dir='html/workshop_setup/')
-##render('source/workshop_setup/setup_instructions_advanced.md', output_dir='html/workshop_setup/')
+render('source/workshop_setup/setup_instructions_advanced.md', output_dir='html/workshop_setup/')
 
 # The html from the files below do have the nav bar, so if you make changes 
 # that impact the navbar (e.g. file name changes) you should re-knit all of them.
