@@ -39,7 +39,7 @@ body, td {
 | 11:00 | Break |
 | 11:15 | [Getting started with Seurat](01-GettingStarted.html) (Raymond)
 |       | [Initial QC & Filtering](02-QCandFiltering.html) (Raymond)
-|       | [Intergration & batch correction](03-Integration.html)|
+|       | [Integration & batch correction](03-Integration.html)|
 |  1:00 | Day 1 concludes |
 
 #### Day 2 (Raymond & Dana)
@@ -47,7 +47,7 @@ body, td {
 | :---  | :---- |
 |  9:00 | Housekeeping, Review and Questions (Chris) |
 |  9:20 |
-|       | [Intergration & batch correction (continued)](03-Integration.html)|
+|       | [Integration & batch correction (continued)](03-Integration.html)|
 |       | [Principal Component Analysis](04-PCAandDimReduction.html) |
 |       | [Projection & Clustering](05-ProjectionAndClustering.html) |
 | 11:00 | Break |
@@ -55,7 +55,7 @@ body, td {
 |       | A review of sequencing approaches (Olivia/Tricia) |
 |  1:00 | Day 2 concludes |
 
-#### Day 3 (Dana & friends)
+#### Day 3 (Dana)
 | | |
 | :---  | :---- |
 |  9:00 | Housekeeping, Review and Questions (Chris) |
