@@ -48,12 +48,12 @@ The field of single-cell expression measurements is still relatively new <add li
 
 One of the goals of this workshop is to not only provide an example of a start to end single-cell workflow but also explore some of the relatively arbitrary decision points and the rationale for the choices we included in our analysis.
 
-Our specific goals for the hands-on portions of the workshop include <Expect to edit these goals and/or might make sense for Chris to iterate over earlier?:
+Our specific goals for the hands-on portions of the workshop include <!--Expect to edit these goals and/or might make sense for Chris to iterate over earlier?:
 - Learn to assess the quality of your data
 - 
 - X
 - X
->
+-->
 
 ## Sample information
 
@@ -142,6 +142,8 @@ As we work through the analysis, we'll check to see how the object has been upda
 # Summary
 
 <!--add brief overall take-aways for section-->
+
+<br/>
 
 ----
 

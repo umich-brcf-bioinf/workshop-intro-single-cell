@@ -67,6 +67,14 @@ Show example of changing resolution?
 
 
 
+# Unintegrated data
+
+If we had proceeded with our filtered data and only normalized our data without doing any integration, including through the dimensionality reduction and clustering steps and then labeled the cells with their sample of origin, then we would see the following for our data:
+
+<!--Add example of UMAP / sample labels for unintegrated data-->
+
+In this plot, we ... see that while there are distinct clusters, those clusters seem to separate primarily by sample id. This suggests that without integration, these batch effects could skew the biological variability in our data. <!--move this section to end of Projection module to contrast with integrated results-->
+
 
 ----
 

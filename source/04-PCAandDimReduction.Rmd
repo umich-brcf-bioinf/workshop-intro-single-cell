@@ -47,6 +47,8 @@ E.g. The final number of significant principal components might be reported in a
 
 <!--Add specific goals for section-->
 
+
+
 # Dimensionality reduction and PCA
 
 <!--Before this section - Day 1: Starting w/ Seurat & Initial QC; will be moving batch correction up to before this in schedule-->
