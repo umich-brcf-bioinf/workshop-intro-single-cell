@@ -18,32 +18,30 @@ navbar:
     - text: "Day 1"
       menu:
         - text: "Orienting on scRNA-Seq"
-          href: orienting.html
-        - text: "Sequencing approaches"
-          href: sequencing_approches.html
-        - text: "CellRanger"
-          href: cell_ranger.html
+          href: 00A-OrientingOnScRNASeq.html
+        - text: "Cell Ranger in Action"
+          href: 00B-CellRangerInAction.html
         - text: "Seurat"
-          href: seurat.html
-        - text: "Initial QC"
-          href: qc.html
+          href: 01-GettingStarted.html
+        - text: "Initial QC & Filtering"
+          href: 02-QCandFiltering.html
     - text: "Day 2"
       menu:
+        - text: "Integration / Batch correction"
+          href: 03-Integration.html
         - text: "Principal Component Analysis"
-          href: pca.html
-        - text: "Multisample / Batch correction"
-          href: multisample_batch_correction.html
+          href: 04-PCAandDimReduction.html
         - text: "Projection & Clustering"
-          href: projection_and_clustering.html
+          href: 05-ProjectionAndClustering.html
         - text: "Marker identification and visualization"
-          href: marker_identification_and_visualization.html
+          href: 06-MarkerVisualization.html
     - text: "Day 3"
       menu:
         - text: "Cell type annotation"
-          href: cell_type_annotation.html
+          href: 07-CellTypeAnnos.html
         - text: "Differential expression analysis"
-          href: differential_expression_analysis.html
+          href: 08-DifferentialExpression.html
         - text: "Independent exercise"
-          href: independent_exercise.html
+          href: 09-IndependentExercise.html
     - text: "Wrap up"
       href: workshop_wrap_up.html

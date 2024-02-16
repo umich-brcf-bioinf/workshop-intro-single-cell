@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core" />
 
-<meta name="date" content="2024-02-01" />
+<meta name="date" content="2024-02-07" />
 
-<title>Module title</title>
+<title>Cell Type Annotation</title>
 
-<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -31,7 +31,7 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
@@ -39,12 +39,19 @@
 <script src="site_libs/navigation-1.1/sourceembed.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
-<link rel="shortcut icon" href="favicon-16x16.png" />
 <!--
-Favicon from
+Favicon dervied from
 https://twemoji.twitter.com/
 https://favicon.io/emoji-favicons/dna/
 -->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -347,19 +354,16 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="orienting.html">Orienting on scRNA-Seq</a>
+      <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
     </li>
     <li>
-      <a href="sequencing_approches.html">Sequencing approaches</a>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
     </li>
     <li>
-      <a href="cell_ranger.html">CellRanger</a>
+      <a href="01-GettingStarted.html">Seurat</a>
     </li>
     <li>
-      <a href="seurat.html">Seurat</a>
-    </li>
-    <li>
-      <a href="qc.html">Initial QC</a>
+      <a href="02-QCandFiltering.html">Initial QC &amp; Filtering</a>
     </li>
   </ul>
 </li>
@@ -371,16 +375,16 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="pca.html">Principal Component Analysis</a>
+      <a href="03-Integration.html">Integration / Batch correction</a>
     </li>
     <li>
-      <a href="multisample_batch_correction.html">Multisample / Batch correction</a>
+      <a href="04-PCAandDimReduction.html">Principal Component Analysis</a>
     </li>
     <li>
-      <a href="projection_and_clustering.html">Projection &amp; Clustering</a>
+      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
     </li>
     <li>
-      <a href="marker_identification_and_visualization.html">Marker identification and visualization</a>
+      <a href="06-MarkerVisualization.html">Marker identification and visualization</a>
     </li>
   </ul>
 </li>
@@ -392,13 +396,13 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="cell_type_annotation.html">Cell type annotation</a>
+      <a href="07-CellTypeAnnos.html">Cell type annotation</a>
     </li>
     <li>
-      <a href="differential_expression_analysis.html">Differential expression analysis</a>
+      <a href="08-DifferentialExpression.html">Differential expression analysis</a>
     </li>
     <li>
-      <a href="independent_exercise.html">Independent exercise</a>
+      <a href="09-IndependentExercise.html">Independent exercise</a>
     </li>
   </ul>
 </li>
@@ -424,9 +428,9 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Module title</h1>
+<h1 class="title toc-ignore">Cell Type Annotation</h1>
 <h4 class="author">UM Bioinformatics Core</h4>
-<h4 class="date">2024-02-01</h4>
+<h4 class="date">2024-02-07</h4>
 
 </div>
 
@@ -518,9 +522,11 @@ author and source are credited.</p>
 </colgroup>
 <thead>
 <tr class="header">
-<th align="left"><a href="XXXX.html">Previous lesson</a></th>
+<th align="left"><a href="06-MarkerVisualization.html">Previous
+lesson</a></th>
 <th align="center"><a href="#top">Top of this lesson</a></th>
-<th align="right"><a href="XXXX.html">Next lesson</a></th>
+<th align="right"><a href="08-DifferentialExpression.html">Next
+lesson</a></th>
 </tr>
 </thead>
 <tbody>
@@ -528,7 +534,7 @@ author and source are credited.</p>
 </table>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiTW9kdWxlIHRpdGxlIgphdXRob3I6ICJVTSBCaW9pbmZvcm1hdGljcyBDb3JlIgpkYXRlOiAiYHIgU3lzLkRhdGUoKWAiCm91dHB1dDoKICAgICAgICBodG1sX2RvY3VtZW50OgogICAgICAgICAgICBpbmNsdWRlczoKICAgICAgICAgICAgICAgIGluX2hlYWRlcjogaGVhZGVyLmh0bWwKICAgICAgICAgICAgdGhlbWU6IHBhcGVyCiAgICAgICAgICAgIHRvYzogdHJ1ZQogICAgICAgICAgICB0b2NfZGVwdGg6IDQKICAgICAgICAgICAgdG9jX2Zsb2F0OiB0cnVlCiAgICAgICAgICAgIG51bWJlcl9zZWN0aW9uczogZmFsc2UKICAgICAgICAgICAgZmlnX2NhcHRpb246IHRydWUKICAgICAgICAgICAgbWFya2Rvd246IEdGTQogICAgICAgICAgICBjb2RlX2Rvd25sb2FkOiB0cnVlCi0tLQoKPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KYm9keSwgdGQgewogICBmb250LXNpemU6IDE4cHg7Cn0KY29kZS5yewogIGZvbnQtc2l6ZTogMTJweDsKfQpwcmUgewogIGZvbnQtc2l6ZTogMTJweAp9Cjwvc3R5bGU+CgpgYGB7ciwgaW5jbHVkZSA9IEZBTFNFfQpzb3VyY2UoIi4uL2Jpbi9jaHVuay1vcHRpb25zLlIiKQprbml0cl9maWdfcGF0aCgiWFgiKQpgYGAKCiMgV29ya2Zsb3cgT3ZlcnZpZXcgey51bmxpc3RlZCAudW5udW1iZXJlZH0KCjxici8+CjxpbWcgc3JjPSJpbWFnZXMvd2F5ZmluZGVyL3dheWZpbmRlci5wbmciIGFsdD0id2F5ZmluZGVyIiBzdHlsZT0iaGVpZ2h0OiA0MDBweDsiLz4KPGJyLz4KPGJyLz4KCiMgSW50cm9kdWN0aW9uCgpQb2ludCBvdXQgcG9zc2libGUgZ2FwcyBiZXR3ZWVuIGhvdyBzaW5nbGUtY2VsbCBkYXRhIGlzIHByZXNlbnRlZCB2ZXJzdXMgdGhlIHJlYWxpdHkgb2YgcnVubmluZyBhbiBhbmFseXNpcwpFLmcuIFBhcGVycyBtaWdodCByZXBvcnQgZmluYWwgZmlsdGVyaW5nIHRocmVzaG9sZHMsIGJ1dCBvdXIgcHJvY2VzcyBmb3IgY2hvb3NpbmcgdGhvc2UgaXMgbGlrZWx5IHRvIGJlIG1vcmUgaXRlcmF0aXZlCgpHZW5lcmFsIGdvYWw6IEZpbHRlcmluZyBvdXQgdGhlICJjZWxscyIgdGhhdCBlaXRoZXIgd2VyZSBwb29ybHkgbWVhc3VyZWQgb3IgYXJlIGVpdGhlciBub3Qgc2luZ2xlLWNlbGxzIG9yIG5vdCBjZWxscyBhdCBhbGwKCjwhLS0gcmVndWxhciBodG1sIGNvbW1lbnQgLS0+IAo8IS0tQWRkIHNwZWNpZmljIGdvYWxzIGZvciBzZWN0aW9uLS0+CgpQZXIgW2h5cGVybGluayB0ZXh0XShodHRwOi8vd3d3LndlYnNpdGUuaHRtbCkgYXJlIC4uLiBlaXRoZXIgYHBsYWluIHRleHRgIG9yICppdGFsaWMqIG9yICoqYm9sZCoqLgoKPEVtYmVkIGFuIGltYWdlPgo8aW1nIHNyYz0iaW1hZ2VzL1dlbGNvbWVTY3JpcHRPcGVuZWQucG5nIiBhbHQ9InJzdHVkaW8gZGVmYXVsdCBzZXNzaW9uIiBzdHlsZT0id2lkdGg6MTAwMHB4OyIvPgoKPiAjIyBSZW1pbmRlcjogUlN0dWRpbyBjb2RlIGV4ZWN1dGlvbiB7LnVubGlzdGVkIC51bm51bWJlcmVkfQo+Cj4gPGtiZD5DdHJsPC9rYmQ+KzxrYmQ+RW50ZXI8L2tiZD4gaXMgYSBzdGFuZGFyZCBzaG9ydGN1dCBpbiBSU3R1ZGlvIHRvIHNlbmQgdGhlIGN1cnJlbnQgbGluZSAob3Igc2VsZWN0ZWQgbGluZXMpIHRvIHRoZSBjb25zb2xlLiBJZiB5b3Ugc2VlIGA+YCBpbiB0aGUgQ29uc29sZSwgdGhlbiBSIGhhcyBleGVjdXRlZCB0aGUgY29tbWFuZC4gSWYgeW91IHNlZSBhIGArYCwgdGhpcyBtZWFucyB0aGF0IHRoZSBjb21tYW5kIGlzIG5vdCBjb21wbGV0ZSwgUiB0aGlua3MgdGhlcmUgaXMgbW9yZSB0byB5b3VyIGNvbW1hbmQuIFlvdSBjYW4gdXNlIHRoZSA8a21kPmVzYzwva21kPiB0byBnZXQgb3V0IG9mIHRoaXMgc3RhdGUuCgo+ICMjIFJlbWluZGVyOiBPYmplY3QgbmFtaW5nIGNvbnZlbnRpb25zIHsudW5saXN0ZWQgLnVubnVtYmVyZWR9Cj4gKiBDYW5ub3Qgc3RhcnQgd2l0aCBudW1iZXJzCj4gKiBDYW5ub3QgaW5jbHVkZSBkYXNoZXMKPiAqIENhbm5vdCBoYXZlIHNwYWNlcwo+ICogU2hvdWxkIG5vdCBiZSBpZGVudGljYWwgdG8gYSBuYW1lZCBmdW5jdGlvbgo+ICogRG90cyBhbmQgdW5kZXJzY29yZXMgY2FuIHNlcGFyYXRlIHBhcnRzIG9mIG5hbWVzLCBhbHRlcm5hdGl2ZWx5IENhbWVsQ2FzZSBhY2NvbXBsaXNoZXMgdGhpcwoKLS0tLQoKPGRldGFpbHM+CiAgICA8c3VtbWFyeT4qQ2xpY2sgZm9yIGFkZGl0aW9uYWwgcmVzb3VyY2VzIHJlZ2FyZGluZyBzdGF0aXN0aWNhbCB0ZXN0aW5nIGFuZCB0b29sIGNvbXBhcmlzb24gZm9yIFJOQS1zZXEgZGF0YSo8L3N1bW1hcnk+CiAgICBUbyBsZWFybiBtb3JlIGFib3V0IHN0YXRpc3RpY2FsIHRlc3RpbmcgYW5kIHdoYXQgZGlzdHJpYnV0aW9ucyBiZXN0IG1vZGVsIHRoZSBiZWhhdmlvciBvZiBSTkEtc2VxIGRhdGEsIGEgZ29vZCByZXNvdXJjZSBpcyB0aGlzIFtFZFggbGVjdHVyZSBieSBSYWZhZWwgSXJpemFycnldKGh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9SEs3V0tzTDNjMncmZmVhdHVyZT15b3V0dS5iZSkgb3IgdGhpcyBbbGVjdHVyZSBieSBLYXNwZXIgSGFuc2VuXShodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PUM4Uk52V3U3cEF3KS4gQW5vdGhlciBoZWxwZnVsIGd1aWRlIGlzIHRoaXMgW0NvbXBhcmF0aXZlIFN0dWR5IGZvciBEaWZmZXJlbnRpYWwgRXhwcmVzc2lvbiBBbmFseXNpcyBieSBaaGFuZyBldCBhbC5dKGh0dHBzOi8vam91cm5hbHMucGxvcy5vcmcvcGxvc29uZS9hcnRpY2xlP2lkPTEwLjEzNzEvam91cm5hbC5wb25lLjAxMDMyMDcpIGZyb20gMjAxNC4KPC9kZXRhaWxzPgo8YnI+CgotLS0tCgpUaGVzZSBtYXRlcmlhbHMgaGF2ZSBiZWVuIGFkYXB0ZWQgYW5kIGV4dGVuZGVkIGZyb20gbWF0ZXJpYWxzIGxpc3RlZCBhYm92ZS4gVGhlc2UgYXJlIG9wZW4gYWNjZXNzIG1hdGVyaWFscyBkaXN0cmlidXRlZCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIFtDcmVhdGl2ZSBDb21tb25zIEF0dHJpYnV0aW9uIGxpY2Vuc2UgKENDIEJZIDQuMCldKGh0dHA6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC8pLCB3aGljaCBwZXJtaXRzIHVucmVzdHJpY3RlZCB1c2UsIGRpc3RyaWJ1dGlvbiwgYW5kIHJlcHJvZHVjdGlvbiBpbiBhbnkgbWVkaXVtLCBwcm92aWRlZCB0aGUgb3JpZ2luYWwgYXV0aG9yIGFuZCBzb3VyY2UgYXJlIGNyZWRpdGVkLgoKPGJyLz4KPGJyLz4KPGhyLz4KfCBbUHJldmlvdXMgbGVzc29uXShYWFhYLmh0bWwpIHwgW1RvcCBvZiB0aGlzIGxlc3Nvbl0oI3RvcCkgfCBbTmV4dCBsZXNzb25dKFhYWFguaHRtbCkgfAp8IDotLS0gfCA6LS0tLTogfCAtLS06IHwKCg==</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiQ2VsbCBUeXBlIEFubm90YXRpb24iCmF1dGhvcjogIlVNIEJpb2luZm9ybWF0aWNzIENvcmUiCmRhdGU6ICJgciBTeXMuRGF0ZSgpYCIKb3V0cHV0OgogICAgICAgIGh0bWxfZG9jdW1lbnQ6CiAgICAgICAgICAgIGluY2x1ZGVzOgogICAgICAgICAgICAgICAgaW5faGVhZGVyOiBoZWFkZXIuaHRtbAogICAgICAgICAgICB0aGVtZTogcGFwZXIKICAgICAgICAgICAgdG9jOiB0cnVlCiAgICAgICAgICAgIHRvY19kZXB0aDogNAogICAgICAgICAgICB0b2NfZmxvYXQ6IHRydWUKICAgICAgICAgICAgbnVtYmVyX3NlY3Rpb25zOiBmYWxzZQogICAgICAgICAgICBmaWdfY2FwdGlvbjogdHJ1ZQogICAgICAgICAgICBtYXJrZG93bjogR0ZNCiAgICAgICAgICAgIGNvZGVfZG93bmxvYWQ6IHRydWUKLS0tCgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgpib2R5LCB0ZCB7CiAgIGZvbnQtc2l6ZTogMThweDsKfQpjb2RlLnJ7CiAgZm9udC1zaXplOiAxMnB4Owp9CnByZSB7CiAgZm9udC1zaXplOiAxMnB4Cn0KPC9zdHlsZT4KCmBgYHtyLCBpbmNsdWRlID0gRkFMU0V9CnNvdXJjZSgiLi4vYmluL2NodW5rLW9wdGlvbnMuUiIpCmtuaXRyX2ZpZ19wYXRoKCJYWCIpCmBgYAoKIyBXb3JrZmxvdyBPdmVydmlldyB7LnVubGlzdGVkIC51bm51bWJlcmVkfQoKPGJyLz4KPGltZyBzcmM9ImltYWdlcy93YXlmaW5kZXIvd2F5ZmluZGVyLnBuZyIgYWx0PSJ3YXlmaW5kZXIiIHN0eWxlPSJoZWlnaHQ6IDQwMHB4OyIvPgo8YnIvPgo8YnIvPgoKIyBJbnRyb2R1Y3Rpb24KClBvaW50IG91dCBwb3NzaWJsZSBnYXBzIGJldHdlZW4gaG93IHNpbmdsZS1jZWxsIGRhdGEgaXMgcHJlc2VudGVkIHZlcnN1cyB0aGUgcmVhbGl0eSBvZiBydW5uaW5nIGFuIGFuYWx5c2lzCkUuZy4gUGFwZXJzIG1pZ2h0IHJlcG9ydCBmaW5hbCBmaWx0ZXJpbmcgdGhyZXNob2xkcywgYnV0IG91ciBwcm9jZXNzIGZvciBjaG9vc2luZyB0aG9zZSBpcyBsaWtlbHkgdG8gYmUgbW9yZSBpdGVyYXRpdmUKCkdlbmVyYWwgZ29hbDogRmlsdGVyaW5nIG91dCB0aGUgImNlbGxzIiB0aGF0IGVpdGhlciB3ZXJlIHBvb3JseSBtZWFzdXJlZCBvciBhcmUgZWl0aGVyIG5vdCBzaW5nbGUtY2VsbHMgb3Igbm90IGNlbGxzIGF0IGFsbAoKPCEtLSByZWd1bGFyIGh0bWwgY29tbWVudCAtLT4gCjwhLS1BZGQgc3BlY2lmaWMgZ29hbHMgZm9yIHNlY3Rpb24tLT4KClBlciBbaHlwZXJsaW5rIHRleHRdKGh0dHA6Ly93d3cud2Vic2l0ZS5odG1sKSBhcmUgLi4uIGVpdGhlciBgcGxhaW4gdGV4dGAgb3IgKml0YWxpYyogb3IgKipib2xkKiouCgo8RW1iZWQgYW4gaW1hZ2U+CjxpbWcgc3JjPSJpbWFnZXMvV2VsY29tZVNjcmlwdE9wZW5lZC5wbmciIGFsdD0icnN0dWRpbyBkZWZhdWx0IHNlc3Npb24iIHN0eWxlPSJ3aWR0aDoxMDAwcHg7Ii8+Cgo+ICMjIFJlbWluZGVyOiBSU3R1ZGlvIGNvZGUgZXhlY3V0aW9uIHsudW5saXN0ZWQgLnVubnVtYmVyZWR9Cj4KPiA8a2JkPkN0cmw8L2tiZD4rPGtiZD5FbnRlcjwva2JkPiBpcyBhIHN0YW5kYXJkIHNob3J0Y3V0IGluIFJTdHVkaW8gdG8gc2VuZCB0aGUgY3VycmVudCBsaW5lIChvciBzZWxlY3RlZCBsaW5lcykgdG8gdGhlIGNvbnNvbGUuIElmIHlvdSBzZWUgYD5gIGluIHRoZSBDb25zb2xlLCB0aGVuIFIgaGFzIGV4ZWN1dGVkIHRoZSBjb21tYW5kLiBJZiB5b3Ugc2VlIGEgYCtgLCB0aGlzIG1lYW5zIHRoYXQgdGhlIGNvbW1hbmQgaXMgbm90IGNvbXBsZXRlLCBSIHRoaW5rcyB0aGVyZSBpcyBtb3JlIHRvIHlvdXIgY29tbWFuZC4gWW91IGNhbiB1c2UgdGhlIDxrbWQ+ZXNjPC9rbWQ+IHRvIGdldCBvdXQgb2YgdGhpcyBzdGF0ZS4KCj4gIyMgUmVtaW5kZXI6IE9iamVjdCBuYW1pbmcgY29udmVudGlvbnMgey51bmxpc3RlZCAudW5udW1iZXJlZH0KPiAqIENhbm5vdCBzdGFydCB3aXRoIG51bWJlcnMKPiAqIENhbm5vdCBpbmNsdWRlIGRhc2hlcwo+ICogQ2Fubm90IGhhdmUgc3BhY2VzCj4gKiBTaG91bGQgbm90IGJlIGlkZW50aWNhbCB0byBhIG5hbWVkIGZ1bmN0aW9uCj4gKiBEb3RzIGFuZCB1bmRlcnNjb3JlcyBjYW4gc2VwYXJhdGUgcGFydHMgb2YgbmFtZXMsIGFsdGVybmF0aXZlbHkgQ2FtZWxDYXNlIGFjY29tcGxpc2hlcyB0aGlzCgotLS0tCgo8ZGV0YWlscz4KICAgIDxzdW1tYXJ5PipDbGljayBmb3IgYWRkaXRpb25hbCByZXNvdXJjZXMgcmVnYXJkaW5nIHN0YXRpc3RpY2FsIHRlc3RpbmcgYW5kIHRvb2wgY29tcGFyaXNvbiBmb3IgUk5BLXNlcSBkYXRhKjwvc3VtbWFyeT4KICAgIFRvIGxlYXJuIG1vcmUgYWJvdXQgc3RhdGlzdGljYWwgdGVzdGluZyBhbmQgd2hhdCBkaXN0cmlidXRpb25zIGJlc3QgbW9kZWwgdGhlIGJlaGF2aW9yIG9mIFJOQS1zZXEgZGF0YSwgYSBnb29kIHJlc291cmNlIGlzIHRoaXMgW0VkWCBsZWN0dXJlIGJ5IFJhZmFlbCBJcml6YXJyeV0oaHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1ISzdXS3NMM2MydyZmZWF0dXJlPXlvdXR1LmJlKSBvciB0aGlzIFtsZWN0dXJlIGJ5IEthc3BlciBIYW5zZW5dKGh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9QzhSTnZXdTdwQXcpLiBBbm90aGVyIGhlbHBmdWwgZ3VpZGUgaXMgdGhpcyBbQ29tcGFyYXRpdmUgU3R1ZHkgZm9yIERpZmZlcmVudGlhbCBFeHByZXNzaW9uIEFuYWx5c2lzIGJ5IFpoYW5nIGV0IGFsLl0oaHR0cHM6Ly9qb3VybmFscy5wbG9zLm9yZy9wbG9zb25lL2FydGljbGU/aWQ9MTAuMTM3MS9qb3VybmFsLnBvbmUuMDEwMzIwNykgZnJvbSAyMDE0Lgo8L2RldGFpbHM+Cjxicj4KCi0tLS0KClRoZXNlIG1hdGVyaWFscyBoYXZlIGJlZW4gYWRhcHRlZCBhbmQgZXh0ZW5kZWQgZnJvbSBtYXRlcmlhbHMgbGlzdGVkIGFib3ZlLiBUaGVzZSBhcmUgb3BlbiBhY2Nlc3MgbWF0ZXJpYWxzIGRpc3RyaWJ1dGVkIHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgW0NyZWF0aXZlIENvbW1vbnMgQXR0cmlidXRpb24gbGljZW5zZSAoQ0MgQlkgNC4wKV0oaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbGljZW5zZXMvYnkvNC4wLyksIHdoaWNoIHBlcm1pdHMgdW5yZXN0cmljdGVkIHVzZSwgZGlzdHJpYnV0aW9uLCBhbmQgcmVwcm9kdWN0aW9uIGluIGFueSBtZWRpdW0sIHByb3ZpZGVkIHRoZSBvcmlnaW5hbCBhdXRob3IgYW5kIHNvdXJjZSBhcmUgY3JlZGl0ZWQuCgo8YnIvPgo8YnIvPgo8aHIvPgp8IFtQcmV2aW91cyBsZXNzb25dKDA2LU1hcmtlclZpc3VhbGl6YXRpb24uaHRtbCkgfCBbVG9wIG9mIHRoaXMgbGVzc29uXSgjdG9wKSB8IFtOZXh0IGxlc3Nvbl0oMDgtRGlmZmVyZW50aWFsRXhwcmVzc2lvbi5odG1sKSB8CnwgOi0tLSB8IDotLS0tOiB8IC0tLTogfAoK</div>
 
 
 </div>
