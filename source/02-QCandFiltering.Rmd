@@ -40,158 +40,260 @@ knitr_fig_path("XX")
 <br/>
 <br/>
 
+# Objectives
+
+- Discuss QC measures and learn how to calculate and plot them.
+- Discuss cell-filtering approaches and apply them to our dataset.
+
 # Introduction
 
 As discussed at the start of the workshop, single-cell experiments using 10x Chromium instrument aim to have droplets with one cell plus one bead. However this is an inherently imperfect process and there are other important considerations like how healthy or intact the cell was at the time of measurement.
 
 In this section, our goal is to use filtering thresholds to remove "cells" that were poorly measured or either not cells at all or included more than one cell. 
 
-<!-- Add specific goals for section --> 
-
-Similar to many other areas of research, there are often gaps between how single-cell data is presented versus the reality of running an analysis. 
-
-For example, only the final filtering thresholds might be reported in a paper but our process for choosing those is likely to be more iterative and include some trial and error.
+Similar to many other areas of research, there are often gaps between how single-cell data is presented versus the reality of running an analysis. For example, only the final filtering thresholds might be reported in a paper but our process for choosing those is likely to be more iterative and include some trial and error.
 
 <!-- Challenge for instructors: Every vignette uses different filters, how to harmonize/give guidance? Related, how much to discuss arbitrary cutoffs and continued maturation of field?--> 
 <!-- Add links to relevant resources throughout --> 
 
-# Quality Control evaluation
-
-<!-- Before this section - Getting started (project setup and reading in data)
-
-<General guidance - likely to be moved to earlier section:
+<!-- General guidance - likely to be moved to earlier section:
 - Note with each function call what gets added to the Seurat object.
 - Adding checks to ensure object is updated by learners since want to avoid generating copied objects
-- Note what layers should be used for what, for example, counts used for FeaturePlots. RNA vs SCT assay.
+- Note what layers should be used for what, for example, counts used for FeaturePlots. RNA vs SCT assay. -->
 
-Main idea: What measures and visualizations will be helpful for deciding what cells to keep?-->
+# Quality Metrics
 
-## What is in our data?
+Cell Ranger is a first-pass filter to determine what is a "cell" and what is not. Let's dig deeper to determine when a droplet might contain two cells, a very stressed cell, or some technical issue in the library preparation. We will use some common metrics to determine low-quality cells based on their expression profiles ([reference](https://bioconductor.org/books/3.12/OSCA/quality-control.html#choice-of-qc-metrics)).
 
-Along with the expression matrices, our Seurat object also holds "meta" data, which is stored in the meta data slot of our object and can <!--objectname@meta.data--> be used to hold the following information about a single-cell dataset:
+- The total number of UMIs detected. Cells a small number of UMIs detected may indicate loss of RNA during library preparation via cell lysis or inefficient cDNA capture / amplification. Cells with relatively high number of UMIs detected may indicate a doublet.
+- The number of expressed features, defined as number of genes with non-zero counts. Cells with very few measured genes are likely to be of low-quality, and may distort downstream variance estimation or dimension reduction steps.
+- The proportion of reads mapped to the mitochondrial genome. High proportions of mitochondrial transcripts may indicate a damaged cell, the measure of which may also distort downstream analysis steps.
 
-- Sample name
-- Batch or sample for each cell
-- Summary statistics
-- Cell cycle phase for each cell
+The number of UMIs detected (`nCount`) and number of expressed features (`nFeature`) are already given in the meta data table.
+
+```{r, eval = FALSE}
+head(geo_so@meta.data)
+```
+
+~~~
+                                          orig.ident nCount_RNA nFeature_RNA
+HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1       9258         2709
+HODay0replicate1_AAACCTGAGGAGTACC-1 HODay0replicate1         99           76
+HODay0replicate1_AAACCTGAGGATCGCA-1 HODay0replicate1         71           55
+HODay0replicate1_AAACCTGAGGCATTGG-1 HODay0replicate1         63           53
+HODay0replicate1_AAACCTGCAACAACCT-1 HODay0replicate1         70           54
+HODay0replicate1_AAACCTGCACCACCAG-1 HODay0replicate1        131          104
+~~~
+
+We can add arbitrary per-cell information to this table such as:
+
+- Summary statistics, such as percent mitochondrial reads for each cell
+- Batch, condition, etc. for each cell
 - Cluster membership for each cell
+- Cell cycle phase for each cell
 - Other custom annotations for each cell
 
-```{r, eval = FALSE}
-# Look at our meta data - edit code here
+In this workshop we will see examples of the first three, beginning with percent mitochondrial reads.
 
-# Example from Griffith lab tutorial:
-scrna[[]];
-scrna@meta.data;
-str(scrna@meta.data); # Examine structure and contents of meta data
-levels(x=scrna); # List the items in the current default cell identity class
-length(unique(scrna@meta.data$seurat_clusters)); # How many clusters are there? Note that there will not be any clusters in the meta data until you perform clustering.
-unique(scrna@meta.data$Batch); # What batches are included in this data set?
-scrna$NewIdentity <- vector_of_annotations; # Assign new cell annotations to a new "identity class" in the meta data
-```
+> #### Why total UMIs instead of total reads? {.unlisted .unnumbered}
+> 
+> Since a single-cell inherently contains a limited amount of RNA molecules, a higher amount of PCR amplification is required to generate the final sequencing library.
+> 
+> Since PCR can skew proportions of initial input materials, specific sequences are included in the initial capture probes called unique molecule identifiers (UMIs). As each initial probe has a different UMI sequence, each RNA captured will be tagged with a different UMI, which allows those initial RNAs and subsequent PCR duplicates to be identified and duplicates collapsed as part of the initial processing by CellRanger.  
 
-What are `nFeature` and `nCount`?
+> #### Other meanings of `nFeatures` {.unlisted .unnumbered}
+> 
+> For other single-cell data types, `nFeatures` would represent what's being measured in that experiment. For single-cell ATAC-seq, `nFeatures` would represents the total number of peaks (e.g. accessible areas of DNA) per cell.
 
-### nFeatures and nCounts
+## Percent mitochondrial reads
 
-For single-cell RNA-seq, `nFeatures` represents the total number of genes measured per cell (non-zero rows in expression table), while `nCounts` represents the total number of UMIs / molecules measured per cell (sum of column for that cell in expression table).
-
-> Note: for other single-cell data types, `nFeatures` would represent what's being measured in that experiment. For single-cell ATAC-seq, `nFeatures` would represents the total number of peaks (e.g. accessible areas of DNA) per cell.
-
-Since `nFeature` and `nCount` are already stored within our Seurat object, we can look at these metrics:
-```{r, eval = FALSE}
-head(scrna@meta.data$nFeature_RNA); # Access genes (“Features”) for each cell
-head(scrna@meta.data$nCount_RNA); # Access number of UMIs for each cell:
-```
-
-<!--Consider moving violin plots to this section-->
-
-### Why do we count total UMIs instead of total reads? 
-
-Since a single-cell inherently contains a limited amount of RNA molecules, a higher amount of PCR amplification is required to generate the final sequencing library. 
-
-Since PCR can skew proportions of initial input materials, specific sequences are included in the initial capture probes called unique molecule identifiers (UMIs). As each initial probe has a different UMI sequence, each RNA captured will be tagged with a different UMI, which allows those initial RNAs and subsequent PCR duplicates to be identified and duplicates collapsed as part of the initial processing by CellRanger.  
-
-<!--Matt may have discussed UMIs as part of CellRanger processing and Liv/Tricia may touch on as part of library generation at end of Day 2 (today)-->
-
-### Percent Mitochondrial 
-
-To get a sense of how many cells in each sample might have been stressed or dead, we will need to manually calculate the percentage of reads from mitochondrial sequences for each cell and manually add that to the `meta.data` slot of our Seurat object.
+The `PercentageFeatureSet()` function enables us to quickly determine the counts belonging to a subset of the possible features for each cell. Since mitochondrial transcripts in mouse begin with "mt", we will use that pattern to count the percentage of reads coming from mitochondrial transcripts.
 
 ```{r, eval = FALSE}
-# add flag to ignore capitalization OR point out difference in species?
+# We use "mt" because this is mouse, depending on the organism, this might need to be changed
+geo_so@meta.data$percent.mt = PercentageFeatureSet(geo_so, pattern = '^mt-')
+
+# Alternate way to add this column
+geo_so$percent.mt = PercentageFeatureSet(geo_so, pattern = '^mt-')
+
+# Alternate way to add this column
 geo_so[['percent.mt']] = PercentageFeatureSet(geo_so, pattern = '^mt-')
 
+# Use summary() to quickly check the range of values
 summary(geo_so$percent.mt)
 ```
 
-> Note: we wan also generate similar stats <!--add link to code or a drop down below?--> for ribosomal RNA. However, the % ribosomal counts may not always used for filtering. In addition for a probe based library, such as the fixed FLEX kit, if there are no probes targeting ribosomal RNAs then this metric can't be generated at all
+~~~
+   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  0.000   2.582   3.860  13.752  22.951  97.461 
+~~~
 
-<!--code for calculating % ribo - move to a separate page or dropdown within this section-->
+Just looking at the summary, we can see that there are some cells with a high percentage of mitochondrial reads.
 
-```{r, eval = FALSE}
-ribo.genes <- grep(pattern = "^RP[SL][[:digit:]]", x = rownames(x = scrna), value = TRUE); # update to include flag to ignore case
-percent.ribo <- Matrix::colSums(x = GetAssayData(object = scrna, slot = 'counts')[ribo.genes, ]) / Matrix::colSums(x = GetAssayData(object = scrna, slot = 'counts'));
-scrna[['percent.ribo']] <- percent.ribo;
-```
+<!-- Matt may have discussed UMIs as part of CellRanger processing and Liv/Tricia may touch on as part of library generation at end of Day 2 -->
 
+# Identifying low-quality cells
 
-## QC visualizations
+To identify low-quality cells, it's helpful to visualize the QC metrics across all cells and samples to understand the the distributions. Let's plot `nFeature_RNA`, `nCount_RNA`, and `percent.mt`. 
 
-Generating visualizations for our QC metrics can be useful for choosing our thresholds. One option for visualization is a violin plot and Seurat has built in functions to generate violin plots for a single-cell data. 
+## Visualizing QC metrics
 
-<!--Consider density plots instead and recommend look at the bounds on the empirical distribution that captures X% of the cells, where that's a relatively high number-->
-
-```{r, eval = FALSE}
-VlnPlot(geo_so, features = 'nFeature_RNA')
-VlnPlot(geo_so, features = 'nCount_RNA')
-```
-
-![](./images/curriculum/qc_nFeature_violin.png){width=75%}
-
-![](./images/curriculum/qc_nCount_violin.png){width=75%}
-
-For choosing thresholds for each dataset, we generally use a starting point of 200-500 on low end but also look at our summary plots to determine if that fits well with the data and usually base any cutoff for the high end of `nCount` on the distributions as well.
-
-We can also plot the percent of mitochondrial counts:
-<!--consider adding histogram or density plot-->
+A violin plot can help show the distributions of a quantity across multiple samples. Seurat has a built-in function, `VlnPlot()` to quickly generate the plots we seek. As we make our plots, we'll save them to a file so we have them handy outside of R, perhaps to include in a report or to share with collaborators. Let's begin with the `nFeature_RNA` violin plot.
 
 ```{r, eval = FALSE}
-VlnPlot(geo_so, features = 'nCount_RNA')
+VlnPlot(geo_so, features = 'nFeature_RNA', assay = 'RNA', layer = 'counts') + NoLegend()
+ggsave(filename = 'ISC_R/results/figures/qc_nFeature_violin.png', width = 12, height = 6, units = 'in')
 ```
 
-![](images/curriculum/qc_mito_violin.png){width=75%}
+![](./images/curriculum/qc_nFeature_violin.png)
 
-Thinking back to our goal of filtering to keep the real and healthy cells, what might be a reasonable threshold for these data? 
+We already note that the Day0 samples appear to have systematically lower features detected per cell, with sample HODay0repoilcate1 appearing to have much lower features per cell. Let's continue with the `nCount_RNA` plot.
+
+```{r, eval = FALSE}
+VlnPlot(geo_so, features = 'nCount_RNA', assay = 'RNA', layer = 'counts') + NoLegend()
+ggsave(filename = 'ISC_R/results/figures/qc_nCount_violin.png', width = 12, height = 6, units = 'in')
+```
+
+![](./images/curriculum/qc_nCount_violin.png)
+
+We obesrve a similar pattern, where the Day0 samples appear to have lower counts per cell than their Day7 and Day21 counterparts. There is even an outlier cell in HODay0replicate1, with over 90K unique UMIs detected. This cell is very likely a doublet. Finally, lets plot the `percent.mt`.
+
+```{r, eval = FALSE}
+VlnPlot(geo_so, features = 'percent.mt', assay = 'RNA', layer = 'counts') + NoLegend()
+ggsave(filename = 'ISC_R/results/figures/qc_mito_violin.png', width = 12, height = 6, units = 'in')
+```
+
+![](images/curriculum/qc_mito_violin.png)
+
+Immediately, HODay0replicate1 appears to have many cells with a high percentage of mitochondrial reads. Combined with our previous observations, it may be prudent to remove this sample altogether. We observe that the other samples appear to have a few cells with high percentage of mitochondrial reads, but overall most cells tend to have <10% mitochondrial reads. This is a good sign.
 
 Generally, many tutorials use a cutoff of 5-10% mitochondrial. However, for some experiments high mitochondrial reads would be expected (such as in cases where the condition/treatment or genotype increases cell death), then a relaxed threshold would be necessary to preserve biologically relevant cells.
 
+## Cell counts
 
-# Filtering
-
-## Choosing Filtering thresholds
-
-Since this data was downloaded from GEO, we have limited visibility on how the initial FASTQ files were processed to create the CellRanger output files uploaded for this dataset.
-
-However, we would generally expect to use the CellRanger outputs with the `_filtered` label as our initial input for a single-cell experiment. 
-
-Since we expect to use "filtered" CellRanger outputs, it's important to understand what prior filtering was performed by CellRanger and why would want to filter the data further? <!--Note - may want to skip some of this context/review depending on Matt's section-->
-
-<!--As Matt may have discussed--> CellRanger tries to draw a line between cells and empty beads (or equivalent), which we can see in the barcode rank plot from the web summary. However, we want and have the ability to draw lines between single, well measured cells and doublets or poorly measured cells/non-cells.
-
-<img src="images/curriculum/XX-CellRangerPlot.png" alt="Cell Ranger barcode rank plot" style="width:400px;"/>
-
-<!--Future idea: Wanted poster for “one good single cell”-->
-
-Before we filter the data, how many cells are we starting with?
+It's a good idea to record how many cells we started with in our experiment, and how many cells we have after filtering. So before we discuss filtering further, let's record the number of cells per sample.
 
 ```{r, eval = FALSE}
-# add table or plot for cells per sample
+cell_counts_pre_tbl = geo_so@meta.data %>% count(orig.ident, name = 'prefilter_cells')
+cell_counts_pre_tbl
 ```
 
-<!--Ideally add plot for cells per sample; consider adding summary of total number of cells per sample AND moving earlier in section?-->
+~~~
+          orig.ident prefilter_cells
+1   HODay0replicate1           12666
+2   HODay0replicate2             614
+3   HODay0replicate3            1191
+4   HODay0replicate4             949
+5  HODay21replicate1            1607
+6  HODay21replicate2             932
+7  HODay21replicate3             967
+8  HODay21replicate4            1986
+9   HODay7replicate1            3405
+10  HODay7replicate2            3694
+11  HODay7replicate3            3786
+12  HODay7replicate4            2964
+~~~
 
-Looking at the total number of cells per sample is helpful to understand both how the called "cells" compare to what was expected for the experiment. It also allows us to determine the impact of our filtering thresholds.
+It appears that Cell Ranger called many more cells in HODay0replicate1 than the other samples. Based on the QC visualization, probably erroneously so.
+
+<!-- Otherwise comment on cell numbers? -->
+
+## Using fixed thresholds
+
+After looking at the plots of `nFeature_RNA`, `nCount_RNA`, and `percent.mt`, we could decide to consider cells with <500 genes per cell, and >25% mitochondrial reads as low-quality, and filter the cells using the `subset()` function. [Sorkin et al.](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7002453/) chose these thresholds:
+
+> We filtered out cells with less than 500 genes per cell and with more than 25% mitochondrial read content.
+
+We could preview what the resulting cell counts would be with these thresholds:
+
+```{r, eval = FALSE}
+subset(geo_so, subset = nFeature_RNA > 500 & percent.mt < 25)@meta.data %>% 
+    count(orig.ident, name = 'postfilter_cells')
+```
+
+~~~
+          orig.ident postfilter_cells
+1   HODay0replicate1             1003
+2   HODay0replicate2              571
+3   HODay0replicate3             1111
+4   HODay0replicate4              876
+5  HODay21replicate1             1537
+6  HODay21replicate2              907
+7  HODay21replicate3              945
+8  HODay21replicate4             1956
+9   HODay7replicate1             3265
+10  HODay7replicate2             3578
+11  HODay7replicate3             3668
+12  HODay7replicate4             2903
+~~~
+
+This removes a sizeable number of cells from HODay0replicate1, and brings that sample into line with the other samples.
+
+## Using adaptive thresholds
+
+We could choose to remove outlier cells adaptively. This approach assumes that most of the cells are of acceptable quality. Note, we've already seen that many of the cells in HODay0replicate1 appear to be of poor quality, and many of the Day0 cells have much lower `nCount`s and `nFeature`s than their Day7 and Day21 counterparts. For thus workshop we will use the above fixed thresholds to match the publication.
+
+<!-- Resources for adaptive outlier detection https://bioconductor.org/books/3.12/OSCA/quality-control.html#identifying-low-quality-cells -->
+
+# Removing low-quality cells
+
+Let's remove the cells with `nFeature_RNA <= 500` and `percent.mt >= 25`.
+
+```{r, eval = FALSE}
+geo_so = subset(geo_so, subset = nFeature_RNA > 500 & percent.mt < 25)
+```
+
+Note that the `subset()` command uses an expression in terms of the cells we **want to keep**. Now we'll take a look at the cells per sample post-filtering:
+
+```{r, eval = FALSE}
+cell_counts_post_tbl = geo_so@meta.data %>% count(orig.ident, name = 'postfilter_cells')
+cell_counts_post_tbl
+```
+
+~~~
+          orig.ident postfilter_cells
+1   HODay0replicate1             1003
+2   HODay0replicate2              571
+3   HODay0replicate3             1111
+4   HODay0replicate4              876
+5  HODay21replicate1             1537
+6  HODay21replicate2              907
+7  HODay21replicate3              945
+8  HODay21replicate4             1956
+9   HODay7replicate1             3265
+10  HODay7replicate2             3578
+11  HODay7replicate3             3668
+12  HODay7replicate4             2903
+~~~
+
+Looking at the total number of cells per sample is helpful to understand both how the called "cells" compare to what was expected for the experiment. It also allows us to determine the impact of our filtering thresholds. Let's combine the pre and post tables:
+
+```{r, eval = FALSE}
+cell_counts_tbl = cell_counts_pre_tbl %>% left_join(cell_counts_post_tbl, by = 'orig.ident')
+cell_counts_tbl
+```
+
+~~~
+          orig.ident prefilter_cells postfilter_cells
+1   HODay0replicate1           12666             1003
+2   HODay0replicate2             614              571
+3   HODay0replicate3            1191             1111
+4   HODay0replicate4             949              876
+5  HODay21replicate1            1607             1537
+6  HODay21replicate2             932              907
+7  HODay21replicate3             967              945
+8  HODay21replicate4            1986             1956
+9   HODay7replicate1            3405             3265
+10  HODay7replicate2            3694             3578
+11  HODay7replicate3            3786             3668
+12  HODay7replicate4            2964             2903
+~~~
+
+Let's also write this table to a file.
+
+```{r, eval = FALSE}
+write_csv(cell_counts_tbl, file = 'ISC_R/results/tables/cell_filtering_counts.csv')
+```
 
 <!--What thresholds would we start with based on the plots alone? How does that compare to the thresholds reported in paper?-->
 
@@ -199,33 +301,13 @@ Looking at the total number of cells per sample is helpful to understand both ho
 
 <!--Additional aside - For single-nuclei experiments removing background/ambient RNA with CellBlender OR DecontX is an important additional step since nuclei are both sticky and porous-->
 
-## Filtering data
-
-Now that we understand our goals, let's apply our chosen filtering thresholds to our data:
-
-```{r, eval = FALSE}
-geo_so = subset(geo_so, subset = nFeature_RNA > 500 & percent.mt < 25)
-```
-
-## Evaluating filtering thresholds
-
-To evaluate our filtering threshold choices, let's generate plots for our filtered data:
-
-```{r, eval = FALSE}
-# consider changing to panel style option, instead of three separate plots?
-VlnPlot(geo_so, features = 'nFeature_RNA')
-VlnPlot(geo_so, features = 'nCount_RNA')
-VlnPlot(geo_so, features = 'percent.mt')
-```
-
-It can also be useful to compare the number of cells per sample before and after filtering, particularly if our input data had a larger number of "cells" than expected based on the preparation of the cells. 
-
-<!--Add post-filter cell count table and/or barplot visualization?-->
-
 # Summary
 
-<br\>
-<br\>
+In this section we:
+
+- Discussed quality metrics `nFeature`s, `nCount`s, and `percent.mt`.
+- Visualized these metrics across cells / samples to help identify low-quality cells.
+- Filtered low-quality cells using fixed thresholds.
 
 Next steps: dimensionality reduction using PCA
 
