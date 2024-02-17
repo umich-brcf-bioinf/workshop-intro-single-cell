@@ -130,7 +130,7 @@ breakout room.
 
   - Zoom: Click Breakout Rooms
   - Find the room corresponding to the first letter of your last name
-  - Hover over the number to the right and click **Join**.
+  - Click **Join** button to the right of the room.
   - When you have completed introductions, you can leave the breakout room to rejoin the main room.
 
   ![Breakout rooms](images/workshop_intro/zoom_breakout_room.png)
