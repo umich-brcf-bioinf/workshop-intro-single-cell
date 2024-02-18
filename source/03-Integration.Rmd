@@ -42,71 +42,37 @@ knitr_fig_path("XX")
 
 # Introduction 
 
-In this section, our goal is to determine if our data has noticeable batch effects and if so, to use an integration technique to reduce those batch effects. 
+In this section, our goal is to use an integration technique to better control technical variablity between our samples. 
 
-Like in the previous section, one integration method might be reported while it might be necessary to try several options before determining the approach that sufficiently corrects batch effects without removing expected biological variability.
+Like in the previous section, one integration method might be reported in a research paper but several options might have been tested before determining which approach sufficiently corrected batch effects without removing expected biological variability.
 
 <!--Add specific goals for section-->
 
-# Unintegrated data
-
-For any single-cell experiment there are several steps that introduce technical variability, including sample isolation, cell dissociation, and running each sample on the instrument <!--although... there are some library approaches that allow samples to be pooled before running, which our colleagues from the Advanced Genomics Core will likely be discussing at the end of the day.--> 
-
-<!--add figure from Seurat showing batch effects-->
-
-If we proceeded with our filtered data through the dimensionality reduction and clustering steps, which we will discuss in the next section, and then labeled the cells with their sample of origin, then we would see the following for our data:
-
-<!--Add example of UMAP / sample labels for unintegrated data-->
-
-In this plot, we ... see that while there are distinct clusters, those clusters seem to separate primarily by sample id. This suggests that with filtering and standard normalization, batch effects are outweighing biological variability in our data. <!--move this section to end of Projection module to contrast with integrated results-->
-
-To combat this, we will need to integrate our samples into a scaled dataset prior to performing dimensionality reduction and clustering.
 
 # Normalization & Integration
 
 <!--Is PCA and Find Neighbors required prior to SCTransform?-->
 
+For any single-cell experiment there are several steps that introduce technical variability, including sample isolation, cell dissociation, and running each sample on the instrument <!--although... there are some library approaches that allow samples to be pooled before running, which our colleagues from the Advanced Genomics Core will likely be discussing at the end of the day.--> 
 
-# Dimensionality reduction and PCA
+<!--add figure from Seurat showing batch effects-->
 
-<!--Before this section - Day 1: Starting w/ Seurat & Initial QC; expect to only show example of what clustering of unintegrated data would have looked like-->
+To combat this, we will integrate our samples into a scaled dataset prior to performing dimensionality reduction and clustering.
 
-Each sample can be 10k cells x 19k genes so very high dimensional data - not all of the genes are going to be information for classifying into cell-types/subtypes, so how do we determine what to use and then how to classify?
+# Integration methods
 
-What genes to consider the expression of - PCA; How cells are classified into clusters - Nearest Neighbors
+SCTransform, RPCA, 
 
-## What is PCA?
+#
 
 
-## Choosing the number of significant PCs for dimensionality reduction
 
-<!--Instruction Question: Start only with multisample but unintegrated and later compare in next section as [here](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-021-03957-4)?-->
 
-You have a biological question - starting point is understanding the “resolution” of your biological questions
-
-How are you defining a “cell type” or “subtype” should help with ambiguity around questions like, "How do I decide how many PCs to include?", "How do I choose a resolution for the UMAP?", etc.
-
-Related - how important is that decision to the downstream impact (e.g. how much does changing the number of PCs change the clustering)?
-
-Why not use every PC? Higher resolution risks including uninteresting variation (biological vs statistical “significance”) and a single-cell itself is not a functional unit
-
-### Visualizing relative contributions of each PC
-
-Elbow plot to start, but there are more sophisticated methods (see Dana's code snippet), and then there are even more sophisticated methods like the chooseR package or use clustering trees to evaluate stablity
-
-## Dimensionality reduction
-
-Nearest neighbors algorithm - based on similarity of expression pattern (just for genes/PCs selected)
 
 
 # Summary
 
-Next steps: Multisample/batch correction 
-
-Note how dimensionality choices are carried through downstream functions.
-tSNE vs UMAP
-DK- find thread with UMAP vs TSNE
-https://pair-code.github.io/understanding-umap/ 
+Next steps: PCA and Dim reduction
 
 ----
 
