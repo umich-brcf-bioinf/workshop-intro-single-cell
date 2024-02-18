@@ -65,7 +65,7 @@ Similar to many other areas of research, there are often gaps between how single
 
 Cell Ranger is a first-pass filter to determine what is a "cell" and what is not. Let's dig deeper to determine when a droplet might contain two cells, a very stressed cell, or some technical issue in the library preparation. We will use some common metrics to determine low-quality cells based on their expression profiles ([reference](https://bioconductor.org/books/3.12/OSCA/quality-control.html#choice-of-qc-metrics)).
 
-- The total number of UMIs detected. Cells a small number of UMIs detected may indicate loss of RNA during library preparation via cell lysis or inefficient cDNA capture / amplification. Cells with relatively high number of UMIs detected may indicate a doublet.
+- The total number of UMIs detected. Cells with a small number of UMIs detected may indicate loss of RNA during library preparation via cell lysis or inefficient cDNA capture / amplification. Cells with relatively high number of UMIs detected may indicate a doublet.
 - The number of expressed features, defined as number of genes with non-zero counts. Cells with very few measured genes are likely to be of low-quality, and may distort downstream variance estimation or dimension reduction steps.
 - The proportion of reads mapped to the mitochondrial genome. High proportions of mitochondrial transcripts may indicate a damaged cell, the measure of which may also distort downstream analysis steps.
 
@@ -165,7 +165,7 @@ ggsave(filename = 'ISC_R/results/figures/qc_mito_violin.png', width = 12, height
 
 ![](images/curriculum/qc_mito_violin.png)
 
-Immediately, HODay0replicate1 appears to have many cells with a high percentage of mitochondrial reads. Combined with our previous observations, it may be prudent to remove this sample altogether. We observe that the other samples appear to have a few cells with high percentage of mitochondrial reads, but overall most cells tend to have <10% mitochondrial reads. This is a good sign.
+Immediately, HODay0replicate1 appears to have many cells with a high percentage of mitochondrial reads. We observe that the other samples appear to have a few cells with high percentage of mitochondrial reads, but overall most cells tend to have <10% mitochondrial reads. This is a good sign.
 
 Generally, many tutorials use a cutoff of 5-10% mitochondrial. However, for some experiments high mitochondrial reads would be expected (such as in cases where the condition/treatment or genotype increases cell death), then a relaxed threshold would be necessary to preserve biologically relevant cells.
 
@@ -300,6 +300,23 @@ write_csv(cell_counts_tbl, file = 'ISC_R/results/tables/cell_filtering_counts.cs
 <!--Other “advanced” methods: out of scope for this workshop but there are packages  specifically developed to detect "doublets", e.g. droplets that contained more than one cell, such as DoubleFinder-->
 
 <!--Additional aside - For single-nuclei experiments removing background/ambient RNA with CellBlender OR DecontX is an important additional step since nuclei are both sticky and porous-->
+
+# Adding phenotype data
+
+The `orig.ident` column of the `meta.data` table includes both replicate and day information. We'd like to use this column to create new columns for day and replicate. Both of which will come in handy later.
+
+```{r, eval = FALSE}
+# Add .s separating the information in orig.ident
+# NOTE, this relies on a uniform naming scheme!
+geo_so$orig.ident = gsub('HO', 'HO.', geo_so$orig.ident)
+geo_so$orig.ident = gsub('rep', '.rep', geo_so$orig.ident)
+
+# Add day information
+geo_so$day = str_split(geo_so$orig.ident, pattern = '[.]', simplify = TRUE)[,2]
+
+# Add replicate column
+geo_so$replicate = str_split(geo_so$orig.ident, pattern = '[.]', simplify = TRUE)[,3]
+```
 
 # Summary
 

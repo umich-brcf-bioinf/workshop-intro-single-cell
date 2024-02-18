@@ -38,37 +38,146 @@ knitr_fig_path("XX")
 <br/>
 <img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
 <br/>
-<br/>
+<br/> 
+
+# Objectives
+
+- Understand when integration of samples might be needed.
+- Execute integration of samples, and evaluate if it was "successful".
+- Discuss different integration techniques offered in Seurat v5.
 
 # Introduction 
 
-In this section, our goal is to use an integration technique to better control technical variablity between our samples. 
+For larger scRNA-seq projects, data may unavoidably by generated across multiple batches. As with bulk RNA-seq, some steps during library preparation can be taken to avoid confounding batch effects with biological variables of interest. But it will remain necessary to correct for technical variation in the sample integration step. <!-- More here? --> 
+
+In this section, we will demonstrate the steps to evaluate whether integration is needed (it usually is), and will walk through integrating the data and evaluating the effectiveness thereof. 
 
 Like in the previous section, one integration method might be reported in a research paper but several options might have been tested before determining which approach sufficiently corrected batch effects without removing expected biological variability.
 
-<!--Add specific goals for section-->
+# Normalization with `SCTransform()`
 
+As with bulk RNA-seq, differences in sequencing depth is a contributing factor to technical variation in single-cell RNA-seq data. Moreover, variance stabilization in gene counts can greatly improve downstream analysis steps. Regardless of whether or not scRNA-seq data is to be integrated, it is important to normalize the count data.
 
-# Normalization & Integration
+Here we will use the `SCTransform()` method that is part of the Seurat package. [This manuscript](https://genomebiology-biomedcentral-com/articles/10.1186/s13059-021-02584-9) describes the initial approach, and [this updated manuscript](https://link.springer.com/article/10.1186/s13059-021-02584-9) describes the v2 version of `SCTransform()`.
 
-<!--Is PCA and Find Neighbors required prior to SCTransform?-->
+As we discussed when describing the structure of a `Seurat` object, the assay data is stored in layers. To conform to this convention, we will run the following command, which splits the "RNA" assay into a list of samples, each with its own layers.
 
-For any single-cell experiment there are several steps that introduce technical variability, including sample isolation, cell dissociation, and running each sample on the instrument <!--although... there are some library approaches that allow samples to be pooled before running, which our colleagues from the Advanced Genomics Core will likely be discussing at the end of the day.--> 
+```{r, eval = FALSE}
+geo_so[['RNA']] = split(geo_so[['RNA']], f = geo_so$orig.ident)
+```
 
-<!--add figure from Seurat showing batch effects-->
+We will now run `SCTransform()`, which will result in a new assay, the `SCT` assay.
 
-To combat this, we will integrate our samples into a scaled dataset prior to performing dimensionality reduction and clustering.
+```{r, eval = FALSE}
+geo_so = SCTransform(geo_so)
+```
 
-# Integration methods
+And we can see the additional assay by viewing the `geo_so` object:
 
-SCTransform, RPCA, 
+```{r, eval = FALSE}
+geo_so
+```
 
-#
+~~~
+An object of class Seurat 
+38503 features across 22320 samples within 2 assays 
+Active assay: SCT (17129 features, 3000 variable features)
+ 3 layers present: counts, data, scale.data
+ 1 other assay present: RNA
+~~~
 
+> #### Other normalizations {.unlisted .unnumbered}
+> 
+> From the Seurat documentation, the `SCTransform()` function "replaces `NormalizeData()`, `ScaleData()`, and `FindVariableFeatures()`". You may see these three commands in other vignettes, indeed even in other Seurat vignettes. ([source](https://satijalab.org/seurat/articles/sctransform_vignette))
 
+> #### Regressing out sources of variation {.unlisted .unnumbered}
+> 
+> In the `SCTransform()` function there is a parameter, `vars.to.regress`, which allows us to regress out sources of variation that we don't want to play a role in downstream analyses. A common variable to regress out is `percent.mt`.
 
+We observe at this point that `SCTransform()` performed its normalization and variable feature identification for each batch independently (a consensus set of variable features is automatically identified). ([source](https://satijalab.org/seurat/articles/seurat5_integration))
 
+# Pre-integration evaluation
 
+Prior to integration, we would like to know if there are any batch effects that carry through to the cell clusters. Most importantly, we would like to know if clusters tend to be determined by sample or condition (in this case, the day). In order to figure this out we have already run the following three commands, which we will describe in more detail later.
+
+```{r, eval = FALSE}
+geo_so = RunPCA(geo_so, reduction.name = 'unintegrated.sct.pca')
+geo_so = FindNeighbors(geo_so, dims = 1:25, reduction = 'unintegrated.sct.pca')
+geo_so = FindClusters(geo_so, resolution = 0.5, cluster.name = 'unintegrated.sct.clusters')
+geo_so = RunUMAP(geo_so, dims = 1:25, reduction = 'unintegrated.sct.pca', reduction.name = 'umap.unintegrated.sct.pca')
+```
+
+After running these commands, we can visualize the cells in a UMAP plot, which projects the high-dimensional gene expression into two dimensions.
+
+```{r, eval = FALSE}
+pre_integration_umap_plot = DimPlot(geo_so, group.by = 'orig.ident', label = FALSE, reduction = 'umap.unintegrated.sct.pca') + NoLegend()
+ggsave(filename = 'ISC_R/results/figures/umap_unintegrated_sct_orig.ident.png', plot = pre_integration_umap_plot)
+```
+
+![](./images/curriculum/umap_unintegrated_sct_orig.ident.png)
+
+From this image, we can qualitatively see that some clusters seem to be driven by the original identity. We can see this even more clearly if we use `group.by = 'day'`:
+
+```{r, eval = FALSE}
+pre_integration_umap_plot = DimPlot(geo_so, group.by = 'day', label = FALSE, reduction = 'umap.unintegrated.sct.pca') + NoLegend()
+ggsave(filename = 'ISC_R/results/figures/umap_unintegrated_sct_day.png', plot = pre_integration_umap_plot)
+```
+
+![](./images/curriculum/umap_unintegrated_sct_day.png)
+
+We can also evaluate cluster membership by `orig.ident` or by `day` using the `table()` function:
+
+```{r, eval = FALSE}
+table(geo_so@meta.data$day, geo_so@meta.data$unintegrated.sct.clusters)
+```
+
+~~~
+           0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18
+  Day0     0   17    4 1147   50   85   46 1022  311   36   26  270  145  106   37   66   34  159    0
+  Day21  108   46  195 1346   50 1239  685   15  604  384   60   95  195  176   40   41   59    5    2
+  Day7  3190 2894 2428  132 1827   51  613    2   35  470  684  166   87   78  274  223  117    9  134
+~~~
+
+We can see that many clusters appear to be wholly made up of cells from one or two days. Integrating the data may solve this issue.
+
+# Integration with `IntegrateLayers()`
+
+In the workflow above, `SCTransform() > RunPCA() > FindNeighbors() > FindClusters()` we have what we need to run `IntegrateLayers()`:
+
+```{r, eval = FALSE}
+geo_so = IntegrateLayers(
+    object = geo_so, 
+    method = CCAIntegration, 
+    orig.reduction = 'unintegrated.sct.pca',
+    normalization.method = 'SCT',
+    new.reduction = 'integrated.sct.cca')
+```
+
+Note we have specified the unintegrated reduction, which is what `IntegrateLayers()` operates on, along with the `SCT` assay. We now rerun `FindNeighbors() > FindClusters() > RunUMAP()` for the new reduction `integrated.sct.cca`:
+
+```{r, eval = FALSE}
+geo_so = FindNeighbors(geo_so, dims = 1:25, reduction = 'integrated.sct.cca')
+geo_so = FindClusters(geo_so, resolution = 1, cluster.name = 'integrated.sct.cca.clusters')
+geo_so = RunUMAP(geo_so, dims = 1:25, reduction = 'integrated.sct.cca', reduction.name = 'umap.sct.integrated.cca')
+```
+
+Which sets us up to see the UMAP and evaluate whether we've reduced the condition effect on the cluster membership.
+
+```{r, eval = FALSE}
+post_integration_umap_plot_orig.ident = DimPlot(geo_so, group.by = 'orig.ident', label = FALSE, reduction = 'umap.sct.integrated.cca') + NoLegend()
+ggsave(filename = 'ISC_R/results/figures/umap_integrated_sct_orig.ident.png', plot = post_integration_umap_plot_orig.ident)
+```
+
+![](./images/curriculum/umap_integrated_sct_orig.ident.png)
+
+```{r, eval = FALSE}
+post_integration_umap_plot_day = DimPlot(geo_so, group.by = 'day', label = FALSE, reduction = 'umap.sct.integrated.cca') + NoLegend()
+ggsave(filename = 'ISC_R/results/figures/umap_integrated_sct_day.png', plot = post_integration_umap_plot_day)
+```
+
+![](./images/curriculum/umap_integrated_sct_day.png)
+
+Indeed, it looks like we've succeeded in reducing the effect of condition on cluster membership by integrating the data.
 
 # Summary
 
