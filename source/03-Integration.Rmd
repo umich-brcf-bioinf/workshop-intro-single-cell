@@ -69,10 +69,7 @@ SCTransform, RPCA,
 
 Next steps: PCA and Dim reduction
 
-Note how dimensionality choices are carried through downstream functions.
-tSNE vs UMAP
-DK- find thread with UMAP vs TSNE
-https://pair-code.github.io/understanding-umap/ 
+
 
 ----
 

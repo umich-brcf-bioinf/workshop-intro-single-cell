@@ -226,11 +226,9 @@ In this section we:
 - Learned how to read 10X data into Seurat.
 - Introduced the Seurat object, and how to access parts of it.
 
-<<<<<<< HEAD
+
 <br/>
-=======
-Next steps: QC and filtering of the data.
->>>>>>> 3abcf8f2d15484e03adcef07257ee9e3aca03222
+
 
 ----
 
