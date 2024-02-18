@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core" />
 
-<meta name="date" content="2024-02-07" />
+<meta name="date" content="2024-02-18" />
 
 <title>Integration and batch correction</title>
 
-<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -31,7 +31,7 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
@@ -430,7 +430,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Integration and batch correction</h1>
 <h4 class="author">UM Bioinformatics Core</h4>
-<h4 class="date">2024-02-07</h4>
+<h4 class="date">2024-02-18</h4>
 
 </div>
 
@@ -452,92 +452,155 @@ pre {
 <img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
 <br/> <br/></p>
 </div>
+<div id="objectives" class="section level1">
+<h1>Objectives</h1>
+<ul>
+<li>Understand when integration of samples might be needed.</li>
+<li>Execute integration of samples, and evaluate if it was
+“successful”.</li>
+<li>Discuss different integration techniques offered in Seurat v5.</li>
+</ul>
+</div>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>In this section, our goal is to determine if our data has noticeable
-batch effects and if so, to use an integration technique to reduce those
-batch effects.</p>
+<p>For larger scRNA-seq projects, data may unavoidably by generated
+across multiple batches. As with bulk RNA-seq, some steps during library
+preparation can be taken to avoid confounding batch effects with
+biological variables of interest. But it will remain necessary to
+correct for technical variation in the sample integration step.
+<!-- More here? --></p>
+<p>In this section, we will demonstrate the steps to evaluate whether
+integration is needed (it usually is), and will walk through integrating
+the data and evaluating the effectiveness thereof.</p>
 <p>Like in the previous section, one integration method might be
-reported while it might be necessary to try several options before
-determining the approach that sufficiently corrects batch effects
+reported in a research paper but several options might have been tested
+before determining which approach sufficiently corrected batch effects
 without removing expected biological variability.</p>
-<!--Add specific goals for section-->
 </div>
-<div id="unintegrated-data" class="section level1">
-<h1>Unintegrated data</h1>
-<p>For any single-cell experiment there are several steps that introduce
-technical variability, including sample isolation, cell dissociation,
-and running each sample on the instrument
-<!--although... there are some library approaches that allow samples to be pooled before running, which our colleagues from the Advanced Genomics Core will likely be discussing at the end of the day.--></p>
-<!--add figure from Seurat showing batch effects-->
-<p>If we proceeded with our filtered data through the dimensionality
-reduction and clustering steps, which we will discuss in the next
-section, and then labeled the cells with their sample of origin, then we
-would see the following for our data:</p>
-<!--Add example of UMAP / sample labels for unintegrated data-->
-<p>In this plot, we … see that while there are distinct clusters, those
-clusters seem to separate primarily by sample id. This suggests that
-with filtering and standard normalization, batch effects are outweighing
-biological variability in our data.
-<!--move this section to end of Projection module to contrast with integrated results--></p>
-<p>To combat this, we will need to integrate our samples into a scaled
-dataset prior to performing dimensionality reduction and clustering.</p>
+<div id="normalization-with-sctransform" class="section level1">
+<h1>Normalization with <code>SCTransform()</code></h1>
+<p>As with bulk RNA-seq, differences in sequencing depth is a
+contributing factor to technical variation in single-cell RNA-seq data.
+Moreover, variance stabilization in gene counts can greatly improve
+downstream analysis steps. Regardless of whether or not scRNA-seq data
+is to be integrated, it is important to normalize the count data.</p>
+<p>Here we will use the <code>SCTransform()</code> method that is part
+of the Seurat package. <a
+href="https://genomebiology-biomedcentral-com/articles/10.1186/s13059-021-02584-9">This
+manuscript</a> describes the initial approach, and <a
+href="https://link.springer.com/article/10.1186/s13059-021-02584-9">this
+updated manuscript</a> describes the v2 version of
+<code>SCTransform()</code>.</p>
+<p>As we discussed when describing the structure of a
+<code>Seurat</code> object, the assay data is stored in layers. To
+conform to this convention, we will run the following command, which
+splits the “RNA” assay into a list of samples, each with its own
+layers.</p>
+<pre class="r"><code>geo_so[[&#39;RNA&#39;]] = split(geo_so[[&#39;RNA&#39;]], f = geo_so$orig.ident)</code></pre>
+<p>We will now run <code>SCTransform()</code>, which will result in a
+new assay, the <code>SCT</code> assay.</p>
+<pre class="r"><code>geo_so = SCTransform(geo_so)</code></pre>
+<p>And we can see the additional assay by viewing the
+<code>geo_so</code> object:</p>
+<pre class="r"><code>geo_so</code></pre>
+<pre><code>An object of class Seurat 
+38503 features across 22320 samples within 2 assays 
+Active assay: SCT (17129 features, 3000 variable features)
+ 3 layers present: counts, data, scale.data
+ 1 other assay present: RNA</code></pre>
+<blockquote>
+<h4 id="other-normalizations" class="unlisted unnumbered">Other
+normalizations</h4>
+<p>From the Seurat documentation, the <code>SCTransform()</code>
+function “replaces <code>NormalizeData()</code>,
+<code>ScaleData()</code>, and <code>FindVariableFeatures()</code>”. You
+may see these three commands in other vignettes, indeed even in other
+Seurat vignettes. (<a
+href="https://satijalab.org/seurat/articles/sctransform_vignette">source</a>)</p>
+</blockquote>
+<blockquote>
+<h4 id="regressing-out-sources-of-variation"
+class="unlisted unnumbered">Regressing out sources of variation</h4>
+<p>In the <code>SCTransform()</code> function there is a parameter,
+<code>vars.to.regress</code>, which allows us to regress out sources of
+variation that we don’t want to play a role in downstream analyses. A
+common variable to regress out is <code>percent.mt</code>.</p>
+</blockquote>
+<p>We observe at this point that <code>SCTransform()</code> performed
+its normalization and variable feature identification for each batch
+independently (a consensus set of variable features is automatically
+identified). (<a
+href="https://satijalab.org/seurat/articles/seurat5_integration">source</a>)</p>
 </div>
-<div id="normalization-integration" class="section level1">
-<h1>Normalization &amp; Integration</h1>
-<!--Is PCA and Find Neighbors required prior to SCTransform?-->
+<div id="pre-integration-evaluation" class="section level1">
+<h1>Pre-integration evaluation</h1>
+<p>Prior to integration, we would like to know if there are any batch
+effects that carry through to the cell clusters. Most importantly, we
+would like to know if clusters tend to be determined by sample or
+condition (in this case, the day). In order to figure this out we have
+already run the following three commands, which we will describe in more
+detail later.</p>
+<pre class="r"><code>geo_so = RunPCA(geo_so, reduction.name = &#39;unintegrated.sct.pca&#39;)
+geo_so = FindNeighbors(geo_so, dims = 1:25, reduction = &#39;unintegrated.sct.pca&#39;)
+geo_so = FindClusters(geo_so, resolution = 0.5, cluster.name = &#39;unintegrated.sct.clusters&#39;)
+geo_so = RunUMAP(geo_so, dims = 1:25, reduction = &#39;unintegrated.sct.pca&#39;, reduction.name = &#39;umap.unintegrated.sct.pca&#39;)</code></pre>
+<p>After running these commands, we can visualize the cells in a UMAP
+plot, which projects the high-dimensional gene expression into two
+dimensions.</p>
+<pre class="r"><code>pre_integration_umap_plot = DimPlot(geo_so, group.by = &#39;orig.ident&#39;, label = FALSE, reduction = &#39;umap.unintegrated.sct.pca&#39;) + NoLegend()
+ggsave(filename = &#39;ISC_R/results/figures/umap_unintegrated_sct_orig.ident.png&#39;, plot = pre_integration_umap_plot)</code></pre>
+<p><img
+src="images/curriculum/umap_unintegrated_sct_orig.ident.png" /></p>
+<p>From this image, we can qualitatively see that some clusters seem to
+be driven by the original identity. We can see this even more clearly if
+we use <code>group.by = 'day'</code>:</p>
+<pre class="r"><code>pre_integration_umap_plot = DimPlot(geo_so, group.by = &#39;day&#39;, label = FALSE, reduction = &#39;umap.unintegrated.sct.pca&#39;) + NoLegend()
+ggsave(filename = &#39;ISC_R/results/figures/umap_unintegrated_sct_day.png&#39;, plot = pre_integration_umap_plot)</code></pre>
+<p><img src="images/curriculum/umap_unintegrated_sct_day.png" /></p>
+<p>We can also evaluate cluster membership by <code>orig.ident</code> or
+by <code>day</code> using the <code>table()</code> function:</p>
+<pre class="r"><code>table(geo_so@meta.data$day, geo_so@meta.data$unintegrated.sct.clusters)</code></pre>
+<pre><code>           0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18
+  Day0     0   17    4 1147   50   85   46 1022  311   36   26  270  145  106   37   66   34  159    0
+  Day21  108   46  195 1346   50 1239  685   15  604  384   60   95  195  176   40   41   59    5    2
+  Day7  3190 2894 2428  132 1827   51  613    2   35  470  684  166   87   78  274  223  117    9  134</code></pre>
+<p>We can see that many clusters appear to be wholly made up of cells
+from one or two days. Integrating the data may solve this issue.</p>
 </div>
-<div id="dimensionality-reduction-and-pca" class="section level1">
-<h1>Dimensionality reduction and PCA</h1>
-<!--Before this section - Day 1: Starting w/ Seurat & Initial QC; expect to only show example of what clustering of unintegrated data would have looked like-->
-<p>Each sample can be 10k cells x 19k genes so very high dimensional
-data - not all of the genes are going to be information for classifying
-into cell-types/subtypes, so how do we determine what to use and then
-how to classify?</p>
-<p>What genes to consider the expression of - PCA; How cells are
-classified into clusters - Nearest Neighbors</p>
-<div id="what-is-pca" class="section level2">
-<h2>What is PCA?</h2>
-</div>
-<div
-id="choosing-the-number-of-significant-pcs-for-dimensionality-reduction"
-class="section level2">
-<h2>Choosing the number of significant PCs for dimensionality
-reduction</h2>
-<!--Instruction Question: Start only with multisample but unintegrated and later compare in next section as [here](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-021-03957-4)?-->
-<p>You have a biological question - starting point is understanding the
-“resolution” of your biological questions</p>
-<p>How are you defining a “cell type” or “subtype” should help with
-ambiguity around questions like, “How do I decide how many PCs to
-include?”, “How do I choose a resolution for the UMAP?”, etc.</p>
-<p>Related - how important is that decision to the downstream impact
-(e.g. how much does changing the number of PCs change the
-clustering)?</p>
-<p>Why not use every PC? Higher resolution risks including uninteresting
-variation (biological vs statistical “significance”) and a single-cell
-itself is not a functional unit</p>
-<div id="visualizing-relative-contributions-of-each-pc"
-class="section level3">
-<h3>Visualizing relative contributions of each PC</h3>
-<p>Elbow plot to start, but there are more sophisticated methods (see
-Dana’s code snippet), and then there are even more sophisticated methods
-like the chooseR package or use clustering trees to evaluate
-stablity</p>
-</div>
-</div>
-<div id="dimensionality-reduction" class="section level2">
-<h2>Dimensionality reduction</h2>
-<p>Nearest neighbors algorithm - based on similarity of expression
-pattern (just for genes/PCs selected)</p>
-</div>
+<div id="integration-with-integratelayers" class="section level1">
+<h1>Integration with <code>IntegrateLayers()</code></h1>
+<p>In the workflow above,
+<code>SCTransform() &gt; RunPCA() &gt; FindNeighbors() &gt; FindClusters()</code>
+we have what we need to run <code>IntegrateLayers()</code>:</p>
+<pre class="r"><code>geo_so = IntegrateLayers(
+    object = geo_so, 
+    method = CCAIntegration, 
+    orig.reduction = &#39;unintegrated.sct.pca&#39;,
+    normalization.method = &#39;SCT&#39;,
+    new.reduction = &#39;integrated.sct.cca&#39;)</code></pre>
+<p>Note we have specified the unintegrated reduction, which is what
+<code>IntegrateLayers()</code> operates on, along with the
+<code>SCT</code> assay. We now rerun
+<code>FindNeighbors() &gt; FindClusters() &gt; RunUMAP()</code> for the
+new reduction <code>integrated.sct.cca</code>:</p>
+<pre class="r"><code>geo_so = FindNeighbors(geo_so, dims = 1:25, reduction = &#39;integrated.sct.cca&#39;)
+geo_so = FindClusters(geo_so, resolution = 1, cluster.name = &#39;integrated.sct.cca.clusters&#39;)
+geo_so = RunUMAP(geo_so, dims = 1:25, reduction = &#39;integrated.sct.cca&#39;, reduction.name = &#39;umap.sct.integrated.cca&#39;)</code></pre>
+<p>Which sets us up to see the UMAP and evaluate whether we’ve reduced
+the condition effect on the cluster membership.</p>
+<pre class="r"><code>post_integration_umap_plot_orig.ident = DimPlot(geo_so, group.by = &#39;orig.ident&#39;, label = FALSE, reduction = &#39;umap.sct.integrated.cca&#39;) + NoLegend()
+ggsave(filename = &#39;ISC_R/results/figures/umap_integrated_sct_orig.ident.png&#39;, plot = post_integration_umap_plot_orig.ident)</code></pre>
+<p><img
+src="images/curriculum/umap_integrated_sct_orig.ident.png" /></p>
+<pre class="r"><code>post_integration_umap_plot_day = DimPlot(geo_so, group.by = &#39;day&#39;, label = FALSE, reduction = &#39;umap.sct.integrated.cca&#39;) + NoLegend()
+ggsave(filename = &#39;ISC_R/results/figures/umap_integrated_sct_day.png&#39;, plot = post_integration_umap_plot_day)</code></pre>
+<p><img src="images/curriculum/umap_integrated_sct_day.png" /></p>
+<p>Indeed, it looks like we’ve succeeded in reducing the effect of
+condition on cluster membership by integrating the data.</p>
 </div>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
-<p>Next steps: Multisample/batch correction</p>
-<p>Note how dimensionality choices are carried through downstream
-functions. tSNE vs UMAP DK- find thread with UMAP vs TSNE <a
-href="https://pair-code.github.io/understanding-umap/"
-class="uri">https://pair-code.github.io/understanding-umap/</a></p>
+<p>Next steps: PCA and Dim reduction</p>
 <hr />
 <p>These materials have been adapted and extended from materials listed
 above. These are open access materials distributed under the terms of
@@ -566,7 +629,7 @@ lesson</a></th>
 </table>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiSW50ZWdyYXRpb24gYW5kIGJhdGNoIGNvcnJlY3Rpb24iCmF1dGhvcjogIlVNIEJpb2luZm9ybWF0aWNzIENvcmUiCmRhdGU6ICJgciBTeXMuRGF0ZSgpYCIKb3V0cHV0OgogICAgICAgIGh0bWxfZG9jdW1lbnQ6CiAgICAgICAgICAgIGluY2x1ZGVzOgogICAgICAgICAgICAgICAgaW5faGVhZGVyOiBoZWFkZXIuaHRtbAogICAgICAgICAgICB0aGVtZTogcGFwZXIKICAgICAgICAgICAgdG9jOiB0cnVlCiAgICAgICAgICAgIHRvY19kZXB0aDogNAogICAgICAgICAgICB0b2NfZmxvYXQ6IHRydWUKICAgICAgICAgICAgbnVtYmVyX3NlY3Rpb25zOiBmYWxzZQogICAgICAgICAgICBmaWdfY2FwdGlvbjogdHJ1ZQogICAgICAgICAgICBtYXJrZG93bjogR0ZNCiAgICAgICAgICAgIGNvZGVfZG93bmxvYWQ6IHRydWUKLS0tCgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgpib2R5LCB0ZCB7CiAgIGZvbnQtc2l6ZTogMThweDsKfQpjb2RlLnJ7CiAgZm9udC1zaXplOiAxMnB4Owp9CnByZSB7CiAgZm9udC1zaXplOiAxMnB4Cn0KPC9zdHlsZT4KCmBgYHtyLCBpbmNsdWRlID0gRkFMU0V9CnNvdXJjZSgiLi4vYmluL2NodW5rLW9wdGlvbnMuUiIpCmtuaXRyX2ZpZ19wYXRoKCJYWCIpCmBgYAoKIyBXb3JrZmxvdyBPdmVydmlldyB7LnVubGlzdGVkIC51bm51bWJlcmVkfQoKPGJyLz4KPGltZyBzcmM9ImltYWdlcy93YXlmaW5kZXIvd2F5ZmluZGVyLnBuZyIgYWx0PSJ3YXlmaW5kZXIiIHN0eWxlPSJoZWlnaHQ6IDQwMHB4OyIvPgo8YnIvPgo8YnIvPgoKIyBJbnRyb2R1Y3Rpb24gCgpJbiB0aGlzIHNlY3Rpb24sIG91ciBnb2FsIGlzIHRvIGRldGVybWluZSBpZiBvdXIgZGF0YSBoYXMgbm90aWNlYWJsZSBiYXRjaCBlZmZlY3RzIGFuZCBpZiBzbywgdG8gdXNlIGFuIGludGVncmF0aW9uIHRlY2huaXF1ZSB0byByZWR1Y2UgdGhvc2UgYmF0Y2ggZWZmZWN0cy4gCgpMaWtlIGluIHRoZSBwcmV2aW91cyBzZWN0aW9uLCBvbmUgaW50ZWdyYXRpb24gbWV0aG9kIG1pZ2h0IGJlIHJlcG9ydGVkIHdoaWxlIGl0IG1pZ2h0IGJlIG5lY2Vzc2FyeSB0byB0cnkgc2V2ZXJhbCBvcHRpb25zIGJlZm9yZSBkZXRlcm1pbmluZyB0aGUgYXBwcm9hY2ggdGhhdCBzdWZmaWNpZW50bHkgY29ycmVjdHMgYmF0Y2ggZWZmZWN0cyB3aXRob3V0IHJlbW92aW5nIGV4cGVjdGVkIGJpb2xvZ2ljYWwgdmFyaWFiaWxpdHkuCgo8IS0tQWRkIHNwZWNpZmljIGdvYWxzIGZvciBzZWN0aW9uLS0+CgojIFVuaW50ZWdyYXRlZCBkYXRhCgpGb3IgYW55IHNpbmdsZS1jZWxsIGV4cGVyaW1lbnQgdGhlcmUgYXJlIHNldmVyYWwgc3RlcHMgdGhhdCBpbnRyb2R1Y2UgdGVjaG5pY2FsIHZhcmlhYmlsaXR5LCBpbmNsdWRpbmcgc2FtcGxlIGlzb2xhdGlvbiwgY2VsbCBkaXNzb2NpYXRpb24sIGFuZCBydW5uaW5nIGVhY2ggc2FtcGxlIG9uIHRoZSBpbnN0cnVtZW50IDwhLS1hbHRob3VnaC4uLiB0aGVyZSBhcmUgc29tZSBsaWJyYXJ5IGFwcHJvYWNoZXMgdGhhdCBhbGxvdyBzYW1wbGVzIHRvIGJlIHBvb2xlZCBiZWZvcmUgcnVubmluZywgd2hpY2ggb3VyIGNvbGxlYWd1ZXMgZnJvbSB0aGUgQWR2YW5jZWQgR2Vub21pY3MgQ29yZSB3aWxsIGxpa2VseSBiZSBkaXNjdXNzaW5nIGF0IHRoZSBlbmQgb2YgdGhlIGRheS4tLT4gCgo8IS0tYWRkIGZpZ3VyZSBmcm9tIFNldXJhdCBzaG93aW5nIGJhdGNoIGVmZmVjdHMtLT4KCklmIHdlIHByb2NlZWRlZCB3aXRoIG91ciBmaWx0ZXJlZCBkYXRhIHRocm91Z2ggdGhlIGRpbWVuc2lvbmFsaXR5IHJlZHVjdGlvbiBhbmQgY2x1c3RlcmluZyBzdGVwcywgd2hpY2ggd2Ugd2lsbCBkaXNjdXNzIGluIHRoZSBuZXh0IHNlY3Rpb24sIGFuZCB0aGVuIGxhYmVsZWQgdGhlIGNlbGxzIHdpdGggdGhlaXIgc2FtcGxlIG9mIG9yaWdpbiwgdGhlbiB3ZSB3b3VsZCBzZWUgdGhlIGZvbGxvd2luZyBmb3Igb3VyIGRhdGE6Cgo8IS0tQWRkIGV4YW1wbGUgb2YgVU1BUCAvIHNhbXBsZSBsYWJlbHMgZm9yIHVuaW50ZWdyYXRlZCBkYXRhLS0+CgpJbiB0aGlzIHBsb3QsIHdlIC4uLiBzZWUgdGhhdCB3aGlsZSB0aGVyZSBhcmUgZGlzdGluY3QgY2x1c3RlcnMsIHRob3NlIGNsdXN0ZXJzIHNlZW0gdG8gc2VwYXJhdGUgcHJpbWFyaWx5IGJ5IHNhbXBsZSBpZC4gVGhpcyBzdWdnZXN0cyB0aGF0IHdpdGggZmlsdGVyaW5nIGFuZCBzdGFuZGFyZCBub3JtYWxpemF0aW9uLCBiYXRjaCBlZmZlY3RzIGFyZSBvdXR3ZWlnaGluZyBiaW9sb2dpY2FsIHZhcmlhYmlsaXR5IGluIG91ciBkYXRhLiA8IS0tbW92ZSB0aGlzIHNlY3Rpb24gdG8gZW5kIG9mIFByb2plY3Rpb24gbW9kdWxlIHRvIGNvbnRyYXN0IHdpdGggaW50ZWdyYXRlZCByZXN1bHRzLS0+CgpUbyBjb21iYXQgdGhpcywgd2Ugd2lsbCBuZWVkIHRvIGludGVncmF0ZSBvdXIgc2FtcGxlcyBpbnRvIGEgc2NhbGVkIGRhdGFzZXQgcHJpb3IgdG8gcGVyZm9ybWluZyBkaW1lbnNpb25hbGl0eSByZWR1Y3Rpb24gYW5kIGNsdXN0ZXJpbmcuCgojIE5vcm1hbGl6YXRpb24gJiBJbnRlZ3JhdGlvbgoKPCEtLUlzIFBDQSBhbmQgRmluZCBOZWlnaGJvcnMgcmVxdWlyZWQgcHJpb3IgdG8gU0NUcmFuc2Zvcm0/LS0+CgoKIyBEaW1lbnNpb25hbGl0eSByZWR1Y3Rpb24gYW5kIFBDQQoKPCEtLUJlZm9yZSB0aGlzIHNlY3Rpb24gLSBEYXkgMTogU3RhcnRpbmcgdy8gU2V1cmF0ICYgSW5pdGlhbCBRQzsgZXhwZWN0IHRvIG9ubHkgc2hvdyBleGFtcGxlIG9mIHdoYXQgY2x1c3RlcmluZyBvZiB1bmludGVncmF0ZWQgZGF0YSB3b3VsZCBoYXZlIGxvb2tlZCBsaWtlLS0+CgpFYWNoIHNhbXBsZSBjYW4gYmUgMTBrIGNlbGxzIHggMTlrIGdlbmVzIHNvIHZlcnkgaGlnaCBkaW1lbnNpb25hbCBkYXRhIC0gbm90IGFsbCBvZiB0aGUgZ2VuZXMgYXJlIGdvaW5nIHRvIGJlIGluZm9ybWF0aW9uIGZvciBjbGFzc2lmeWluZyBpbnRvIGNlbGwtdHlwZXMvc3VidHlwZXMsIHNvIGhvdyBkbyB3ZSBkZXRlcm1pbmUgd2hhdCB0byB1c2UgYW5kIHRoZW4gaG93IHRvIGNsYXNzaWZ5PwoKV2hhdCBnZW5lcyB0byBjb25zaWRlciB0aGUgZXhwcmVzc2lvbiBvZiAtIFBDQTsgSG93IGNlbGxzIGFyZSBjbGFzc2lmaWVkIGludG8gY2x1c3RlcnMgLSBOZWFyZXN0IE5laWdoYm9ycwoKIyMgV2hhdCBpcyBQQ0E/CgoKIyMgQ2hvb3NpbmcgdGhlIG51bWJlciBvZiBzaWduaWZpY2FudCBQQ3MgZm9yIGRpbWVuc2lvbmFsaXR5IHJlZHVjdGlvbgoKPCEtLUluc3RydWN0aW9uIFF1ZXN0aW9uOiBTdGFydCBvbmx5IHdpdGggbXVsdGlzYW1wbGUgYnV0IHVuaW50ZWdyYXRlZCBhbmQgbGF0ZXIgY29tcGFyZSBpbiBuZXh0IHNlY3Rpb24gYXMgW2hlcmVdKGh0dHBzOi8vYm1jYmlvaW5mb3JtYXRpY3MuYmlvbWVkY2VudHJhbC5jb20vYXJ0aWNsZXMvMTAuMTE4Ni9zMTI4NTktMDIxLTAzOTU3LTQpPy0tPgoKWW91IGhhdmUgYSBiaW9sb2dpY2FsIHF1ZXN0aW9uIC0gc3RhcnRpbmcgcG9pbnQgaXMgdW5kZXJzdGFuZGluZyB0aGUg4oCccmVzb2x1dGlvbuKAnSBvZiB5b3VyIGJpb2xvZ2ljYWwgcXVlc3Rpb25zCgpIb3cgYXJlIHlvdSBkZWZpbmluZyBhIOKAnGNlbGwgdHlwZeKAnSBvciDigJxzdWJ0eXBl4oCdIHNob3VsZCBoZWxwIHdpdGggYW1iaWd1aXR5IGFyb3VuZCBxdWVzdGlvbnMgbGlrZSwgIkhvdyBkbyBJIGRlY2lkZSBob3cgbWFueSBQQ3MgdG8gaW5jbHVkZT8iLCAiSG93IGRvIEkgY2hvb3NlIGEgcmVzb2x1dGlvbiBmb3IgdGhlIFVNQVA/IiwgZXRjLgoKUmVsYXRlZCAtIGhvdyBpbXBvcnRhbnQgaXMgdGhhdCBkZWNpc2lvbiB0byB0aGUgZG93bnN0cmVhbSBpbXBhY3QgKGUuZy4gaG93IG11Y2ggZG9lcyBjaGFuZ2luZyB0aGUgbnVtYmVyIG9mIFBDcyBjaGFuZ2UgdGhlIGNsdXN0ZXJpbmcpPwoKV2h5IG5vdCB1c2UgZXZlcnkgUEM/IEhpZ2hlciByZXNvbHV0aW9uIHJpc2tzIGluY2x1ZGluZyB1bmludGVyZXN0aW5nIHZhcmlhdGlvbiAoYmlvbG9naWNhbCB2cyBzdGF0aXN0aWNhbCDigJxzaWduaWZpY2FuY2XigJ0pIGFuZCBhIHNpbmdsZS1jZWxsIGl0c2VsZiBpcyBub3QgYSBmdW5jdGlvbmFsIHVuaXQKCiMjIyBWaXN1YWxpemluZyByZWxhdGl2ZSBjb250cmlidXRpb25zIG9mIGVhY2ggUEMKCkVsYm93IHBsb3QgdG8gc3RhcnQsIGJ1dCB0aGVyZSBhcmUgbW9yZSBzb3BoaXN0aWNhdGVkIG1ldGhvZHMgKHNlZSBEYW5hJ3MgY29kZSBzbmlwcGV0KSwgYW5kIHRoZW4gdGhlcmUgYXJlIGV2ZW4gbW9yZSBzb3BoaXN0aWNhdGVkIG1ldGhvZHMgbGlrZSB0aGUgY2hvb3NlUiBwYWNrYWdlIG9yIHVzZSBjbHVzdGVyaW5nIHRyZWVzIHRvIGV2YWx1YXRlIHN0YWJsaXR5CgojIyBEaW1lbnNpb25hbGl0eSByZWR1Y3Rpb24KCk5lYXJlc3QgbmVpZ2hib3JzIGFsZ29yaXRobSAtIGJhc2VkIG9uIHNpbWlsYXJpdHkgb2YgZXhwcmVzc2lvbiBwYXR0ZXJuIChqdXN0IGZvciBnZW5lcy9QQ3Mgc2VsZWN0ZWQpCgoKIyBTdW1tYXJ5CgpOZXh0IHN0ZXBzOiBNdWx0aXNhbXBsZS9iYXRjaCBjb3JyZWN0aW9uIAoKTm90ZSBob3cgZGltZW5zaW9uYWxpdHkgY2hvaWNlcyBhcmUgY2FycmllZCB0aHJvdWdoIGRvd25zdHJlYW0gZnVuY3Rpb25zLgp0U05FIHZzIFVNQVAKREstIGZpbmQgdGhyZWFkIHdpdGggVU1BUCB2cyBUU05FCmh0dHBzOi8vcGFpci1jb2RlLmdpdGh1Yi5pby91bmRlcnN0YW5kaW5nLXVtYXAvIAoKLS0tLQoKVGhlc2UgbWF0ZXJpYWxzIGhhdmUgYmVlbiBhZGFwdGVkIGFuZCBleHRlbmRlZCBmcm9tIG1hdGVyaWFscyBsaXN0ZWQgYWJvdmUuIFRoZXNlIGFyZSBvcGVuIGFjY2VzcyBtYXRlcmlhbHMgZGlzdHJpYnV0ZWQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBbQ3JlYXRpdmUgQ29tbW9ucyBBdHRyaWJ1dGlvbiBsaWNlbnNlIChDQyBCWSA0LjApXShodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9saWNlbnNlcy9ieS80LjAvKSwgd2hpY2ggcGVybWl0cyB1bnJlc3RyaWN0ZWQgdXNlLCBkaXN0cmlidXRpb24sIGFuZCByZXByb2R1Y3Rpb24gaW4gYW55IG1lZGl1bSwgcHJvdmlkZWQgdGhlIG9yaWdpbmFsIGF1dGhvciBhbmQgc291cmNlIGFyZSBjcmVkaXRlZC4KCjxici8+Cjxici8+Cjxoci8+CnwgW1ByZXZpb3VzIGxlc3Nvbl0oMDItUUNhbmRGaWx0ZXJpbmcuaHRtbCkgfCBbVG9wIG9mIHRoaXMgbGVzc29uXSgjdG9wKSB8IFtOZXh0IGxlc3Nvbl0oUENBYW5kRGltUmVkdWN0aW9uLmh0bWwpIHwKfCA6LS0tIHwgOi0tLS06IHwgLS0tOiB8CgoKCgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiSW50ZWdyYXRpb24gYW5kIGJhdGNoIGNvcnJlY3Rpb24iCmF1dGhvcjogIlVNIEJpb2luZm9ybWF0aWNzIENvcmUiCmRhdGU6ICJgciBTeXMuRGF0ZSgpYCIKb3V0cHV0OgogICAgICAgIGh0bWxfZG9jdW1lbnQ6CiAgICAgICAgICAgIGluY2x1ZGVzOgogICAgICAgICAgICAgICAgaW5faGVhZGVyOiBoZWFkZXIuaHRtbAogICAgICAgICAgICB0aGVtZTogcGFwZXIKICAgICAgICAgICAgdG9jOiB0cnVlCiAgICAgICAgICAgIHRvY19kZXB0aDogNAogICAgICAgICAgICB0b2NfZmxvYXQ6IHRydWUKICAgICAgICAgICAgbnVtYmVyX3NlY3Rpb25zOiBmYWxzZQogICAgICAgICAgICBmaWdfY2FwdGlvbjogdHJ1ZQogICAgICAgICAgICBtYXJrZG93bjogR0ZNCiAgICAgICAgICAgIGNvZGVfZG93bmxvYWQ6IHRydWUKLS0tCgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgpib2R5LCB0ZCB7CiAgIGZvbnQtc2l6ZTogMThweDsKfQpjb2RlLnJ7CiAgZm9udC1zaXplOiAxMnB4Owp9CnByZSB7CiAgZm9udC1zaXplOiAxMnB4Cn0KPC9zdHlsZT4KCmBgYHtyLCBpbmNsdWRlID0gRkFMU0V9CnNvdXJjZSgiLi4vYmluL2NodW5rLW9wdGlvbnMuUiIpCmtuaXRyX2ZpZ19wYXRoKCJYWCIpCmBgYAoKIyBXb3JrZmxvdyBPdmVydmlldyB7LnVubGlzdGVkIC51bm51bWJlcmVkfQoKPGJyLz4KPGltZyBzcmM9ImltYWdlcy93YXlmaW5kZXIvd2F5ZmluZGVyLnBuZyIgYWx0PSJ3YXlmaW5kZXIiIHN0eWxlPSJoZWlnaHQ6IDQwMHB4OyIvPgo8YnIvPgo8YnIvPiAKCiMgT2JqZWN0aXZlcwoKLSBVbmRlcnN0YW5kIHdoZW4gaW50ZWdyYXRpb24gb2Ygc2FtcGxlcyBtaWdodCBiZSBuZWVkZWQuCi0gRXhlY3V0ZSBpbnRlZ3JhdGlvbiBvZiBzYW1wbGVzLCBhbmQgZXZhbHVhdGUgaWYgaXQgd2FzICJzdWNjZXNzZnVsIi4KLSBEaXNjdXNzIGRpZmZlcmVudCBpbnRlZ3JhdGlvbiB0ZWNobmlxdWVzIG9mZmVyZWQgaW4gU2V1cmF0IHY1LgoKIyBJbnRyb2R1Y3Rpb24gCgpGb3IgbGFyZ2VyIHNjUk5BLXNlcSBwcm9qZWN0cywgZGF0YSBtYXkgdW5hdm9pZGFibHkgYnkgZ2VuZXJhdGVkIGFjcm9zcyBtdWx0aXBsZSBiYXRjaGVzLiBBcyB3aXRoIGJ1bGsgUk5BLXNlcSwgc29tZSBzdGVwcyBkdXJpbmcgbGlicmFyeSBwcmVwYXJhdGlvbiBjYW4gYmUgdGFrZW4gdG8gYXZvaWQgY29uZm91bmRpbmcgYmF0Y2ggZWZmZWN0cyB3aXRoIGJpb2xvZ2ljYWwgdmFyaWFibGVzIG9mIGludGVyZXN0LiBCdXQgaXQgd2lsbCByZW1haW4gbmVjZXNzYXJ5IHRvIGNvcnJlY3QgZm9yIHRlY2huaWNhbCB2YXJpYXRpb24gaW4gdGhlIHNhbXBsZSBpbnRlZ3JhdGlvbiBzdGVwLiA8IS0tIE1vcmUgaGVyZT8gLS0+IAoKSW4gdGhpcyBzZWN0aW9uLCB3ZSB3aWxsIGRlbW9uc3RyYXRlIHRoZSBzdGVwcyB0byBldmFsdWF0ZSB3aGV0aGVyIGludGVncmF0aW9uIGlzIG5lZWRlZCAoaXQgdXN1YWxseSBpcyksIGFuZCB3aWxsIHdhbGsgdGhyb3VnaCBpbnRlZ3JhdGluZyB0aGUgZGF0YSBhbmQgZXZhbHVhdGluZyB0aGUgZWZmZWN0aXZlbmVzcyB0aGVyZW9mLiAKCkxpa2UgaW4gdGhlIHByZXZpb3VzIHNlY3Rpb24sIG9uZSBpbnRlZ3JhdGlvbiBtZXRob2QgbWlnaHQgYmUgcmVwb3J0ZWQgaW4gYSByZXNlYXJjaCBwYXBlciBidXQgc2V2ZXJhbCBvcHRpb25zIG1pZ2h0IGhhdmUgYmVlbiB0ZXN0ZWQgYmVmb3JlIGRldGVybWluaW5nIHdoaWNoIGFwcHJvYWNoIHN1ZmZpY2llbnRseSBjb3JyZWN0ZWQgYmF0Y2ggZWZmZWN0cyB3aXRob3V0IHJlbW92aW5nIGV4cGVjdGVkIGJpb2xvZ2ljYWwgdmFyaWFiaWxpdHkuCgojIE5vcm1hbGl6YXRpb24gd2l0aCBgU0NUcmFuc2Zvcm0oKWAKCkFzIHdpdGggYnVsayBSTkEtc2VxLCBkaWZmZXJlbmNlcyBpbiBzZXF1ZW5jaW5nIGRlcHRoIGlzIGEgY29udHJpYnV0aW5nIGZhY3RvciB0byB0ZWNobmljYWwgdmFyaWF0aW9uIGluIHNpbmdsZS1jZWxsIFJOQS1zZXEgZGF0YS4gTW9yZW92ZXIsIHZhcmlhbmNlIHN0YWJpbGl6YXRpb24gaW4gZ2VuZSBjb3VudHMgY2FuIGdyZWF0bHkgaW1wcm92ZSBkb3duc3RyZWFtIGFuYWx5c2lzIHN0ZXBzLiBSZWdhcmRsZXNzIG9mIHdoZXRoZXIgb3Igbm90IHNjUk5BLXNlcSBkYXRhIGlzIHRvIGJlIGludGVncmF0ZWQsIGl0IGlzIGltcG9ydGFudCB0byBub3JtYWxpemUgdGhlIGNvdW50IGRhdGEuCgpIZXJlIHdlIHdpbGwgdXNlIHRoZSBgU0NUcmFuc2Zvcm0oKWAgbWV0aG9kIHRoYXQgaXMgcGFydCBvZiB0aGUgU2V1cmF0IHBhY2thZ2UuIFtUaGlzIG1hbnVzY3JpcHRdKGh0dHBzOi8vZ2Vub21lYmlvbG9neS1iaW9tZWRjZW50cmFsLWNvbS9hcnRpY2xlcy8xMC4xMTg2L3MxMzA1OS0wMjEtMDI1ODQtOSkgZGVzY3JpYmVzIHRoZSBpbml0aWFsIGFwcHJvYWNoLCBhbmQgW3RoaXMgdXBkYXRlZCBtYW51c2NyaXB0XShodHRwczovL2xpbmsuc3ByaW5nZXIuY29tL2FydGljbGUvMTAuMTE4Ni9zMTMwNTktMDIxLTAyNTg0LTkpIGRlc2NyaWJlcyB0aGUgdjIgdmVyc2lvbiBvZiBgU0NUcmFuc2Zvcm0oKWAuCgpBcyB3ZSBkaXNjdXNzZWQgd2hlbiBkZXNjcmliaW5nIHRoZSBzdHJ1Y3R1cmUgb2YgYSBgU2V1cmF0YCBvYmplY3QsIHRoZSBhc3NheSBkYXRhIGlzIHN0b3JlZCBpbiBsYXllcnMuIFRvIGNvbmZvcm0gdG8gdGhpcyBjb252ZW50aW9uLCB3ZSB3aWxsIHJ1biB0aGUgZm9sbG93aW5nIGNvbW1hbmQsIHdoaWNoIHNwbGl0cyB0aGUgIlJOQSIgYXNzYXkgaW50byBhIGxpc3Qgb2Ygc2FtcGxlcywgZWFjaCB3aXRoIGl0cyBvd24gbGF5ZXJzLgoKYGBge3IsIGV2YWwgPSBGQUxTRX0KZ2VvX3NvW1snUk5BJ11dID0gc3BsaXQoZ2VvX3NvW1snUk5BJ11dLCBmID0gZ2VvX3NvJG9yaWcuaWRlbnQpCmBgYAoKV2Ugd2lsbCBub3cgcnVuIGBTQ1RyYW5zZm9ybSgpYCwgd2hpY2ggd2lsbCByZXN1bHQgaW4gYSBuZXcgYXNzYXksIHRoZSBgU0NUYCBhc3NheS4KCmBgYHtyLCBldmFsID0gRkFMU0V9Cmdlb19zbyA9IFNDVHJhbnNmb3JtKGdlb19zbykKYGBgCgpBbmQgd2UgY2FuIHNlZSB0aGUgYWRkaXRpb25hbCBhc3NheSBieSB2aWV3aW5nIHRoZSBgZ2VvX3NvYCBvYmplY3Q6CgpgYGB7ciwgZXZhbCA9IEZBTFNFfQpnZW9fc28KYGBgCgp+fn4KQW4gb2JqZWN0IG9mIGNsYXNzIFNldXJhdCAKMzg1MDMgZmVhdHVyZXMgYWNyb3NzIDIyMzIwIHNhbXBsZXMgd2l0aGluIDIgYXNzYXlzIApBY3RpdmUgYXNzYXk6IFNDVCAoMTcxMjkgZmVhdHVyZXMsIDMwMDAgdmFyaWFibGUgZmVhdHVyZXMpCiAzIGxheWVycyBwcmVzZW50OiBjb3VudHMsIGRhdGEsIHNjYWxlLmRhdGEKIDEgb3RoZXIgYXNzYXkgcHJlc2VudDogUk5BCn5+fgoKPiAjIyMjIE90aGVyIG5vcm1hbGl6YXRpb25zIHsudW5saXN0ZWQgLnVubnVtYmVyZWR9Cj4gCj4gRnJvbSB0aGUgU2V1cmF0IGRvY3VtZW50YXRpb24sIHRoZSBgU0NUcmFuc2Zvcm0oKWAgZnVuY3Rpb24gInJlcGxhY2VzIGBOb3JtYWxpemVEYXRhKClgLCBgU2NhbGVEYXRhKClgLCBhbmQgYEZpbmRWYXJpYWJsZUZlYXR1cmVzKClgIi4gWW91IG1heSBzZWUgdGhlc2UgdGhyZWUgY29tbWFuZHMgaW4gb3RoZXIgdmlnbmV0dGVzLCBpbmRlZWQgZXZlbiBpbiBvdGhlciBTZXVyYXQgdmlnbmV0dGVzLiAoW3NvdXJjZV0oaHR0cHM6Ly9zYXRpamFsYWIub3JnL3NldXJhdC9hcnRpY2xlcy9zY3RyYW5zZm9ybV92aWduZXR0ZSkpCgo+ICMjIyMgUmVncmVzc2luZyBvdXQgc291cmNlcyBvZiB2YXJpYXRpb24gey51bmxpc3RlZCAudW5udW1iZXJlZH0KPiAKPiBJbiB0aGUgYFNDVHJhbnNmb3JtKClgIGZ1bmN0aW9uIHRoZXJlIGlzIGEgcGFyYW1ldGVyLCBgdmFycy50by5yZWdyZXNzYCwgd2hpY2ggYWxsb3dzIHVzIHRvIHJlZ3Jlc3Mgb3V0IHNvdXJjZXMgb2YgdmFyaWF0aW9uIHRoYXQgd2UgZG9uJ3Qgd2FudCB0byBwbGF5IGEgcm9sZSBpbiBkb3duc3RyZWFtIGFuYWx5c2VzLiBBIGNvbW1vbiB2YXJpYWJsZSB0byByZWdyZXNzIG91dCBpcyBgcGVyY2VudC5tdGAuCgpXZSBvYnNlcnZlIGF0IHRoaXMgcG9pbnQgdGhhdCBgU0NUcmFuc2Zvcm0oKWAgcGVyZm9ybWVkIGl0cyBub3JtYWxpemF0aW9uIGFuZCB2YXJpYWJsZSBmZWF0dXJlIGlkZW50aWZpY2F0aW9uIGZvciBlYWNoIGJhdGNoIGluZGVwZW5kZW50bHkgKGEgY29uc2Vuc3VzIHNldCBvZiB2YXJpYWJsZSBmZWF0dXJlcyBpcyBhdXRvbWF0aWNhbGx5IGlkZW50aWZpZWQpLiAoW3NvdXJjZV0oaHR0cHM6Ly9zYXRpamFsYWIub3JnL3NldXJhdC9hcnRpY2xlcy9zZXVyYXQ1X2ludGVncmF0aW9uKSkKCiMgUHJlLWludGVncmF0aW9uIGV2YWx1YXRpb24KClByaW9yIHRvIGludGVncmF0aW9uLCB3ZSB3b3VsZCBsaWtlIHRvIGtub3cgaWYgdGhlcmUgYXJlIGFueSBiYXRjaCBlZmZlY3RzIHRoYXQgY2FycnkgdGhyb3VnaCB0byB0aGUgY2VsbCBjbHVzdGVycy4gTW9zdCBpbXBvcnRhbnRseSwgd2Ugd291bGQgbGlrZSB0byBrbm93IGlmIGNsdXN0ZXJzIHRlbmQgdG8gYmUgZGV0ZXJtaW5lZCBieSBzYW1wbGUgb3IgY29uZGl0aW9uIChpbiB0aGlzIGNhc2UsIHRoZSBkYXkpLiBJbiBvcmRlciB0byBmaWd1cmUgdGhpcyBvdXQgd2UgaGF2ZSBhbHJlYWR5IHJ1biB0aGUgZm9sbG93aW5nIHRocmVlIGNvbW1hbmRzLCB3aGljaCB3ZSB3aWxsIGRlc2NyaWJlIGluIG1vcmUgZGV0YWlsIGxhdGVyLgoKYGBge3IsIGV2YWwgPSBGQUxTRX0KZ2VvX3NvID0gUnVuUENBKGdlb19zbywgcmVkdWN0aW9uLm5hbWUgPSAndW5pbnRlZ3JhdGVkLnNjdC5wY2EnKQpnZW9fc28gPSBGaW5kTmVpZ2hib3JzKGdlb19zbywgZGltcyA9IDE6MjUsIHJlZHVjdGlvbiA9ICd1bmludGVncmF0ZWQuc2N0LnBjYScpCmdlb19zbyA9IEZpbmRDbHVzdGVycyhnZW9fc28sIHJlc29sdXRpb24gPSAwLjUsIGNsdXN0ZXIubmFtZSA9ICd1bmludGVncmF0ZWQuc2N0LmNsdXN0ZXJzJykKZ2VvX3NvID0gUnVuVU1BUChnZW9fc28sIGRpbXMgPSAxOjI1LCByZWR1Y3Rpb24gPSAndW5pbnRlZ3JhdGVkLnNjdC5wY2EnLCByZWR1Y3Rpb24ubmFtZSA9ICd1bWFwLnVuaW50ZWdyYXRlZC5zY3QucGNhJykKYGBgCgpBZnRlciBydW5uaW5nIHRoZXNlIGNvbW1hbmRzLCB3ZSBjYW4gdmlzdWFsaXplIHRoZSBjZWxscyBpbiBhIFVNQVAgcGxvdCwgd2hpY2ggcHJvamVjdHMgdGhlIGhpZ2gtZGltZW5zaW9uYWwgZ2VuZSBleHByZXNzaW9uIGludG8gdHdvIGRpbWVuc2lvbnMuCgpgYGB7ciwgZXZhbCA9IEZBTFNFfQpwcmVfaW50ZWdyYXRpb25fdW1hcF9wbG90ID0gRGltUGxvdChnZW9fc28sIGdyb3VwLmJ5ID0gJ29yaWcuaWRlbnQnLCBsYWJlbCA9IEZBTFNFLCByZWR1Y3Rpb24gPSAndW1hcC51bmludGVncmF0ZWQuc2N0LnBjYScpICsgTm9MZWdlbmQoKQpnZ3NhdmUoZmlsZW5hbWUgPSAnSVNDX1IvcmVzdWx0cy9maWd1cmVzL3VtYXBfdW5pbnRlZ3JhdGVkX3NjdF9vcmlnLmlkZW50LnBuZycsIHBsb3QgPSBwcmVfaW50ZWdyYXRpb25fdW1hcF9wbG90KQpgYGAKCiFbXSguL2ltYWdlcy9jdXJyaWN1bHVtL3VtYXBfdW5pbnRlZ3JhdGVkX3NjdF9vcmlnLmlkZW50LnBuZykKCkZyb20gdGhpcyBpbWFnZSwgd2UgY2FuIHF1YWxpdGF0aXZlbHkgc2VlIHRoYXQgc29tZSBjbHVzdGVycyBzZWVtIHRvIGJlIGRyaXZlbiBieSB0aGUgb3JpZ2luYWwgaWRlbnRpdHkuIFdlIGNhbiBzZWUgdGhpcyBldmVuIG1vcmUgY2xlYXJseSBpZiB3ZSB1c2UgYGdyb3VwLmJ5ID0gJ2RheSdgOgoKYGBge3IsIGV2YWwgPSBGQUxTRX0KcHJlX2ludGVncmF0aW9uX3VtYXBfcGxvdCA9IERpbVBsb3QoZ2VvX3NvLCBncm91cC5ieSA9ICdkYXknLCBsYWJlbCA9IEZBTFNFLCByZWR1Y3Rpb24gPSAndW1hcC51bmludGVncmF0ZWQuc2N0LnBjYScpICsgTm9MZWdlbmQoKQpnZ3NhdmUoZmlsZW5hbWUgPSAnSVNDX1IvcmVzdWx0cy9maWd1cmVzL3VtYXBfdW5pbnRlZ3JhdGVkX3NjdF9kYXkucG5nJywgcGxvdCA9IHByZV9pbnRlZ3JhdGlvbl91bWFwX3Bsb3QpCmBgYAoKIVtdKC4vaW1hZ2VzL2N1cnJpY3VsdW0vdW1hcF91bmludGVncmF0ZWRfc2N0X2RheS5wbmcpCgpXZSBjYW4gYWxzbyBldmFsdWF0ZSBjbHVzdGVyIG1lbWJlcnNoaXAgYnkgYG9yaWcuaWRlbnRgIG9yIGJ5IGBkYXlgIHVzaW5nIHRoZSBgdGFibGUoKWAgZnVuY3Rpb246CgpgYGB7ciwgZXZhbCA9IEZBTFNFfQp0YWJsZShnZW9fc29AbWV0YS5kYXRhJGRheSwgZ2VvX3NvQG1ldGEuZGF0YSR1bmludGVncmF0ZWQuc2N0LmNsdXN0ZXJzKQpgYGAKCn5+fgogICAgICAgICAgIDAgICAgMSAgICAyICAgIDMgICAgNCAgICA1ICAgIDYgICAgNyAgICA4ICAgIDkgICAxMCAgIDExICAgMTIgICAxMyAgIDE0ICAgMTUgICAxNiAgIDE3ICAgMTgKICBEYXkwICAgICAwICAgMTcgICAgNCAxMTQ3ICAgNTAgICA4NSAgIDQ2IDEwMjIgIDMxMSAgIDM2ICAgMjYgIDI3MCAgMTQ1ICAxMDYgICAzNyAgIDY2ICAgMzQgIDE1OSAgICAwCiAgRGF5MjEgIDEwOCAgIDQ2ICAxOTUgMTM0NiAgIDUwIDEyMzkgIDY4NSAgIDE1ICA2MDQgIDM4NCAgIDYwICAgOTUgIDE5NSAgMTc2ICAgNDAgICA0MSAgIDU5ICAgIDUgICAgMgogIERheTcgIDMxOTAgMjg5NCAyNDI4ICAxMzIgMTgyNyAgIDUxICA2MTMgICAgMiAgIDM1ICA0NzAgIDY4NCAgMTY2ICAgODcgICA3OCAgMjc0ICAyMjMgIDExNyAgICA5ICAxMzQKfn5+CgpXZSBjYW4gc2VlIHRoYXQgbWFueSBjbHVzdGVycyBhcHBlYXIgdG8gYmUgd2hvbGx5IG1hZGUgdXAgb2YgY2VsbHMgZnJvbSBvbmUgb3IgdHdvIGRheXMuIEludGVncmF0aW5nIHRoZSBkYXRhIG1heSBzb2x2ZSB0aGlzIGlzc3VlLgoKIyBJbnRlZ3JhdGlvbiB3aXRoIGBJbnRlZ3JhdGVMYXllcnMoKWAKCkluIHRoZSB3b3JrZmxvdyBhYm92ZSwgYFNDVHJhbnNmb3JtKCkgPiBSdW5QQ0EoKSA+IEZpbmROZWlnaGJvcnMoKSA+IEZpbmRDbHVzdGVycygpYCB3ZSBoYXZlIHdoYXQgd2UgbmVlZCB0byBydW4gYEludGVncmF0ZUxheWVycygpYDoKCmBgYHtyLCBldmFsID0gRkFMU0V9Cmdlb19zbyA9IEludGVncmF0ZUxheWVycygKICAgIG9iamVjdCA9IGdlb19zbywgCiAgICBtZXRob2QgPSBDQ0FJbnRlZ3JhdGlvbiwgCiAgICBvcmlnLnJlZHVjdGlvbiA9ICd1bmludGVncmF0ZWQuc2N0LnBjYScsCiAgICBub3JtYWxpemF0aW9uLm1ldGhvZCA9ICdTQ1QnLAogICAgbmV3LnJlZHVjdGlvbiA9ICdpbnRlZ3JhdGVkLnNjdC5jY2EnKQpgYGAKCk5vdGUgd2UgaGF2ZSBzcGVjaWZpZWQgdGhlIHVuaW50ZWdyYXRlZCByZWR1Y3Rpb24sIHdoaWNoIGlzIHdoYXQgYEludGVncmF0ZUxheWVycygpYCBvcGVyYXRlcyBvbiwgYWxvbmcgd2l0aCB0aGUgYFNDVGAgYXNzYXkuIFdlIG5vdyByZXJ1biBgRmluZE5laWdoYm9ycygpID4gRmluZENsdXN0ZXJzKCkgPiBSdW5VTUFQKClgIGZvciB0aGUgbmV3IHJlZHVjdGlvbiBgaW50ZWdyYXRlZC5zY3QuY2NhYDoKCmBgYHtyLCBldmFsID0gRkFMU0V9Cmdlb19zbyA9IEZpbmROZWlnaGJvcnMoZ2VvX3NvLCBkaW1zID0gMToyNSwgcmVkdWN0aW9uID0gJ2ludGVncmF0ZWQuc2N0LmNjYScpCmdlb19zbyA9IEZpbmRDbHVzdGVycyhnZW9fc28sIHJlc29sdXRpb24gPSAxLCBjbHVzdGVyLm5hbWUgPSAnaW50ZWdyYXRlZC5zY3QuY2NhLmNsdXN0ZXJzJykKZ2VvX3NvID0gUnVuVU1BUChnZW9fc28sIGRpbXMgPSAxOjI1LCByZWR1Y3Rpb24gPSAnaW50ZWdyYXRlZC5zY3QuY2NhJywgcmVkdWN0aW9uLm5hbWUgPSAndW1hcC5zY3QuaW50ZWdyYXRlZC5jY2EnKQpgYGAKCldoaWNoIHNldHMgdXMgdXAgdG8gc2VlIHRoZSBVTUFQIGFuZCBldmFsdWF0ZSB3aGV0aGVyIHdlJ3ZlIHJlZHVjZWQgdGhlIGNvbmRpdGlvbiBlZmZlY3Qgb24gdGhlIGNsdXN0ZXIgbWVtYmVyc2hpcC4KCmBgYHtyLCBldmFsID0gRkFMU0V9CnBvc3RfaW50ZWdyYXRpb25fdW1hcF9wbG90X29yaWcuaWRlbnQgPSBEaW1QbG90KGdlb19zbywgZ3JvdXAuYnkgPSAnb3JpZy5pZGVudCcsIGxhYmVsID0gRkFMU0UsIHJlZHVjdGlvbiA9ICd1bWFwLnNjdC5pbnRlZ3JhdGVkLmNjYScpICsgTm9MZWdlbmQoKQpnZ3NhdmUoZmlsZW5hbWUgPSAnSVNDX1IvcmVzdWx0cy9maWd1cmVzL3VtYXBfaW50ZWdyYXRlZF9zY3Rfb3JpZy5pZGVudC5wbmcnLCBwbG90ID0gcG9zdF9pbnRlZ3JhdGlvbl91bWFwX3Bsb3Rfb3JpZy5pZGVudCkKYGBgCgohW10oLi9pbWFnZXMvY3VycmljdWx1bS91bWFwX2ludGVncmF0ZWRfc2N0X29yaWcuaWRlbnQucG5nKQoKYGBge3IsIGV2YWwgPSBGQUxTRX0KcG9zdF9pbnRlZ3JhdGlvbl91bWFwX3Bsb3RfZGF5ID0gRGltUGxvdChnZW9fc28sIGdyb3VwLmJ5ID0gJ2RheScsIGxhYmVsID0gRkFMU0UsIHJlZHVjdGlvbiA9ICd1bWFwLnNjdC5pbnRlZ3JhdGVkLmNjYScpICsgTm9MZWdlbmQoKQpnZ3NhdmUoZmlsZW5hbWUgPSAnSVNDX1IvcmVzdWx0cy9maWd1cmVzL3VtYXBfaW50ZWdyYXRlZF9zY3RfZGF5LnBuZycsIHBsb3QgPSBwb3N0X2ludGVncmF0aW9uX3VtYXBfcGxvdF9kYXkpCmBgYAoKIVtdKC4vaW1hZ2VzL2N1cnJpY3VsdW0vdW1hcF9pbnRlZ3JhdGVkX3NjdF9kYXkucG5nKQoKSW5kZWVkLCBpdCBsb29rcyBsaWtlIHdlJ3ZlIHN1Y2NlZWRlZCBpbiByZWR1Y2luZyB0aGUgZWZmZWN0IG9mIGNvbmRpdGlvbiBvbiBjbHVzdGVyIG1lbWJlcnNoaXAgYnkgaW50ZWdyYXRpbmcgdGhlIGRhdGEuCgojIFN1bW1hcnkKCk5leHQgc3RlcHM6IFBDQSBhbmQgRGltIHJlZHVjdGlvbgoKLS0tLQoKVGhlc2UgbWF0ZXJpYWxzIGhhdmUgYmVlbiBhZGFwdGVkIGFuZCBleHRlbmRlZCBmcm9tIG1hdGVyaWFscyBsaXN0ZWQgYWJvdmUuIFRoZXNlIGFyZSBvcGVuIGFjY2VzcyBtYXRlcmlhbHMgZGlzdHJpYnV0ZWQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBbQ3JlYXRpdmUgQ29tbW9ucyBBdHRyaWJ1dGlvbiBsaWNlbnNlIChDQyBCWSA0LjApXShodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9saWNlbnNlcy9ieS80LjAvKSwgd2hpY2ggcGVybWl0cyB1bnJlc3RyaWN0ZWQgdXNlLCBkaXN0cmlidXRpb24sIGFuZCByZXByb2R1Y3Rpb24gaW4gYW55IG1lZGl1bSwgcHJvdmlkZWQgdGhlIG9yaWdpbmFsIGF1dGhvciBhbmQgc291cmNlIGFyZSBjcmVkaXRlZC4KCjxici8+Cjxici8+Cjxoci8+CnwgW1ByZXZpb3VzIGxlc3Nvbl0oMDItUUNhbmRGaWx0ZXJpbmcuaHRtbCkgfCBbVG9wIG9mIHRoaXMgbGVzc29uXSgjdG9wKSB8IFtOZXh0IGxlc3Nvbl0oUENBYW5kRGltUmVkdWN0aW9uLmh0bWwpIHwKfCA6LS0tIHwgOi0tLS06IHwgLS0tOiB8CgoKCgo=</div>
 
 
 </div>
