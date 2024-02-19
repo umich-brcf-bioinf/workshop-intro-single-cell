@@ -60,10 +60,13 @@ In this section, we will demonstrate the steps to perform dimensionality reducti
 
 <!--Before this section - Day 1: Starting w/ Seurat, Initial QC, & Batch correction (SCtransform)-->
 
+<!--Instruction Note: Using integrated data here and will compare to unintegrated results in next section, similar to  [here](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-021-03957-4)?-->
 
 In addition to the "high dimensionality" expected for single-cell data, due to technical limitations of both capture and sequencing as well as biological variability, we expect the data to be both "sparse", as many genes will either not be expressed or not measured in many of the cells, and "noisy" with higher variance expected [ref](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr). Single-cell data was previously described as "zero inflated", however work by [Svensson](https://www.biorxiv.org/content/10.1101/582064v1.full) has challenged that characterization, and the higher number of zeros observed in scRNA-seq compared to bulk RNA-seq is more likely due to biological variance and lower sequencing saturation than technical artifact. 
 
-For sparse high dimensional _biological_ data, we expect many genes to have correlated expression as they would be impacted by the same biological process and for many genes with either low (more noisy) or similar expression across the cell population. So how do we determine what genes to use before classifying into cell-types/subtypes?
+For sparse high dimensional _biological_ data, we expect many genes to have correlated expression as they would be impacted by the same biological process and for many genes with either low (more noisy) or similar expression across the cell population. 
+
+So how do we determine what and how many genes to use before classifying cells in our samples into cell-types/subtypes based on their expression?
 
 > #### More on dimensionality reduction {.unlisted .unnumbered}
 > The [Ouyang Lab has a "gentle introduction" section of their materials that ](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr) that goes into greater details on dimensionality reduction including how similar strategies are used in deep learning models. 
@@ -72,19 +75,31 @@ For sparse high dimensional _biological_ data, we expect many genes to have corr
 ## What is PCA?
 
 <!--- Give some context and background on PCA
-
 - What is PCA
 - Why do we use it 
 --->
 
+If we consider a smaller dataset measuring the expression of four genes measured in just two cells, we could plot the expression of those four genes, with data from one cell plotted on the x-axis and the second cell plotted on the y-axis/
 
+![A simple PCA example (from HBC)](./images/curriculum/04-PCAandDimReduction/HBC-PCA_2sample_genes.png)
+<!--- Update plot to replace "Sample" with cell in figure and table --->
+
+If we wanted to represent the most variation across the data, we would draw a diagonal line between gene B and gene C - this would represent the first principal component. However, this line doesn't capture all the variance in this data as the genes also vary above and below the line, so we could draw another line (at a right angle to the first) representing the second most variation int the data - which would represent the second principal component (PC). 
+
+However, an important aspect is that the genes near the end of each line are those with the greatest influence on the direction and length of the PC, as those genes have the highest variation.
+
+![PCA gene loadings (from HBC)](./images/curriculum/04-PCAandDimReduction/HBC-PCA_2sample_variation3.png)
+<!--- Update plot to replace "Sample" with cell in figure --->
+
+We'll skip the process of calculating the score for each cell per PC but after running PCA on our data, we expect each cell to have a score based on the expression of the genes contributing to each PC and each gene will have a weight or loading, with some genes contributing more to a given PC. This reduction in dimensionality, from 10,000 cells x 19,000 genes for example, to 10-60 PCs allows us to example how the variation in our dataset related to our expected cell composition and select PCs that are more likely to distinguish biological variation instead of technical (uninteresting) variation.
+
+To read more, please refer to the [HBC - Theory of PCA content](https://hbctraining.github.io/scRNA-seq_online/lessons/05_theory_of_PCA.html), from which this section is adapted. HBC also recommend the original source material - [Josh Starmer's StatQuest video](https://www.youtube.com/watch?v=_UVHneBUBW0); for additional detail, as well as the OSCA chapter on [Principle components analysis](https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html) that includes a more descriptive overview of PCA in the context of single-cell data.
 
 ### Run PCA on our dataset
 
-<!--- Add introduction to function --->
+<!--- Add introduction to function, including link to documentation --->
 
-To execute PCA on our dataset, we will use Seurat's built-in function `RunPCA`
-
+To execute PCA on our dataset, we will use Seurat's built-in function `RunPCA`:
 ```{r, eval=FALSE}
 geo_so = RunPCA(geo_so, reduction.name = 'unintegrated.sct.pca')
 ```
@@ -133,9 +148,7 @@ DimHeatmap(geo_so, dims=1:3, cells=500, balanced=TRUE)
 
 ## Choosing the number of significant PCs for dimensionality reduction
 
-<!--Instruction Question: Using integrated data here and willcompare to unintegrated results in next section, similar to  [here](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-021-03957-4)?-->
-
-
+<!-- Section still needs to be edited --> 
 
 You have a biological question - starting point is understanding the “resolution” of your biological questions
 
@@ -145,13 +158,36 @@ Related - how important is that decision to the downstream impact (e.g. how much
 
 Why not use every PC? Higher resolution risks including uninteresting variation (biological vs statistical “significance”) and a single-cell itself is not a functional unit
 
+<!-- Section still needs to be edited --> 
+
+
 ### Visualizing relative contributions of each PC
 
-Elbow plot to start, but there are more sophisticated methods (see Dana's code snippet), and then there are even more sophisticated methods like the chooseR package or use clustering trees to evaluate stablity
 
-### Using function to 
+```{r, eval=FALSE}
+elbow_plot = ElbowPlot(geo_so, ndims = 50, reduction = 'unintegrated.sct.pca')
+```
 
+![](./images/curriculum/04-PCAandDimReduction/qc_sct_elbow_plot.png)
 
+### Using a (crude) optimization to select a starting point
+
+Function to return minimum PCs based on two possible metrics:
+```{r, eval=FALSE}
+# Function to determine optimal PCs after RunPCA()
+optimal_pcs = function(so, reduction) {
+    # quantitative check for number of PCs to include
+    pct = so@reductions[[reduction]]@stdev / sum(so@reductions[[reduction]]@stdev) * 100
+    cum = cumsum(pct)
+    co1 = which(cum > 90 & pct < 5)[1]
+    co2 = sort(which((pct[1:length(pct)-1] - pct[2:length(pct)]) > .1), decreasing = T)[1] + 1
+    pcs = min(co1, co2) 
+    
+    return(pcs)
+}
+```
+
+If we apply this function to our data, then we expect a number of PCs somewhere within the bend of the elbow plot to be returned:
 ```{r, eval=FALSE}
 optimal_pcs(geo_so, 'unintegrated.sct.pca')
 ```
@@ -159,11 +195,14 @@ optimal_pcs(geo_so, 'unintegrated.sct.pca')
 23
 ~~~~
 
+Again, this number is likely a starting point and may need to revise depending on the outcome of the downstream steps. 
 
-The number of principal components decided in this section will then be used in the clustering steps in the next section. 
+While outside the scope of this workshop, there are community efforts to develop more sophisticated methods to select like the [chooseR package] or the option to use clustering trees to evaluate the stability of this parameter choice.
 
 
 # Summary
+
+Now that we have selected a number of principal components that likely correspond to biological variation of interest, we will use that number in the clustering steps in the next section.
 
 Next steps: Clustering and projection
 
