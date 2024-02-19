@@ -49,7 +49,7 @@ knitr_fig_path("XX")
 
 # Introduction
 
-< How much context to provide here will depend on what Chris includes in his introduction. >
+<!-- How much context to provide here will depend on what Chris includes in his introduction. -->
 
 The field of single-cell expression measurements is still relatively new <add links to early publications & information regarding 10x commercialization> and therefore  best practices for analysis and standards for publication are continuing to evolve. 
 

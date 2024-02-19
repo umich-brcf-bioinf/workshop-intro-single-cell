@@ -48,7 +48,7 @@ knitr_fig_path("XX")
 
 # Introduction 
 
-For larger scRNA-seq projects, data may unavoidably by generated across multiple batches. As with bulk RNA-seq, some steps during library preparation can be taken to avoid confounding batch effects with biological variables of interest. But it will remain necessary to correct for technical variation in the sample integration step. <!-- More here? --> 
+For larger scRNA-seq projects, data may unavoidably by generated across multiple batches. As with bulk RNA-seq, some steps during <!-- add - sample and --> library preparation can be taken to avoid confounding batch effects with biological variables of interest. But it will remain necessary to correct for technical variation in the sample integration step. <!-- More here? --> <!--From DK: For 3' gene expression assays, every sample will inheriantly be a batch (since each sample must be run separately on the Chromium instrument). For methods that allow samples to be multiplexed (like the flex fixed kit), we would expect less sample to sample variablity. However in practice, we observe similar amount of variablity, likely as sample isolation and cell suspension preparation steps are likely to at least some degree of variablity. -->
 
 In this section, we will demonstrate the steps to evaluate whether integration is needed (it usually is), and will walk through integrating the data and evaluating the effectiveness thereof. 
 
@@ -96,6 +96,8 @@ Active assay: SCT (17129 features, 3000 variable features)
 
 We observe at this point that `SCTransform()` performed its normalization and variable feature identification for each batch independently (a consensus set of variable features is automatically identified). ([source](https://satijalab.org/seurat/articles/seurat5_integration))
 
+<!-- DMK - Should remaining content in this section be moved to later sections? -->
+
 # Pre-integration evaluation
 
 Prior to integration, we would like to know if there are any batch effects that carry through to the cell clusters. Most importantly, we would like to know if clusters tend to be determined by sample or condition (in this case, the day). In order to figure this out we have already run the following three commands, which we will describe in more detail later.
@@ -106,7 +108,7 @@ geo_so = FindNeighbors(geo_so, dims = 1:25, reduction = 'unintegrated.sct.pca')
 geo_so = FindClusters(geo_so, resolution = 0.5, cluster.name = 'unintegrated.sct.clusters')
 geo_so = RunUMAP(geo_so, dims = 1:25, reduction = 'unintegrated.sct.pca', reduction.name = 'umap.unintegrated.sct.pca')
 ```
-
+<!-- DMK - would suggestion removing UMAP plotting step here & we can show it as a comparisons after diving into UMAP etc later-->
 After running these commands, we can visualize the cells in a UMAP plot, which projects the high-dimensional gene expression into two dimensions.
 
 ```{r, eval = FALSE}
@@ -156,6 +158,8 @@ geo_so = IntegrateLayers(
 ```
 
 Note we have specified the unintegrated reduction, which is what `IntegrateLayers()` operates on, along with the `SCT` assay. We now rerun `FindNeighbors() > FindClusters() > RunUMAP()` for the new reduction `integrated.sct.cca`:
+
+<!-- DMK - Or is this a better break point, adding that we will delve into more detail on the `RunPCA`, `FindNeighbors() > FindClusters() > RunUMAP()` steps? -->
 
 ```{r, eval = FALSE}
 geo_so = FindNeighbors(geo_so, dims = 1:25, reduction = 'integrated.sct.cca')

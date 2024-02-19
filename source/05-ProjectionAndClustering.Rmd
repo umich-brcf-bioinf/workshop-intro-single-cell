@@ -49,6 +49,27 @@ knitr_fig_path("XX")
 Contrast the previous dimensionality reduction/nearest neighbors clustering and plotting the cells in lower dimensionality with the cluster labels.
 
 
+## Clustering
+
+Nearest neighbors algorithm - based on similarity of expression pattern (just for genes/PCs selected)
+
+<!-- per Ho Lab - The previous version of Seurat (v3) applied a graph-based clustering approach, building upon initial strategies in the development of the initial droplet based single cell technology([Macosko et al. 2015](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4481139/)). "Importantly, the distance metric which drives the clustering analysis (based on previously identified PCs) remains the same."
+
+"However, approach in Seurat to partitioning the cellular distance matrix into clusters has dramatically improved. This approach was heavily inspired by recent publications which applied graph-based clustering approaches to scRNA-seq data ([Xu and Su 2015](https://academic.oup.com/bioinformatics/article/31/12/1974/214505)) and CyTOF data ([Levine et al. 2015](https://www.cell.com/cell/pdfExtended/S0092-8674(15)00637-6)). Briefly, these methods embed cells in a graph structure - for example a K-nearest neighbor (KNN) graph, with edges drawn between cells with similar feature expression patterns, and then attempt to partition this graph into highly interconnected ‘quasi-cliques’ or ‘communities’." -->
+
+
+```{r, eval = FALSE}
+geo_so = FindNeighbors(geo_so, dims = 1:25, reduction = 'integrated.sct.cca')
+```
+
+```{r, eval=FALSE}
+geo_so = FindClusters(geo_so, resolution = 1, cluster.name = 'integrated.sct.cca.clusters')
+```
+
+```{r, eval=FALSE}
+head(Indets(geo_so), 5)
+```
+
 # Cluster plots
 
 Note how dimensionality choices are carried through downstream functions.
@@ -57,11 +78,33 @@ What's different beteween PCA, tSNE, and UMAP?
 
 Note: tSNE vs UMAP example: https://pair-code.github.io/understanding-umap/ 
 
-# Evaluating clustering
+```{r, eval=FALSE}
+geo_so = RunUMAP(geo_so, dims = 1:25, reduction = 'unintegrated.sct.pca', reduction.name = 'umap.unintegrated.sct.pca')
+```
+
+# Visualizing and evaluating clustering
 
 How many clusters should I get and how do I adjust the number?
 
-Show example of changing resolution?
+<!--- Show example of changing resolution?--->
+
+````{r, eval =FALSE}
+post_integration_umap_plot = DimPlot(geo_so, group.by = 'orig.ident', label = FALSE, reduction = 'umap.sct.integrated.cca') + NoLegend()
+ggsave(filename = 'ISC_R/results/figures/umap_integrated_sct.png', plot = post_integration_umap_plot)
+```
+
+```{r, eval=FALSE}
+post_integration_umap_faceted_plot = DimPlot(geo_so, group.by = 'orig.ident', split.by = 'integrated.sct.cca.clusters', label = FALSE, reduction = 'umap.sct.integrated.cca', ncol = 5) + NoLegend()
+ggsave(filename = 'ISC_R/results/figures/umap_integrated_sct_faceted.png', plot = post_integration_umap_faceted_plot, width = 20, height = 16, units = 'in')
+```
+
+```{r, eval=FALSE}
+table(geo_so@meta.data$orig.ident, geo_so@meta.data$integrated.sct.cca.clusters)
+
+
+```
+
+
 
 # Other tools for visualizing scRNA-sq data
 
@@ -71,7 +114,11 @@ Show example of changing resolution?
 
 If we had proceeded with our filtered data and only normalized our data without doing any integration, including through the dimensionality reduction and clustering steps and then labeled the cells with their sample of origin, then we would see the following for our data:
 
-<!--Add example of UMAP / sample labels for unintegrated data-->
+<!--Add example of UMAP / sample labels for unintegrated data from analysis folder to images-->
+
+![](umap_comparison_sct.png)
+
+
 
 In this plot, we ... see that while there are distinct clusters, those clusters seem to separate primarily by sample id. This suggests that without integration, these batch effects could skew the biological variability in our data. <!--move this section to end of Projection module to contrast with integrated results-->
 

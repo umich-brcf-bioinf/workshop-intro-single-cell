@@ -91,6 +91,7 @@ General goal: Filtering out the "cells" that either were poorly measured or are 
 - [Ming Tang's scRNA analysis notes repository](https://github.com/crazyhottommy/scRNAseq-analysis-notes)
 - [Sean Davis' list of single-cell packages](https://github.com/seandavi/awesome-single-cell)
 - [Mikhail Dozmorov's compilation of single-cell analysis tools and papers](https://github.com/mdozmorov/scRNA-seq_notes)
+- [Ouyang Lab's "Useful resources"](https://ouyanglab.com/singlecell/appendix.html#useful-resources)
 
 
 ## Deep-dive single-cell tutorials and guides:
@@ -107,6 +108,7 @@ General goal: Filtering out the "cells" that either were poorly measured or are 
 - [Luecken MD, Theis FJ. Current best practices in single-cell RNA-seq analysis: a tutorial. Mol Syst Biol. 2019 Jun 19;15(6):e8746. doi: 10.15252/msb.20188746. PMID: 31217225; PMCID: PMC6582955.](https://www.embopress.org/doi/full/10.15252/msb.20188746)
 - [Chari T, Pachter L (2023) The specious art of single-cell genomics. PLoS Comput Biol 19(8): e1011288. https://doi.org/10.1371/journal.pcbi.1011288](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1011288)
 
+- [Sun, Shiquan, Jiaqiang Zhu, Ying Ma, and Xiang Zhou. 2019. “Accuracy, Robustness and Scalability of Dimensionality Reduction Methods for Single-Cell RNA-Seq Analysis.” Genome Biology 20: 269. https://doi.org/10.1186/s13059-019-1898-6.](https://doi.org/10.1186/s13059-019-1898-6)
 
 - [Understanding UMAP](https://pair-code.github.io/understanding-umap/)
 - [OSCA Chapter 4: Dimensionality reduction](https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html)
