@@ -189,6 +189,10 @@ The three main "slots" in the object are:
 
 There are other slots which store information that becomes relevant when identifying clusters of cells: `graphs` and `neighbors`. There are slots related to spatial analysis: `images`. There are also slots which track what has been done to the object: `commands`.
 
+### Layers of a Seurat object
+
+The `assays` in a Seurat v5 object store data in layers. Layers can store raw, un-normalized counts (`layer = 'counts'`), normalized data (`layer = 'data'`), or z-scored/variance-stabilized data (`layer = 'scale.data'`). We will come back to the idea of these layers when we perform normalization and variance-stabilization later.
+
 ## Accessing the Seurat object
 
 The only slot of the `Seurat` object that we'll typically access or modify by hand--that is, without a function from the `Seurat` package--is the `meta.data` object. In R, slots are accessed with the `@` symbol, as in:
@@ -208,10 +212,6 @@ HODay0replicate1_AAACCTGCACCACCAG-1 HODay0replicate1        131          104
 ~~~
 
 Here, each row is a cell, and each column is information about that cell. The rows of the table are named according to the uniquely identifiable name for the cell. In this case, the day and replicate, as well as the barcode for that cell. As we continue the workshop, we will check in on the `meta.data` slot and observe changes we want to make, and that other functions will make. We'll also observe the other assays and layers and note their changes.
-
-## Layers of a Seurat object
-
-The assays in a Seurat v5 object store data in layers. Layers can store raw, un-normalized counts (`layer = 'counts'`), normalized data (`layer = 'data'`), or z-scored/variance-stabilized data (`layer = 'scale.data'`). We will come back to the idea of these layers when we perform normalization and variance-stabilization later.
 
 ## Saving a Seurat object
 
