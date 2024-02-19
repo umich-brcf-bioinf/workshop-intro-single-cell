@@ -44,6 +44,14 @@ knitr_fig_path("XX")
 
 <!--Add specific goals for section-->
 
+## Objectives
+
+- XX
+- XX
+
+---
+
+
 # Projection and clustering
 
 Contrast the previous dimensionality reduction/nearest neighbors clustering and plotting the cells in lower dimensionality with the cluster labels.
@@ -88,7 +96,7 @@ How many clusters should I get and how do I adjust the number?
 
 <!--- Show example of changing resolution?--->
 
-````{r, eval =FALSE}
+```{r, eval =FALSE}
 post_integration_umap_plot = DimPlot(geo_so, group.by = 'orig.ident', label = FALSE, reduction = 'umap.sct.integrated.cca') + NoLegend()
 ggsave(filename = 'ISC_R/results/figures/umap_integrated_sct.png', plot = post_integration_umap_plot)
 ```

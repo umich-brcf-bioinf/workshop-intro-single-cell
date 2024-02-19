@@ -50,10 +50,12 @@ Similar to the previous sections, the process of selecting informative dimension
 In this section, we will demonstrate the steps to perform dimensionality reduction on our data using principal component analysis (PCA).
 
 
-# Objectives
+## Objectives
 
 - Understand why we use PCA for dimensionality reduction
 - Choose an appropriate number of principal components to cluster our data
+
+---
 
 
 # Dimensionality reduction
@@ -121,7 +123,7 @@ We can also visualize both the cell and gene features that define each principle
 
 First, we can print out the top 5 (gene) features per dimension by accessing that part of the Seurat object:
 ```{r, eval=FALSE}
-print(geo_so[["pca"]], dims = 1:5, nfeatures = 5)
+print(geo_so[["pca"]], dims = 1:5, nfeatures = 5) ## update reduction name
 ```
 
 We can also highlight genes loaded for each dimension using a visualization:
@@ -143,7 +145,7 @@ DimHeatmap(geo_so, dims=1:3, cells=500, balanced=TRUE)
 > 
 > Per the [Ho Lab's materials](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction) - "To overcome the extensive technical noise in any single feature for scRNA-seq data, Seurat clusters cells based on their PCA scores, with each PC essentially representing a ‘metafeature’ that combines information across a correlated feature set. The top principal components therefore represent a robust compression of the dataset." 
 
-<!-- Note, may edit/remove above section -->
+<!-- Note, may want to edit/remove above section -->
 
 
 ## Choosing the number of significant PCs for dimensionality reduction
@@ -198,6 +200,25 @@ optimal_pcs(geo_so, 'unintegrated.sct.pca')
 Again, this number is likely a starting point and may need to revise depending on the outcome of the downstream steps. 
 
 While outside the scope of this workshop, there are community efforts to develop more sophisticated methods to select like the [chooseR package] or the option to use clustering trees to evaluate the stability of this parameter choice.
+
+
+# Integration with `IntegrateLayers()`
+
+
+In the workflow above, `SCTransform() > RunPCA() > FindNeighbors() > FindClusters()` we have what we need to run `IntegrateLayers()`:
+
+
+```{r, eval = FALSE}
+geo_so = IntegrateLayers(
+    object = geo_so, 
+    method = CCAIntegration, 
+    orig.reduction = 'unintegrated.sct.pca',
+    normalization.method = 'SCT',
+    new.reduction = 'integrated.sct.cca')
+```
+
+Note we have specified the unintegrated reduction, which is what `IntegrateLayers()` operates on, along with the `SCT` assay. We now rerun `FindNeighbors() > FindClusters() > RunUMAP()` for the new reduction `integrated.sct.cca`
+
 
 
 # Summary
