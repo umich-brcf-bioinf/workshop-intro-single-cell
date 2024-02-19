@@ -64,7 +64,9 @@ In this section, we will demonstrate the steps to perform dimensionality reducti
 
 <!--Instruction Note: Using integrated data here and will compare to unintegrated results in next section, similar to  [here](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-021-03957-4)?-->
 
-In addition to the "high dimensionality" expected for single-cell data, due to technical limitations of both capture and sequencing as well as biological variability, we expect the data to be both "sparse", as many genes will either not be expressed or not measured in many of the cells, and "noisy" with higher variance expected [ref](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr). Single-cell data was previously described as "zero inflated", however work by [Svensson](https://www.biorxiv.org/content/10.1101/582064v1.full) has challenged that characterization, and the higher number of zeros observed in scRNA-seq compared to bulk RNA-seq is more likely due to biological variance and lower sequencing saturation than technical artifact. 
+In addition to the "high dimensionality" expected for single-cell data, due to technical limitations of both capture and sequencing as well as biological variability, we expect the data to be both "sparse", as many genes will either not be expressed or not measured in many of the cells, and "noisy" with higher variance [source](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr). 
+
+Single-cell data is sometimes described as "zero inflated", however work by [Svensson](https://www.biorxiv.org/content/10.1101/582064v1.full) has challenged that characterization and argued that the higher number of zeros observed in scRNA-seq compared to bulk RNA-seq is more likely due to biological variance and lower sequencing saturation than a technical artifact. 
 
 For sparse high dimensional _biological_ data, we expect many genes to have correlated expression as they would be impacted by the same biological process and for many genes with either low (more noisy) or similar expression across the cell population. 
 
@@ -202,10 +204,10 @@ Again, this number is likely a starting point and may need to revise depending o
 While outside the scope of this workshop, there are community efforts to develop more sophisticated methods to select like the [chooseR package] or the option to use clustering trees to evaluate the stability of this parameter choice.
 
 
-# Integration with `IntegrateLayers()`
+# Integrate Layers
 
 
-In the workflow above, `SCTransform() > RunPCA() > FindNeighbors() > FindClusters()` we have what we need to run `IntegrateLayers()`:
+Having normalized the data with `SCTransform()` and performed the dimension reduction with `RunPCA()`, we are now able to run `IntegrateLayers()`:
 
 
 ```{r, eval = FALSE}
@@ -217,13 +219,41 @@ geo_so = IntegrateLayers(
     new.reduction = 'integrated.sct.cca')
 ```
 
-Note we have specified the unintegrated reduction, which is what `IntegrateLayers()` operates on, along with the `SCT` assay. We now rerun `FindNeighbors() > FindClusters() > RunUMAP()` for the new reduction `integrated.sct.cca`
+Note we have specified the unintegrated reduction `unintegrated.sct.pca`, which is what `IntegrateLayers()` operates on, along with the `SCT` assay. Let's take a look to see what's different about the `Seurat` object:
 
+```{r, eval = FALSE}
+geo_so
+```
+~~~
+An object of class Seurat 
+38503 features across 22320 samples within 2 assays 
+Active assay: SCT (17129 features, 3000 variable features)
+ 3 layers present: counts, data, scale.data
+ 1 other assay present: RNA
+ 2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.cca
+~~~
+
+Observe that we now have a new reduction, `integrated.sct.cca`, which we will use downstream.
+
+## Alternate integration methods
+
+New to Seurat v5 is the improved `IntegrateLayers()` function which makes selecting different integration methods much easier. The results of each alternative integration method are stored within the same `Seurat` object to make comparing downstream effects much easier. [This](https://satijalab.org/seurat/articles/seurat5_integration#perform-streamlined-one-line-integrative-analysis) Seurat vignette on integrative analysis in Seurat v5 provides examples of each integration method. Note, that the code in this vignette assumes the `NormalizeData() > ScaleData() > FindVariableFeatures()` pipeline was used. So, for example, if we wanted to run the slightly faster `RPCAIntegration` method, we would run:
+
+```{r, eval = FALSE}
+geo_so = IntegrateLayers(
+  object = geo_so, 
+  method = RPCAIntegration, 
+  orig.reduction = 'unintegrated.sct.pca',
+  normalization.method = 'SCT',
+  new.reduction = 'integrated.sct.rpca')
+```
+
+Note the sepcification of `normalization.method = 'SCT'` is different than the vignette.
 
 
 # Summary
 
-Now that we have selected a number of principal components that likely correspond to biological variation of interest, we will use that number in the clustering steps in the next section.
+Now that we have selected a number of principal components that likely correspond to biological variation of interest, we will use that number as a parameter in the next section, along with our integrated results, to generate clusters.
 
 Next steps: Clustering and projection
 
