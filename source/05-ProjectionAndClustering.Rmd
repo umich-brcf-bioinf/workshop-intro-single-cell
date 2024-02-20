@@ -61,6 +61,9 @@ Contrast the previous dimensionality reduction/nearest neighbors clustering and 
 
 Nearest neighbors algorithm - based on similarity of expression pattern (just for genes/PCs selected)
 
+Again, how are you defining a “cell type” or “subtype” should help with ambiguity not only with "How do I decide how many PCs to include?" but also "How do I choose a resolution for the nearest neighbor algorithm?" as well as evaluating in the downstream if your initial choices should be revised.
+
+
 <!-- per Ho Lab - The previous version of Seurat (v3) applied a graph-based clustering approach, building upon initial strategies in the development of the initial droplet based single cell technology([Macosko et al. 2015](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4481139/)). "Importantly, the distance metric which drives the clustering analysis (based on previously identified PCs) remains the same."
 
 "However, approach in Seurat to partitioning the cellular distance matrix into clusters has dramatically improved. This approach was heavily inspired by recent publications which applied graph-based clustering approaches to scRNA-seq data ([Xu and Su 2015](https://academic.oup.com/bioinformatics/article/31/12/1974/214505)) and CyTOF data ([Levine et al. 2015](https://www.cell.com/cell/pdfExtended/S0092-8674(15)00637-6)). Briefly, these methods embed cells in a graph structure - for example a K-nearest neighbor (KNN) graph, with edges drawn between cells with similar feature expression patterns, and then attempt to partition this graph into highly interconnected ‘quasi-cliques’ or ‘communities’." -->
