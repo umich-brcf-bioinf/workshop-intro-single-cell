@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core" />
+
+<meta name="date" content="2024-02-19" />
+
+<title>Orienting on scRNA-Seq</title>
+
+<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<!--
+Favicon dervied from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+    </li>
+    <li>
+      <a href="01-GettingStarted.html">Seurat</a>
+    </li>
+    <li>
+      <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="03-Integration.html">Normalization</a>
+    </li>
+    <li>
+      <a href="04-PCAandDimReduction.html">PCA &amp; Integration</a>
+    </li>
+    <li>
+      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+    </li>
+    <li>
+      <a href="06-MarkerVisualization.html">Marker identification and visualization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="07-CellTypeAnnos.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="08-DifferentialExpression.html">Differential expression analysis</a>
+    </li>
+    <li>
+      <a href="09-IndependentExercise.html">Independent exercise</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Orienting on scRNA-Seq</h1>
+<h4 class="author">UM Bioinformatics Core</h4>
+<h4 class="date">2024-02-19</h4>
+
+</div>
+
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+</style>
+<div id="objectives" class="section level1">
+<h1>Objectives</h1>
+<ul>
+<li>Compare and contrast the capabilities and approach in scRNA-Seq vs
+bulk RNA-Seq approaches.</li>
+<li>Review the details of the 10x Genomics approach to single-cell
+sequencing</li>
+<li>Introduce a specific experimental model to guide discussion and
+learning</li>
+<li>Outline the high-level steps to analyze scRNA-Seq</li>
+</ul>
+<div id="bulk-rna-seq-and-scrna-seq" class="section level2">
+<h2>Bulk RNA-seq and scRNA-Seq</h2>
+<p>Bulk RNA-seq typically involves comparing the expression levels of
+genes between sets of tissues, such as untreated and treated mice. It
+allows researchers to characterize gene expression differences across
+entire tissues, providing a snapshot of the average expression
+program.</p>
+<p><img src="images/00A-OrientingOnScRNASeq/bulk-rna-seq.png" /></p>
+<p>scRNA-seq leverages the approaches and protocols of bulk RNA-seq, but
+instead at the level of cells instead of tissues/bulk samples. There are
+several distinct ways to do this, but common steps include <img
+src="images/00A-OrientingOnScRNASeq/scRNA-Seq.png" /></p>
+<div id="key-advantages-of-single-cell-rna-seq" class="section level3">
+<h3>Key Advantages of Single-Cell RNA-Seq</h3>
+<ol style="list-style-type: decimal">
+<li><strong>Cell-Level Insights:</strong> Unlike bulk RNA-seq,
+single-cell analysis provides insights into expression programs at the
+individual cell or cell group level.</li>
+<li><strong>Heterogeneity Detection:</strong> Single-cell RNA-seq
+reveals variations in gene expression among different cell types within
+a tissue.</li>
+<li><strong>Response to Interventions:</strong> It enables the
+examination of cell-level responses to interventions, offering a
+detailed understanding of how individual cells react to stimuli.</li>
+<li><strong>Temporal Analysis:</strong> It allows the study of how cell
+states change over time and how cells differentiate.</li>
+</ol>
+</div>
+<div id="challenges-of-single-cell-rna-seq" class="section level3">
+<h3>Challenges of Single-Cell RNA-Seq</h3>
+<p>While powerful, single-cell RNA-seq comes with added complexity and
+cost. The protocol requires nuanced decision-making, iterative analysis,
+and considerations for data storage and computational resources.</p>
+<p><img src="images/00A-OrientingOnScRNASeq/forest_trees.png" /></p>
+</div>
+</div>
+<div id="a-practical-example" class="section level2">
+<h2>A Practical Example</h2>
+<p>The blog post concludes with a focus on a specific experiment
+involving mice that underwent a soft tissue injury. The researchers aim
+to identify cell types associated with an aberrant injury response using
+single-cell RNA-seq techniques.</p>
+<p><img src="images/00A-OrientingOnScRNASeq/mouse_injury.png" /></p>
+</div>
+<div id="workshop-overview" class="section level2">
+<h2>Workshop Overview</h2>
+<p>The steps of the workshop, including running cell ranger to transform
+raw sequence data, generating a count matrix, and performing quality
+control evaluations. Further steps involve data analysis in RStudio,
+dimensional reduction to separate signal from noise, and potential
+projections to visualize cell populations.</p>
+<p><img src="images/00A-OrientingOnScRNASeq/sc_analysis.png" /></p>
+<p>Represented Another way:
+<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/></p>
+</div>
+<div id="a-whirlwind-intro-to-10x-genomics-basics"
+class="section level2">
+<h2>A whirlwind intro to 10x Genomics basics</h2>
+<p>One common microfluidic approach, like the 10X Genomics method, uses
+beads with unique identifiers. These beads, along with cells, pass
+through a microfluidic device, creating isolated reaction vessels.</p>
+<p>The bead contains oligomers with a PCR handle, a cell barcode, and a
+unique molecular identifier (UMI). After cell lysis, transcripts are
+reverse transcribed, incorporating the cell-specific barcode. This
+enables the association of each transcript with a specific cell.
+Computational analysis of these barcodes allows the separation of
+transcripts into constituent cells.</p>
+</div>
+</div>
+<div id="conclusion" class="section level1">
+<h1>Conclusion</h1>
+<p>scRNA-seq offers a powerful and nuanced approach to studying gene
+expression at the cellular level. This technique can elaborate our
+understanding of cellular heterogeneity, responses to interventions, and
+the cell state dynamics.</p>
+<br/> <br/>
+<hr/>
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="workshop_intro.html">Back to
+introduction</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="00B-CellRangerInAction.html">Next
+lesson</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiT3JpZW50aW5nIG9uIHNjUk5BLVNlcSIKYXV0aG9yOiAiVU0gQmlvaW5mb3JtYXRpY3MgQ29yZSIKZGF0ZTogImByIFN5cy5EYXRlKClgIgpvdXRwdXQ6CiAgICAgICAgaHRtbF9kb2N1bWVudDoKICAgICAgICAgICAgaW5jbHVkZXM6CiAgICAgICAgICAgICAgICBpbl9oZWFkZXI6IGhlYWRlci5odG1sCiAgICAgICAgICAgIHRoZW1lOiBwYXBlcgogICAgICAgICAgICB0b2M6IHRydWUKICAgICAgICAgICAgdG9jX2RlcHRoOiA0CiAgICAgICAgICAgIHRvY19mbG9hdDogdHJ1ZQogICAgICAgICAgICBudW1iZXJfc2VjdGlvbnM6IGZhbHNlCiAgICAgICAgICAgIGZpZ19jYXB0aW9uOiB0cnVlCiAgICAgICAgICAgIG1hcmtkb3duOiBHRk0KICAgICAgICAgICAgY29kZV9kb3dubG9hZDogdHJ1ZQotLS0KCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+CmJvZHksIHRkIHsKICAgZm9udC1zaXplOiAxOHB4Owp9CmNvZGUucnsKICBmb250LXNpemU6IDEycHg7Cn0KcHJlIHsKICBmb250LXNpemU6IDEycHgKfQo8L3N0eWxlPgoKCiMgT2JqZWN0aXZlcwoKLSBDb21wYXJlIGFuZCBjb250cmFzdCB0aGUgY2FwYWJpbGl0aWVzIGFuZCBhcHByb2FjaCBpbiBzY1JOQS1TZXEgdnMgYnVsayBSTkEtU2VxIGFwcHJvYWNoZXMuCi0gUmV2aWV3IHRoZSBkZXRhaWxzIG9mIHRoZSAxMHggR2Vub21pY3MgYXBwcm9hY2ggdG8gc2luZ2xlLWNlbGwgc2VxdWVuY2luZwotIEludHJvZHVjZSBhIHNwZWNpZmljIGV4cGVyaW1lbnRhbCBtb2RlbCB0byBndWlkZSBkaXNjdXNzaW9uIGFuZCBsZWFybmluZwotIE91dGxpbmUgdGhlIGhpZ2gtbGV2ZWwgc3RlcHMgdG8gYW5hbHl6ZSBzY1JOQS1TZXEKCiMjIEJ1bGsgUk5BLXNlcSBhbmQgc2NSTkEtU2VxCkJ1bGsgUk5BLXNlcSB0eXBpY2FsbHkgaW52b2x2ZXMgY29tcGFyaW5nIHRoZSBleHByZXNzaW9uIGxldmVscyBvZiBnZW5lcyBiZXR3ZWVuIHNldHMgb2YgdGlzc3Vlcywgc3VjaCBhcyB1bnRyZWF0ZWQgYW5kIHRyZWF0ZWQgbWljZS4gSXQgYWxsb3dzIHJlc2VhcmNoZXJzIHRvIGNoYXJhY3Rlcml6ZSBnZW5lIGV4cHJlc3Npb24gZGlmZmVyZW5jZXMgYWNyb3NzIGVudGlyZSB0aXNzdWVzLCBwcm92aWRpbmcgYSBzbmFwc2hvdCBvZiB0aGUgYXZlcmFnZSBleHByZXNzaW9uIHByb2dyYW0uCgohW10oaW1hZ2VzLzAwQS1PcmllbnRpbmdPblNjUk5BU2VxL2J1bGstcm5hLXNlcS5wbmcpCgoKc2NSTkEtc2VxIGxldmVyYWdlcyB0aGUgYXBwcm9hY2hlcyBhbmQgcHJvdG9jb2xzIG9mIGJ1bGsgUk5BLXNlcSwgYnV0IGluc3RlYWQgYXQgdGhlIGxldmVsIG9mIGNlbGxzIGluc3RlYWQgb2YgdGlzc3Vlcy9idWxrIHNhbXBsZXMuIFRoZXJlIGFyZSBzZXZlcmFsIGRpc3RpbmN0IHdheXMgdG8gZG8gdGhpcywgYnV0IGNvbW1vbiBzdGVwcyBpbmNsdWRlCiFbXShpbWFnZXMvMDBBLU9yaWVudGluZ09uU2NSTkFTZXEvc2NSTkEtU2VxLnBuZykKCgojIyMgS2V5IEFkdmFudGFnZXMgb2YgU2luZ2xlLUNlbGwgUk5BLVNlcQoKMS4gKipDZWxsLUxldmVsIEluc2lnaHRzOioqIFVubGlrZSBidWxrIFJOQS1zZXEsIHNpbmdsZS1jZWxsIGFuYWx5c2lzIHByb3ZpZGVzIGluc2lnaHRzIGludG8gZXhwcmVzc2lvbiBwcm9ncmFtcyBhdCB0aGUgaW5kaXZpZHVhbCBjZWxsIG9yIGNlbGwgZ3JvdXAgbGV2ZWwuCjEuICoqSGV0ZXJvZ2VuZWl0eSBEZXRlY3Rpb246KiogU2luZ2xlLWNlbGwgUk5BLXNlcSByZXZlYWxzIHZhcmlhdGlvbnMgaW4gZ2VuZSBleHByZXNzaW9uIGFtb25nIGRpZmZlcmVudCBjZWxsIHR5cGVzIHdpdGhpbiBhIHRpc3N1ZS4KMS4gKipSZXNwb25zZSB0byBJbnRlcnZlbnRpb25zOioqIEl0IGVuYWJsZXMgdGhlIGV4YW1pbmF0aW9uIG9mIGNlbGwtbGV2ZWwgcmVzcG9uc2VzIHRvIGludGVydmVudGlvbnMsIG9mZmVyaW5nIGEgZGV0YWlsZWQgdW5kZXJzdGFuZGluZyBvZiBob3cgaW5kaXZpZHVhbCBjZWxscyByZWFjdCB0byBzdGltdWxpLgoxLiAqKlRlbXBvcmFsIEFuYWx5c2lzOioqIEl0IGFsbG93cyB0aGUgc3R1ZHkgb2YgaG93IGNlbGwgc3RhdGVzIGNoYW5nZSBvdmVyIHRpbWUgYW5kIGhvdyBjZWxscyBkaWZmZXJlbnRpYXRlLgoKIyMjIENoYWxsZW5nZXMgb2YgU2luZ2xlLUNlbGwgUk5BLVNlcQoKV2hpbGUgcG93ZXJmdWwsIHNpbmdsZS1jZWxsIFJOQS1zZXEgY29tZXMgd2l0aCBhZGRlZCBjb21wbGV4aXR5IGFuZCBjb3N0LiBUaGUgcHJvdG9jb2wgcmVxdWlyZXMgbnVhbmNlZCBkZWNpc2lvbi1tYWtpbmcsIGl0ZXJhdGl2ZSBhbmFseXNpcywgYW5kIGNvbnNpZGVyYXRpb25zIGZvciBkYXRhIHN0b3JhZ2UgYW5kIGNvbXB1dGF0aW9uYWwgcmVzb3VyY2VzLgoKIVtdKGltYWdlcy8wMEEtT3JpZW50aW5nT25TY1JOQVNlcS9mb3Jlc3RfdHJlZXMucG5nKQoKIyMgQSBQcmFjdGljYWwgRXhhbXBsZQoKVGhlIGJsb2cgcG9zdCBjb25jbHVkZXMgd2l0aCBhIGZvY3VzIG9uIGEgc3BlY2lmaWMgZXhwZXJpbWVudCBpbnZvbHZpbmcgbWljZSB0aGF0IHVuZGVyd2VudCBhIHNvZnQgdGlzc3VlIGluanVyeS4gVGhlIHJlc2VhcmNoZXJzIGFpbSB0byBpZGVudGlmeSBjZWxsIHR5cGVzIGFzc29jaWF0ZWQgd2l0aCBhbiBhYmVycmFudCBpbmp1cnkgcmVzcG9uc2UgdXNpbmcgc2luZ2xlLWNlbGwgUk5BLXNlcSB0ZWNobmlxdWVzLgoKIVtdKGltYWdlcy8wMEEtT3JpZW50aW5nT25TY1JOQVNlcS9tb3VzZV9pbmp1cnkucG5nKQoKCiMjIFdvcmtzaG9wIE92ZXJ2aWV3CgpUaGUgc3RlcHMgb2YgdGhlIHdvcmtzaG9wLCBpbmNsdWRpbmcgcnVubmluZyBjZWxsIHJhbmdlciB0byB0cmFuc2Zvcm0gcmF3IHNlcXVlbmNlIGRhdGEsIGdlbmVyYXRpbmcgYSBjb3VudCBtYXRyaXgsIGFuZCBwZXJmb3JtaW5nIHF1YWxpdHkgY29udHJvbCBldmFsdWF0aW9ucy4gRnVydGhlciBzdGVwcyBpbnZvbHZlIGRhdGEgYW5hbHlzaXMgaW4gUlN0dWRpbywgZGltZW5zaW9uYWwgcmVkdWN0aW9uIHRvIHNlcGFyYXRlIHNpZ25hbCBmcm9tIG5vaXNlLCBhbmQgcG90ZW50aWFsIHByb2plY3Rpb25zIHRvIHZpc3VhbGl6ZSBjZWxsIHBvcHVsYXRpb25zLgoKIVtdKGltYWdlcy8wMEEtT3JpZW50aW5nT25TY1JOQVNlcS9zY19hbmFseXNpcy5wbmcpCgpSZXByZXNlbnRlZCBBbm90aGVyIHdheToKPGltZyBzcmM9ImltYWdlcy93YXlmaW5kZXIvd2F5ZmluZGVyLnBuZyIgYWx0PSJ3YXlmaW5kZXIiIHN0eWxlPSJoZWlnaHQ6IDQwMHB4OyIvPgoKCiMjIEEgd2hpcmx3aW5kIGludHJvIHRvIDEweCBHZW5vbWljcyBiYXNpY3MKCk9uZSBjb21tb24gbWljcm9mbHVpZGljIGFwcHJvYWNoLCBsaWtlIHRoZSAxMFggR2Vub21pY3MgbWV0aG9kLCB1c2VzIGJlYWRzIHdpdGggdW5pcXVlIGlkZW50aWZpZXJzLiBUaGVzZSBiZWFkcywgYWxvbmcgd2l0aCBjZWxscywgcGFzcyB0aHJvdWdoIGEgbWljcm9mbHVpZGljIGRldmljZSwgY3JlYXRpbmcgaXNvbGF0ZWQgcmVhY3Rpb24gdmVzc2Vscy4KClRoZSBiZWFkIGNvbnRhaW5zIG9saWdvbWVycyB3aXRoIGEgUENSIGhhbmRsZSwgYSBjZWxsIGJhcmNvZGUsIGFuZCBhIHVuaXF1ZSBtb2xlY3VsYXIgaWRlbnRpZmllciAoVU1JKS4gQWZ0ZXIgY2VsbCBseXNpcywgdHJhbnNjcmlwdHMgYXJlIHJldmVyc2UgdHJhbnNjcmliZWQsIGluY29ycG9yYXRpbmcgdGhlIGNlbGwtc3BlY2lmaWMgYmFyY29kZS4gVGhpcyBlbmFibGVzIHRoZSBhc3NvY2lhdGlvbiBvZiBlYWNoIHRyYW5zY3JpcHQgd2l0aCBhIHNwZWNpZmljIGNlbGwuIENvbXB1dGF0aW9uYWwgYW5hbHlzaXMgb2YgdGhlc2UgYmFyY29kZXMgYWxsb3dzIHRoZSBzZXBhcmF0aW9uIG9mIHRyYW5zY3JpcHRzIGludG8gY29uc3RpdHVlbnQgY2VsbHMuCgoKIyBDb25jbHVzaW9uCgpzY1JOQS1zZXEgb2ZmZXJzIGEgcG93ZXJmdWwgYW5kIG51YW5jZWQgYXBwcm9hY2ggdG8gc3R1ZHlpbmcgZ2VuZSBleHByZXNzaW9uIGF0IHRoZSBjZWxsdWxhciBsZXZlbC4gVGhpcyB0ZWNobmlxdWUgY2FuIGVsYWJvcmF0ZSBvdXIgdW5kZXJzdGFuZGluZyBvZiBjZWxsdWxhciBoZXRlcm9nZW5laXR5LCByZXNwb25zZXMgdG8gaW50ZXJ2ZW50aW9ucywgYW5kIHRoZSBjZWxsIHN0YXRlIGR5bmFtaWNzLgoKCjxici8+Cjxici8+Cjxoci8+CnwgW0JhY2sgdG8gaW50cm9kdWN0aW9uXSh3b3Jrc2hvcF9pbnRyby5odG1sKSB8IFtUb3Agb2YgdGhpcyBsZXNzb25dKCN0b3ApIHwgW05leHQgbGVzc29uXSgwMEItQ2VsbFJhbmdlckluQWN0aW9uLmh0bWwpIHwKfCA6LS0tIHwgOi0tLS06IHwgLS0tOiB8Cgo=</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("00A-OrientingOnScRNASeq.Rmd");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,86 @@
+---
+title: "Differential Expression Analysis"
+author: "UM Bioinformatics Core"
+date: "`r Sys.Date()`"
+output:
+        html_document:
+            includes:
+                in_header: header.html
+            theme: paper
+            toc: true
+            toc_depth: 4
+            toc_float: true
+            number_sections: false
+            fig_caption: true
+            markdown: GFM
+            code_download: true
+---
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+</style>
+
+```{r, include = FALSE}
+source("../bin/chunk-options.R")
+knitr_fig_path("XX")
+```
+
+# Workflow Overview {.unlisted .unnumbered}
+
+<br/>
+<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<br/>
+<br/>
+
+# Introduction
+
+Point out possible gaps between how single-cell data is presented versus the reality of running an analysis
+E.g. Papers might report final filtering thresholds, but our process for choosing those is likely to be more iterative
+
+General goal: Filtering out the "cells" that either were poorly measured or are either not single-cells or not cells at all
+
+<!-- regular html comment --> 
+<!--Add specific goals for section-->
+
+Per [hyperlink text](http://www.website.html) are ... either `plain text` or *italic* or **bold**.
+
+<Embed an image>
+<img src="images/WelcomeScriptOpened.png" alt="rstudio default session" style="width:1000px;"/>
+
+> ## Reminder: RStudio code execution {.unlisted .unnumbered}
+>
+> <kbd>Ctrl</kbd>+<kbd>Enter</kbd> is a standard shortcut in RStudio to send the current line (or selected lines) to the console. If you see `>` in the Console, then R has executed the command. If you see a `+`, this means that the command is not complete, R thinks there is more to your command. You can use the <kmd>esc</kmd> to get out of this state.
+
+> ## Reminder: Object naming conventions {.unlisted .unnumbered}
+> * Cannot start with numbers
+> * Cannot include dashes
+> * Cannot have spaces
+> * Should not be identical to a named function
+> * Dots and underscores can separate parts of names, alternatively CamelCase accomplishes this
+
+----
+
+<details>
+    <summary>*Click for additional resources regarding statistical testing and tool comparison for RNA-seq data*</summary>
+    To learn more about statistical testing and what distributions best model the behavior of RNA-seq data, a good resource is this [EdX lecture by Rafael Irizarry](https://www.youtube.com/watch?v=HK7WKsL3c2w&feature=youtu.be) or this [lecture by Kasper Hansen](https://www.youtube.com/watch?v=C8RNvWu7pAw). Another helpful guide is this [Comparative Study for Differential Expression Analysis by Zhang et al.](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0103207) from 2014.
+</details>
+<br>
+
+----
+
+These materials have been adapted and extended from materials listed above. These are open access materials distributed under the terms of the [Creative Commons Attribution license (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.
+
+<br/>
+<br/>
+<hr/>
+| [Previous lesson](07-CellTypeAnnos.html) | [Top of this lesson](#top) | [Next lesson](09-IndependentExercise.html) |
+| :--- | :----: | ---: |
+

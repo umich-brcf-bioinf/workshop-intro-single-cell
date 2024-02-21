@@ -57,6 +57,9 @@ pre {
 | **Chris** | **Marci** | **Raymond** |
 ![](images/headshots/headshot_damki.jpg) | ![](images/headshots/headshot_ncarruth.jpg) | ![](images/headshots/headshot_trsaari.jpg) |
 | **Dana** | **Nick** | **Travis** |
+![](images/headshots/headshot_mkdohert.jpg) | ![](images/headshots/headshot_okoues.jpg) | ![](images/headshots/headshot_phillipa.jpg) |
+| **Matt** | **Olivia** | **Tricia** |
+
 
 <br/>
 
@@ -127,7 +130,7 @@ breakout room.
 
   - Zoom: Click Breakout Rooms
   - Find the room corresponding to the first letter of your last name
-  - Hover over the number to the right and click **Join**.
+  - Click **Join** button to the right of the room.
   - When you have completed introductions, you can leave the breakout room to rejoin the main room.
 
   ![Breakout rooms](images/workshop_intro/zoom_breakout_room.png)
@@ -224,6 +227,16 @@ It is important that you can see:
   Biomedical Research Core Facilities (BRCF) helps researchers economically take advantage of
   the latest technology and collaborate with top experts in the field. Established in 1986, the
   BRCF was formed to offer centralized access to research services and equipment.
+<br/>
+<br/>
+
+
+## [Single Cell Spatial Analysis Program](https://singlecellspatialanalysis.umich.edu/){target="_blank"}
+
+  The Single Cell Spatial Analysis Program seeks to develop the University of Michigan into a 
+  recognized leader in applying high-resolution spatially-resolved multi‑omic analysis within 
+  individual cells and in cells within tissues to drive next-generation solutions in biology and 
+  human health.
 <br/>
 <br/>
 

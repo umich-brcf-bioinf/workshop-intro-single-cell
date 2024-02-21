@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core" />
+
+<meta name="date" content="2024-02-19" />
+
+<title>Getting Started with Seurat</title>
+
+<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<!--
+Favicon dervied from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+    </li>
+    <li>
+      <a href="01-GettingStarted.html">Seurat</a>
+    </li>
+    <li>
+      <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="03-Integration.html">Normalization</a>
+    </li>
+    <li>
+      <a href="04-PCAandDimReduction.html">PCA &amp; Integration</a>
+    </li>
+    <li>
+      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+    </li>
+    <li>
+      <a href="06-MarkerVisualization.html">Marker identification and visualization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="07-CellTypeAnnos.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="08-DifferentialExpression.html">Differential expression analysis</a>
+    </li>
+    <li>
+      <a href="09-IndependentExercise.html">Independent exercise</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Getting Started with Seurat</h1>
+<h4 class="author">UM Bioinformatics Core</h4>
+<h4 class="date">2024-02-19</h4>
+
+</div>
+
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+</style>
+<div id="workflow-overview" class="section level1 unlisted unnumbered">
+<h1 class="unlisted unnumbered">Workflow Overview</h1>
+<p><br/>
+<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<br/> <br/></p>
+</div>
+<div id="objectives" class="section level1">
+<h1>Objectives</h1>
+<ul>
+<li>Create RStudio project for analysis.</li>
+<li>Create directory structure for analysis.</li>
+<li>Learn how to read 10X data into Seurat.</li>
+<li>Introduce the Seurat object, and how to access parts of it.</li>
+</ul>
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>&lt; How much context to provide here will depend on what Chris
+includes in his introduction. &gt;</p>
+<p>The field of single-cell expression measurements is still relatively
+new &lt;add links to early publications &amp; information regarding 10x
+commercialization&gt; and therefore best practices for analysis and
+standards for publication are continuing to evolve.</p>
+<p>One of the goals of this workshop is to not only provide an example
+of a start to end single-cell workflow but also explore some of the
+relatively arbitrary decision points and the rationale for the choices
+we included in our analysis.</p>
+<p>Our specific goals for the hands-on portions of the workshop
+include:</p>
+<!-- Expect to edit these goals and/or might make sense for Chris to iterate over earlier?:
+- Learn to assess the quality of your data
+- 
+- X
+- X
+-->
+<div id="sample-information" class="section level2">
+<h2>Sample information</h2>
+<p>In this workshop, we will be working with a scRNA-seq data set
+generated from
+<!--add tissue information>. <Add experimental condition summary - expect Chris to give overview in overall workshop introduction-->.</p>
+</div>
+</div>
+<div id="project-setup" class="section level1">
+<h1>Project setup</h1>
+<p>To start, we will access our shared RStudio server by opening a web
+browser to the following URL:</p>
+<p><a
+href="https://bfx-workshop02.med.umich.edu/">https://bfx-workshop02.med.umich.edu/</a></p>
+<p>You should now be looking at a page that will allow you to login to
+the RStudio server:</p>
+<div class="float">
+<img src="images/curriculum/server_login.png"
+alt="Image: Login page for RStudio server." />
+<div class="figcaption">Image: Login page for RStudio server.</div>
+</div>
+<p>Enter your user credentials and click <kbd>Sign In</kbd>. Your
+username and password were provided via email, but if you need help, a
+helper can retrieve it for you if you ask in Slack. Once logged in, you
+should now see the RStudio interface:</p>
+<div class="float">
+<img src="images/curriculum/rstudio_landing.png"
+alt="Image: Landing page after successful login to RStudio server." />
+<div class="figcaption">Image: Landing page after successful login to
+RStudio server.</div>
+</div>
+<!-- consider adding welcome script or example of final goal?-->
+<div id="creating-a-project" class="section level2">
+<h2>Creating a project</h2>
+<p>We will create an RStudio Project that will help us keep our files
+organized. See the <a
+href="https://r4ds.hadley.nz/workflow-scripts.html#projects">Projects</a>
+section of <a href="https://r4ds.hadley.nz/">R for Data Science</a> for
+a more in-depth description of what a project is and how it’s
+helpful.</p>
+<p>To create a Project for this workshop, click <kbd>File</kbd> then
+<kbd>New Project…</kbd>. In the New Project Wizard window that opens,
+select <kbd>Existing Directory</kbd>, then <kbd>Browse…</kbd>. In the
+Choose Directory window, select the <code>ISC_R</code> folder by
+clicking it once, and then click the <kbd>Choose</kbd> button. Finally,
+click <kbd>Create Project</kbd>.</p>
+<p>Once we do this, RStudio will restart and the Files pane (lower
+right) should put us in the <code>~/ISC_R</code> folder where there is
+an <code>inputs/</code> folder and an <code>ISC_R.Rproj</code> file.</p>
+</div>
+<div id="directory-structure" class="section level2">
+<h2>Directory structure</h2>
+<p>We have included the data to be used in the workshop in the
+<code>inputs/</code> folder. However, the project will need to include
+folders for our analysis and our analysis scripts. Let’s create that
+directory structure with the <code>dir.create()</code> function.</p>
+<pre class="r"><code>dir.create(&#39;scripts&#39;, showWarnings = FALSE, recursive = TRUE)
+dir.create(&#39;results/figures&#39;, showWarnings = FALSE, recursive = TRUE)
+dir.create(&#39;results/tables&#39;, showWarnings = FALSE, recursive = TRUE)
+dir.create(&#39;results/rdata&#39;, showWarnings = FALSE, recursive = TRUE)</code></pre>
+<p>In the Files pane we should see the new <code>results/</code> and
+<code>scripts/</code> folders.</p>
+</div>
+<div id="analysis-script" class="section level2">
+<h2>Analysis script</h2>
+<p>The two most important artifacts of our analysis are the data from
+Cell Ranger, and the script to analyze the data. There will be outputs
+in <code>results/</code>, and these will be important, but if the
+contents of <code>results/</code> are ever lost, the script will be able
+to re-generate them if we’ve captured all our steps as code, which we
+aim to do.</p>
+<p>To create the analysis script, click <kbd>File</kbd>, hover over
+<kbd>New File</kbd>, and click on <kbd>R Script</kbd>. A new pane in the
+upper left slides into view and is the Untitled script file. Save this
+file, and name it, by clicking <kbd>File</kbd> then <kbd>Save</kbd>.
+Double click the <code>scripts/</code> folder, and in the File name:
+text box type “analysis.R”. Then click <kbd>Save</kbd>.</p>
+<p>As we proceed through the workshop, we should save this file (by
+clicking the Floppy disk, clicking <kbd>File</kbd> then <kbd>Save</kbd>,
+or by typing <kbd>Control + S</kbd>).</p>
+<blockquote>
+<h4 id="good-scripting-practices" class="unlisted unnumbered">Good
+scripting practices</h4>
+<p>In any analysis script, we recommend using comments (lines preceded
+by a “#”) to provide additional information about code that may not be
+self-evident. This is to the benefit of others that may look at the
+code, but also to your future-self. <br></p>
+</blockquote>
+</div>
+</div>
+<div id="analysis-initialization" class="section level1">
+<h1>Analysis initialization</h1>
+<p>We begin our analysis script by loading the libraries we expect to
+use. It’s generally good practice to include all <code>library()</code>
+calls at the top of a script for visibility.</p>
+<pre class="r"><code>library(Seurat)
+library(BPCells)
+library(tidyverse)
+
+options(future.globals.maxSize = 1e9)</code></pre>
+<p>The libraries that we are loading are:</p>
+<ul>
+<li>The <code>Seurat</code> library, developed by the <a
+href="https://satijalab.org/">Satija lab</a>, which will provide the
+essential functions used in our single-cell analysis. The <a
+href="https://satijalab.org/seurat/">Seurat documentation</a> is
+extensive and indispensible.</li>
+<li>The <code>BPCells</code> library, developed by <a
+href="https://bnprks.github.io/BPCells/authors.html#citation">Benjamin
+Parks</a>, is a recent package with the primary goal of efficiently
+storing single-cell data to reduce its memory footprint. The <a
+href="https://bnprks.github.io/BPCells/index.html">BPCells
+documentation</a> includes many useful tutorials.</li>
+<li>The <code>tidyverse</code> library, developed by Posit, is an
+essential package for data manipulation and plotting. The <a
+href="https://www.tidyverse.org/">tidyverse documentation</a> is
+essential for getting a handle on the array of functions in the many
+packages contained therein.</li>
+</ul>
+</div>
+<div id="input-data" class="section level1">
+<h1>Input data</h1>
+<p>The <code>inputs/</code> folder has the data for the workshop stored
+in two forms. The first, <code>inputs/10x_analysis/</code> is closer to
+what AGC would generate with Cell Ranger, where each sample has a
+folder, and within that folder there are three files:</p>
+<ul>
+<li><code>barcodes.tsv.gz</code></li>
+<li><code>features.tsv.gz</code></li>
+<li><code>matrix.mtx.gz</code></li>
+</ul>
+<!-- Were these files explained earlier? If not, briefly explain them here -->
+<p>The second, <code>inputs/10x_mat_subset/</code> is the result of the
+<code>BPCells</code> package, and is more machine-readable than
+human-readable. It is an efficient way of storing the same data
+contained in the three files above. We will use this form of the input
+data because it is more memory efficient.</p>
+<p>While the full dataset we selected has time-series information from
+Day 0, Day 3, Day 7, and Day 21, we have removed Day 3 to reduce the
+memory requirements further.</p>
+<!-- Add context for expected 10x outputs and how we would usually start with the "filtered" outputs (and add dropdown or link out to 10x resources to contrast between filtered and raw outputs and use cases for each) -->
+</div>
+<div id="create-a-seurat-object" class="section level1">
+<h1>Create a Seurat object</h1>
+<p>The most recent release of <code>Seurat</code>, version 5, includes
+changes which take advantage of the memory-efficient storage implemented
+in <code>BPCells</code>. To read the efficiently stored data with
+<code>BPCells</code> we will use the <code>open_matrix_dir()</code>
+function.</p>
+<!-- Introduce BPCell package and how most recent version of Seurat (Seurat 5) supports more efficient data storage to improve performance and accomodate larger datasets -->
+<pre class="r"><code># This puts the data &quot;on disk&quot; rather than in memory&quot;
+geo_mat = open_matrix_dir(dir = &#39;inputs/10x_mat_subset&#39;)</code></pre>
+<p>This reads in the expression matrix which has genes as rows and cells
+as columns. The expression matrix is the precursor to creating the
+<code>Seurat</code> object upon which all our analysis will be done. To
+create the <code>Seurat</code> object:</p>
+<pre class="r"><code>geo_so = CreateSeuratObject(counts = geo_mat, min.cells = 1, min.features = 50)</code></pre>
+<p>We have specified some parameters to remove genes and cells which do
+not contain very much information. Specifically a gene is removed if it
+is expressed in 1 or fewer cells, and a cell is removed if it contains
+reads for 50 or fewer genes. In the context of this workshop, this helps
+us minimize memory usage.</p>
+<!-- Add a hidden section that shows how to read in the data in the usual way and store it as the 10x_mat -->
+<div id="structure-of-a-seurat-object" class="section level2">
+<h2>Structure of a Seurat object</h2>
+<p>The <code>Seurat</code> object is a complex data type, so let’s get a
+birds eye view with an image from <a
+href="https://swbioinf.github.io/scRNAseqInR_Doco/seuratobject.html#discussion-the-seurat-object-in-r">this
+tutorial</a> on single-cell analysis.</p>
+<div class="float">
+<img src="images/curriculum/seurat_object.png"
+alt="Image: Schematic of Seurat object." />
+<div class="figcaption">Image: Schematic of <code>Seurat</code>
+object.</div>
+</div>
+<p>The three main “slots” in the object are:</p>
+<ol style="list-style-type: decimal">
+<li>The <code>assays</code> slot stores the expression data as
+<code>Assay</code> objects.</li>
+<li>The <code>meta.data</code> slot which stores cell-level information,
+including technical and phenotypic data.</li>
+<li>The <code>reductions</code> slot stores the results of dimension
+reduction applied to the <code>assays</code>.</li>
+</ol>
+<p>There are other slots which store information that becomes relevant
+when identifying clusters of cells: <code>graphs</code> and
+<code>neighbors</code>. There are slots related to spatial analysis:
+<code>images</code>. There are also slots which track what has been done
+to the object: <code>commands</code>.</p>
+<div id="layers-of-a-seurat-object" class="section level3">
+<h3>Layers of a Seurat object</h3>
+<p>The <code>assays</code> in a Seurat v5 object store data in layers.
+Layers can store raw, un-normalized counts
+(<code>layer = 'counts'</code>), normalized data
+(<code>layer = 'data'</code>), or z-scored/variance-stabilized data
+(<code>layer = 'scale.data'</code>). We will come back to the idea of
+these layers when we perform normalization and variance-stabilization
+later.</p>
+</div>
+</div>
+<div id="accessing-the-seurat-object" class="section level2">
+<h2>Accessing the Seurat object</h2>
+<p>The only slot of the <code>Seurat</code> object that we’ll typically
+access or modify by hand–that is, without a function from the
+<code>Seurat</code> package–is the <code>meta.data</code> object. In R,
+slots are accessed with the <code>@</code> symbol, as in:</p>
+<pre class="r"><code>head(geo_so@meta.data)</code></pre>
+<pre><code>                                          orig.ident nCount_RNA nFeature_RNA
+HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1       9258         2709
+HODay0replicate1_AAACCTGAGGAGTACC-1 HODay0replicate1         99           76
+HODay0replicate1_AAACCTGAGGATCGCA-1 HODay0replicate1         71           55
+HODay0replicate1_AAACCTGAGGCATTGG-1 HODay0replicate1         63           53
+HODay0replicate1_AAACCTGCAACAACCT-1 HODay0replicate1         70           54
+HODay0replicate1_AAACCTGCACCACCAG-1 HODay0replicate1        131          104</code></pre>
+<p>Here, each row is a cell, and each column is information about that
+cell. The rows of the table are named according to the uniquely
+identifiable name for the cell. In this case, the day and replicate, as
+well as the barcode for that cell. As we continue the workshop, we will
+check in on the <code>meta.data</code> slot and observe changes we want
+to make, and that other functions will make. We’ll also observe the
+other assays and layers and note their changes.</p>
+</div>
+<div id="saving-a-seurat-object" class="section level2">
+<h2>Saving a Seurat object</h2>
+<p>Let’s save the Seurat object as an RDS file with
+<code>saveRDS()</code>; this allows us to have a copy of the object that
+we can read back into our session with the <code>readRDS()</code>
+commmand.</p>
+<pre class="r"><code>saveRDS(geo_so, file = &#39;results/rdata/geo_so_unfiltered.rds&#39;)</code></pre>
+</div>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>In this section we:</p>
+<ul>
+<li>Created an RStudio project for analysis.</li>
+<li>Created the directory structure for analysis.</li>
+<li>Learned how to read 10X data into Seurat.</li>
+<li>Introduced the Seurat object, and how to access parts of it.</li>
+</ul>
+<p>Next steps: QC and filtering of the data.</p>
+<hr />
+<p>These materials have been adapted and extended from materials listed
+above. These are open access materials distributed under the terms of
+the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
+Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
+use, distribution, and reproduction in any medium, provided the original
+author and source are credited.</p>
+<br/> <br/>
+<hr/>
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="cellranger.html">Previous lesson</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="02-QCandFiltering.html">Next lesson</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiR2V0dGluZyBTdGFydGVkIHdpdGggU2V1cmF0IgphdXRob3I6ICJVTSBCaW9pbmZvcm1hdGljcyBDb3JlIgpkYXRlOiAiYHIgU3lzLkRhdGUoKWAiCm91dHB1dDoKICAgICAgICBodG1sX2RvY3VtZW50OgogICAgICAgICAgICBpbmNsdWRlczoKICAgICAgICAgICAgICAgIGluX2hlYWRlcjogaGVhZGVyLmh0bWwKICAgICAgICAgICAgdGhlbWU6IHBhcGVyCiAgICAgICAgICAgIHRvYzogdHJ1ZQogICAgICAgICAgICB0b2NfZGVwdGg6IDQKICAgICAgICAgICAgdG9jX2Zsb2F0OiB0cnVlCiAgICAgICAgICAgIG51bWJlcl9zZWN0aW9uczogZmFsc2UKICAgICAgICAgICAgZmlnX2NhcHRpb246IHRydWUKICAgICAgICAgICAgbWFya2Rvd246IEdGTQogICAgICAgICAgICBjb2RlX2Rvd25sb2FkOiB0cnVlCi0tLQoKPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KYm9keSwgdGQgewogICBmb250LXNpemU6IDE4cHg7Cn0KY29kZS5yewogIGZvbnQtc2l6ZTogMTJweDsKfQpwcmUgewogIGZvbnQtc2l6ZTogMTJweAp9Cjwvc3R5bGU+CgpgYGB7ciwgaW5jbHVkZSA9IEZBTFNFfQpzb3VyY2UoIi4uL2Jpbi9jaHVuay1vcHRpb25zLlIiKQprbml0cl9maWdfcGF0aCgiWFgiKQpgYGAKCiMgV29ya2Zsb3cgT3ZlcnZpZXcgey51bmxpc3RlZCAudW5udW1iZXJlZH0KCjxici8+CjxpbWcgc3JjPSJpbWFnZXMvd2F5ZmluZGVyL3dheWZpbmRlci5wbmciIGFsdD0id2F5ZmluZGVyIiBzdHlsZT0iaGVpZ2h0OiA0MDBweDsiLz4KPGJyLz4KPGJyLz4KCiMgT2JqZWN0aXZlcwoKLSBDcmVhdGUgUlN0dWRpbyBwcm9qZWN0IGZvciBhbmFseXNpcy4KLSBDcmVhdGUgZGlyZWN0b3J5IHN0cnVjdHVyZSBmb3IgYW5hbHlzaXMuCi0gTGVhcm4gaG93IHRvIHJlYWQgMTBYIGRhdGEgaW50byBTZXVyYXQuCi0gSW50cm9kdWNlIHRoZSBTZXVyYXQgb2JqZWN0LCBhbmQgaG93IHRvIGFjY2VzcyBwYXJ0cyBvZiBpdC4KCiMgSW50cm9kdWN0aW9uCgo8IEhvdyBtdWNoIGNvbnRleHQgdG8gcHJvdmlkZSBoZXJlIHdpbGwgZGVwZW5kIG9uIHdoYXQgQ2hyaXMgaW5jbHVkZXMgaW4gaGlzIGludHJvZHVjdGlvbi4gPgoKVGhlIGZpZWxkIG9mIHNpbmdsZS1jZWxsIGV4cHJlc3Npb24gbWVhc3VyZW1lbnRzIGlzIHN0aWxsIHJlbGF0aXZlbHkgbmV3IDxhZGQgbGlua3MgdG8gZWFybHkgcHVibGljYXRpb25zICYgaW5mb3JtYXRpb24gcmVnYXJkaW5nIDEweCBjb21tZXJjaWFsaXphdGlvbj4gYW5kIHRoZXJlZm9yZSAgYmVzdCBwcmFjdGljZXMgZm9yIGFuYWx5c2lzIGFuZCBzdGFuZGFyZHMgZm9yIHB1YmxpY2F0aW9uIGFyZSBjb250aW51aW5nIHRvIGV2b2x2ZS4gCgpPbmUgb2YgdGhlIGdvYWxzIG9mIHRoaXMgd29ya3Nob3AgaXMgdG8gbm90IG9ubHkgcHJvdmlkZSBhbiBleGFtcGxlIG9mIGEgc3RhcnQgdG8gZW5kIHNpbmdsZS1jZWxsIHdvcmtmbG93IGJ1dCBhbHNvIGV4cGxvcmUgc29tZSBvZiB0aGUgcmVsYXRpdmVseSBhcmJpdHJhcnkgZGVjaXNpb24gcG9pbnRzIGFuZCB0aGUgcmF0aW9uYWxlIGZvciB0aGUgY2hvaWNlcyB3ZSBpbmNsdWRlZCBpbiBvdXIgYW5hbHlzaXMuCgpPdXIgc3BlY2lmaWMgZ29hbHMgZm9yIHRoZSBoYW5kcy1vbiBwb3J0aW9ucyBvZiB0aGUgd29ya3Nob3AgaW5jbHVkZToKCjwhLS0gRXhwZWN0IHRvIGVkaXQgdGhlc2UgZ29hbHMgYW5kL29yIG1pZ2h0IG1ha2Ugc2Vuc2UgZm9yIENocmlzIHRvIGl0ZXJhdGUgb3ZlciBlYXJsaWVyPzoKLSBMZWFybiB0byBhc3Nlc3MgdGhlIHF1YWxpdHkgb2YgeW91ciBkYXRhCi0gCi0gWAotIFgKLS0+CgojIyBTYW1wbGUgaW5mb3JtYXRpb24KCkluIHRoaXMgd29ya3Nob3AsIHdlIHdpbGwgYmUgd29ya2luZyB3aXRoIGEgc2NSTkEtc2VxIGRhdGEgc2V0IGdlbmVyYXRlZCBmcm9tIDwhLS1hZGQgdGlzc3VlIGluZm9ybWF0aW9uPi4gPEFkZCBleHBlcmltZW50YWwgY29uZGl0aW9uIHN1bW1hcnkgLSBleHBlY3QgQ2hyaXMgdG8gZ2l2ZSBvdmVydmlldyBpbiBvdmVyYWxsIHdvcmtzaG9wIGludHJvZHVjdGlvbi0tPi4gCgojIFByb2plY3Qgc2V0dXAKClRvIHN0YXJ0LCB3ZSB3aWxsIGFjY2VzcyBvdXIgc2hhcmVkIFJTdHVkaW8gc2VydmVyIGJ5IG9wZW5pbmcgYSB3ZWIgYnJvd3NlciB0byB0aGUgZm9sbG93aW5nIFVSTDoKCltodHRwczovL2JmeC13b3Jrc2hvcDAyLm1lZC51bWljaC5lZHUvXShodHRwczovL2JmeC13b3Jrc2hvcDAyLm1lZC51bWljaC5lZHUvKQoKWW91IHNob3VsZCBub3cgYmUgbG9va2luZyBhdCBhIHBhZ2UgdGhhdCB3aWxsIGFsbG93IHlvdSB0byBsb2dpbiB0byB0aGUgUlN0dWRpbyBzZXJ2ZXI6CgohW0ltYWdlOiBMb2dpbiBwYWdlIGZvciBSU3R1ZGlvIHNlcnZlci5dKGltYWdlcy9jdXJyaWN1bHVtL3NlcnZlcl9sb2dpbi5wbmcpCgpFbnRlciB5b3VyIHVzZXIgY3JlZGVudGlhbHMgYW5kIGNsaWNrIDxrYmQ+U2lnbiBJbjwva2JkPi4gWW91ciB1c2VybmFtZSBhbmQgcGFzc3dvcmQgd2VyZSBwcm92aWRlZCB2aWEgZW1haWwsIGJ1dCBpZiB5b3UgbmVlZCBoZWxwLCBhIGhlbHBlciBjYW4gcmV0cmlldmUgaXQgZm9yIHlvdSBpZiB5b3UgYXNrIGluIFNsYWNrLiBPbmNlIGxvZ2dlZCBpbiwgeW91IHNob3VsZCBub3cgc2VlIHRoZSBSU3R1ZGlvIGludGVyZmFjZToKCiFbSW1hZ2U6IExhbmRpbmcgcGFnZSBhZnRlciBzdWNjZXNzZnVsIGxvZ2luIHRvIFJTdHVkaW8gc2VydmVyLl0oaW1hZ2VzL2N1cnJpY3VsdW0vUlN0dWRpb19sYW5kaW5nLnBuZykKCjwhLS0gY29uc2lkZXIgYWRkaW5nIHdlbGNvbWUgc2NyaXB0IG9yIGV4YW1wbGUgb2YgZmluYWwgZ29hbD8tLT4KCiMjIENyZWF0aW5nIGEgcHJvamVjdAoKV2Ugd2lsbCBjcmVhdGUgYW4gUlN0dWRpbyBQcm9qZWN0IHRoYXQgd2lsbCBoZWxwIHVzIGtlZXAgb3VyIGZpbGVzIG9yZ2FuaXplZC4gU2VlIHRoZSBbUHJvamVjdHNdKGh0dHBzOi8vcjRkcy5oYWRsZXkubnovd29ya2Zsb3ctc2NyaXB0cy5odG1sI3Byb2plY3RzKSBzZWN0aW9uIG9mIFtSIGZvciBEYXRhIFNjaWVuY2VdKGh0dHBzOi8vcjRkcy5oYWRsZXkubnovKSBmb3IgYSBtb3JlIGluLWRlcHRoIGRlc2NyaXB0aW9uIG9mIHdoYXQgYSBwcm9qZWN0IGlzIGFuZCBob3cgaXQncyBoZWxwZnVsLgoKVG8gY3JlYXRlIGEgUHJvamVjdCBmb3IgdGhpcyB3b3Jrc2hvcCwgY2xpY2sgPGtiZD5GaWxlPC9rYmQ+IHRoZW4gPGtiZD5OZXcgUHJvamVjdC4uLjwva2JkPi4gSW4gdGhlIE5ldyBQcm9qZWN0IFdpemFyZCB3aW5kb3cgdGhhdCBvcGVucywgc2VsZWN0IDxrYmQ+RXhpc3RpbmcgRGlyZWN0b3J5PC9rYmQ+LCB0aGVuIDxrYmQ+QnJvd3NlLi4uPC9rYmQ+LiBJbiB0aGUgQ2hvb3NlIERpcmVjdG9yeSB3aW5kb3csIHNlbGVjdCB0aGUgYElTQ19SYCBmb2xkZXIgYnkgY2xpY2tpbmcgaXQgb25jZSwgYW5kIHRoZW4gY2xpY2sgdGhlIDxrYmQ+Q2hvb3NlPC9rYmQ+IGJ1dHRvbi4gRmluYWxseSwgY2xpY2sgPGtiZD5DcmVhdGUgUHJvamVjdDwva2JkPi4KCk9uY2Ugd2UgZG8gdGhpcywgUlN0dWRpbyB3aWxsIHJlc3RhcnQgYW5kIHRoZSBGaWxlcyBwYW5lIChsb3dlciByaWdodCkgc2hvdWxkIHB1dCB1cyBpbiB0aGUgYH4vSVNDX1JgIGZvbGRlciB3aGVyZSB0aGVyZSBpcyBhbiBgaW5wdXRzL2AgZm9sZGVyIGFuZCBhbiBgSVNDX1IuUnByb2pgIGZpbGUuCgojIyBEaXJlY3Rvcnkgc3RydWN0dXJlCgpXZSBoYXZlIGluY2x1ZGVkIHRoZSBkYXRhIHRvIGJlIHVzZWQgaW4gdGhlIHdvcmtzaG9wIGluIHRoZSBgaW5wdXRzL2AgZm9sZGVyLiBIb3dldmVyLCB0aGUgcHJvamVjdCB3aWxsIG5lZWQgdG8gaW5jbHVkZSBmb2xkZXJzIGZvciBvdXIgYW5hbHlzaXMgYW5kIG91ciBhbmFseXNpcyBzY3JpcHRzLiBMZXQncyBjcmVhdGUgdGhhdCBkaXJlY3Rvcnkgc3RydWN0dXJlIHdpdGggdGhlIGBkaXIuY3JlYXRlKClgIGZ1bmN0aW9uLgoKYGBge3IsIGV2YWwgPSBGQUxTRX0KZGlyLmNyZWF0ZSgnc2NyaXB0cycsIHNob3dXYXJuaW5ncyA9IEZBTFNFLCByZWN1cnNpdmUgPSBUUlVFKQpkaXIuY3JlYXRlKCdyZXN1bHRzL2ZpZ3VyZXMnLCBzaG93V2FybmluZ3MgPSBGQUxTRSwgcmVjdXJzaXZlID0gVFJVRSkKZGlyLmNyZWF0ZSgncmVzdWx0cy90YWJsZXMnLCBzaG93V2FybmluZ3MgPSBGQUxTRSwgcmVjdXJzaXZlID0gVFJVRSkKZGlyLmNyZWF0ZSgncmVzdWx0cy9yZGF0YScsIHNob3dXYXJuaW5ncyA9IEZBTFNFLCByZWN1cnNpdmUgPSBUUlVFKQpgYGAKCkluIHRoZSBGaWxlcyBwYW5lIHdlIHNob3VsZCBzZWUgdGhlIG5ldyBgcmVzdWx0cy9gIGFuZCBgc2NyaXB0cy9gIGZvbGRlcnMuIAoKIyMgQW5hbHlzaXMgc2NyaXB0CgpUaGUgdHdvIG1vc3QgaW1wb3J0YW50IGFydGlmYWN0cyBvZiBvdXIgYW5hbHlzaXMgYXJlIHRoZSBkYXRhIGZyb20gQ2VsbCBSYW5nZXIsIGFuZCB0aGUgc2NyaXB0IHRvIGFuYWx5emUgdGhlIGRhdGEuIFRoZXJlIHdpbGwgYmUgb3V0cHV0cyBpbiBgcmVzdWx0cy9gLCBhbmQgdGhlc2Ugd2lsbCBiZSBpbXBvcnRhbnQsIGJ1dCBpZiB0aGUgY29udGVudHMgb2YgYHJlc3VsdHMvYCBhcmUgZXZlciBsb3N0LCB0aGUgc2NyaXB0IHdpbGwgYmUgYWJsZSB0byByZS1nZW5lcmF0ZSB0aGVtIGlmIHdlJ3ZlIGNhcHR1cmVkIGFsbCBvdXIgc3RlcHMgYXMgY29kZSwgd2hpY2ggd2UgYWltIHRvIGRvLgoKVG8gY3JlYXRlIHRoZSBhbmFseXNpcyBzY3JpcHQsIGNsaWNrIDxrYmQ+RmlsZTwva2JkPiwgaG92ZXIgb3ZlciA8a2JkPk5ldyBGaWxlPC9rYmQ+LCBhbmQgY2xpY2sgb24gPGtiZD5SIFNjcmlwdDwva2JkPi4gQSBuZXcgcGFuZSBpbiB0aGUgdXBwZXIgbGVmdCBzbGlkZXMgaW50byB2aWV3IGFuZCBpcyB0aGUgVW50aXRsZWQgc2NyaXB0IGZpbGUuIFNhdmUgdGhpcyBmaWxlLCBhbmQgbmFtZSBpdCwgYnkgY2xpY2tpbmcgPGtiZD5GaWxlPC9rYmQ+IHRoZW4gPGtiZD5TYXZlPC9rYmQ+LiBEb3VibGUgY2xpY2sgdGhlIGBzY3JpcHRzL2AgZm9sZGVyLCBhbmQgaW4gdGhlIEZpbGUgbmFtZTogdGV4dCBib3ggdHlwZSAiYW5hbHlzaXMuUiIuIFRoZW4gY2xpY2sgPGtiZD5TYXZlPC9rYmQ+LgoKQXMgd2UgcHJvY2VlZCB0aHJvdWdoIHRoZSB3b3Jrc2hvcCwgd2Ugc2hvdWxkIHNhdmUgdGhpcyBmaWxlIChieSBjbGlja2luZyB0aGUgRmxvcHB5IGRpc2ssIGNsaWNraW5nIDxrYmQ+RmlsZTwva2JkPiB0aGVuIDxrYmQ+U2F2ZTwva2JkPiwgb3IgYnkgdHlwaW5nIDxrYmQ+Q29udHJvbCArIFM8L2tiZD4pLgoKPiAjIyMjIEdvb2Qgc2NyaXB0aW5nIHByYWN0aWNlcyB7LnVubGlzdGVkIC51bm51bWJlcmVkfQo+IAo+IEluIGFueSBhbmFseXNpcyBzY3JpcHQsIHdlIHJlY29tbWVuZCB1c2luZyBjb21tZW50cyAobGluZXMgcHJlY2VkZWQgYnkgYSAiIyIpIHRvIHByb3ZpZGUgYWRkaXRpb25hbCBpbmZvcm1hdGlvbiBhYm91dCBjb2RlIHRoYXQgbWF5IG5vdCBiZSBzZWxmLWV2aWRlbnQuIFRoaXMgaXMgdG8gdGhlIGJlbmVmaXQgb2Ygb3RoZXJzIHRoYXQgbWF5IGxvb2sgYXQgdGhlIGNvZGUsIGJ1dCBhbHNvIHRvIHlvdXIgZnV0dXJlLXNlbGYuCjxicj4KCiMgQW5hbHlzaXMgaW5pdGlhbGl6YXRpb24KCldlIGJlZ2luIG91ciBhbmFseXNpcyBzY3JpcHQgYnkgbG9hZGluZyB0aGUgbGlicmFyaWVzIHdlIGV4cGVjdCB0byB1c2UuIEl0J3MgZ2VuZXJhbGx5IGdvb2QgcHJhY3RpY2UgdG8gaW5jbHVkZSBhbGwgYGxpYnJhcnkoKWAgY2FsbHMgYXQgdGhlIHRvcCBvZiBhIHNjcmlwdCBmb3IgdmlzaWJpbGl0eS4KCmBgYHtyLCBldmFsID0gRkFMU0V9CmxpYnJhcnkoU2V1cmF0KQpsaWJyYXJ5KEJQQ2VsbHMpCmxpYnJhcnkodGlkeXZlcnNlKQoKb3B0aW9ucyhmdXR1cmUuZ2xvYmFscy5tYXhTaXplID0gMWU5KQpgYGAKClRoZSBsaWJyYXJpZXMgdGhhdCB3ZSBhcmUgbG9hZGluZyBhcmU6CgotIFRoZSBgU2V1cmF0YCBsaWJyYXJ5LCBkZXZlbG9wZWQgYnkgdGhlIFtTYXRpamEgbGFiXShodHRwczovL3NhdGlqYWxhYi5vcmcvKSwgd2hpY2ggd2lsbCBwcm92aWRlIHRoZSBlc3NlbnRpYWwgZnVuY3Rpb25zIHVzZWQgaW4gb3VyIHNpbmdsZS1jZWxsIGFuYWx5c2lzLiBUaGUgW1NldXJhdCBkb2N1bWVudGF0aW9uXShodHRwczovL3NhdGlqYWxhYi5vcmcvc2V1cmF0LykgaXMgZXh0ZW5zaXZlIGFuZCBpbmRpc3BlbnNpYmxlLgotIFRoZSBgQlBDZWxsc2AgbGlicmFyeSwgZGV2ZWxvcGVkIGJ5IFtCZW5qYW1pbiBQYXJrc10oaHR0cHM6Ly9ibnBya3MuZ2l0aHViLmlvL0JQQ2VsbHMvYXV0aG9ycy5odG1sI2NpdGF0aW9uKSwgaXMgYSByZWNlbnQgcGFja2FnZSB3aXRoIHRoZSBwcmltYXJ5IGdvYWwgb2YgZWZmaWNpZW50bHkgc3RvcmluZyBzaW5nbGUtY2VsbCBkYXRhIHRvIHJlZHVjZSBpdHMgbWVtb3J5IGZvb3RwcmludC4gVGhlIFtCUENlbGxzIGRvY3VtZW50YXRpb25dKGh0dHBzOi8vYm5wcmtzLmdpdGh1Yi5pby9CUENlbGxzL2luZGV4Lmh0bWwpIGluY2x1ZGVzIG1hbnkgdXNlZnVsIHR1dG9yaWFscy4KLSBUaGUgYHRpZHl2ZXJzZWAgbGlicmFyeSwgZGV2ZWxvcGVkIGJ5IFBvc2l0LCBpcyBhbiBlc3NlbnRpYWwgcGFja2FnZSBmb3IgZGF0YSBtYW5pcHVsYXRpb24gYW5kIHBsb3R0aW5nLiBUaGUgW3RpZHl2ZXJzZSBkb2N1bWVudGF0aW9uXShodHRwczovL3d3dy50aWR5dmVyc2Uub3JnLykgaXMgZXNzZW50aWFsIGZvciBnZXR0aW5nIGEgaGFuZGxlIG9uIHRoZSBhcnJheSBvZiBmdW5jdGlvbnMgaW4gdGhlIG1hbnkgcGFja2FnZXMgY29udGFpbmVkIHRoZXJlaW4uCgojIElucHV0IGRhdGEKClRoZSBgaW5wdXRzL2AgZm9sZGVyIGhhcyB0aGUgZGF0YSBmb3IgdGhlIHdvcmtzaG9wIHN0b3JlZCBpbiB0d28gZm9ybXMuIFRoZSBmaXJzdCwgYGlucHV0cy8xMHhfYW5hbHlzaXMvYCBpcyBjbG9zZXIgdG8gd2hhdCBBR0Mgd291bGQgZ2VuZXJhdGUgd2l0aCBDZWxsIFJhbmdlciwgd2hlcmUgZWFjaCBzYW1wbGUgaGFzIGEgZm9sZGVyLCBhbmQgd2l0aGluIHRoYXQgZm9sZGVyIHRoZXJlIGFyZSB0aHJlZSBmaWxlczoKCi0gYGJhcmNvZGVzLnRzdi5nemAKLSBgZmVhdHVyZXMudHN2Lmd6YAotIGBtYXRyaXgubXR4Lmd6YAoKPCEtLSBXZXJlIHRoZXNlIGZpbGVzIGV4cGxhaW5lZCBlYXJsaWVyPyBJZiBub3QsIGJyaWVmbHkgZXhwbGFpbiB0aGVtIGhlcmUgLS0+CgpUaGUgc2Vjb25kLCBgaW5wdXRzLzEweF9tYXRfc3Vic2V0L2AgaXMgdGhlIHJlc3VsdCBvZiB0aGUgYEJQQ2VsbHNgIHBhY2thZ2UsIGFuZCBpcyBtb3JlIG1hY2hpbmUtcmVhZGFibGUgdGhhbiBodW1hbi1yZWFkYWJsZS4gSXQgaXMgYW4gZWZmaWNpZW50IHdheSBvZiBzdG9yaW5nIHRoZSBzYW1lIGRhdGEgY29udGFpbmVkIGluIHRoZSB0aHJlZSBmaWxlcyBhYm92ZS4gV2Ugd2lsbCB1c2UgdGhpcyBmb3JtIG9mIHRoZSBpbnB1dCBkYXRhIGJlY2F1c2UgaXQgaXMgbW9yZSBtZW1vcnkgZWZmaWNpZW50LgoKV2hpbGUgdGhlIGZ1bGwgZGF0YXNldCB3ZSBzZWxlY3RlZCBoYXMgdGltZS1zZXJpZXMgaW5mb3JtYXRpb24gZnJvbSBEYXkgMCwgRGF5IDMsIERheSA3LCBhbmQgRGF5IDIxLCB3ZSBoYXZlIHJlbW92ZWQgRGF5IDMgdG8gcmVkdWNlIHRoZSBtZW1vcnkgcmVxdWlyZW1lbnRzIGZ1cnRoZXIuCgo8IS0tIEFkZCBjb250ZXh0IGZvciBleHBlY3RlZCAxMHggb3V0cHV0cyBhbmQgaG93IHdlIHdvdWxkIHVzdWFsbHkgc3RhcnQgd2l0aCB0aGUgImZpbHRlcmVkIiBvdXRwdXRzIChhbmQgYWRkIGRyb3Bkb3duIG9yIGxpbmsgb3V0IHRvIDEweCByZXNvdXJjZXMgdG8gY29udHJhc3QgYmV0d2VlbiBmaWx0ZXJlZCBhbmQgcmF3IG91dHB1dHMgYW5kIHVzZSBjYXNlcyBmb3IgZWFjaCkgLS0+CgojIENyZWF0ZSBhIFNldXJhdCBvYmplY3QKClRoZSBtb3N0IHJlY2VudCByZWxlYXNlIG9mIGBTZXVyYXRgLCB2ZXJzaW9uIDUsIGluY2x1ZGVzIGNoYW5nZXMgd2hpY2ggdGFrZSBhZHZhbnRhZ2Ugb2YgdGhlIG1lbW9yeS1lZmZpY2llbnQgc3RvcmFnZSBpbXBsZW1lbnRlZCBpbiBgQlBDZWxsc2AuIFRvIHJlYWQgdGhlIGVmZmljaWVudGx5IHN0b3JlZCBkYXRhIHdpdGggYEJQQ2VsbHNgIHdlIHdpbGwgdXNlIHRoZSBgb3Blbl9tYXRyaXhfZGlyKClgIGZ1bmN0aW9uLgoKPCEtLSBJbnRyb2R1Y2UgQlBDZWxsIHBhY2thZ2UgYW5kIGhvdyBtb3N0IHJlY2VudCB2ZXJzaW9uIG9mIFNldXJhdCAoU2V1cmF0IDUpIHN1cHBvcnRzIG1vcmUgZWZmaWNpZW50IGRhdGEgc3RvcmFnZSB0byBpbXByb3ZlIHBlcmZvcm1hbmNlIGFuZCBhY2NvbW9kYXRlIGxhcmdlciBkYXRhc2V0cyAtLT4KCmBgYHtyLCBldmFsID0gRkFMU0V9CiMgVGhpcyBwdXRzIHRoZSBkYXRhICJvbiBkaXNrIiByYXRoZXIgdGhhbiBpbiBtZW1vcnkiCmdlb19tYXQgPSBvcGVuX21hdHJpeF9kaXIoZGlyID0gJ2lucHV0cy8xMHhfbWF0X3N1YnNldCcpCmBgYAoKVGhpcyByZWFkcyBpbiB0aGUgZXhwcmVzc2lvbiBtYXRyaXggd2hpY2ggaGFzIGdlbmVzIGFzIHJvd3MgYW5kIGNlbGxzIGFzIGNvbHVtbnMuIFRoZSBleHByZXNzaW9uIG1hdHJpeCBpcyB0aGUgcHJlY3Vyc29yIHRvIGNyZWF0aW5nIHRoZSBgU2V1cmF0YCBvYmplY3QgdXBvbiB3aGljaCBhbGwgb3VyIGFuYWx5c2lzIHdpbGwgYmUgZG9uZS4gVG8gY3JlYXRlIHRoZSBgU2V1cmF0YCBvYmplY3Q6CgpgYGB7ciwgZXZhbCA9IEZBTFNFfQpnZW9fc28gPSBDcmVhdGVTZXVyYXRPYmplY3QoY291bnRzID0gZ2VvX21hdCwgbWluLmNlbGxzID0gMSwgbWluLmZlYXR1cmVzID0gNTApCmBgYAoKV2UgaGF2ZSBzcGVjaWZpZWQgc29tZSBwYXJhbWV0ZXJzIHRvIHJlbW92ZSBnZW5lcyBhbmQgY2VsbHMgd2hpY2ggZG8gbm90IGNvbnRhaW4gdmVyeSBtdWNoIGluZm9ybWF0aW9uLiBTcGVjaWZpY2FsbHkgYSBnZW5lIGlzIHJlbW92ZWQgaWYgaXQgaXMgZXhwcmVzc2VkIGluIDEgb3IgZmV3ZXIgY2VsbHMsIGFuZCBhIGNlbGwgaXMgcmVtb3ZlZCBpZiBpdCBjb250YWlucyByZWFkcyBmb3IgNTAgb3IgZmV3ZXIgZ2VuZXMuIEluIHRoZSBjb250ZXh0IG9mIHRoaXMgd29ya3Nob3AsIHRoaXMgaGVscHMgdXMgbWluaW1pemUgbWVtb3J5IHVzYWdlLgoKPCEtLSBBZGQgYSBoaWRkZW4gc2VjdGlvbiB0aGF0IHNob3dzIGhvdyB0byByZWFkIGluIHRoZSBkYXRhIGluIHRoZSB1c3VhbCB3YXkgYW5kIHN0b3JlIGl0IGFzIHRoZSAxMHhfbWF0IC0tPgoKIyMgU3RydWN0dXJlIG9mIGEgU2V1cmF0IG9iamVjdAoKVGhlIGBTZXVyYXRgIG9iamVjdCBpcyBhIGNvbXBsZXggZGF0YSB0eXBlLCBzbyBsZXQncyBnZXQgYSBiaXJkcyBleWUgdmlldyB3aXRoIGFuIGltYWdlIGZyb20gW3RoaXMgdHV0b3JpYWxdKGh0dHBzOi8vc3diaW9pbmYuZ2l0aHViLmlvL3NjUk5Bc2VxSW5SX0RvY28vc2V1cmF0b2JqZWN0Lmh0bWwjZGlzY3Vzc2lvbi10aGUtc2V1cmF0LW9iamVjdC1pbi1yKSBvbiBzaW5nbGUtY2VsbCBhbmFseXNpcy4KCiFbSW1hZ2U6IFNjaGVtYXRpYyBvZiBgU2V1cmF0YCBvYmplY3QuXShpbWFnZXMvY3VycmljdWx1bS9zZXVyYXRfb2JqZWN0LnBuZykKClRoZSB0aHJlZSBtYWluICJzbG90cyIgaW4gdGhlIG9iamVjdCBhcmU6CgoxLiBUaGUgYGFzc2F5c2Agc2xvdCBzdG9yZXMgdGhlIGV4cHJlc3Npb24gZGF0YSBhcyBgQXNzYXlgIG9iamVjdHMuCjIuIFRoZSBgbWV0YS5kYXRhYCBzbG90IHdoaWNoIHN0b3JlcyBjZWxsLWxldmVsIGluZm9ybWF0aW9uLCBpbmNsdWRpbmcgdGVjaG5pY2FsIGFuZCBwaGVub3R5cGljIGRhdGEuCjMuIFRoZSBgcmVkdWN0aW9uc2Agc2xvdCBzdG9yZXMgdGhlIHJlc3VsdHMgb2YgZGltZW5zaW9uIHJlZHVjdGlvbiBhcHBsaWVkIHRvIHRoZSBgYXNzYXlzYC4KClRoZXJlIGFyZSBvdGhlciBzbG90cyB3aGljaCBzdG9yZSBpbmZvcm1hdGlvbiB0aGF0IGJlY29tZXMgcmVsZXZhbnQgd2hlbiBpZGVudGlmeWluZyBjbHVzdGVycyBvZiBjZWxsczogYGdyYXBoc2AgYW5kIGBuZWlnaGJvcnNgLiBUaGVyZSBhcmUgc2xvdHMgcmVsYXRlZCB0byBzcGF0aWFsIGFuYWx5c2lzOiBgaW1hZ2VzYC4gVGhlcmUgYXJlIGFsc28gc2xvdHMgd2hpY2ggdHJhY2sgd2hhdCBoYXMgYmVlbiBkb25lIHRvIHRoZSBvYmplY3Q6IGBjb21tYW5kc2AuCgojIyMgTGF5ZXJzIG9mIGEgU2V1cmF0IG9iamVjdAoKVGhlIGBhc3NheXNgIGluIGEgU2V1cmF0IHY1IG9iamVjdCBzdG9yZSBkYXRhIGluIGxheWVycy4gTGF5ZXJzIGNhbiBzdG9yZSByYXcsIHVuLW5vcm1hbGl6ZWQgY291bnRzIChgbGF5ZXIgPSAnY291bnRzJ2ApLCBub3JtYWxpemVkIGRhdGEgKGBsYXllciA9ICdkYXRhJ2ApLCBvciB6LXNjb3JlZC92YXJpYW5jZS1zdGFiaWxpemVkIGRhdGEgKGBsYXllciA9ICdzY2FsZS5kYXRhJ2ApLiBXZSB3aWxsIGNvbWUgYmFjayB0byB0aGUgaWRlYSBvZiB0aGVzZSBsYXllcnMgd2hlbiB3ZSBwZXJmb3JtIG5vcm1hbGl6YXRpb24gYW5kIHZhcmlhbmNlLXN0YWJpbGl6YXRpb24gbGF0ZXIuCgojIyBBY2Nlc3NpbmcgdGhlIFNldXJhdCBvYmplY3QKClRoZSBvbmx5IHNsb3Qgb2YgdGhlIGBTZXVyYXRgIG9iamVjdCB0aGF0IHdlJ2xsIHR5cGljYWxseSBhY2Nlc3Mgb3IgbW9kaWZ5IGJ5IGhhbmQtLXRoYXQgaXMsIHdpdGhvdXQgYSBmdW5jdGlvbiBmcm9tIHRoZSBgU2V1cmF0YCBwYWNrYWdlLS1pcyB0aGUgYG1ldGEuZGF0YWAgb2JqZWN0LiBJbiBSLCBzbG90cyBhcmUgYWNjZXNzZWQgd2l0aCB0aGUgYEBgIHN5bWJvbCwgYXMgaW46CgpgYGB7ciwgZXZhbCA9IEZBTFNFfQpoZWFkKGdlb19zb0BtZXRhLmRhdGEpCmBgYAoKfn5+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIG9yaWcuaWRlbnQgbkNvdW50X1JOQSBuRmVhdHVyZV9STkEKSE9EYXkwcmVwbGljYXRlMV9BQUFDQ1RHQUdBR0FBQ0FHLTEgSE9EYXkwcmVwbGljYXRlMSAgICAgICA5MjU4ICAgICAgICAgMjcwOQpIT0RheTByZXBsaWNhdGUxX0FBQUNDVEdBR0dBR1RBQ0MtMSBIT0RheTByZXBsaWNhdGUxICAgICAgICAgOTkgICAgICAgICAgIDc2CkhPRGF5MHJlcGxpY2F0ZTFfQUFBQ0NUR0FHR0FUQ0dDQS0xIEhPRGF5MHJlcGxpY2F0ZTEgICAgICAgICA3MSAgICAgICAgICAgNTUKSE9EYXkwcmVwbGljYXRlMV9BQUFDQ1RHQUdHQ0FUVEdHLTEgSE9EYXkwcmVwbGljYXRlMSAgICAgICAgIDYzICAgICAgICAgICA1MwpIT0RheTByZXBsaWNhdGUxX0FBQUNDVEdDQUFDQUFDQ1QtMSBIT0RheTByZXBsaWNhdGUxICAgICAgICAgNzAgICAgICAgICAgIDU0CkhPRGF5MHJlcGxpY2F0ZTFfQUFBQ0NUR0NBQ0NBQ0NBRy0xIEhPRGF5MHJlcGxpY2F0ZTEgICAgICAgIDEzMSAgICAgICAgICAxMDQKfn5+CgpIZXJlLCBlYWNoIHJvdyBpcyBhIGNlbGwsIGFuZCBlYWNoIGNvbHVtbiBpcyBpbmZvcm1hdGlvbiBhYm91dCB0aGF0IGNlbGwuIFRoZSByb3dzIG9mIHRoZSB0YWJsZSBhcmUgbmFtZWQgYWNjb3JkaW5nIHRvIHRoZSB1bmlxdWVseSBpZGVudGlmaWFibGUgbmFtZSBmb3IgdGhlIGNlbGwuIEluIHRoaXMgY2FzZSwgdGhlIGRheSBhbmQgcmVwbGljYXRlLCBhcyB3ZWxsIGFzIHRoZSBiYXJjb2RlIGZvciB0aGF0IGNlbGwuIEFzIHdlIGNvbnRpbnVlIHRoZSB3b3Jrc2hvcCwgd2Ugd2lsbCBjaGVjayBpbiBvbiB0aGUgYG1ldGEuZGF0YWAgc2xvdCBhbmQgb2JzZXJ2ZSBjaGFuZ2VzIHdlIHdhbnQgdG8gbWFrZSwgYW5kIHRoYXQgb3RoZXIgZnVuY3Rpb25zIHdpbGwgbWFrZS4gV2UnbGwgYWxzbyBvYnNlcnZlIHRoZSBvdGhlciBhc3NheXMgYW5kIGxheWVycyBhbmQgbm90ZSB0aGVpciBjaGFuZ2VzLgoKIyMgU2F2aW5nIGEgU2V1cmF0IG9iamVjdAoKTGV0J3Mgc2F2ZSB0aGUgU2V1cmF0IG9iamVjdCBhcyBhbiBSRFMgZmlsZSB3aXRoIGBzYXZlUkRTKClgOyB0aGlzIGFsbG93cyB1cyB0byBoYXZlIGEgY29weSBvZiB0aGUgb2JqZWN0IHRoYXQgd2UgY2FuIHJlYWQgYmFjayBpbnRvIG91ciBzZXNzaW9uIHdpdGggdGhlIGByZWFkUkRTKClgIGNvbW1tYW5kLgoKYGBge3IsIGV2YWwgPSBGQUxTRX0Kc2F2ZVJEUyhnZW9fc28sIGZpbGUgPSAncmVzdWx0cy9yZGF0YS9nZW9fc29fdW5maWx0ZXJlZC5yZHMnKQpgYGAKCiMgU3VtbWFyeQoKSW4gdGhpcyBzZWN0aW9uIHdlOgoKLSBDcmVhdGVkIGFuIFJTdHVkaW8gcHJvamVjdCBmb3IgYW5hbHlzaXMuCi0gQ3JlYXRlZCB0aGUgZGlyZWN0b3J5IHN0cnVjdHVyZSBmb3IgYW5hbHlzaXMuCi0gTGVhcm5lZCBob3cgdG8gcmVhZCAxMFggZGF0YSBpbnRvIFNldXJhdC4KLSBJbnRyb2R1Y2VkIHRoZSBTZXVyYXQgb2JqZWN0LCBhbmQgaG93IHRvIGFjY2VzcyBwYXJ0cyBvZiBpdC4KCk5leHQgc3RlcHM6IFFDIGFuZCBmaWx0ZXJpbmcgb2YgdGhlIGRhdGEuCgotLS0tCgpUaGVzZSBtYXRlcmlhbHMgaGF2ZSBiZWVuIGFkYXB0ZWQgYW5kIGV4dGVuZGVkIGZyb20gbWF0ZXJpYWxzIGxpc3RlZCBhYm92ZS4gVGhlc2UgYXJlIG9wZW4gYWNjZXNzIG1hdGVyaWFscyBkaXN0cmlidXRlZCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIFtDcmVhdGl2ZSBDb21tb25zIEF0dHJpYnV0aW9uIGxpY2Vuc2UgKENDIEJZIDQuMCldKGh0dHA6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC8pLCB3aGljaCBwZXJtaXRzIHVucmVzdHJpY3RlZCB1c2UsIGRpc3RyaWJ1dGlvbiwgYW5kIHJlcHJvZHVjdGlvbiBpbiBhbnkgbWVkaXVtLCBwcm92aWRlZCB0aGUgb3JpZ2luYWwgYXV0aG9yIGFuZCBzb3VyY2UgYXJlIGNyZWRpdGVkLgoKPGJyLz4KPGJyLz4KPGhyLz4KfCBbUHJldmlvdXMgbGVzc29uXShjZWxscmFuZ2VyLmh0bWwpIHwgW1RvcCBvZiB0aGlzIGxlc3Nvbl0oI3RvcCkgfCBbTmV4dCBsZXNzb25dKDAyLVFDYW5kRmlsdGVyaW5nLmh0bWwpIHwKfCA6LS0tIHwgOi0tLS06IHwgLS0tOiB8Cgo=</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("01-GettingStarted.Rmd");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

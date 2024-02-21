@@ -33,33 +33,36 @@ body, td {
 #### Day 1
 | Time | Topic : Details |
 | :---  | :---- |
-|  9:00 | [Welcome / Housekeeping](workshop_introduction.html) (Chris & Marci)|
-|  9:30 | Consider the biology (Chris)
-|       | Sequencing approaches (Olivia/Tricia)
+|  9:00 | [Welcome / Housekeeping](workshop_intro.html) (Chris & Marci)|
+|  9:30 | [Orienting on scRNA-Seq](00A-OrientingOnScRNASeq) (Chris)
+|       | [Cell Ranger in Action](00B-CellRangerInAction.html) (Matt)
 | 11:00 | Break |
-| 11:15 | CellRanger: execution and outputs (Matt)
-|       | Getting started with Seurat (Raymond)
-|       | Initial QC (Raymond)
+| 11:15 | [Getting started with Seurat](01-GettingStarted.html) (Raymond)
+|       | [Initial QC & Filtering](02-QCandFiltering.html)
+|       | [Normalization](03-Integration.html)|
 |  1:00 | Day 1 concludes |
 
-#### Day 2 (Raymond)
+#### Day 2 (Raymond & Dana)
 | | |
 | :---  | :---- |
 |  9:00 | Housekeeping, Review and Questions (Chris) |
-|  9:20 | Principal Component Analysis |
-|       | Multisample / Batch correction |
+|  9:20 |
+|       | [Normalization (continued)](03-Integration.html) (Raymond) |
+|       | [Principal Component Analysis & Integration](04-PCAandDimReduction.html) (Dana) |
+|       | [Projection & Clustering](05-ProjectionAndClustering.html) |
 | 11:00 | Break |
-| 11:15 | Projection & Clustering |
-|       | Marker identification & Visualization |
+| 11:15 | [Projection & Clustering (continued)](05-ProjectionAndClustering.html) |
+|       | A review of sequencing approaches (Olivia/Tricia) |
 |  1:00 | Day 2 concludes |
 
 #### Day 3 (Dana)
 | | |
 | :---  | :---- |
 |  9:00 | Housekeeping, Review and Questions (Chris) |
-|  9:20 | Cell type annotation |
+|  9:20 | [Marker identification & Visualization](06-MarkerVisualization.html)
+|       | [Cell type annotation](07-CellTypeAnnos.html) |
 | 11:00 | Break |
-| 11:15 | Differential expression analysis |
-|       | Independent exercise |
-| 12:45 | [Wrap-up](workshop_wrapup.html) (Chris)
+| 11:15 | [Differential expression analysis](08-DifferentialExpression.html) |
+|       | [Independent exercise](09-IndependentExercise.html) |
+| 12:45 | [Wrap-up](workshop_wrap_up.html) (Chris)
 |  1:00 | Workshop concludes |
