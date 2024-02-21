@@ -11,8 +11,9 @@
 
 <meta name="author" content="UM Bioinformatics Core" />
 
+<meta name="date" content="2024-02-19" />
 
-<title>Intro to Single Cell RNA-Seq Workshop</title>
+<title>Independent Exercise</title>
 
 <script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -34,6 +35,8 @@
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
 <link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
 <script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
 <!--
@@ -73,6 +76,11 @@ if (window.hljs) {
 
 
 
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
 
 
 
@@ -233,6 +241,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -408,16 +419,23 @@ div.tocify {
 
 <div id="header">
 
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
 
 
-<h1 class="title toc-ignore">Intro to Single Cell RNA-Seq Workshop</h1>
+
+<h1 class="title toc-ignore">Independent Exercise</h1>
 <h4 class="author">UM Bioinformatics Core</h4>
+<h4 class="date">2024-02-19</h4>
 
 </div>
 
 
 <style type="text/css">
-
 body, td {
    font-size: 18px;
 }
@@ -427,250 +445,96 @@ code.r{
 pre {
   font-size: 12px
 }
-
-a.external {
-    background: url(images/external-link.png) center right no-repeat;
-    padding-right: 13px;
-}
 </style>
-<div id="wrapping-up" class="section level2">
-<h2>Wrapping up</h2>
-<p>We hope you now have more familiarity with key concepts, data types,
-tools, and how they all connect to enable single-cell gene expression
-analysis from RNA-Seq data.</p>
-<p><img src="images/wayfinder/wayfinder_workshop_wrap_up.png" /></p>
+<div id="workflow-overview" class="section level1 unlisted unnumbered">
+<h1 class="unlisted unnumbered">Workflow Overview</h1>
+<p><br/>
+<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<br/> <br/></p>
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Point out possible gaps between how single-cell data is presented
+versus the reality of running an analysis E.g. Papers might report final
+filtering thresholds, but our process for choosing those is likely to be
+more iterative</p>
+<p>General goal: Filtering out the “cells” that either were poorly
+measured or are either not single-cells or not cells at all</p>
+<!-- regular html comment -->
+<!--Add specific goals for section-->
+<p>Per <a href="http://www.website.html">hyperlink text</a> are … either
+<code>plain text</code> or <em>italic</em> or <strong>bold</strong>.</p>
+<Embed an image>
+<p><img src="images/WelcomeScriptOpened.png" alt="rstudio default session" style="width:1000px;"/></p>
+<blockquote>
+<h2 id="reminder-rstudio-code-execution"
+class="unlisted unnumbered">Reminder: RStudio code execution</h2>
+<p><kbd>Ctrl</kbd>+<kbd>Enter</kbd> is a standard shortcut in RStudio to
+send the current line (or selected lines) to the console. If you see
+<code>&gt;</code> in the Console, then R has executed the command. If
+you see a <code>+</code>, this means that the command is not complete, R
+thinks there is more to your command. You can use the <kmd>esc</kmd> to
+get out of this state.</p>
+</blockquote>
+<blockquote>
+<h2 id="reminder-object-naming-conventions"
+class="unlisted unnumbered">Reminder: Object naming conventions</h2>
+<ul>
+<li>Cannot start with numbers</li>
+<li>Cannot include dashes</li>
+<li>Cannot have spaces</li>
+<li>Should not be identical to a named function</li>
+<li>Dots and underscores can separate parts of names, alternatively
+CamelCase accomplishes this</li>
+</ul>
+</blockquote>
 <hr />
-</div>
-<div id="housekeeping" class="section level2">
-<h2>Housekeeping</h2>
-<ul>
-<li><p>Please take our optional
-<a class="external" href="https://forms.gle/mafY39iccNRoEAVZ8" target="_blank">post-workshop
-survey</a> (5-10 minutes)</p></li>
-<li><p>3/8 11-12 ET:
-<a class="external" href="https://forms.gle/tJ1fSR4fPgcpPKws5" target="_blank">Virtual
-office hours</a></p></li>
-<li><p>We will email you a link to the final session recordings by next
-week.</p></li>
-<li><p>The website/notes for this workshop will be available.</p></li>
-<li><p>The
-<a class="external" href="https://umbioinfcoreworkshops.slack.com" target="_blank">UM
-Bioinformatics Core Workshop Slack channel</a> will be available for 90
-days.</p></li>
-</ul>
+<details>
+<summary>
+<em>Click for additional resources regarding statistical testing and
+tool comparison for RNA-seq data</em>
+</summary>
+To learn more about statistical testing and what distributions best
+model the behavior of RNA-seq data, a good resource is this <a
+href="https://www.youtube.com/watch?v=HK7WKsL3c2w&amp;feature=youtu.be">EdX
+lecture by Rafael Irizarry</a> or this <a
+href="https://www.youtube.com/watch?v=C8RNvWu7pAw">lecture by Kasper
+Hansen</a>. Another helpful guide is this <a
+href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0103207">Comparative
+Study for Differential Expression Analysis by Zhang et al.</a> from
+2014.
+</details>
+<p><br></p>
 <hr />
-</div>
-<div id="looking-ahead" class="section level2">
-<h2>Looking ahead</h2>
-<div id="workshop-environment" class="section level4">
-<h4>Workshop environment</h4>
-<ul>
-<li><p>RStudio workshop compute environment will be available until
-<strong>3/15/2024</strong>.</p>
-<ul>
-<li><em>Please save all your R scripts now</em> so that we can
-“right-size” the compute environment immediately following today’s
-workshop session.</li>
-</ul></li>
-<li><p>You can download files from the workshop environment from your
-terminal/command line window as below. (You will need to substitute your
-actual workshop username and type workshop password when prompted.)</p>
-<pre><code>mkdir intro_scrnaseq-workshop
-cd intro_scrnaseq-workshop
-scp -r YOUR_USERNAME@bfx-workshop01.med.umich.edu:&quot;ISC_R*&quot; .</code></pre>
-<ul>
-<li>Note that the full download or the R data is about 8Gb, so depending
-on your internet speeds it could take while. (We do not recommend you
-download the full set of Cell Ranger outputs.)</li>
-</ul></li>
-</ul>
-</div>
-<div id="installing-software-locally" class="section level4">
-<h4>Installing software locally</h4>
-<ul>
-<li>You can install necessary programs to run programs locally. Note
-that for typical data, Cell Ranger steps (reviewed Day 1) assume your
-computer has powerful compute (many CPUs and lots of RAM) and sizable
-storage capacity. (i.e. it’s impractical to run these on your
-laptop.)</li>
-<li>Installing bioinformatics software is non-trivial and comprehensive
-instructions to setup a complete compute environment are outside the
-scope of this workshop. (We are considering offering a Computational
-Reproducibility workshop that would cover this.) For the intrepid, see
-relevant links below:
-<ul>
-<li><a href="workshop_setup/setup_instructions_advanced.html">Setting up
-R/R-Studio</a></li>
-</ul></li>
-</ul>
-</div>
-</div>
-<div id="university-of-michigan-resources" class="section level2">
-<h2>University of Michigan Resources</h2>
-<ul>
-<li><a class="external" href="https://datascience.isr.umich.edu/events/coderspaces/" target="_blank">UM
-CoderSpaces “office hours”</a> and UM CoderSpaces Slack workspace.
-<em>(See “Useful Resources” section in above page for instructions on
-how to join and access the CoderSpaces Slack workspace.)</em></li>
-<li>Upcoming
-<a class="external" href="https://arc.umich.edu/events/" target="_blank">UM
-Advanced Research Computing workshops</a>.</li>
-<li>Advanced Research Computing (ARC) at University of Michigan hosts a
-high-performance computing (HPC) platform called <em>Great Lakes</em>
-which combines high-end computers, fast/resilient storage, and
-pre-installed software. GreatLakes may be a good resource for folks who
-need to run the more compute intensive steps and a substantial block of
-compute and storage is subsidized by ARC making it essentially free to
-many researchers.
-<ul>
-<li>About
-<a class="external" href="https://arc.umich.edu/greatlakes/" target="_blank">Great
-Lakes HPC</a>.</li>
-<li>About the ARC
-<a class="external" href="https://arc.umich.edu/umrcp/" target="_blank">Research
-Computing Package</a>.</li>
-<li>Videos on
-<a class="external" href="https://www.mivideo.it.umich.edu/channel/ARC-TS%2BTraining/181860561/" target="_blank">getting
-started with Great Lakes</a>. (available to UM folks)</li>
-</ul></li>
-</ul>
-</div>
-<div id="resources-for-continued-learning" class="section level2">
-<h2>Resources for continued learning</h2>
-<ul>
-<li>Learning bioinformatic analyses more like a process than a task.
-Resources to consider:
-<ul>
-<li>UM Bioinformatics Core links to
-<a class="external" href="https://brcf.medicine.umich.edu/cores/bioinformatics-core/training/" target="_blank">training
-resources/workshops</a></li>
-<li><strong>Techniques in Bash and R</strong>
-<ul>
-<li>Notes the recent <a class="external"
-href="https://umich-brcf-bioinf.github.io/workshop-computational-foundations/main/html/" target="_blank">
-Computational Foundations Workshop.</a></li>
-<li>Lessons and workshops in Bash / Git / R / Python :
-<a href="https://software-carpentry.org/lessons/" target="_blank">
-Software Carpentry</a> and also the
-<a class="external" href="https://umcarpentries.org/" target="_blank">
-UM Software Carpentry Group.</a></li>
-</ul></li>
-<li><strong>More info on NGS analysis</strong>
-<ul>
-<li>Lesson plans from <a class="external" 
-href="https://umich-brcf-bioinf.github.io/workshop-computational-foundations/main/html/" target="_blank">
-RNA-Seq Demystified Workshop.</a> (Note this is for bulk RNA-Seq.)</li>
-<li><a class="external" href="https://hbctraining.github.io/main/" target="_blank">Harvard
-Chan Bioinformatics Core.</a></li>
-<li><a class="external" href="https://bioconductor.org/books/3.12/OSCA/index.html" target="_blank">Orchestrating
-Single-Cell Analysis with Bioconductor.</a></li>
-<li>The <a class="external" href="https://satijalab.org/">Satija lab</a>
-publishes many excellent step-by-step tutorials on single-cell analysis,
-e.g. <a class="external" href="https://satijalab.org/seurat/articles/pbmc3k_tutorial" target="_blank">
-Seurat - Guided Clustering Tutorial.</a> The Satija lab also hosts
-<a class="external" href="https://satijalab.org/scgd24/"> Single Cell
-Genomics Day</a> an annual symposium (live-streamed) on emerging
-techniques in single-cell analysis.</li>
-<li>Nayak, Richa, and Yasha Hasija. <strong>“A hitchhiker’s guide to
-single-cell transcriptomics and data analysis pipelines.”</strong>
-Genomics vol. 113,2 (2021): 606-619.<br/> <a
-href="https://pubmed.ncbi.nlm.nih.gov/33485955/"
-class="uri">https://pubmed.ncbi.nlm.nih.gov/33485955/</a></li>
-<li>Luecken, Malte D, and Fabian J Theis. <strong>“Current best
-practices in single-cell RNA-seq analysis: a tutorial.”</strong>
-Molecular systems biology vol. 15,6 e8746. 19 Jun. 2019.<br/> <a
-href="https://pubmed.ncbi.nlm.nih.gov/31217225/"
-class="uri">https://pubmed.ncbi.nlm.nih.gov/31217225/</a></li>
-<li>He, Jiangping et al. <strong>“Practical bioinformatics pipelines for
-single-cell RNA-seq data analysis.”</strong> Biophysics reports vol. 8,3
-(2022): 158-169.<br/> <a
-href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10189648/"
-class="uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10189648/</a></li>
-</ul></li>
-<li>For more context on the experiments and data we referenced during
-the workshop, see the source paper: <br/> Sorkin, Michael et
-al. <strong>“Regulation of heterotopic ossification by monocytes in a
-mouse model of aberrant wound healing.”</strong> Nature communications
-vol. 11,1 722. 5 Feb. 2020.<br/>
-<a class="external" href="https://pubmed.ncbi.nlm.nih.gov/32024825/" target="_blank">https://pubmed.ncbi.nlm.nih.gov/32024825/</a></li>
-</ul></li>
-</ul>
-<hr />
-</div>
-<div id="thank-you-to-our-sponsors" class="section level2">
-<h2>Thank you to our sponsors</h2>
-<p><img src="images/workshop_intro/sponsor_logos.png" /></p>
-<p><br/></p>
-</div>
-<div id="thank-you-tofrom-the-workshop-team" class="section level2">
-<h2>Thank you to/from the workshop team</h2>
-<table>
+<p>These materials have been adapted and extended from materials listed
+above. These are open access materials distributed under the terms of
+the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
+Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
+use, distribution, and reproduction in any medium, provided the original
+author and source are credited.</p>
+<br/> <br/>
+<hr/>
+<table style="width:100%;">
 <colgroup>
-<col width="25%" />
-<col width="25%" />
-<col width="25%" />
-<col width="25%" />
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
 </colgroup>
 <thead>
 <tr class="header">
-<th align="center"><img
-src="images/headshots/headshot_cgates.jpg" /></th>
-<th align="center"><img
-src="images/headshots/headshot_mbradenb.jpg" /></th>
-<th align="center"><img
-src="images/headshots/headshot_rcavalca.jpg" /></th>
-<th align="center"></th>
+<th align="left"><a href="08-DifferentialExpression.html">Previous
+lesson</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="workshop_wrap_up.html">Workshop
+Wrap-up</a></th>
 </tr>
 </thead>
 <tbody>
-<tr class="odd">
-<td align="center"><strong>Chris</strong></td>
-<td align="center"><strong>Marci</strong></td>
-<td align="center"><strong>Raymond</strong></td>
-<td align="center"></td>
-</tr>
-<tr class="even">
-<td align="center"><img
-src="images/headshots/headshot_damki.jpg" /></td>
-<td align="center"><img
-src="images/headshots/headshot_ncarruth.jpg" /></td>
-<td align="center"><img
-src="images/headshots/headshot_trsaari.jpg" /></td>
-<td align="center"></td>
-</tr>
-<tr class="odd">
-<td align="center"><strong>Dana</strong></td>
-<td align="center"><strong>Nick</strong></td>
-<td align="center"><strong>Travis</strong></td>
-<td align="center"></td>
-</tr>
-<tr class="even">
-<td align="center"><img
-src="images/headshots/headshot_mkdohert.jpg" /></td>
-<td align="center"><img
-src="images/headshots/headshot_okoues.jpg" /></td>
-<td align="center"><img
-src="images/headshots/headshot_phillipa.jpg" /></td>
-<td align="center"></td>
-</tr>
-<tr class="odd">
-<td align="center"><strong>Matt</strong></td>
-<td align="center"><strong>Olivia</strong></td>
-<td align="center"><strong>Tricia</strong></td>
-<td align="center"></td>
-</tr>
 </tbody>
 </table>
-<p><br/></p>
-<p>Thank you for participating in our workshop. We welcome your
-questions and feedback now and in the future.</p>
-<p>Bioinformatics Workshop Team</p>
-<p><a
-href="mailto:bioinformatics-workshops@umich.edu">bioinformatics-workshops@umich.edu</a>
-<br/> <a
-href="https://brcf.medicine.umich.edu/bioinformatics">https://brcf.medicine.umich.edu/bioinformatics</a></p>
 </div>
 
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiSW5kZXBlbmRlbnQgRXhlcmNpc2UiCmF1dGhvcjogIlVNIEJpb2luZm9ybWF0aWNzIENvcmUiCmRhdGU6ICJgciBTeXMuRGF0ZSgpYCIKb3V0cHV0OgogICAgICAgIGh0bWxfZG9jdW1lbnQ6CiAgICAgICAgICAgIGluY2x1ZGVzOgogICAgICAgICAgICAgICAgaW5faGVhZGVyOiBoZWFkZXIuaHRtbAogICAgICAgICAgICB0aGVtZTogcGFwZXIKICAgICAgICAgICAgdG9jOiB0cnVlCiAgICAgICAgICAgIHRvY19kZXB0aDogNAogICAgICAgICAgICB0b2NfZmxvYXQ6IHRydWUKICAgICAgICAgICAgbnVtYmVyX3NlY3Rpb25zOiBmYWxzZQogICAgICAgICAgICBmaWdfY2FwdGlvbjogdHJ1ZQogICAgICAgICAgICBtYXJrZG93bjogR0ZNCiAgICAgICAgICAgIGNvZGVfZG93bmxvYWQ6IHRydWUKLS0tCgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgpib2R5LCB0ZCB7CiAgIGZvbnQtc2l6ZTogMThweDsKfQpjb2RlLnJ7CiAgZm9udC1zaXplOiAxMnB4Owp9CnByZSB7CiAgZm9udC1zaXplOiAxMnB4Cn0KPC9zdHlsZT4KCmBgYHtyLCBpbmNsdWRlID0gRkFMU0V9CnNvdXJjZSgiLi4vYmluL2NodW5rLW9wdGlvbnMuUiIpCmtuaXRyX2ZpZ19wYXRoKCJYWCIpCmBgYAoKIyBXb3JrZmxvdyBPdmVydmlldyB7LnVubGlzdGVkIC51bm51bWJlcmVkfQoKPGJyLz4KPGltZyBzcmM9ImltYWdlcy93YXlmaW5kZXIvd2F5ZmluZGVyLnBuZyIgYWx0PSJ3YXlmaW5kZXIiIHN0eWxlPSJoZWlnaHQ6IDQwMHB4OyIvPgo8YnIvPgo8YnIvPgoKIyBJbnRyb2R1Y3Rpb24KClBvaW50IG91dCBwb3NzaWJsZSBnYXBzIGJldHdlZW4gaG93IHNpbmdsZS1jZWxsIGRhdGEgaXMgcHJlc2VudGVkIHZlcnN1cyB0aGUgcmVhbGl0eSBvZiBydW5uaW5nIGFuIGFuYWx5c2lzCkUuZy4gUGFwZXJzIG1pZ2h0IHJlcG9ydCBmaW5hbCBmaWx0ZXJpbmcgdGhyZXNob2xkcywgYnV0IG91ciBwcm9jZXNzIGZvciBjaG9vc2luZyB0aG9zZSBpcyBsaWtlbHkgdG8gYmUgbW9yZSBpdGVyYXRpdmUKCkdlbmVyYWwgZ29hbDogRmlsdGVyaW5nIG91dCB0aGUgImNlbGxzIiB0aGF0IGVpdGhlciB3ZXJlIHBvb3JseSBtZWFzdXJlZCBvciBhcmUgZWl0aGVyIG5vdCBzaW5nbGUtY2VsbHMgb3Igbm90IGNlbGxzIGF0IGFsbAoKPCEtLSByZWd1bGFyIGh0bWwgY29tbWVudCAtLT4gCjwhLS1BZGQgc3BlY2lmaWMgZ29hbHMgZm9yIHNlY3Rpb24tLT4KClBlciBbaHlwZXJsaW5rIHRleHRdKGh0dHA6Ly93d3cud2Vic2l0ZS5odG1sKSBhcmUgLi4uIGVpdGhlciBgcGxhaW4gdGV4dGAgb3IgKml0YWxpYyogb3IgKipib2xkKiouCgo8RW1iZWQgYW4gaW1hZ2U+CjxpbWcgc3JjPSJpbWFnZXMvV2VsY29tZVNjcmlwdE9wZW5lZC5wbmciIGFsdD0icnN0dWRpbyBkZWZhdWx0IHNlc3Npb24iIHN0eWxlPSJ3aWR0aDoxMDAwcHg7Ii8+Cgo+ICMjIFJlbWluZGVyOiBSU3R1ZGlvIGNvZGUgZXhlY3V0aW9uIHsudW5saXN0ZWQgLnVubnVtYmVyZWR9Cj4KPiA8a2JkPkN0cmw8L2tiZD4rPGtiZD5FbnRlcjwva2JkPiBpcyBhIHN0YW5kYXJkIHNob3J0Y3V0IGluIFJTdHVkaW8gdG8gc2VuZCB0aGUgY3VycmVudCBsaW5lIChvciBzZWxlY3RlZCBsaW5lcykgdG8gdGhlIGNvbnNvbGUuIElmIHlvdSBzZWUgYD5gIGluIHRoZSBDb25zb2xlLCB0aGVuIFIgaGFzIGV4ZWN1dGVkIHRoZSBjb21tYW5kLiBJZiB5b3Ugc2VlIGEgYCtgLCB0aGlzIG1lYW5zIHRoYXQgdGhlIGNvbW1hbmQgaXMgbm90IGNvbXBsZXRlLCBSIHRoaW5rcyB0aGVyZSBpcyBtb3JlIHRvIHlvdXIgY29tbWFuZC4gWW91IGNhbiB1c2UgdGhlIDxrbWQ+ZXNjPC9rbWQ+IHRvIGdldCBvdXQgb2YgdGhpcyBzdGF0ZS4KCj4gIyMgUmVtaW5kZXI6IE9iamVjdCBuYW1pbmcgY29udmVudGlvbnMgey51bmxpc3RlZCAudW5udW1iZXJlZH0KPiAqIENhbm5vdCBzdGFydCB3aXRoIG51bWJlcnMKPiAqIENhbm5vdCBpbmNsdWRlIGRhc2hlcwo+ICogQ2Fubm90IGhhdmUgc3BhY2VzCj4gKiBTaG91bGQgbm90IGJlIGlkZW50aWNhbCB0byBhIG5hbWVkIGZ1bmN0aW9uCj4gKiBEb3RzIGFuZCB1bmRlcnNjb3JlcyBjYW4gc2VwYXJhdGUgcGFydHMgb2YgbmFtZXMsIGFsdGVybmF0aXZlbHkgQ2FtZWxDYXNlIGFjY29tcGxpc2hlcyB0aGlzCgotLS0tCgo8ZGV0YWlscz4KICAgIDxzdW1tYXJ5PipDbGljayBmb3IgYWRkaXRpb25hbCByZXNvdXJjZXMgcmVnYXJkaW5nIHN0YXRpc3RpY2FsIHRlc3RpbmcgYW5kIHRvb2wgY29tcGFyaXNvbiBmb3IgUk5BLXNlcSBkYXRhKjwvc3VtbWFyeT4KICAgIFRvIGxlYXJuIG1vcmUgYWJvdXQgc3RhdGlzdGljYWwgdGVzdGluZyBhbmQgd2hhdCBkaXN0cmlidXRpb25zIGJlc3QgbW9kZWwgdGhlIGJlaGF2aW9yIG9mIFJOQS1zZXEgZGF0YSwgYSBnb29kIHJlc291cmNlIGlzIHRoaXMgW0VkWCBsZWN0dXJlIGJ5IFJhZmFlbCBJcml6YXJyeV0oaHR0cHM6Ly93d3cueW91dHViZS5jb20vd2F0Y2g/dj1ISzdXS3NMM2MydyZmZWF0dXJlPXlvdXR1LmJlKSBvciB0aGlzIFtsZWN0dXJlIGJ5IEthc3BlciBIYW5zZW5dKGh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9QzhSTnZXdTdwQXcpLiBBbm90aGVyIGhlbHBmdWwgZ3VpZGUgaXMgdGhpcyBbQ29tcGFyYXRpdmUgU3R1ZHkgZm9yIERpZmZlcmVudGlhbCBFeHByZXNzaW9uIEFuYWx5c2lzIGJ5IFpoYW5nIGV0IGFsLl0oaHR0cHM6Ly9qb3VybmFscy5wbG9zLm9yZy9wbG9zb25lL2FydGljbGU/aWQ9MTAuMTM3MS9qb3VybmFsLnBvbmUuMDEwMzIwNykgZnJvbSAyMDE0Lgo8L2RldGFpbHM+Cjxicj4KCi0tLS0KClRoZXNlIG1hdGVyaWFscyBoYXZlIGJlZW4gYWRhcHRlZCBhbmQgZXh0ZW5kZWQgZnJvbSBtYXRlcmlhbHMgbGlzdGVkIGFib3ZlLiBUaGVzZSBhcmUgb3BlbiBhY2Nlc3MgbWF0ZXJpYWxzIGRpc3RyaWJ1dGVkIHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgW0NyZWF0aXZlIENvbW1vbnMgQXR0cmlidXRpb24gbGljZW5zZSAoQ0MgQlkgNC4wKV0oaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbGljZW5zZXMvYnkvNC4wLyksIHdoaWNoIHBlcm1pdHMgdW5yZXN0cmljdGVkIHVzZSwgZGlzdHJpYnV0aW9uLCBhbmQgcmVwcm9kdWN0aW9uIGluIGFueSBtZWRpdW0sIHByb3ZpZGVkIHRoZSBvcmlnaW5hbCBhdXRob3IgYW5kIHNvdXJjZSBhcmUgY3JlZGl0ZWQuCgo8YnIvPgo8YnIvPgo8aHIvPgp8IFtQcmV2aW91cyBsZXNzb25dKDA4LURpZmZlcmVudGlhbEV4cHJlc3Npb24uaHRtbCkgfCBbVG9wIG9mIHRoaXMgbGVzc29uXSgjdG9wKSB8IFtXb3Jrc2hvcCBXcmFwLXVwXSh3b3Jrc2hvcF93cmFwX3VwLmh0bWwpIHwKfCA6LS0tIHwgOi0tLS06IHwgLS0tOiB8Cgo=</div>
 
 
 </div>
@@ -706,6 +570,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("09-IndependentExercise.Rmd");
+});
+</script>
 
 <script>
 $(document).ready(function ()  {
