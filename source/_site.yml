@@ -23,13 +23,13 @@ navbar:
           href: 00B-CellRangerInAction.html
         - text: "Seurat"
           href: 01-GettingStarted.html
-        - text: "Initial QC & Filtering"
+        - text: "Secondary QC & Filtering"
           href: 02-QCandFiltering.html
     - text: "Day 2"
       menu:
-        - text: "Integration / Batch correction"
+        - text: "Normalization"
           href: 03-Integration.html
-        - text: "Principal Component Analysis"
+        - text: "PCA & Integration"
           href: 04-PCAandDimReduction.html
         - text: "Projection & Clustering"
           href: 05-ProjectionAndClustering.html

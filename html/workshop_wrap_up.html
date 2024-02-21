@@ -352,7 +352,7 @@ div.tocify {
       <a href="01-GettingStarted.html">Seurat</a>
     </li>
     <li>
-      <a href="02-QCandFiltering.html">Initial QC &amp; Filtering</a>
+      <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
     </li>
   </ul>
 </li>
@@ -364,10 +364,10 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="03-Integration.html">Integration / Batch correction</a>
+      <a href="03-Integration.html">Normalization</a>
     </li>
     <li>
-      <a href="04-PCAandDimReduction.html">Principal Component Analysis</a>
+      <a href="04-PCAandDimReduction.html">PCA &amp; Integration</a>
     </li>
     <li>
       <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
@@ -437,17 +437,17 @@ a.external {
 <h2>Wrapping up</h2>
 <p>We hope you now have more familiarity with key concepts, data types,
 tools, and how they all connect to enable single-cell gene expression
-analysis from single cell RNA-Seq data.</p>
+analysis from RNA-Seq data.</p>
 <p><img src="images/wayfinder/wayfinder_workshop_wrap_up.png" /></p>
 <hr />
 </div>
 <div id="housekeeping" class="section level2">
 <h2>Housekeeping</h2>
 <ul>
-<li><p>TODO: Please take our optional
+<li><p>Please take our optional
 <a class="external" href="https://forms.gle/mafY39iccNRoEAVZ8" target="_blank">post-workshop
 survey</a> (5-10 minutes)</p></li>
-<li><p>TODO: 3/8 11-12 ET:
+<li><p>3/8 11-12 ET:
 <a class="external" href="https://forms.gle/tJ1fSR4fPgcpPKws5" target="_blank">Virtual
 office hours</a></p></li>
 <li><p>We will email you a link to the final session recordings by next
@@ -465,8 +465,8 @@ days.</p></li>
 <div id="workshop-environment" class="section level4">
 <h4>Workshop environment</h4>
 <ul>
-<li><p>TODO: RStudio workshop compute environment will be available
-until 11/30.</p>
+<li><p>RStudio workshop compute environment will be available until
+<strong>3/15/2024</strong>.</p>
 <ul>
 <li><em>Please save all your R scripts now</em> so that we can
 “right-size” the compute environment immediately following today’s
@@ -477,20 +477,21 @@ terminal/command line window as below. (You will need to substitute your
 actual workshop username and type workshop password when prompted.)</p>
 <pre><code>mkdir intro_scrnaseq-workshop
 cd intro_scrnaseq-workshop
-scp -r YOUR_USERNAME@bfx-workshop01.med.umich.edu:&quot;ISC*&quot; .</code></pre>
+scp -r YOUR_USERNAME@bfx-workshop01.med.umich.edu:&quot;ISC_R*&quot; .</code></pre>
 <ul>
-<li>TODO: Note that the full download is about 2-4Gb, so depending on
-your internet speeds it could take while.</li>
+<li>Note that the full download or the R data is about 8Gb, so depending
+on your internet speeds it could take while. (We do not recommend you
+download the full set of Cell Ranger outputs.)</li>
 </ul></li>
 </ul>
 </div>
-<div id="todo-installing-software-locally" class="section level4">
-<h4>TODO Installing software locally</h4>
+<div id="installing-software-locally" class="section level4">
+<h4>Installing software locally</h4>
 <ul>
 <li>You can install necessary programs to run programs locally. Note
-that for typical data, the compute intensive steps (Day 1) assume your
+that for typical data, Cell Ranger steps (reviewed Day 1) assume your
 computer has powerful compute (many CPUs and lots of RAM) and sizable
-storage capacity. (i.e. It may not be practical to run these on your
+storage capacity. (i.e. it’s impractical to run these on your
 laptop.)</li>
 <li>Installing bioinformatics software is non-trivial and comprehensive
 instructions to setup a complete compute environment are outside the
@@ -498,12 +499,6 @@ scope of this workshop. (We are considering offering a Computational
 Reproducibility workshop that would cover this.) For the intrepid, see
 relevant links below:
 <ul>
-<li><a
-href="https://conda.io/projects/conda/en/latest/user-guide/install/index.html#regular-installation">Installing
-Conda</a></li>
-<li><a
-href="https://github.com/umich-brcf-bioinf/2022-08-14-umich-rnaseq-demystified/blob/main/server_setup/conda_setup/workshop-rsd.yaml">Conda
-environment YAML</a></li>
 <li><a href="workshop_setup/setup_instructions_advanced.html">Setting up
 R/R-Studio</a></li>
 </ul></li>
@@ -513,7 +508,7 @@ R/R-Studio</a></li>
 <div id="university-of-michigan-resources" class="section level2">
 <h2>University of Michigan Resources</h2>
 <ul>
-<li><a class="external"  href="https://datascience.isr.umich.edu/events/coderspaces/" target="_blank">UM
+<li><a class="external" href="https://datascience.isr.umich.edu/events/coderspaces/" target="_blank">UM
 CoderSpaces “office hours”</a> and UM CoderSpaces Slack workspace.
 <em>(See “Useful Resources” section in above page for instructions on
 how to join and access the CoderSpaces Slack workspace.)</em></li>
@@ -539,38 +534,73 @@ Computing Package</a>.</li>
 started with Great Lakes</a>. (available to UM folks)</li>
 </ul></li>
 </ul>
-<div id="training-and-support" class="section level4">
-<h4>Training and support</h4>
+</div>
+<div id="resources-for-continued-learning" class="section level2">
+<h2>Resources for continued learning</h2>
 <ul>
 <li>Learning bioinformatic analyses more like a process than a task.
 Resources to consider:
 <ul>
 <li>UM Bioinformatics Core links to
-<a href="https://brcf.medicine.umich.edu/cores/bioinformatics-core/training/" target="_blank">training
+<a class="external" href="https://brcf.medicine.umich.edu/cores/bioinformatics-core/training/" target="_blank">training
 resources/workshops</a></li>
-<li>TODO: Notes on Bash and R from the recent
-<a href="https://umich-brcf-bioinf.github.io/2023-07-31-umich-computational-foundations/html/" target="_blank">Computational
-Foundations Workshop</a>.<br/></li>
-<li>For more intro lessons and workshops in Bash / Git / R / Python :
-<a href="https://software-carpentry.org/lessons/" target="_blank">Software
-Carpentry</a> and the
-<a href="https://umcarpentries.org/" target="_blank">UM Software
-Carpentry Group</a>.</li>
-<li>For more info on NGS analysis, we can highly recommend training
-materials from the
-<a href="https://hbctraining.github.io/main/" target="_blank">Harvard
-Chan Bioinformatics Core</a>.</li>
+<li><strong>Techniques in Bash and R</strong>
+<ul>
+<li>Notes the recent <a class="external"
+href="https://umich-brcf-bioinf.github.io/workshop-computational-foundations/main/html/" target="_blank">
+Computational Foundations Workshop.</a></li>
+<li>Lessons and workshops in Bash / Git / R / Python :
+<a href="https://software-carpentry.org/lessons/" target="_blank">
+Software Carpentry</a> and also the
+<a class="external" href="https://umcarpentries.org/" target="_blank">
+UM Software Carpentry Group.</a></li>
+</ul></li>
+<li><strong>More info on NGS analysis</strong>
+<ul>
+<li>Lesson plans from <a class="external" 
+href="https://umich-brcf-bioinf.github.io/workshop-computational-foundations/main/html/" target="_blank">
+RNA-Seq Demystified Workshop.</a> (Note this is for bulk RNA-Seq.)</li>
+<li><a class="external" href="https://hbctraining.github.io/main/" target="_blank">Harvard
+Chan Bioinformatics Core.</a></li>
+<li><a class="external" href="https://bioconductor.org/books/3.12/OSCA/index.html" target="_blank">Orchestrating
+Single-Cell Analysis with Bioconductor.</a></li>
+<li>The <a class="external" href="https://satijalab.org/">Satija lab</a>
+publishes many excellent step-by-step tutorials on single-cell analysis,
+e.g. <a class="external" href="https://satijalab.org/seurat/articles/pbmc3k_tutorial" target="_blank">
+Seurat - Guided Clustering Tutorial.</a> The Satija lab also hosts
+<a class="external" href="https://satijalab.org/scgd24/"> Single Cell
+Genomics Day</a> an annual symposium (live-streamed) on emerging
+techniques in single-cell analysis.</li>
+<li>Nayak, Richa, and Yasha Hasija. <strong>“A hitchhiker’s guide to
+single-cell transcriptomics and data analysis pipelines.”</strong>
+Genomics vol. 113,2 (2021): 606-619.<br/> <a
+href="https://pubmed.ncbi.nlm.nih.gov/33485955/"
+class="uri">https://pubmed.ncbi.nlm.nih.gov/33485955/</a></li>
+<li>Luecken, Malte D, and Fabian J Theis. <strong>“Current best
+practices in single-cell RNA-seq analysis: a tutorial.”</strong>
+Molecular systems biology vol. 15,6 e8746. 19 Jun. 2019.<br/> <a
+href="https://pubmed.ncbi.nlm.nih.gov/31217225/"
+class="uri">https://pubmed.ncbi.nlm.nih.gov/31217225/</a></li>
+<li>He, Jiangping et al. <strong>“Practical bioinformatics pipelines for
+single-cell RNA-seq data analysis.”</strong> Biophysics reports vol. 8,3
+(2022): 158-169.<br/> <a
+href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10189648/"
+class="uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10189648/</a></li>
+</ul></li>
+<li>For more context on the experiments and data we referenced during
+the workshop, see the source paper: <br/> Sorkin, Michael et
+al. <strong>“Regulation of heterotopic ossification by monocytes in a
+mouse model of aberrant wound healing.”</strong> Nature communications
+vol. 11,1 722. 5 Feb. 2020.<br/>
+<a class="external" href="https://pubmed.ncbi.nlm.nih.gov/32024825/" target="_blank">https://pubmed.ncbi.nlm.nih.gov/32024825/</a></li>
 </ul></li>
 </ul>
 <hr />
 </div>
-</div>
-<div id="thank-you" class="section level2">
-<h2>Thank you</h2>
-<div class="float">
-<img src="images/workshop_intro/sponsor_logos.png" alt="Sponsors" />
-<div class="figcaption">Sponsors</div>
-</div>
+<div id="thank-you-to-our-sponsors" class="section level2">
+<h2>Thank you to our sponsors</h2>
+<p><img src="images/workshop_intro/sponsor_logos.png" /></p>
+<p><br/></p>
 </div>
 <div id="thank-you-tofrom-the-workshop-team" class="section level2">
 <h2>Thank you to/from the workshop team</h2>
