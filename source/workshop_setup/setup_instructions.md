@@ -105,7 +105,9 @@ be happy to lend a hand to get things working.
   3.2 When prompted, enter the  username and password supplied by your hosts and
    click **Sign In**.
 
-   You should see a new webpage that looks like something like this:
+  3.3 The login page will immediate go blank - **it may take several seconds for the next page to appear** 
+   (sometimes up to 30 seconds, but usually faster). After this small delay, you 
+   should see a new webpage that looks like something like this:
 
    ![RStudio initial screen](images/setup_instructions_rstudio.png)
 
