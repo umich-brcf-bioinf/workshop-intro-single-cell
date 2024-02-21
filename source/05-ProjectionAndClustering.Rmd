@@ -44,6 +44,11 @@ knitr_fig_path("XX")
 
 <!--Add specific goals for section-->
 
+Point out possible gaps between how single-cell data is presented versus the reality of running an analysis
+E.g. Papers might report final filtering thresholds, but our process for choosing those is likely to be more iterative
+
+General goal: Filtering out the "cells" that either were poorly measured or are either not single-cells or not cells at all
+
 ## Objectives
 
 - XX
@@ -81,6 +86,11 @@ geo_so = FindClusters(geo_so, resolution = 1, cluster.name = 'integrated.sct.cca
 head(Indets(geo_so), 5)
 ```
 
+~~~
+# add expected output
+~~~
+
+
 # Cluster plots
 
 Note how dimensionality choices are carried through downstream functions.
@@ -99,15 +109,29 @@ How many clusters should I get and how do I adjust the number?
 
 <!--- Show example of changing resolution?--->
 
-```{r, eval =FALSE}
-post_integration_umap_plot = DimPlot(geo_so, group.by = 'orig.ident', label = FALSE, reduction = 'umap.sct.integrated.cca') + NoLegend()
-ggsave(filename = 'ISC_R/results/figures/umap_integrated_sct.png', plot = post_integration_umap_plot)
+
+We can check the how well the normalization and integration .
+
+```{r, eval = FALSE}
+post_integration_umap_plot_day = DimPlot(geo_so, group.by = 'day', label = FALSE, reduction = 'umap.sct.integrated.cca') + NoLegend()
+ggsave(filename = 'ISC_R/results/figures/umap_integrated_sct_day.png', plot = post_integration_umap_plot_day)
 ```
 
-```{r, eval=FALSE}
-post_integration_umap_faceted_plot = DimPlot(geo_so, group.by = 'orig.ident', split.by = 'integrated.sct.cca.clusters', label = FALSE, reduction = 'umap.sct.integrated.cca', ncol = 5) + NoLegend()
-ggsave(filename = 'ISC_R/results/figures/umap_integrated_sct_faceted.png', plot = post_integration_umap_faceted_plot, width = 20, height = 16, units = 'in')
+![](./images/curriculum/umap_integrated_sct_day.png)
+
+
+
+```{r, eval = FALSE}
+post_integration_umap_plot_orig.ident = DimPlot(geo_so, group.by = 'orig.ident', label = FALSE, reduction = 'umap.sct.integrated.cca') + NoLegend()
+ggsave(filename = 'ISC_R/results/figures/umap_integrated_sct_orig.ident.png', plot = post_integration_umap_plot_orig.ident)
 ```
+
+![](./images/curriculum/umap_integrated_sct_orig.ident.png)
+
+
+
+We can also evaluate cluster membership by `orig.ident` or by `day` using the `table()` function:
+
 
 ```{r, eval=FALSE}
 table(geo_so@meta.data$orig.ident, geo_so@meta.data$integrated.sct.cca.clusters)
@@ -117,9 +141,9 @@ table(geo_so@meta.data$orig.ident, geo_so@meta.data$integrated.sct.cca.clusters)
 
 
 
-# Other tools for visualizing scRNA-sq data
+# Other approaches for visualizing scRNA-sq data
 
-
+tSNE, PCA
 
 # Unintegrated data
 
@@ -132,6 +156,41 @@ If we had proceeded with our filtered data and only normalized our data without 
 
 
 In this plot, we ... see that while there are distinct clusters, those clusters seem to separate primarily by sample id. This suggests that without integration, these batch effects could skew the biological variability in our data. <!--move this section to end of Projection module to contrast with integrated results-->
+
+
+<!-- Edit section to incorporate --->
+
+# Rewind: Pre-integration evaluation
+
+Prior to integration, we would like to know if there are any batch effects that carry through to the cell clusters. Most importantly, we would like to know if clusters tend to be determined by sample or condition (in this case, the day). In order to figure this out we have already run the following three commands, which we will describe in more detail later.
+
+```{r, eval = FALSE}
+# DefaultAssay(geo_so) = 'RNA'
+
+geo_so = RunPCA(geo_so, reduction.name = 'unintegrated.sct.pca')
+geo_so = FindNeighbors(geo_so, dims = 1:25, reduction = 'unintegrated.sct.pca')
+geo_so = FindClusters(geo_so, resolution = 0.5, cluster.name = 'unintegrated.sct.clusters')
+geo_so = RunUMAP(geo_so, dims = 1:25, reduction = 'unintegrated.sct.pca', reduction.name = 'umap.unintegrated.sct.pca')
+```
+
+
+From this image, we can qualitatively see that some clusters seem to be driven by the original identity. We can see this even more clearly if we use `group.by = 'day'`:
+
+```{r, eval = FALSE}
+pre_integration_umap_plot = DimPlot(geo_so, group.by = 'day', label = FALSE, reduction = 'umap.unintegrated.sct.pca') + NoLegend()
+ggsave(filename = 'ISC_R/results/figures/umap_unintegrated_sct_day.png', plot = pre_integration_umap_plot)
+```
+
+![](./images/curriculum/umap_unintegrated_sct_day.png)
+
+
+<!-- Make sure above section is edited -->
+
+# Summary
+
+Now that we have ...
+
+Next steps: Marker genes
 
 
 ----
