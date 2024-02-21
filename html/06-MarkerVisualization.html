@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core" />
 
-<meta name="date" content="2024-02-19" />
+<meta name="date" content="2024-02-21" />
 
 <title>Marker identification and visualization</title>
 
-<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -31,7 +31,7 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
@@ -431,7 +431,7 @@ div.tocify {
 <h1 class="title toc-ignore">Marker identification and
 visualization</h1>
 <h4 class="author">UM Bioinformatics Core</h4>
-<h4 class="date">2024-02-19</h4>
+<h4 class="date">2024-02-21</h4>
 
 </div>
 
@@ -461,51 +461,65 @@ filtering thresholds, but our process for choosing those is likely to be
 more iterative</p>
 <p>General goal: Filtering out the “cells” that either were poorly
 measured or are either not single-cells or not cells at all</p>
-<!-- regular html comment -->
 <!--Add specific goals for section-->
-<p>Per <a href="http://www.website.html">hyperlink text</a> are … either
-<code>plain text</code> or <em>italic</em> or <strong>bold</strong>.</p>
-<Embed an image>
-<p><img src="images/WelcomeScriptOpened.png" alt="rstudio default session" style="width:1000px;"/></p>
-<blockquote>
-<h2 id="reminder-rstudio-code-execution"
-class="unlisted unnumbered">Reminder: RStudio code execution</h2>
-<p><kbd>Ctrl</kbd>+<kbd>Enter</kbd> is a standard shortcut in RStudio to
-send the current line (or selected lines) to the console. If you see
-<code>&gt;</code> in the Console, then R has executed the command. If
-you see a <code>+</code>, this means that the command is not complete, R
-thinks there is more to your command. You can use the <kmd>esc</kmd> to
-get out of this state.</p>
-</blockquote>
-<blockquote>
-<h2 id="reminder-object-naming-conventions"
-class="unlisted unnumbered">Reminder: Object naming conventions</h2>
-<ul>
-<li>Cannot start with numbers</li>
-<li>Cannot include dashes</li>
-<li>Cannot have spaces</li>
-<li>Should not be identical to a named function</li>
-<li>Dots and underscores can separate parts of names, alternatively
-CamelCase accomplishes this</li>
-</ul>
-</blockquote>
-<hr />
-<details>
-<summary>
-<em>Click for additional resources regarding statistical testing and
-tool comparison for RNA-seq data</em>
-</summary>
-To learn more about statistical testing and what distributions best
-model the behavior of RNA-seq data, a good resource is this <a
-href="https://www.youtube.com/watch?v=HK7WKsL3c2w&amp;feature=youtu.be">EdX
-lecture by Rafael Irizarry</a> or this <a
-href="https://www.youtube.com/watch?v=C8RNvWu7pAw">lecture by Kasper
-Hansen</a>. Another helpful guide is this <a
-href="https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0103207">Comparative
-Study for Differential Expression Analysis by Zhang et al.</a> from
-2014.
-</details>
-<p><br></p>
+</div>
+<div id="marker-identification" class="section level1">
+<h1>Marker identification</h1>
+<p>Ensure that correct resolution is selected</p>
+<pre class="r"><code>geo_so = SetIdent(geo_so, value = &#39;SCT_snn_res.0.4&#39;)</code></pre>
+<p>We can use <code>FindAllMarkers</code> to run comparisons between
+each cluster and all other cells, regardless of the experimental
+group.</p>
+<pre class="r"><code>geo_so = PrepSCTFindMarkers(geo_so)
+geo_markers = FindAllMarkers(geo_so, only.pos = TRUE)</code></pre>
+<!--- Consider adding figure showing example of what's being compared (circle cluster 1 and then circle all other cells for example) -->
+<p>Then we can write out the full results to file.</p>
+<pre class="r"><code>write_csv(geo_markers, file = &#39;ISC_R/results/tables/marker_genes_0.4.csv&#39;)</code></pre>
+<p>In addition to generating the full set of marker genes, it can be
+useful to filter the results to highlight the top positive markers
+(since a positive fold-change would mean that gene is more highly
+expressed in the cluster compared to all other cells):</p>
+<pre class="r"><code># add code to create table of top 5 markers per cluster
+top_5_by_log2FC = geo_markers %&gt;% group_by(cluster) %&gt;% arrange(p_val_adj, desc(avg_log2FC)) %&gt;% slice_head(n = 5)</code></pre>
+<p>If we look at the marker table, we see several columns:</p>
+<pre class="r"><code>head(top_5_by_log2FC)</code></pre>
+<pre><code># add expected output</code></pre>
+<div id="marker-visualization" class="section level2">
+<h2>Marker visualization</h2>
+<p>Use SCT values, create a dotplot</p>
+<pre class="r"><code>top_5_sct_dot_plot = DotPlot(geo_so, features = unique(top_5_by_log2FC$gene)) + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    labs(title = &#39;Top 5 Cluster Genes by FDR and avg_log2FC&#39;)</code></pre>
+<p>And we can save the figure to file</p>
+<pre class="r"><code>ggsave(filename = &#39;ISC_R/results/figures/markers_top_5_sct_dot_plot.png&#39;, plot = top_5_sct_dot_plot, width = 12, height = 6, units = &#39;in&#39;) </code></pre>
+<p>Can also use raw RNA values <!--- move to dropdown ---></p>
+<pre class="r"><code>top_5_rna_dot_plot = DotPlot(geo_so, features = unique(top_5_by_log2FC$gene), assay = &#39;RNA&#39;) + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    labs(title = &#39;Top 5 Cluster Genes by FDR and avg_log2FC&#39;)
+
+ggsave(filename = &#39;ISC_R/results/figures/markers_top_5_sct_dot_plot.png&#39;, plot = top_5_rna_dot_plot, width = 12, height = 6, units = &#39;in&#39;) </code></pre>
+</div>
+</div>
+<div id="utilizing-genes-of-interest" class="section level1">
+<h1>Utilizing genes of interest</h1>
+<p>Often we have</p>
+<pre class="r"><code># Using genes from the paper - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7002453/
+
+fig1g_markers = c(&#39;Cxcl1&#39;, &#39;Cxcl2&#39;, &#39;Ccl2&#39;, &#39;Ccl3&#39;, &#39;Ccl4&#39;, &#39;Il1b&#39;, &#39;Il6b&#39;, &#39;Tnf&#39;, &#39;Tgfb1&#39;, &#39;Tgfb2&#39;, &#39;Tgfb3&#39;, &#39;Cxcl5&#39;)
+fig1h_markers = c(&#39;Cxcr2&#39;, &#39;Csf1r&#39;, &#39;Csf3r&#39;, &#39;Tgfbr1&#39;, &#39;Tgfbr3&#39;, &#39;Il1r1&#39;, &#39;Il6ra&#39;, &#39;Lifr&#39;, &#39;Tgfbr2&#39;)</code></pre>
+</div>
+<div id="save-our-progress" class="section level1">
+<h1>Save our progress</h1>
+<p>Create an output for our updated Seurat object</p>
+<pre class="r"><code>saveRDS(object = geo_so, file = &#39;ISC_R/results/rdata/geo_so_sct_integrated_with_markers.rda&#39;)</code></pre>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>Now that we have …</p>
+<p>However, marker genes alone might not be sufficient to determine
+cell-type or sub-type labels for our clusters so it can be helpful to
+apply other approaches, which we will discuss in the next section.</p>
+<p>Next steps: Cell type prediction tools</p>
 <hr />
 <p>These materials have been adapted and extended from materials listed
 above. These are open access materials distributed under the terms of
@@ -534,7 +548,7 @@ lesson</a></th>
 </table>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiTWFya2VyIGlkZW50aWZpY2F0aW9uIGFuZCB2aXN1YWxpemF0aW9uIgphdXRob3I6ICJVTSBCaW9pbmZvcm1hdGljcyBDb3JlIgpkYXRlOiAiYHIgU3lzLkRhdGUoKWAiCm91dHB1dDoKICAgICAgICBodG1sX2RvY3VtZW50OgogICAgICAgICAgICBpbmNsdWRlczoKICAgICAgICAgICAgICAgIGluX2hlYWRlcjogaGVhZGVyLmh0bWwKICAgICAgICAgICAgdGhlbWU6IHBhcGVyCiAgICAgICAgICAgIHRvYzogdHJ1ZQogICAgICAgICAgICB0b2NfZGVwdGg6IDQKICAgICAgICAgICAgdG9jX2Zsb2F0OiB0cnVlCiAgICAgICAgICAgIG51bWJlcl9zZWN0aW9uczogZmFsc2UKICAgICAgICAgICAgZmlnX2NhcHRpb246IHRydWUKICAgICAgICAgICAgbWFya2Rvd246IEdGTQogICAgICAgICAgICBjb2RlX2Rvd25sb2FkOiB0cnVlCi0tLQoKPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KYm9keSwgdGQgewogICBmb250LXNpemU6IDE4cHg7Cn0KY29kZS5yewogIGZvbnQtc2l6ZTogMTJweDsKfQpwcmUgewogIGZvbnQtc2l6ZTogMTJweAp9Cjwvc3R5bGU+CgpgYGB7ciwgaW5jbHVkZSA9IEZBTFNFfQpzb3VyY2UoIi4uL2Jpbi9jaHVuay1vcHRpb25zLlIiKQprbml0cl9maWdfcGF0aCgiWFgiKQpgYGAKCiMgV29ya2Zsb3cgT3ZlcnZpZXcgey51bmxpc3RlZCAudW5udW1iZXJlZH0KCjxici8+CjxpbWcgc3JjPSJpbWFnZXMvd2F5ZmluZGVyL3dheWZpbmRlci5wbmciIGFsdD0id2F5ZmluZGVyIiBzdHlsZT0iaGVpZ2h0OiA0MDBweDsiLz4KPGJyLz4KPGJyLz4KCiMgSW50cm9kdWN0aW9uCgpQb2ludCBvdXQgcG9zc2libGUgZ2FwcyBiZXR3ZWVuIGhvdyBzaW5nbGUtY2VsbCBkYXRhIGlzIHByZXNlbnRlZCB2ZXJzdXMgdGhlIHJlYWxpdHkgb2YgcnVubmluZyBhbiBhbmFseXNpcwpFLmcuIFBhcGVycyBtaWdodCByZXBvcnQgZmluYWwgZmlsdGVyaW5nIHRocmVzaG9sZHMsIGJ1dCBvdXIgcHJvY2VzcyBmb3IgY2hvb3NpbmcgdGhvc2UgaXMgbGlrZWx5IHRvIGJlIG1vcmUgaXRlcmF0aXZlCgpHZW5lcmFsIGdvYWw6IEZpbHRlcmluZyBvdXQgdGhlICJjZWxscyIgdGhhdCBlaXRoZXIgd2VyZSBwb29ybHkgbWVhc3VyZWQgb3IgYXJlIGVpdGhlciBub3Qgc2luZ2xlLWNlbGxzIG9yIG5vdCBjZWxscyBhdCBhbGwKCjwhLS0gcmVndWxhciBodG1sIGNvbW1lbnQgLS0+IAo8IS0tQWRkIHNwZWNpZmljIGdvYWxzIGZvciBzZWN0aW9uLS0+CgpQZXIgW2h5cGVybGluayB0ZXh0XShodHRwOi8vd3d3LndlYnNpdGUuaHRtbCkgYXJlIC4uLiBlaXRoZXIgYHBsYWluIHRleHRgIG9yICppdGFsaWMqIG9yICoqYm9sZCoqLgoKPEVtYmVkIGFuIGltYWdlPgo8aW1nIHNyYz0iaW1hZ2VzL1dlbGNvbWVTY3JpcHRPcGVuZWQucG5nIiBhbHQ9InJzdHVkaW8gZGVmYXVsdCBzZXNzaW9uIiBzdHlsZT0id2lkdGg6MTAwMHB4OyIvPgoKPiAjIyBSZW1pbmRlcjogUlN0dWRpbyBjb2RlIGV4ZWN1dGlvbiB7LnVubGlzdGVkIC51bm51bWJlcmVkfQo+Cj4gPGtiZD5DdHJsPC9rYmQ+KzxrYmQ+RW50ZXI8L2tiZD4gaXMgYSBzdGFuZGFyZCBzaG9ydGN1dCBpbiBSU3R1ZGlvIHRvIHNlbmQgdGhlIGN1cnJlbnQgbGluZSAob3Igc2VsZWN0ZWQgbGluZXMpIHRvIHRoZSBjb25zb2xlLiBJZiB5b3Ugc2VlIGA+YCBpbiB0aGUgQ29uc29sZSwgdGhlbiBSIGhhcyBleGVjdXRlZCB0aGUgY29tbWFuZC4gSWYgeW91IHNlZSBhIGArYCwgdGhpcyBtZWFucyB0aGF0IHRoZSBjb21tYW5kIGlzIG5vdCBjb21wbGV0ZSwgUiB0aGlua3MgdGhlcmUgaXMgbW9yZSB0byB5b3VyIGNvbW1hbmQuIFlvdSBjYW4gdXNlIHRoZSA8a21kPmVzYzwva21kPiB0byBnZXQgb3V0IG9mIHRoaXMgc3RhdGUuCgo+ICMjIFJlbWluZGVyOiBPYmplY3QgbmFtaW5nIGNvbnZlbnRpb25zIHsudW5saXN0ZWQgLnVubnVtYmVyZWR9Cj4gKiBDYW5ub3Qgc3RhcnQgd2l0aCBudW1iZXJzCj4gKiBDYW5ub3QgaW5jbHVkZSBkYXNoZXMKPiAqIENhbm5vdCBoYXZlIHNwYWNlcwo+ICogU2hvdWxkIG5vdCBiZSBpZGVudGljYWwgdG8gYSBuYW1lZCBmdW5jdGlvbgo+ICogRG90cyBhbmQgdW5kZXJzY29yZXMgY2FuIHNlcGFyYXRlIHBhcnRzIG9mIG5hbWVzLCBhbHRlcm5hdGl2ZWx5IENhbWVsQ2FzZSBhY2NvbXBsaXNoZXMgdGhpcwoKLS0tLQoKPGRldGFpbHM+CiAgICA8c3VtbWFyeT4qQ2xpY2sgZm9yIGFkZGl0aW9uYWwgcmVzb3VyY2VzIHJlZ2FyZGluZyBzdGF0aXN0aWNhbCB0ZXN0aW5nIGFuZCB0b29sIGNvbXBhcmlzb24gZm9yIFJOQS1zZXEgZGF0YSo8L3N1bW1hcnk+CiAgICBUbyBsZWFybiBtb3JlIGFib3V0IHN0YXRpc3RpY2FsIHRlc3RpbmcgYW5kIHdoYXQgZGlzdHJpYnV0aW9ucyBiZXN0IG1vZGVsIHRoZSBiZWhhdmlvciBvZiBSTkEtc2VxIGRhdGEsIGEgZ29vZCByZXNvdXJjZSBpcyB0aGlzIFtFZFggbGVjdHVyZSBieSBSYWZhZWwgSXJpemFycnldKGh0dHBzOi8vd3d3LnlvdXR1YmUuY29tL3dhdGNoP3Y9SEs3V0tzTDNjMncmZmVhdHVyZT15b3V0dS5iZSkgb3IgdGhpcyBbbGVjdHVyZSBieSBLYXNwZXIgSGFuc2VuXShodHRwczovL3d3dy55b3V0dWJlLmNvbS93YXRjaD92PUM4Uk52V3U3cEF3KS4gQW5vdGhlciBoZWxwZnVsIGd1aWRlIGlzIHRoaXMgW0NvbXBhcmF0aXZlIFN0dWR5IGZvciBEaWZmZXJlbnRpYWwgRXhwcmVzc2lvbiBBbmFseXNpcyBieSBaaGFuZyBldCBhbC5dKGh0dHBzOi8vam91cm5hbHMucGxvcy5vcmcvcGxvc29uZS9hcnRpY2xlP2lkPTEwLjEzNzEvam91cm5hbC5wb25lLjAxMDMyMDcpIGZyb20gMjAxNC4KPC9kZXRhaWxzPgo8YnI+CgotLS0tCgpUaGVzZSBtYXRlcmlhbHMgaGF2ZSBiZWVuIGFkYXB0ZWQgYW5kIGV4dGVuZGVkIGZyb20gbWF0ZXJpYWxzIGxpc3RlZCBhYm92ZS4gVGhlc2UgYXJlIG9wZW4gYWNjZXNzIG1hdGVyaWFscyBkaXN0cmlidXRlZCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIFtDcmVhdGl2ZSBDb21tb25zIEF0dHJpYnV0aW9uIGxpY2Vuc2UgKENDIEJZIDQuMCldKGh0dHA6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC8pLCB3aGljaCBwZXJtaXRzIHVucmVzdHJpY3RlZCB1c2UsIGRpc3RyaWJ1dGlvbiwgYW5kIHJlcHJvZHVjdGlvbiBpbiBhbnkgbWVkaXVtLCBwcm92aWRlZCB0aGUgb3JpZ2luYWwgYXV0aG9yIGFuZCBzb3VyY2UgYXJlIGNyZWRpdGVkLgoKPGJyLz4KPGJyLz4KPGhyLz4KfCBbUHJldmlvdXMgbGVzc29uXSgwNS1Qcm9qZWN0aW9uQW5kQ2x1c3RlcmluZy5odG1sKSB8IFtUb3Agb2YgdGhpcyBsZXNzb25dKCN0b3ApIHwgW05leHQgbGVzc29uXSgwNy1DZWxsVHlwZUFubm9zLmh0bWwpIHwKfCA6LS0tIHwgOi0tLS06IHwgLS0tOiB8Cgo=</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiTWFya2VyIGlkZW50aWZpY2F0aW9uIGFuZCB2aXN1YWxpemF0aW9uIgphdXRob3I6ICJVTSBCaW9pbmZvcm1hdGljcyBDb3JlIgpkYXRlOiAiYHIgU3lzLkRhdGUoKWAiCm91dHB1dDoKICAgICAgICBodG1sX2RvY3VtZW50OgogICAgICAgICAgICBpbmNsdWRlczoKICAgICAgICAgICAgICAgIGluX2hlYWRlcjogaGVhZGVyLmh0bWwKICAgICAgICAgICAgdGhlbWU6IHBhcGVyCiAgICAgICAgICAgIHRvYzogdHJ1ZQogICAgICAgICAgICB0b2NfZGVwdGg6IDQKICAgICAgICAgICAgdG9jX2Zsb2F0OiB0cnVlCiAgICAgICAgICAgIG51bWJlcl9zZWN0aW9uczogZmFsc2UKICAgICAgICAgICAgZmlnX2NhcHRpb246IHRydWUKICAgICAgICAgICAgbWFya2Rvd246IEdGTQogICAgICAgICAgICBjb2RlX2Rvd25sb2FkOiB0cnVlCi0tLQoKPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KYm9keSwgdGQgewogICBmb250LXNpemU6IDE4cHg7Cn0KY29kZS5yewogIGZvbnQtc2l6ZTogMTJweDsKfQpwcmUgewogIGZvbnQtc2l6ZTogMTJweAp9Cjwvc3R5bGU+CgpgYGB7ciwgaW5jbHVkZSA9IEZBTFNFfQpzb3VyY2UoIi4uL2Jpbi9jaHVuay1vcHRpb25zLlIiKQprbml0cl9maWdfcGF0aCgiWFgiKQpgYGAKCiMgV29ya2Zsb3cgT3ZlcnZpZXcgey51bmxpc3RlZCAudW5udW1iZXJlZH0KCjxici8+CjxpbWcgc3JjPSJpbWFnZXMvd2F5ZmluZGVyL3dheWZpbmRlci5wbmciIGFsdD0id2F5ZmluZGVyIiBzdHlsZT0iaGVpZ2h0OiA0MDBweDsiLz4KPGJyLz4KPGJyLz4KCiMgSW50cm9kdWN0aW9uCgpQb2ludCBvdXQgcG9zc2libGUgZ2FwcyBiZXR3ZWVuIGhvdyBzaW5nbGUtY2VsbCBkYXRhIGlzIHByZXNlbnRlZCB2ZXJzdXMgdGhlIHJlYWxpdHkgb2YgcnVubmluZyBhbiBhbmFseXNpcwpFLmcuIFBhcGVycyBtaWdodCByZXBvcnQgZmluYWwgZmlsdGVyaW5nIHRocmVzaG9sZHMsIGJ1dCBvdXIgcHJvY2VzcyBmb3IgY2hvb3NpbmcgdGhvc2UgaXMgbGlrZWx5IHRvIGJlIG1vcmUgaXRlcmF0aXZlCgpHZW5lcmFsIGdvYWw6IEZpbHRlcmluZyBvdXQgdGhlICJjZWxscyIgdGhhdCBlaXRoZXIgd2VyZSBwb29ybHkgbWVhc3VyZWQgb3IgYXJlIGVpdGhlciBub3Qgc2luZ2xlLWNlbGxzIG9yIG5vdCBjZWxscyBhdCBhbGwKCjwhLS1BZGQgc3BlY2lmaWMgZ29hbHMgZm9yIHNlY3Rpb24tLT4KCiMgTWFya2VyIGlkZW50aWZpY2F0aW9uCgpFbnN1cmUgdGhhdCBjb3JyZWN0IHJlc29sdXRpb24gaXMgc2VsZWN0ZWQKYGBge3IsIGV2YWwgPSBGQUxTRX0KZ2VvX3NvID0gU2V0SWRlbnQoZ2VvX3NvLCB2YWx1ZSA9ICdTQ1Rfc25uX3Jlcy4wLjQnKQpgYGAKCldlIGNhbiB1c2UgYEZpbmRBbGxNYXJrZXJzYCB0byBydW4gY29tcGFyaXNvbnMgYmV0d2VlbiBlYWNoIGNsdXN0ZXIgYW5kIGFsbCBvdGhlciBjZWxscywgcmVnYXJkbGVzcyBvZiB0aGUgZXhwZXJpbWVudGFsIGdyb3VwLiAKCmBgYHtyLCBldmFsPUZBTFNFfQpnZW9fc28gPSBQcmVwU0NURmluZE1hcmtlcnMoZ2VvX3NvKQpnZW9fbWFya2VycyA9IEZpbmRBbGxNYXJrZXJzKGdlb19zbywgb25seS5wb3MgPSBUUlVFKQpgYGAKCjwhLS0tIENvbnNpZGVyIGFkZGluZyBmaWd1cmUgc2hvd2luZyBleGFtcGxlIG9mIHdoYXQncyBiZWluZyBjb21wYXJlZCAoY2lyY2xlIGNsdXN0ZXIgMSBhbmQgdGhlbiBjaXJjbGUgYWxsIG90aGVyIGNlbGxzIGZvciBleGFtcGxlKSAtLT4KClRoZW4gd2UgY2FuIHdyaXRlIG91dCB0aGUgZnVsbCByZXN1bHRzIHRvIGZpbGUuIApgYGB7ciwgZXZhbD1GQUxTRX0Kd3JpdGVfY3N2KGdlb19tYXJrZXJzLCBmaWxlID0gJ0lTQ19SL3Jlc3VsdHMvdGFibGVzL21hcmtlcl9nZW5lc18wLjQuY3N2JykKYGBgCgpJbiBhZGRpdGlvbiB0byBnZW5lcmF0aW5nIHRoZSBmdWxsIHNldCBvZiBtYXJrZXIgZ2VuZXMsIGl0IGNhbiBiZSB1c2VmdWwgdG8gZmlsdGVyIHRoZSByZXN1bHRzIHRvIGhpZ2hsaWdodCB0aGUgdG9wIHBvc2l0aXZlIG1hcmtlcnMgKHNpbmNlIGEgcG9zaXRpdmUgZm9sZC1jaGFuZ2Ugd291bGQgbWVhbiB0aGF0IGdlbmUgaXMgbW9yZSBoaWdobHkgZXhwcmVzc2VkIGluIHRoZSBjbHVzdGVyIGNvbXBhcmVkIHRvIGFsbCBvdGhlciBjZWxscyk6CmBgYHtyLCBldmFsPUZBTFNFfQojIGFkZCBjb2RlIHRvIGNyZWF0ZSB0YWJsZSBvZiB0b3AgNSBtYXJrZXJzIHBlciBjbHVzdGVyCnRvcF81X2J5X2xvZzJGQyA9IGdlb19tYXJrZXJzICU+JSBncm91cF9ieShjbHVzdGVyKSAlPiUgYXJyYW5nZShwX3ZhbF9hZGosIGRlc2MoYXZnX2xvZzJGQykpICU+JSBzbGljZV9oZWFkKG4gPSA1KQpgYGAKCklmIHdlIGxvb2sgYXQgdGhlIG1hcmtlciB0YWJsZSwgd2Ugc2VlIHNldmVyYWwgY29sdW1uczoKYGBge3IsIGV2YWw9RkFMU0V9CmhlYWQodG9wXzVfYnlfbG9nMkZDKQpgYGAKfn5+fgojIGFkZCBleHBlY3RlZCBvdXRwdXQKfn5+fgoKCiMjIE1hcmtlciB2aXN1YWxpemF0aW9uCgpVc2UgU0NUIHZhbHVlcywgY3JlYXRlIGEgZG90cGxvdApgYGB7ciwgZXZhbD1GQUxTRX0KdG9wXzVfc2N0X2RvdF9wbG90ID0gRG90UGxvdChnZW9fc28sIGZlYXR1cmVzID0gdW5pcXVlKHRvcF81X2J5X2xvZzJGQyRnZW5lKSkgKyAKICAgIHRoZW1lKGF4aXMudGV4dC54ID0gZWxlbWVudF90ZXh0KGFuZ2xlID0gOTAsIGhqdXN0ID0gMSwgdmp1c3QgPSAwLjUpKSArCiAgICBsYWJzKHRpdGxlID0gJ1RvcCA1IENsdXN0ZXIgR2VuZXMgYnkgRkRSIGFuZCBhdmdfbG9nMkZDJykKYGBgCgpBbmQgd2UgY2FuIHNhdmUgdGhlIGZpZ3VyZSB0byBmaWxlCmBgYHtyLCBldmFsPUZBTFNFfQpnZ3NhdmUoZmlsZW5hbWUgPSAnSVNDX1IvcmVzdWx0cy9maWd1cmVzL21hcmtlcnNfdG9wXzVfc2N0X2RvdF9wbG90LnBuZycsIHBsb3QgPSB0b3BfNV9zY3RfZG90X3Bsb3QsIHdpZHRoID0gMTIsIGhlaWdodCA9IDYsIHVuaXRzID0gJ2luJykgCmBgYAoKCkNhbiBhbHNvIHVzZSByYXcgUk5BIHZhbHVlcyA8IS0tLSBtb3ZlIHRvIGRyb3Bkb3duIC0tLT4KCmBgYHtyLCBldmFsPUZBTFNFfQp0b3BfNV9ybmFfZG90X3Bsb3QgPSBEb3RQbG90KGdlb19zbywgZmVhdHVyZXMgPSB1bmlxdWUodG9wXzVfYnlfbG9nMkZDJGdlbmUpLCBhc3NheSA9ICdSTkEnKSArIAogICAgdGhlbWUoYXhpcy50ZXh0LnggPSBlbGVtZW50X3RleHQoYW5nbGUgPSA5MCwgaGp1c3QgPSAxLCB2anVzdCA9IDAuNSkpICsKICAgIGxhYnModGl0bGUgPSAnVG9wIDUgQ2x1c3RlciBHZW5lcyBieSBGRFIgYW5kIGF2Z19sb2cyRkMnKQoKZ2dzYXZlKGZpbGVuYW1lID0gJ0lTQ19SL3Jlc3VsdHMvZmlndXJlcy9tYXJrZXJzX3RvcF81X3NjdF9kb3RfcGxvdC5wbmcnLCBwbG90ID0gdG9wXzVfcm5hX2RvdF9wbG90LCB3aWR0aCA9IDEyLCBoZWlnaHQgPSA2LCB1bml0cyA9ICdpbicpIApgYGAKCgojIFV0aWxpemluZyBnZW5lcyBvZiBpbnRlcmVzdAoKT2Z0ZW4gd2UgaGF2ZSAKCmBgYHtyLCBldmFsPUZBTFNFfQojIFVzaW5nIGdlbmVzIGZyb20gdGhlIHBhcGVyIC0gaHR0cHM6Ly93d3cubmNiaS5ubG0ubmloLmdvdi9wbWMvYXJ0aWNsZXMvUE1DNzAwMjQ1My8KCmZpZzFnX21hcmtlcnMgPSBjKCdDeGNsMScsICdDeGNsMicsICdDY2wyJywgJ0NjbDMnLCAnQ2NsNCcsICdJbDFiJywgJ0lsNmInLCAnVG5mJywgJ1RnZmIxJywgJ1RnZmIyJywgJ1RnZmIzJywgJ0N4Y2w1JykKZmlnMWhfbWFya2VycyA9IGMoJ0N4Y3IyJywgJ0NzZjFyJywgJ0NzZjNyJywgJ1RnZmJyMScsICdUZ2ZicjMnLCAnSWwxcjEnLCAnSWw2cmEnLCAnTGlmcicsICdUZ2ZicjInKQpgYGAKCiMgU2F2ZSBvdXIgcHJvZ3Jlc3MKCkNyZWF0ZSBhbiBvdXRwdXQgZm9yIG91ciB1cGRhdGVkIFNldXJhdCBvYmplY3QKYGBge3IsIGV2YWw9RkFMU0V9CnNhdmVSRFMob2JqZWN0ID0gZ2VvX3NvLCBmaWxlID0gJ0lTQ19SL3Jlc3VsdHMvcmRhdGEvZ2VvX3NvX3NjdF9pbnRlZ3JhdGVkX3dpdGhfbWFya2Vycy5yZGEnKQpgYGAKCgojIFN1bW1hcnkKCk5vdyB0aGF0IHdlIGhhdmUgLi4uIAoKSG93ZXZlciwgbWFya2VyIGdlbmVzIGFsb25lIG1pZ2h0IG5vdCBiZSBzdWZmaWNpZW50IHRvIGRldGVybWluZSBjZWxsLXR5cGUgb3Igc3ViLXR5cGUgbGFiZWxzIGZvciBvdXIgY2x1c3RlcnMgc28gaXQgY2FuIGJlIGhlbHBmdWwgdG8gYXBwbHkgb3RoZXIgYXBwcm9hY2hlcywgd2hpY2ggd2Ugd2lsbCBkaXNjdXNzIGluIHRoZSBuZXh0IHNlY3Rpb24uCgpOZXh0IHN0ZXBzOiBDZWxsIHR5cGUgcHJlZGljdGlvbiB0b29scwoKCgotLS0tCgpUaGVzZSBtYXRlcmlhbHMgaGF2ZSBiZWVuIGFkYXB0ZWQgYW5kIGV4dGVuZGVkIGZyb20gbWF0ZXJpYWxzIGxpc3RlZCBhYm92ZS4gVGhlc2UgYXJlIG9wZW4gYWNjZXNzIG1hdGVyaWFscyBkaXN0cmlidXRlZCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIFtDcmVhdGl2ZSBDb21tb25zIEF0dHJpYnV0aW9uIGxpY2Vuc2UgKENDIEJZIDQuMCldKGh0dHA6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC8pLCB3aGljaCBwZXJtaXRzIHVucmVzdHJpY3RlZCB1c2UsIGRpc3RyaWJ1dGlvbiwgYW5kIHJlcHJvZHVjdGlvbiBpbiBhbnkgbWVkaXVtLCBwcm92aWRlZCB0aGUgb3JpZ2luYWwgYXV0aG9yIGFuZCBzb3VyY2UgYXJlIGNyZWRpdGVkLgoKPGJyLz4KPGJyLz4KPGhyLz4KfCBbUHJldmlvdXMgbGVzc29uXSgwNS1Qcm9qZWN0aW9uQW5kQ2x1c3RlcmluZy5odG1sKSB8IFtUb3Agb2YgdGhpcyBsZXNzb25dKCN0b3ApIHwgW05leHQgbGVzc29uXSgwNy1DZWxsVHlwZUFubm9zLmh0bWwpIHwKfCA6LS0tIHwgOi0tLS06IHwgLS0tOiB8Cgo=</div>
 
 
 </div>

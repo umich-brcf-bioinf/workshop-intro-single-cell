@@ -66,7 +66,7 @@ Contrast the previous dimensionality reduction/nearest neighbors clustering and 
 
 Nearest neighbors algorithm - based on similarity of expression pattern (just for genes/PCs selected)
 
-Again, how are you defining a “cell type” or “subtype” should help with ambiguity not only with "How do I decide how many PCs to include?" but also "How do I choose a resolution for the nearest neighbor algorithm?" as well as evaluating in the downstream if your initial choices should be revised.
+Again, how are you defining a “cell type” or “subtype” should help with ambiguity not only with "How do I decide how many PCs to include?" but also "How do I choose a resolution for finding clusters?" (as well as evaluating in the downstream if your initial choices should be revised).
 
 
 <!-- per Ho Lab - The previous version of Seurat (v3) applied a graph-based clustering approach, building upon initial strategies in the development of the initial droplet based single cell technology([Macosko et al. 2015](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4481139/)). "Importantly, the distance metric which drives the clustering analysis (based on previously identified PCs) remains the same."
@@ -140,12 +140,12 @@ table(geo_so@meta.data$orig.ident, geo_so@meta.data$integrated.sct.cca.clusters)
 ```
 
 
-
 # Other approaches for visualizing scRNA-sq data
 
 tSNE, PCA
 
-# Unintegrated data
+
+# Comparing to unintegrated data
 
 If we had proceeded with our filtered data and only normalized our data without doing any integration, including through the dimensionality reduction and clustering steps and then labeled the cells with their sample of origin, then we would see the following for our data:
 

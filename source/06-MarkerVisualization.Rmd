@@ -63,6 +63,8 @@ geo_so = PrepSCTFindMarkers(geo_so)
 geo_markers = FindAllMarkers(geo_so, only.pos = TRUE)
 ```
 
+<!--- Consider adding figure showing example of what's being compared (circle cluster 1 and then circle all other cells for example) -->
+
 Then we can write out the full results to file. 
 ```{r, eval=FALSE}
 write_csv(geo_markers, file = 'ISC_R/results/tables/marker_genes_0.4.csv')
@@ -71,19 +73,70 @@ write_csv(geo_markers, file = 'ISC_R/results/tables/marker_genes_0.4.csv')
 In addition to generating the full set of marker genes, it can be useful to filter the results to highlight the top positive markers (since a positive fold-change would mean that gene is more highly expressed in the cluster compared to all other cells):
 ```{r, eval=FALSE}
 # add code to create table of top 5 markers per cluster
-geo_top5
+top_5_by_log2FC = geo_markers %>% group_by(cluster) %>% arrange(p_val_adj, desc(avg_log2FC)) %>% slice_head(n = 5)
 ```
 
 If we look at the marker table, we see several columns:
 ```{r, eval=FALSE}
-head(geo_top5)
+head(top_5_by_log2FC)
 ```
+~~~~
+# add expected output
+~~~~
+
+
+## Marker visualization
+
+Use SCT values, create a dotplot
+```{r, eval=FALSE}
+top_5_sct_dot_plot = DotPlot(geo_so, features = unique(top_5_by_log2FC$gene)) + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    labs(title = 'Top 5 Cluster Genes by FDR and avg_log2FC')
+```
+
+And we can save the figure to file
+```{r, eval=FALSE}
+ggsave(filename = 'ISC_R/results/figures/markers_top_5_sct_dot_plot.png', plot = top_5_sct_dot_plot, width = 12, height = 6, units = 'in') 
+```
+
+
+Can also use raw RNA values <!--- move to dropdown --->
+
+```{r, eval=FALSE}
+top_5_rna_dot_plot = DotPlot(geo_so, features = unique(top_5_by_log2FC$gene), assay = 'RNA') + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    labs(title = 'Top 5 Cluster Genes by FDR and avg_log2FC')
+
+ggsave(filename = 'ISC_R/results/figures/markers_top_5_sct_dot_plot.png', plot = top_5_rna_dot_plot, width = 12, height = 6, units = 'in') 
+```
+
+
+# Utilizing genes of interest
+
+Often we have 
+
+```{r, eval=FALSE}
+# Using genes from the paper - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7002453/
+
+fig1g_markers = c('Cxcl1', 'Cxcl2', 'Ccl2', 'Ccl3', 'Ccl4', 'Il1b', 'Il6b', 'Tnf', 'Tgfb1', 'Tgfb2', 'Tgfb3', 'Cxcl5')
+fig1h_markers = c('Cxcr2', 'Csf1r', 'Csf3r', 'Tgfbr1', 'Tgfbr3', 'Il1r1', 'Il6ra', 'Lifr', 'Tgfbr2')
+```
+
+# Save our progress
+
+Create an output for our updated Seurat object
+```{r, eval=FALSE}
+saveRDS(object = geo_so, file = 'ISC_R/results/rdata/geo_so_sct_integrated_with_markers.rda')
+```
+
 
 # Summary
 
-Now that we have ... However, marker genes alone might not be sufficient to determine cell-type or sub-type labels for our clusters so it can be helpful to other approaches.
+Now that we have ... 
 
-Next steps: Cell type prediction
+However, marker genes alone might not be sufficient to determine cell-type or sub-type labels for our clusters so it can be helpful to apply other approaches, which we will discuss in the next section.
+
+Next steps: Cell type prediction tools
 
 
 
