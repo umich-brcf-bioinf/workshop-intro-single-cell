@@ -106,7 +106,7 @@ be happy to lend a hand to get things working.
    click **Sign In**.
 
   3.3 The login page will immediate go blank - **it may take several seconds for the next page to appear** 
-   (sometimes up to 30 seconds, but usually faster). After this small delay, you 
+   (sometimes up to **60 seconds**, but usually faster). After this delay, you 
    should see a new webpage that looks like something like this:
 
    ![RStudio initial screen](images/setup_instructions_rstudio.png)
