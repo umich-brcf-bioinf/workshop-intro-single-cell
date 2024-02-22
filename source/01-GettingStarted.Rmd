@@ -40,15 +40,9 @@ knitr_fig_path("XX")
 <br/>
 <br/>
 
-# Objectives
-
-- Create RStudio project for analysis.
-- Create directory structure for analysis.
-- Learn how to read 10X data into Seurat.
-- Introduce the Seurat object, and how to access parts of it.
-
 # Introduction
 
+<<<<<<< HEAD
 <!-- How much context to provide here will depend on what Chris includes in his introduction. -->
 
 The field of single-cell expression measurements is still relatively new <add links to early publications & information regarding 10x commercialization> and therefore  best practices for analysis and standards for publication are continuing to evolve. 
@@ -65,10 +59,26 @@ Our specific goals for the hands-on portions of the workshop include:
 - X
 - X
 -->
+=======
+The field of single-cell expression measurements is still relatively new <!-- add links to early publications & information regarding 10x commercialization --> and therefore  best practices for analysis and standards for publication are continuing to evolve. 
+
+One of the goals of this workshop is to not only provide an example of a start to end single-cell workflow but also explore some of the relatively arbitrary decision points and the rationale for the choices we included in our analysis.
 
 ## Sample information
 
-In this workshop, we will be working with a scRNA-seq data set generated from <!--add tissue information>. <Add experimental condition summary - expect Chris to give overview in overall workshop introduction-->. 
+In this workshop, we will be working with single-cell RNA-seq data from mice where the goal is to understand misregulation in wound healing that can lead to bone formation in soft tissue. Of interest are the cell types and genes that are involved in that misregulation. Essentially, "Why might bone form at the injury sight when it shouldn't?"
+>>>>>>> 52332aa0782d9ec729dcbdba7947bb062e6ca31e
+
+To investigate this, cells from day 0 (prior to injury), and days 3, 7, and 21 post-injury were subjected to scRNA-seq in quadruplicate for each day. In the interest of computational constraints in this workshop, we have omitted day 3.
+
+![](./images/curriculum/experimental_design.jpg)
+
+## Objectives
+
+- Create RStudio project for analysis.
+- Create directory structure for analysis.
+- Learn how to read 10X data into Seurat.
+- Introduce the Seurat object, and how to access parts of it.
 
 # Project setup
 
@@ -115,7 +125,7 @@ To create the analysis script, click <kbd>File</kbd>, hover over <kbd>New File</
 
 As we proceed through the workshop, we should save this file (by clicking the Floppy disk, clicking <kbd>File</kbd> then <kbd>Save</kbd>, or by typing <kbd>Control + S</kbd>).
 
-> #### Good scripting practices {.unlisted .unnumbered}
+> **Good scripting practices**
 > 
 > In any analysis script, we recommend using comments (lines preceded by a "#") to provide additional information about code that may not be self-evident. This is to the benefit of others that may look at the code, but also to your future-self.
 <br>
@@ -140,15 +150,17 @@ The libraries that we are loading are:
 
 # Input data
 
-The `inputs/` folder has the data for the workshop stored in two forms. The first, `inputs/10x_analysis/` is closer to what AGC would generate with Cell Ranger, where each sample has a folder, and within that folder there are three files:
+The `inputs/` folder has the data for the workshop stored in two forms. The first, `inputs/10x_filtered/` is closer to what AGC would generate with Cell Ranger, where each sample has a folder, and within that folder there are three files:
 
 - `barcodes.tsv.gz`
 - `features.tsv.gz`
 - `matrix.mtx.gz`
 
+Note, we will be using the filtered matrices.
+
 <!-- Were these files explained earlier? If not, briefly explain them here -->
 
-The second, `inputs/10x_mat_subset/` is the result of the `BPCells` package, and is more machine-readable than human-readable. It is an efficient way of storing the same data contained in the three files above. We will use this form of the input data because it is more memory efficient.
+The second, `inputs/10x_mat_filtered/` is the result of the `BPCells` package, and is more machine-readable than human-readable. It is an efficient way of storing the same data contained in the three files above. We will use this form of the input data because it is more memory efficient.
 
 While the full dataset we selected has time-series information from Day 0, Day 3, Day 7, and Day 21, we have removed Day 3 to reduce the memory requirements further.
 
@@ -169,7 +181,15 @@ This reads in the expression matrix which has genes as rows and cells as columns
 
 ```{r, eval = FALSE}
 geo_so = CreateSeuratObject(counts = geo_mat, min.cells = 1, min.features = 50)
+geo_so
 ```
+
+~~~
+An object of class Seurat 
+26489 features across 35216 samples within 1 assay 
+Active assay: RNA (26489 features, 0 variable features)
+ 1 layer present: counts
+~~~
 
 We have specified some parameters to remove genes and cells which do not contain very much information. Specifically a gene is removed if it is expressed in 1 or fewer cells, and a cell is removed if it contains reads for 50 or fewer genes. In the context of this workshop, this helps us minimize memory usage.
 
@@ -193,7 +213,9 @@ There are other slots which store information that becomes relevant when identif
 
 The `assays` in a Seurat v5 object store data in layers. Layers can store raw, un-normalized counts (`layer = 'counts'`), normalized data (`layer = 'data'`), or z-scored/variance-stabilized data (`layer = 'scale.data'`). We will come back to the idea of these layers when we perform normalization and variance-stabilization later.
 
-## Accessing the Seurat object
+As in bulk RNA-seq, the data of interest is stored as a count matrices, but instead of the counts being at the sample level, they are the **cell** level.
+
+## Accessing parts of the object
 
 The only slot of the `Seurat` object that we'll typically access or modify by hand--that is, without a function from the `Seurat` package--is the `meta.data` object. In R, slots are accessed with the `@` symbol, as in:
 
