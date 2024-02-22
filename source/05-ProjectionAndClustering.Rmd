@@ -83,11 +83,16 @@ geo_so = FindClusters(geo_so, resolution = 1, cluster.name = 'integrated.sct.cca
 ```
 
 ```{r, eval=FALSE}
-head(Indets(geo_so), 5)
+geo_so
 ```
 
 ~~~
-# add expected output
+# An object of class Seurat 
+# 47037 features across 29615 samples within 2 assays 
+# Active assay: SCT (20548 features, 3000 variable features)
+#  3 layers present: counts, data, scale.data
+#  1 other assay present: RNA
+#  3 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca, umap.unintegrated.sct.pca
 ~~~
 
 
@@ -113,8 +118,8 @@ How many clusters should I get and how do I adjust the number?
 We can check the how well the normalization and integration .
 
 ```{r, eval = FALSE}
-post_integration_umap_plot_day = DimPlot(geo_so, group.by = 'day', label = FALSE, reduction = 'umap.sct.integrated.cca') + NoLegend()
-ggsave(filename = 'ISC_R/results/figures/umap_integrated_sct_day.png', plot = post_integration_umap_plot_day)
+post_integration_umap_plot_day = DimPlot(geo_so, group.by = 'day', label = FALSE, reduction = 'umap.integrated.sct.rpca')
+ggsave(filename = 'results/figures/umap_integrated_sct_day.png', plot = post_integration_umap_plot_day)
 ```
 
 ![](./images/curriculum/umap_integrated_sct_day.png)

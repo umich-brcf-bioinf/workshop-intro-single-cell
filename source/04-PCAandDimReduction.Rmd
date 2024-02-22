@@ -66,16 +66,22 @@ In this section, we will demonstrate the steps to perform dimensionality reducti
 
 <!--Instruction Note: Using integrated data here and will compare to unintegrated results in next section, similar to  [here](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-021-03957-4)?-->
 
-In addition to the "high dimensionality" expected for single-cell data, we expect the data to be both "sparse" and "noisy", as many genes will either not be expressed or not measured in many of the cells -  due to biological variability and practical limitations of both capture and sequencing depth [source](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr). 
+In addition to the "high dimensionality" expected for single-cell data, we expect the data to be both "sparse", as many genes will either not be expressed or not measured in many of the cells and have zero values, and "noisy" -  due to biological variability and practical limitations of both capture and sequencing depth [source](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr). 
 
-Single-cell data is sometimes described as "zero inflated", however work by [Svensson](https://www.biorxiv.org/content/10.1101/582064v1.full) has challenged that characterization and argued that the higher number of zeros observed in scRNA-seq compared to bulk RNA-seq is more likely due to biological variance and lower sequencing saturation than a technical artifact. 
+> #### Zero "inflation" of single-cell data{.unlisted .unnumbered}
+>
+> Single-cell data is sometimes described as "zero inflated", however work by [Svensson](https://www.biorxiv.org/content/10.1101/582064v1.full) has challenged that characterization and argued that the higher number of zeros observed in scRNA-seq compared to bulk RNA-seq is more likely due to biological variance and lower sequencing saturation than a technical artifact.
 
 For sparse high dimensional _biological_ data, we expect many genes to have correlated expression as they would be impacted by the same biological process and for many genes with either low (more noisy) or similar expression across the cell population. 
 
 So how do we determine what and how many genes to use before classifying cells in our samples into cell-types/subtypes based on their expression?
 
-> #### More on dimensionality reduction {.unlisted .unnumbered}
-> The [Ouyang Lab has a "gentle introduction" section of their materials that ](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr) that goes into greater details on dimensionality reduction including how similar strategies are used in deep learning models. 
+<details>
+    <summary>*More detail on dimensionality reduction *</summary>
+    The [Ouyang Lab has a "gentle introduction" section of their materials](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr) that goes into greater details on dimensionality reduction including how similar strategies are used in deep learning models. Additionaly, the OSCA book has a [chapter on Dimensionality reduction(https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html)
+</details>
+<br>
+
 
 
 ## What is PCA?
@@ -119,7 +125,7 @@ This reduction in dimensionality, from 10,000 cells x 19,000 genes for example, 
 
 <!--- Add introduction to function, including link to documentation --->
 
-Let's run PCA on the SCT normalized assay. We will name the reduction in an informative way to keep them clear for us in the future. In this case, our data has not yet been integrated, but it has been SCT normalized. So we will name the reduction `unintegrated.sct.pca`. Note that `SCTTransform()` returned a set of highly variable genes, and the `RunPCA()` function will use this subset to determine the PCs and genes associated with those PCs.
+Since PCA is sensitive to scale, we will run it on the SCT normalized assay ([reference](https://ouyanglab.com/singlecell/basic.html#pca-principal-component-analysis)). We will name the reduction in an informative way to keep them clear for us in the future. In this case, our data has not yet been integrated, but it has been SCT normalized. So we will name the reduction `unintegrated.sct.pca`. Note that `SCTTransform()` returned a set of highly variable genes, and the `RunPCA()` function will use this subset to determine the PCs and genes associated with those PCs.
 
 ```{r, eval=FALSE}
 geo_so = RunPCA(geo_so, reduction.name = 'unintegrated.sct.pca')
@@ -145,22 +151,52 @@ We can also visualize both the cell and gene features that define each principle
 
 First, we can print out the top 5 (gene) features per dimension by accessing that part of the Seurat object:
 ```{r, eval=FALSE}
-print(geo_so[["pca"]], dims = 1:5, nfeatures = 5) ## update reduction name
+print(geo_so[['unintegrated.sct.pca']], dims = 1:5, nfeatures = 5)
 ```
+
+~~~
+PC_ 1 
+Positive:  Col1a1, Col3a1, Col1a2, Sparc, Dcn 
+Negative:  Lyz2, Cd74, Apoe, H2-Aa, C1qb 
+PC_ 2 
+Positive:  Col1a1, Col3a1, Col1a2, Dcn, Lyz2 
+Negative:  Fabp4, Aqp1, Pecam1, Egfl7, Flt1 
+PC_ 3 
+Positive:  Apoe, Fabp4, C1qb, Lyz2, C1qa 
+Negative:  Eef1a1, Rps28, Myl6, Slc25a4, Rpl13 
+PC_ 4 
+Positive:  Apoe, Pf4, C1qa, C1qb, Ccl8 
+Negative:  Cd74, H2-Ab1, H2-Aa, H2-Eb1, Acta2 
+PC_ 5 
+Positive:  Acta2, Rgs5, Tagln, Myl9, Apoe 
+Negative:  Cd74, H2-Ab1, H2-Aa, H2-Eb1, Il1b
+~~~
+
 
 We can also highlight genes loaded for each dimension using a visualization:
 ```{r, eval=FALSE}
-VizDimLoadings(geo_so, dims = 1:2, reduction = "pca")
+VizDimLoadings(geo_so, dims = 1:2, reduction = 'unintegrated.sct.pca')
+ggsave(filename = 'results/figures/qc_pca_loadings.png', width = 12, height = 6, units = 'in')
 ```
+
+![](./)
 
 We can look at how cells load on the first two principle components, similarly to how we often look at samples for bulk RNA-seq, with the `DimPlot` function:
 ```{r, eval=FALSE}
-DimPlot(geo_so, reduction="pca")
+DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'day')
+ggsave(filename = 'results/figures/qc_pca_plot_unintegrated_sct_day.png', width = 7, height = 6, units = 'in')
 ```
 
 Lastly, a common visualization used in Seurat tutorials is `DimHeatmap()`, which orders both cells and features according to their PCA scores and allows us to see some general patterns in the data:
 ```{r, eval=FALSE}
 DimHeatmap(geo_so, dims=1:3, cells=500, balanced=TRUE)
+```
+
+Since the heatmap isn't a ggplot, we need to use a more general output function to save it to file
+```{r, eval=FALSE}
+png(filename = 'results/figures/qc_pca_heatmap.png', width = 12, height = 4, units = 'in', res = 300)
+DimHeatmap(geo_so, dims=1:3, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca')
+dev.off()
 ```
 
 > #### How does Seurat use PCA scores? {.unlisted .unnumbered}
@@ -189,7 +225,8 @@ Related - how important is that decision to the downstream impact (e.g. how much
 One way to determine how many PCs to include is by looking at an elbow plot, which shows the percent variance explained by successive PCs.
 
 ```{r, eval=FALSE}
-elbow_plot = ElbowPlot(geo_so, ndims = 50, reduction = 'unintegrated.sct.pca')
+ElbowPlot(geo_so, ndims = 50, reduction = 'unintegrated.sct.pca')
+ggsave(filename = 'results/figures/qc_sct_elbow_plot.png')
 ```
 
 ![](./images/curriculum/04-PCAandDimReduction/qc_sct_elbow_plot.png)
@@ -200,6 +237,7 @@ In this plot, we could arbitrarily choose a number along the x-axis that looks l
 ### Using a (crude) optimization to select a starting point
 
 Function to return minimum PCs based on two possible metrics:
+
 ```{r, eval=FALSE}
 # Function to determine optimal PCs after RunPCA()
 optimal_pcs = function(so, reduction) {
@@ -215,11 +253,12 @@ optimal_pcs = function(so, reduction) {
 ```
 
 If we apply this function to our data, then we expect a number of PCs somewhere within the bend of the elbow plot to be returned:
+
 ```{r, eval=FALSE}
 optimal_pcs(geo_so, 'unintegrated.sct.pca')
 ```
 ~~~~
-23
+15
 ~~~~
 
 Again, this number is likely a starting point and may need to revise depending on the outcome of the downstream steps. 
@@ -230,37 +269,9 @@ While outside the scope of this workshop, there are community efforts to develop
 # Integrate Layers
 
 
-Having normalized the data with `SCTransform()` and performed the dimension reduction with `RunPCA()`, we are now able to run `IntegrateLayers()`:
+Having normalized the data with `SCTransform()` and performed the dimension reduction with `RunPCA()`, we are now ready to integrate our data.
 
-
-```{r, eval = FALSE}
-geo_so = IntegrateLayers(
-    object = geo_so, 
-    method = CCAIntegration, 
-    orig.reduction = 'unintegrated.sct.pca',
-    normalization.method = 'SCT',
-    new.reduction = 'integrated.sct.cca')
-```
-
-Note we have specified the unintegrated reduction `unintegrated.sct.pca`, which is what `IntegrateLayers()` operates on, along with the `SCT` assay. Let's take a look to see what's different about the `Seurat` object:
-
-```{r, eval = FALSE}
-geo_so
-```
-~~~
-An object of class Seurat 
-38503 features across 22320 samples within 2 assays 
-Active assay: SCT (17129 features, 3000 variable features)
- 3 layers present: counts, data, scale.data
- 1 other assay present: RNA
- 2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.cca
-~~~
-
-Observe that we now have a new reduction, `integrated.sct.cca`, which we will use downstream.
-
-## Alternate integration methods
-
-New to Seurat v5 is the improved `IntegrateLayers()` function which makes selecting different integration methods much easier. The results of each alternative integration method are stored within the same `Seurat` object, which makes comparing downstream effects much easier. [This Seurat vignette on integrative analysis in v5](https://satijalab.org/seurat/articles/seurat5_integration#perform-streamlined-one-line-integrative-analysis) provides examples of each integration method. Note, that the code in this vignette assumes the `NormalizeData() > ScaleData() > FindVariableFeatures()` pipeline was used. So, for example, if we wanted to run the slightly faster `RPCAIntegration` method, we would run:
+New to Seurat v5 is the improved `IntegrateLayers()` function which makes selecting different integration methods much easier. The results of each alternative integration method are stored within the same `Seurat` object, which makes comparing downstream effects much easier.  So, if we wanted to run the slightly faster `RPCAIntegration` method, we would run:
 
 ```{r, eval = FALSE}
 geo_so = IntegrateLayers(
@@ -271,16 +282,56 @@ geo_so = IntegrateLayers(
   new.reduction = 'integrated.sct.rpca')
 ```
 
-Note the specification of `normalization.method = 'SCT'` is different than the vignette.
+[This Seurat vignette on integrative analysis in v5](https://satijalab.org/seurat/articles/seurat5_integration#perform-streamlined-one-line-integrative-analysis) provides examples of each integration method. Note, that the code in this vignette assumes the `NormalizeData() > ScaleData() > FindVariableFeatures()` pipeline was used and our `normalization.method = 'SCT'` also differs.
+
+Note we have specified the unintegrated reduction `unintegrated.sct.pca`, which is what `IntegrateLayers()` operates on, along with the `SCT` assay. Let's take a look to see what's different about the `Seurat` object:
+
+```{r, eval = FALSE}
+geo_so
+```
+
+~~~
+# An object of class Seurat 
+# 47037 features across 29615 samples within 2 assays 
+# Active assay: SCT (20548 features, 3000 variable features)
+#  3 layers present: counts, data, scale.data
+#  1 other assay present: RNA
+#  2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca
+~~~
+
+Observe that we now have a new reduction, `integrated.sct.cca`, which we will use downstream.
+
+Before we move on, let's save our updated Seurat object to file:
+
+```{r, eval=FALSE}
+saveRDS(object = geo_so, file = 'results/rdata/geo_so_sct_integrated.rda')
+```
+
+
+## Alternate integration methods
+
+
+
+After normalized the data with `SCTransform()` and performed the dimension reduction with `RunPCA()`, alternatively we could also use the `CCA` integration method with the :
+
+```{r, eval = FALSE}
+geo_so = IntegrateLayers(
+    object = geo_so, 
+    method = CCAIntegration, 
+    orig.reduction = 'unintegrated.sct.pca',
+    normalization.method = 'SCT',
+    new.reduction = 'integrated.sct.cca')
+```
 
 
 # Summary
 
-Now that we have selected a number of principal components that likely correspond to biological variation of interest, we will use that number as a parameter in the next section, along with our integrated results, to generate clusters.
+In this section, we:
+
+- Selected a number of principal components that likely correspond to biological variation of interest in our data
+- Integrated our `SCTransformed` data using the `RPCA` method
 
 Next steps: Clustering and projection
-
-
 
 
 ----
