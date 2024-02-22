@@ -42,24 +42,6 @@ knitr_fig_path("XX")
 
 # Introduction
 
-<<<<<<< HEAD
-<!-- How much context to provide here will depend on what Chris includes in his introduction. -->
-
-The field of single-cell expression measurements is still relatively new <add links to early publications & information regarding 10x commercialization> and therefore  best practices for analysis and standards for publication are continuing to evolve. 
-
-One of the goals of this workshop is to not only provide an example of a start to end single-cell workflow but also explore some of the relatively arbitrary decision points and the rationale for the choices we included in our analysis.
-
-
-Our specific goals for the hands-on portions of the workshop include:
-
-<!-- Expect to edit these goals and/or might make sense for Chris to iterate over earlier?:
-
-- Learn to assess the quality of your data
-- 
-- X
-- X
--->
-=======
 The field of single-cell expression measurements is still relatively new <!-- add links to early publications & information regarding 10x commercialization --> and therefore  best practices for analysis and standards for publication are continuing to evolve. 
 
 One of the goals of this workshop is to not only provide an example of a start to end single-cell workflow but also explore some of the relatively arbitrary decision points and the rationale for the choices we included in our analysis.
@@ -67,7 +49,6 @@ One of the goals of this workshop is to not only provide an example of a start t
 ## Sample information
 
 In this workshop, we will be working with single-cell RNA-seq data from mice where the goal is to understand misregulation in wound healing that can lead to bone formation in soft tissue. Of interest are the cell types and genes that are involved in that misregulation. Essentially, "Why might bone form at the injury sight when it shouldn't?"
->>>>>>> 52332aa0782d9ec729dcbdba7947bb062e6ca31e
 
 To investigate this, cells from day 0 (prior to injury), and days 3, 7, and 21 post-injury were subjected to scRNA-seq in quadruplicate for each day. In the interest of computational constraints in this workshop, we have omitted day 3.
 
