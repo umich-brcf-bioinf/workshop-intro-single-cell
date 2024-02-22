@@ -42,7 +42,7 @@ body, td {
 |       | [Normalization](03-Integration.html)|
 |  1:00 | Day 1 concludes |
 
-#### Day 2 (Raymond & Dana)
+#### Day 2 (Dana)
 | | |
 | :---  | :---- |
 |  9:00 | Housekeeping, Review and Questions (Chris) |
