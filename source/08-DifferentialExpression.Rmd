@@ -59,6 +59,99 @@ General goal: Filtering out the "cells" that either were poorly measured or are 
 
 Wilcoxin (default), DESeq2, MAST, etc.
 
+## Standard comparisons
+
+<!-- add UMAP with facets by groups to show what's being compared? -->
+
+```{r, eval=FALSE}
+### Comparison 1, D21 vs D0 not pseudo-bulk
+
+geo_so$day.celltype = paste(geo_so$day, geo_so$cell_type, sep = '_')
+
+Idents(geo_so) = 'day.celltype'
+```
+
+
+```{r, eval=FALSE}
+de_cell_monocytes_D21_vs_D0 = FindMarkers(
+    object = geo_so,
+    slot = 'data', test = 'wilcox',
+    ident.1 = 'Day21_Monocyte', ident.2 = 'Day0_Monocyte')
+```
+
+```{r, eval=FALSE}
+table(de_cell_monocytes_D21_vs_D0$p_val_adj < 0.05 & abs(de_cell_monocytes_D21_vs_D0$avg_log2FC) > 1.5)
+```
+~~~
+FALSE  TRUE 
+10375    15 
+~~~
+
+Run additional comparison - Day 7 versus Day 0
+```{r, eval=FALSE}
+### Comparison 2, D7 vs D0 not pseudo-bulk
+
+de_cell_monocytes_D7_vs_D0 = FindMarkers(
+    object = geo_so,
+    slot = 'data', test = 'wilcox',
+    ident.1 = 'Day7_Monocyte', ident.2 = 'Day0_Monocyte')
+```
+
+Look at results - note that thresholds here are more stringent than Seurat defaults
+```{r, eval=FALSE}
+table(de_cell_monocytes_D7_vs_D0$p_val_adj < 0.05 & abs(de_cell_monocytes_D7_vs_D0$avg_log2FC) > 1.5)
+```
+
+~~~
+FALSE  TRUE 
+10360   313 
+~~~
+
+## Pseudobulk comparisons
+
+Standard approach versus pseudobulk
+
+<!-- add UMAP with facets by sample to show what's being compared? -->
+
+```{r, eval=FALSE}
+pseudo_catch_so = AggregateExpression(geo_so, assays = 'RNA', return.seurat = TRUE, group.by = c('cell_type', 'day', 'replicate'))
+```
+
+Set up labels to use for comparisons
+```{r, eval=FALSE}
+pseudo_catch_so$day.celltype = paste(pseudo_catch_so$day, pseudo_catch_so$cell_type, sep = '_')
+
+Idents(pseudo_catch_so) = 'day.celltype'
+```
+
+Run comparison between Day 21 and Day 0:
+```{r, eval=FALSE}
+de_pseudo_monocytes_D21_vs_D0 = FindMarkers(
+    object = pseudo_catch_so, 
+    ident.1 = 'Day21_Monocyte', ident.2 = 'Day0_Monocyte', 
+    test.use = 'DESeq2')
+```
+
+Look at results,  using thresholds of adjusted p-value < 0.05 and logFC > 1.5. Note - this fold-change threshold is more stringent so may need to tailor to specific dataset
+```{r, eval=FALSE}
+table(de_pseudo_monocytes_D21_vs_D0$p_val_adj < 0.05 & abs(de_pseudo_monocytes_D21_vs_D0$avg_log2FC) > 1.5)
+```
+~~~
+FALSE  TRUE 
+14209    32
+~~~
+
+Output results
+```{r, eval=FALSE}
+write_csv(de_pseudo_monocytes_D21_vs_D0, file = 'ISC_R/results/tables/de_pseudo_monocytes_D21_vs_D0.csv')
+```
+
+Since we're working with pseudobulk data (so no percentag =e of )
+```{r, eval=FALSE}
+pseudo_monocytes_D21_vs_D0_volcano = ggplot(de_pseudo_monocytes_D21_vs_D0, aes(x = avg_log2FC, y = -log10(p_val))) + geom_point()
+ggsave(filename = 'ISC_R/results/figures/volcano_de_pseudo_monocytes_D21_vs_D0.png', plot = pseudo_monocytes_D21_vs_D0_volcano, width = 7, height = 7, units = 'in')
+```
+
 # Downstream applications
 
 
