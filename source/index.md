@@ -42,13 +42,11 @@ body, td {
 |       | [Normalization](03-Integration.html)|
 |  1:00 | Day 1 concludes |
 
-#### Day 2 (Raymond & Dana)
+#### Day 2 (Dana)
 | | |
 | :---  | :---- |
 |  9:00 | Housekeeping, Review and Questions (Chris) |
-|  9:20 |
-|       | [Normalization (continued)](03-Integration.html) (Raymond) |
-|       | [Principal Component Analysis & Integration](04-PCAandDimReduction.html) (Dana) |
+|  9:20 | [Principal Component Analysis & Integration](04-PCAandDimReduction.html) (Dana) |
 |       | [Projection & Clustering](05-ProjectionAndClustering.html) |
 | 11:00 | Break |
 | 11:15 | [Projection & Clustering (continued)](05-ProjectionAndClustering.html) |
@@ -63,6 +61,5 @@ body, td {
 |       | [Cell type annotation](07-CellTypeAnnos.html) |
 | 11:00 | Break |
 | 11:15 | [Differential expression analysis](08-DifferentialExpression.html) |
-|       | [Independent exercise](09-IndependentExercise.html) |
 | 12:45 | [Wrap-up](workshop_wrap_up.html) (Chris)
 |  1:00 | Workshop concludes |
