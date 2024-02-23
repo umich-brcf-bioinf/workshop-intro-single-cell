@@ -33,15 +33,13 @@ navbar:
           href: 04-PCAandDimReduction.html
         - text: "Projection & Clustering"
           href: 05-ProjectionAndClustering.html
-        - text: "Marker identification and visualization"
-          href: 06-MarkerVisualization.html
     - text: "Day 3"
       menu:
+        - text: "Marker identification and visualization"
+          href: 06-MarkerVisualization.html
         - text: "Cell type annotation"
           href: 07-CellTypeAnnos.html
         - text: "Differential expression analysis"
           href: 08-DifferentialExpression.html
-        - text: "Independent exercise"
-          href: 09-IndependentExercise.html
     - text: "Wrap up"
       href: workshop_wrap_up.html
