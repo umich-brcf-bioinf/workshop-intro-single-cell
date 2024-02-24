@@ -415,7 +415,7 @@ div.tocify {
 
 <style type="text/css">
 
-body, td {
+body {
    font-size: 18px;
 }
 code.r{
@@ -424,24 +424,96 @@ code.r{
 pre {
   font-size: 12px
 }
+
+table.fig, th.fig, td.fig {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 15px;
+}
 </style>
-<div id="objective" class="section level2">
-<h2>Objective</h2>
+<div id="workflow-overview" class="section level1 unlisted unnumbered">
+<h1 class="unlisted unnumbered">Workflow Overview</h1>
+<p><br/>
+<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<br/> <br/></p>
+<div id="objectives" class="section level2">
+<h2>Objectives</h2>
 <ul>
-<li>By the end of the session you will be able to run
-<code>cellranger count</code> with data from the AGC to transform FASTQ
-files into a feature-barcode matrix.</li>
-<li>(borrowed heavily from 10x tutorials, but as if with data from
-AGC)</li>
+<li>Understand what Cell Ranger does and also how to run
+<code>cellranger count</code></li>
+<li>Describe the key inputs to Cell Ranger.</li>
+<li>Describe the purpose and overall structure of key Cell Ranger
+outputs.</li>
+<li>Interpret a <code>cellranger count</code> web_summary.html report to
+determine sample quality and inform decisions about additional
+sequencing.</li>
+<li>Understand when you would need to run Cell Ranger and the relevant
+system requirements. <br/> <br/></li>
 </ul>
 </div>
-<div id="do-what-10x-does" class="section level2">
-<h2>Do what 10x does</h2>
-<div id="what-you-get-from-agc" class="section level3">
-<h3>What you get from AGC</h3>
-<div id="base-data-structure" class="section level4">
-<h4>Base Data Structure</h4>
-<p>The basic data package from the AGC includes:</p>
+<div id="cell-ranger-overview" class="section level2">
+<h2>Cell Ranger Overview</h2>
+<p>The initial data processing steps in scRNA-Seq transform sample FASTQ
+files to gene expression counts. Some of these steps are similar to bulk
+RNA-Seq and some are distinct. 10x Genomics provides a pipeline tool,
+Cell Ranger, to expedite these initial transformations <a
+href="#References">[1]</a>.</p>
+<table class="fig">
+<tr>
+<th class="fig">
+Cell Ranger inputs and outputs
+</th>
+</tr>
+<tr>
+<td class="fig">
+<img src="images/cellranger/cellranger-30k.png" />
+</td>
+</tr>
+<tr>
+<td class="fig">
+Cell Ranger accepts a set of sample FASTQ files and a set of reference
+files. It produces a QC web summary (detailed below), a set of matrix
+files (also detailed below) along with a large collection of supporting
+files. The matrix files can be used for downstream analysis in Seurat
+and other tools.
+</td>
+</tr>
+</table>
+<br/><br/>
+<table class="fig">
+<tr>
+<th class="fig">
+A high level view of Cell Ranger steps
+</th>
+</tr>
+<tr>
+<td class="fig">
+<img src="images/cellranger/cellranger-5k.png" />
+</td>
+</tr>
+<tr>
+<td class="fig">
+A. For each sequence, the barcode and UMI (on read 1) is used to label
+and bin the sequences by their barcodes.<br/> B. The transcript
+sequences are aligned to a genome reference using a modified version of
+the STAR aligner.<br/> C. For each transcript that falls in a gene,
+count the pile-up of sequences aligned to each gene; deduplicate the
+reads based on UMI. Use these deduplicated counts to build a feature
+barcode matrix.<br/> D. Apply a cell-calling algorithm to distinguish
+putative cells from background <a href="#References">[3,4]</a><br/> E.
+Subset the raw matrix to only putative cells to create the filtered
+matrix.<br/> F. Use information from all previous steps to build a web
+summary QC report as well as basic gene expression clustering
+visualizations and other supporting files.<br/>
+</td>
+</tr>
+</table>
+<p><br/> <br/></p>
+</div>
+<div id="key-inputs" class="section level2">
+<h2>Key inputs</h2>
+<p>The basic data package from the UM Advanced Genomics Core
+includes:</p>
 <ul>
 <li>an <strong>*.md5</strong> file to validate your data transfer.</li>
 <li>a <strong>DemuxStats_*.csv</strong> that has some basic metrics
@@ -466,85 +538,39 @@ samples were processed.</li>
 │   └── 0000-SR-4-GEX_S28_R2_001.fastq.gz
 └── README.txt</code></pre>
 <p>All you need to run 10x cellranger count are the above 10x sample
-fastq files and the correct <a
-href="https://www.10xgenomics.com/support/software/cell-ranger/downloads#reference-downloads">reference
-genome file</a>.</p>
-<p>If the AGC does basic 10x analysis you also receive a
-<strong>10x_analysis_*</strong> folder with the following structure and
-files.</p>
-<pre><code>0000-SR
-|...
-└── 10x_analysis_0000-SR
-    ├── Sample_0000-SR-1
-    │   ├── analysis
-    │   ├── cloupe.cloupe
-    │   ├── filtered_feature_bc_matrix
-    │   ├── filtered_feature_bc_matrix.h5
-    │   ├── metrics_summary.csv
-    │   ├── molecule_info.h5
-    │   ├── possorted_genome_bam.bam
-    │   ├── possorted_genome_bam.bam.bai
-    │   ├── raw_feature_bc_matrix
-    │   ├── raw_feature_bc_matrix.h5
-    │   └── web_summary.html
-    ├── Sample_0000-SR-2
-    │   ├── ...
-    ├── Sample_0000-SR-3
-    │   ├── ...
-    └── Sample_0000-SR-4
-        └── ...
-</code></pre>
+FASTQ files and the correctly formatted <a
+href="https://www.10xgenomics.com/support/software/cell-ranger/downloads#reference-downloads"
+target="_blank">reference genome files</a>.</p>
+<table class="fig">
+<tr>
+<td class="fig">
+<strong>As a researcher, what parts of these outputs should I download
+and save?</strong>
+</td>
+</tr>
+<tr>
+<td class="fig">
+<ol style="list-style-type: decimal">
+<li>If we sent it to you, it is probably important for either downstream
+analysis or publication of your sequencing data. So we recomend you
+download <strong>all of it</strong>.</li>
+<li>You can verify all of your files are intact using the *.md5
+file.</li>
+<li>Keep these data safe as you are responsible for the storage of your
+data for publication and archival purposes. (Typically sequencing
+providers will regularly delete project data following delivery.)</li>
+</ol>
+</td>
+</tr>
+</table>
+<p><br/> <br/></p>
 </div>
-</div>
-<div id="how-does-the-agc-generate-the-10x_analysis-folder-and-data"
-class="section level3">
-<h3>How does the AGC generate the 10x_analysis folder and data</h3>
-<p><strong><em>You cannot run the cellranger pipeline easily on a
-personal computer/laptop because of the <a
-href="https://www.10xgenomics.com/support/software/cell-ranger/downloads/cr-system-requirements">software
-requirements</a></em></strong>, briefly:</p>
-<blockquote>
-<p>Cell Ranger pipelines run on Linux systems that meet these minimum
-requirements:</p>
-<ul>
-<li>8-core Intel or AMD processor (16 cores recommended).</li>
-<li>64GB RAM (128GB recommended).<br />
-</li>
-<li>1TB free disk space.<br />
-</li>
-<li>64-bit CentOS/RedHat 7.0 or Ubuntu 14.04 - See the 10x Genomics OS
-Support page for details.</li>
-</ul>
-<p>The pipelines also run on clusters that meet these additional minimum
-requirements:</p>
-<ul>
-<li>Shared filesystem (e.g. NFS)</li>
-<li>Slurm batch scheduling system</li>
-</ul>
-</blockquote>
-<p>The AGC uses the Great Lake Computing cluster which meets the above
-requirements.</p>
-<ul>
-<li><strong>If your lab has signed up for the <a
-href="https://arc.umich.edu/umrcp/">RCP</a>, you can also get access to
-the cluster and the available software.</strong></li>
-<li>Using the cluster requires an <strong>*.sbat</strong> file, or slurm
-batch file. This file allows the slurm scheduler to get the correct
-resources needed to process your data using cellranger and charge the
-correct computing account. <em>If you have questions about this, please
-ask them in office hours.</em></li>
-<li>At the AGC we construct the cellranger command that goes into the
-*.sbat using one node per sample with 16 cores and 128G of RAM, as
-recommeded by the software requirements.</li>
-</ul>
-<div id="constructing-the-cellranger-command-from-the-10x-tutorial"
-class="section level4">
-<h4>Constructing the cellranger command (From the 10x Tutorial)</h4>
-<p>If running interactively on the cluster the first step is to load the
-cell ranger module with <code>module load cellranger</code>.</p>
-<p>Print the usage statement to see what is needed to build the command.
+<div id="how-to-run-cell-ranger" class="section level2">
+<h2>How to run Cell Ranger</h2>
+<p>Cell Ranger is run from a Linux/Unix command shell <a
+href="#References">[2]</a>. You can print the usage statement to see
+what is needed to build the command:
 <code>cellranger count --help</code></p>
-<p>The output is similar to the following:</p>
 <pre><code>cellranger-count
 Count gene expression (targeted or whole-transcriptome) and/or feature barcode reads from a single sample and GEM well
  
@@ -564,31 +590,51 @@ FLAGS:
           --noexit                  Keep web UI running after pipestance completes or fails
           --nopreflight             Skip preflight checks
       -h, --help                    Prints help information
-  ...
-  </code></pre>
-<p>To run <code>cellranger count</code>, you need to specify an
-<strong><code>--id</code></strong>. This can be any string, which is a
-sequence of alpha-numeric characters, underscores, or dashes and no
-spaces, that is less than 64 characters. Cell Ranger creates an output
-directory that is named using this id. This directory is called a
-"pipeline instance" or pipestance for short.</p>
-<p>The <code>--fastqs</code> should be a path to the directory
-containing the FASTQ files. If there is more than one sample in the
-FASTQ directory, use the <strong><code>--sample</code></strong> argument
-to specify which samples to use. This
-<strong><code>--sample</code></strong> argument works off of the sample
-id at the beginning of the FASTQ file name. The last argument needed is
-the path to the <strong><code>--transcriptome</code></strong> reference
-package. Be sure to edit the file paths in the command below.</p>
-<pre><code>cellranger count --id=0000-SR-1 \
+  ...</code></pre>
+<p>To run <code>cellranger count</code>, you need to specify:</p>
+<ul>
+<li><strong><code>--id</code></strong>. This can be any string less than
+64 characters. Cell Ranger creates an output directory named for the id
+string.</li>
+<li><strong><code>--fastqs</code></strong> path to the directory
+containing the FASTQ files.</li>
+<li><strong><code>--sample</code></strong> argument to specify which
+subset of FASTQ files to use (specified sample string should match the
+beginning of the FASTQ file name).</li>
+<li><strong><code>--transcriptome</code></strong> a path to the
+reference transcriptome. Typically you would download a specific
+transcript for your organism from <a
+href="https://www.10xgenomics.com/support/software/cell-ranger/downloads#reference-downloads"
+target="_blank">10x Genomics</a>.</li>
+</ul>
+<p>Recall the directory of outputs from the sequencer (from above):</p>
+<pre><code>0000-SR
+├── 0000-SR.md5
+├── DemuxStats_0000-SR.csv
+├── fastqs_0000-SR
+│   ├── 0000-SR-1-GEX_S25_R1_001.fastq.gz
+│   ├── 0000-SR-1-GEX_S25_R2_001.fastq.gz
+│   ├── 0000-SR-2-GEX_S26_R1_001.fastq.gz
+│   ├── 0000-SR-2-GEX_S26_R2_001.fastq.gz
+│   ├── 0000-SR-3-GEX_S27_R1_001.fastq.gz
+│   ├── 0000-SR-3-GEX_S27_R2_001.fastq.gz
+│   ├── 0000-SR-4-GEX_S28_R1_001.fastq.gz
+│   └── 0000-SR-4-GEX_S28_R2_001.fastq.gz
+└── README.txt</code></pre>
+<p>We can create the <code>cellranger count</code> command:</p>
+<pre><code>cellranger count --id=Sample_0000-SR-1 \
    --fastqs=/nfs/turbo/path/to/0000-SR/0000-SR_fastqs \
    --sample=0000-SR-1\
    --transcriptome=path/to/refereces/cellranger_count/refdata-gex-GRCh38-2020-A`</code></pre>
-<p>A full-sized dataset can take several hours to complete, but we’re
-using a smaller data set that should process quickly.</p>
-<p>The <code>cellranger count</code> screen output is similar to the
-following:</p>
-<pre><code>/mnt/yard/user.name/yard/apps/cellranger-7.2.0/bin
+<p>Data from a typical sample can take several hours to complete, so
+we’ve completed this step for you.</p>
+<!-- This content will not appear in the rendered Markdown 
+ but we're using a smaller data set that should process quickly.
+
+The `cellranger count` screen output is similar to the following:
+
+```
+/mnt/yard/user.name/yard/apps/cellranger-7.2.0/bin
 cellranger count (7.2.0)
 
 cellranger count (7.2.0)
@@ -599,100 +645,161 @@ Martian Runtime - v4.0.6
 ...
 2021-10-15 17:12:42 [perform] Serializing pipestance performance data.
 Waiting 6 seconds for UI to do final refresh.
-Pipestance completed successfully!</code></pre>
-<p>When the output of the <code>cellranger count</code> command says,
-“Pipestance completed successfully!”, this means the job is done. The
-<code>cellranger count</code> pipeline outputs are in the pipestance
-directory in the outs folder. List the contents of this directory with
-<code>ls -1</code>.</p>
-<p><code>ls -1 0000-SR-1/outs</code></p>
+Pipestance completed successfully!
+```
+
+When the output of the `cellranger count` command says, “Pipestance completed successfully!”, this means the job is done.-->
+<p><br/> <br/></p>
+</div>
+<div id="key-outputs" class="section level2">
+<h2>Key outputs</h2>
+<p>The <code>cellranger count</code> pipeline outputs are in the Sample
+directory in the outs folder (aka
+<code>~/ISC_Shell/cellranger_outputs/count_run_HODay0replicate1</code>).</p>
 <p>The output is similar to the following:</p>
-<pre><code>├── analysis 
-├── cloupe.cloupe
-├── filtered_feature_bc_matrix
-├── filtered_feature_bc_matrix.h5
-├── metrics_summary.csv
-├── molecule_info.h5
-├── possorted_genome_bam.bam
-├── possorted_genome_bam.bam.bai
-├── raw_feature_bc_matrix
-├── raw_feature_bc_matrix.h5
-└── web_summary.html</code></pre>
-</div>
-</div>
-</div>
-<div id="qc---key-outputs-of-the-quality-control-report-to-review"
-class="section level2">
-<h2>QC - key outputs of the quality control report to review</h2>
-<p><strong>QC of small smaple/realistic samples</strong></p>
-<p><strong><em><em>While cellranger processes we can take a break or
-discuss what cellranger is doing under the hood if we haven’t covered it
-elsewhere.</em></em></strong></p>
-<p>The important outputs we look at to determine the quility of the 10x
-analaysis include:</p>
+<pre><code>count_run_HODay0replicate1
+├──...
+└──outs
+    ├── analysis 
+    ├── cloupe.cloupe
+    ├── filtered_feature_bc_matrix
+    ├── filtered_feature_bc_matrix.h5
+    ├── metrics_summary.csv
+    ├── molecule_info.h5
+    ├── possorted_genome_bam.bam
+    ├── possorted_genome_bam.bam.bai
+    ├── raw_feature_bc_matrix
+    ├── raw_feature_bc_matrix.h5
+    └── web_summary.html</code></pre>
+<p>10x Genomics provides excellent documentation on all the Cell Ranger
+<a
+href="https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-gex-overview"
+target="_blank">outputs</a>. Some of the most important outputs
+include:</p>
 <ul>
-<li><strong>web_summary.html</strong>
-<ul>
-<li><strong>Barcode knee plot</strong></li>
-<li>Cell count, UMI count, gene count</li>
-<li><strong>Seq saturation</strong></li>
-<li>Cell count, UMI count, gene count</li>
-</ul></li>
-<li><strong>metrics_summary.csv</strong></li>
+<li><strong>web_summary.html</strong> : A comprehensive report that
+includes quality control information and basic analysis.</li>
+<li><strong>metrics_summary.csv</strong> : Same data as the
+web_summary.html but in csv format.</li>
+<li><strong>raw_feature_bc_matrix</strong>: A set of three files that
+represent the feature x barcode count table; includes all detected
+barcodes. (Format details elaborated below.)</li>
+<li><strong>filtered_feature_bc_matrix</strong> : As above, but filtered
+to include only barcodes that passed Cell Ranger’s cell-calling
+algorithm <a href="#References">[3]</a>.</li>
+<li><strong>molecule.h5</strong> : An HDF5 (binary) file all containing
+information for all molecules assigned to a feature/barcode. See
+references <a href="#References">[6]</a> for more info on this
+format.</li>
+<li><strong>cloupe file</strong> : Used with the 10x Loupe Browser
+visualization software.</li>
 </ul>
-<div id="web-summary-html-report." class="section level3">
-<h3>Web Summary html report.</h3>
-<p>The <code>cellranger count</code> web summary has Summary and Gene
-Expression tabs, Similar web summaries are also output from the other
-cellranger pipelines.</p>
-<p>The run summary from <code>cellranger count</code> can be viewed by
-clicking Summary in the top left tab of the HTML file. The summary
-metrics describe sequencing quality and various characteristics of the
-detected cells.</p>
-<style data-emotion="css 92repi">.css-92repi{display:block;max-width:100%;}</style>
-<p><img alt="" class=" css-92repi" src="https://cdn.10xgenomics.com/image/upload/v1646938726/software-support/3p-Single-Cell-GEX/count-web-summary/cr7-count-gexAb-summary1.png"/>
-<br/></p>
+<div id="web-summary-html-report" class="section level3">
+<h3>Web Summary html report</h3>
+<p>It is useful to look at the web_summary.html files to get an idea of
+how each of your samples performed in the 10x pipeline, epecially if
+there were errors/wanrings and/or if your research could benefit from
+additional sequencing. <a
+href="https://cdn.10xgenomics.com/image/upload/v1660261286/support-documents/CG000329_TechnicalNote_InterpretingCellRangerWebSummaryFiles_RevA.pdf"
+target="_blank">10x provides a guide to interpreting this
+report</a>.</p>
+<p>Let’s traverse to the outs directory for sample HODay0replicate1 and
+open the <code>web_summary.html</code>. <strong><a
+href="images/cellranger/HODay0replicate1_web_summary.html">Example
+count_run_HODay0replicate1 web_summary.html</a></strong></p>
+<p>The <code>cellranger count</code> web summary has errors/warnings at
+the top of the report (if any) with additional metrics in the
+<code>Summary</code> and <code>Gene Expression</code> tabs.</p>
+<p>The important parts of the web_summary.html we look at to determine
+the quality of the 10x analaysis include:</p>
+<ul>
+<li><strong>Warnings/Errors</strong></li>
+<li><strong>Barcode Rank Plot</strong></li>
+<li><strong>Sequencing Saturation Plot</strong></li>
+<li>Cell count</li>
+<li>reads/cell</li>
+<li>UMI count</li>
+<li>gene count</li>
+<li>mapping to reference</li>
+</ul>
+<div id="warningserrors-remediations." class="section level4">
+<h4>Warnings/Errors &amp; remediations.</h4>
+<a
+href="https://www.10xgenomics.com/support/software/cell-ranger/latest/resources/cr-troubleshooting#alerts"
+target="_blank">Alerts</a> are generally the result of factors inherent
+in library preparation and sequencing or sample quality issues. Alerts
+do not affect the operation of the pipeline, but highlight potential
+causes for abnormal or missing data:
+</p>
+<ul>
+<li><strong><code>WARNING</code></strong> alerts indicate that some
+parameter is suboptimal.</li>
+<li><strong><code>ERROR</code></strong> alerts indicate a major
+issue.</li>
+</ul>
+<p><img src="images/cellranger/HODay0_alerts.png" /></p>
+<p>Intron mode was used. <a
+href="https://www.10xgenomics.com/support/software/cell-ranger/latest/miscellaneous/cr-intron-mode-rec"
+target="_blank">This helps with cell calling and is on by
+default.</a></p>
+</div>
+<div id="other-alert-examples" class="section level4">
+<h4>Other alert examples</h4>
+<div class="float">
+<img src="images/cellranger/cellranger-warn-alert-3.1.png"
+alt="Report with alerts" />
+<div class="figcaption">Report with alerts</div>
+</div>
+<p><img src="images/cellranger/cellranger-error-alert-3.1.png" /></p>
+</div>
 <div id="summary-tab" class="section level4">
 <h4>Summary tab</h4>
-The estimated number of cells detected, mean reads per cell, and median
-genes detected per cell are prominently displayed near the top of the
-page.
-</p>
-<p>Estimated <a
-href="https://kb.10xgenomics.com/hc/en-us/articles/115005062366-What-is-sequencing-saturation">Sequecing
-Saturation</a> is also displayed in the sequencing table.</p>
-<ul>
-<li>The recommended saturation is &gt;60%</li>
-</ul>
-Click the <code>?</code> icons next to the Sequencing, Mapping, and
-Cells sections to display information about each metric in the
-dashboard.
-</p>
-<div id="the-barcode-rank-plot" class="section level5">
-<h5>The Barcode Rank Plot</h5>
-<p>The <a
-href="/support/software/cell-ranger/latest/advanced/cr-barcode-rank-plot">GEX
-Barcode Rank Plot</a> under the Cells dashboard shows the distribution
-of barcode counts and which barcodes were inferred to be associated with
-cells. The y-axis is the number of UMI counts mapped to each barcode and
-the x-axis is the number of barcodes below that value. A steep drop-off
-is indicative of good separation between the cell-associated barcodes
-and the barcodes associated with empty partitions. Since barcodes can be
-associated with cells based on their UMI count or by their RNA profiles,
-some regions of the graph can contain both cell-associated and
-background-associated barcodes. The color of the graph represents the
-local density of barcodes that are cell-associated.</p>
-<p>See this <a
-href="/support/software/cell-ranger/latest/advanced/cr-barcode-rank-plot">Guided
-Tour of the Barcode Rank Plot</a> for more details.</p>
+<p>The run summary from <code>cellranger count</code> can be viewed by
+clicking <code>Summary</code> in the top left tab of the HTML file. The
+summary metrics describe sequencing quality and various characteristics
+of the detected cells.</p>
+<p><img src="images/cellranger/HODay0_summary.png" /></p>
 </div>
+<div id="more-on-the-barcode-rank-plot" class="section level4">
+<h4>More on the Barcode Rank Plot</h4>
+<div class="float">
+<img src="images/cellranger/BRP-1_with_legend.png"
+alt="The y-axis is the number of UMI counts mapped to each barcode and the x-axis is the number of barcodes below that value." />
+<div class="figcaption">The y-axis is the number of UMI counts mapped to
+each barcode and the x-axis is the number of barcodes below that
+value.</div>
+</div>
+<p>The <a
+href="https://www.10xgenomics.com/support/software/cell-ranger/latest/advanced/cr-barcode-rank-plot"
+target="_blank">GEX Barcode Rank Plot</a> under the Cells dashboard is
+an interactive plot that shows all barcodes detected in an experiment,
+ranked from highest to lowest UMI count and which barcodes were inferred
+to be associated with cells. It is useful for understanding Cell
+Ranger’s cell calling algorithm and its performance on your data, and
+for providing insights into your sample quality.</p>
+<p>Basically, all 10x Barcodes detected during sequencing (~100k) are
+plotted in decreasing order of the number of UMIs associated with that
+particular barcode. The number of UMIs detected in each GEM is then used
+by Cell Ranger to identify barcodes/GEMs that are likely to contain an
+intact cell based on the expected cell number and UMI counts. Then
+distinguish low RNA content cells from empty droplets, since GEMs
+containing cells are expected to have a greater number of transcripts
+(and thus UMIs) associated with them than non-cell containing GEMs.</p>
+<p>Since barcodes can be associated with cells based on their UMI count
+or by their RNA profiles, some regions of the graph can contain both
+cell-associated and background-associated barcodes. The color of the
+graph represents the local density of barcodes that are
+cell-associated.</p>
+<p>A steep drop-off is indicative of good separation between the
+cell-associated barcodes and the barcodes associated with empty
+partitions.</p>
 </div>
 <div id="gene-expression-tab" class="section level4">
 <h4>Gene Expression tab</h4>
 The automated secondary analysis results can be viewed by clicking the
-Gene Expression tab in the top left corner. Click the <code>?</code>
-icons next to each section title to display information about the
-secondary analyses shown in the dashboard.
+<code>Gene Expression</code> tab in the top left corner. Click the
+<code>?</code> icons next to each section title to display information
+about the secondary analyses shown in the dashboard.
 </p>
 The t-SNE Projection section shows the data reduced to two dimensions,
 colored by UMI count (left) or clustering (right). It is a good starting
@@ -711,486 +818,234 @@ default). To find the genes associated with a particular cluster, click
 the L2FC or p-value column headers associated with a given cluster
 number to sort the table by a specific cluster
 </p>
-<p><img alt="" class=" css-92repi" src="https://cdn.10xgenomics.com/image/upload/v1646938726/software-support/3p-Single-Cell-GEX/count-web-summary/cr7-count-gexAb-GEX1.png"/>
-<br/></p>
+<p><img src="images/cellranger/HODay0_tSNE.png" /></p>
 <div id="the-sequencing-saturation-plot" class="section level5">
 <h5>The Sequencing Saturation plot</h5>
-The Sequencing Saturation plot shows the effect of decreased sequencing
-depth on sequencing saturation, which is a measure of the fraction of
-library complexity that was observed. The right-most point on the line
-is the full sequencing depth obtained in this run.
+The <a
+href="https://kb.10xgenomics.com/hc/en-us/articles/115005062366-What-is-sequencing-saturation"
+target="_blank">Sequecing Saturation</a> plot shows the effect of
+decreased sequencing depth on sequencing saturation, which is a measure
+of the fraction of library complexity that was observed. The right-most
+point on the line is the full sequencing depth obtained in this run.
 </p>
 Similarly, the Median Genes per Cell plot shows the effect of decreased
 sequencing depth on median genes per cell, which is a way of measuring
 data yield as a function of depth. The right-most point on the line is
 the full sequencing depth obtained in this run.
 </p>
-<p><img alt="" class=" css-92repi" src="https://cdn.10xgenomics.com/image/upload/v1646938726/software-support/3p-Single-Cell-GEX/count-web-summary/cr7-count-gexAb-GEX2.png"/>
-<br/></p>
+<p><img src="images/cellranger/HODay0_seqsat.png" /></p>
+<p><strong>The recommended sequencing saturation is &gt;60%</strong>. If
+you are below this threshold, you would probably benefit from additional
+sequencing for increased depth.</p>
+<p>To think of this another way, if you hit 60% saturation, for every
+additional 100 reads/cell you could expect to see 40 more genes. At 40%
+saturation you could expect to see 60 additional genes for every
+additional 100 reads/cell. At 20% saturation you could expect to see 80
+additional genes for every additional 100 reads/cell and so on.
+Therefore if your sequencing saturation is high enough, you are unlikely
+to gain additional biologically relevant data with additional
+sequencing. If your sequecing saturation is low, additional sequencing
+will improve your downstream analysis and reveal more about the
+underlying biology.</p>
+<p>Assuming the Advanced Genomics Core has your samples it is relatively
+easy to request additional sequencing through the core.</p>
+<p><br/> <br/></p>
 </div>
 </div>
 </div>
-<div id="common-errorswarnings-remediations" class="section level3">
-<h3>Common errors/warnings &amp; remediations</h3>
-<ul>
-<li>Saturation &amp; resequencing</li>
-<li>Library prep quality issues</li>
-</ul>
-</div>
-</div>
-<div id="outputs-used-for-downstream-analysis" class="section level2">
-<h2>Outputs used for downstream analysis</h2>
-<p><a
-href="https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-gex-overview">10x
-output documentation</a></p>
-<div id="the-metrics_summary.csv" class="section level3">
-<h3>The metrics_summary.csv</h3>
-<p>Includes much of the same data as the web_summary.html but in csv
-format.</p>
-<table class="css-1pyqnef">
-<style data-emotion="css eckm6m">.css-eckm6m >tr>*{background-color:#F7F9FC;height:32px;padding:0 16px;}.css-eckm6m >tr>:first-of-type{border-top-left-radius:0.375rem;}.css-eckm6m >tr>:last-of-type{border-top-right-radius:0.375rem;}</style>
-<thead class="css-eckm6m">
+<div id="feature-barcode-matrices" class="section level3">
+<h3>Feature Barcode Matrices</h3>
+<pre><code>cd ~/ISC_Shell/cellranger_outputs/count_run_HODay0replicate1/outs
+tree raw_feature_bc_matrix
+raw_feature_bc_matrix
+    ├── barcodes.tsv.gz
+    ├── features.tsv.gz
+    └── matrix.mtx.gz
+0 directories, 3 files</code></pre>
+<table class="fig">
 <tr>
-<style data-emotion="css vmhyu4">.css-vmhyu4{padding:1rem;text-align:left;vertical-align:bottom;}</style>
-<style data-emotion="css yz5ans">.css-yz5ans{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;box-sizing:border-box;color:#0A2347;font-family:Calibre,sans-serif;font-style:normal;font-weight:500;margin:0;padding:0;font-size:1.125rem;letter-spacing:0.15px;line-height:1.333;padding:1rem;text-align:left;vertical-align:bottom;}</style>
-<th class="css-yz5ans" style="padding:1rem">
-Column Name
-</th>
-<th class="css-yz5ans" style="padding:1rem">
-Description
-</th>
-</tr>
-</thead>
-<style data-emotion="css 8b62zi">.css-8b62zi >tr>*{background-color:#ffffff;height:32px;padding:0 16px;}.css-8b62zi >:last-of-type>:first-of-type{border-bottom-left-radius:0.375rem;}.css-8b62zi >:last-of-type>:last-of-type{border-bottom-right-radius:0.375rem;}</style>
-<tbody class="css-8b62zi">
-<tr>
-<style data-emotion="css s9mn2y">.css-s9mn2y{text-align:left;vertical-align:top;}</style>
-<style data-emotion="css 4fk7u9">.css-4fk7u9{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;box-sizing:border-box;color:#445979;font-family:Calibre,sans-serif;font-style:normal;font-weight:400;margin:0;padding:0;font-size:1.125rem;letter-spacing:0.15px;line-height:1.333;text-align:left;vertical-align:top;}</style>
-<td class="css-4fk7u9" style="padding:1rem">
-<code>Estimated Number of Cells</code>
-</td>
-<td class="css-4fk7u9" style="padding:1rem">
-The number of barcodes associated with cell-containing partitions,
-estimated from the barcode UMI count distribution.
+<td class="fig">
+<ol style="list-style-type: upper-alpha">
+<li><br/> <img src="images/cellranger/feature_bc_matrix.png" /></li>
+<li><br/> <img src="images/cellranger/matricesBRP.png" /></li>
+</ol>
 </td>
 </tr>
 <tr>
-<td class="css-4fk7u9" style="padding:1rem">
-<code>Mean Reads per Cell</code>
-</td>
-<td class="css-4fk7u9" style="padding:1rem">
-The total number of reads divided by the estimated number of cells.
-</td>
-</tr>
-<tr>
-<td class="css-4fk7u9" style="padding:1rem">
-<code>Median Genes per Cell</code>
-</td>
-<td class="css-4fk7u9" style="padding:1rem">
-Median number of read pairs sequenced from the cells assigned to this
-sample. In case of multiplexing, only cell-associated barcodes assigned
-exactly one CMO can be assigned to a sample.
+<td class="fig">
+<ol style="list-style-type: upper-alpha">
+<li>Each element of the feature-barcode matrix is the count of UMIs
+associated with a feature (row) and a barcode (column). Because the
+matrix is very sparse, storing the matrix as three individual,
+compressed files saves siginificant space. <a
+href="#References">[6]</a><br/></li>
+<li>In relation to the Barcode Rank Plot, raw matrices include cells and
+background and the filtered matrix files only contain data for cells.
+Downstream analysis typically uses the <strong>filtered</strong> matrix
+files.</li>
+</ol>
 </td>
 </tr>
-<tr>
-<td class="css-4fk7u9" style="padding:1rem">
-<code>Number of Reads</code>
-</td>
-<td class="css-4fk7u9" style="padding:1rem">
-Total number of sequenced reads.
-</td>
-</tr>
-<tr>
-<td class="css-4fk7u9" style="padding:1rem">
-<code>Valid Barcodes</code>
-</td>
-<td class="css-4fk7u9" style="padding:1rem">
-Fraction of reads with cell-barcodes that match the whitelist.
-</td>
-</tr>
-<tr>
-<td class="css-4fk7u9" style="padding:1rem">
-<code>Sequencing Saturation</code>
-</td>
-<td class="css-4fk7u9" style="padding:1rem">
-Fraction of reads originating from an already-observed UMI. This is a
-function of library complexity and sequencing depth. More specifically,
-this is a ratio where: the denominator is the number of
-confidently-mapped reads with a valid cell-barcode and valid UMI, and
-the numerator is the subset of those reads that had a non-unique
-combination of (cell-barcode, UMI, gene). This metric was called "cDNA
-PCR Duplication" in versions of Cell Ranger prior to 1.2.
-</td>
-</tr>
-<tr>
-<td class="css-4fk7u9" style="padding:1rem">
-<code>Q30 Bases in Barcode</code>
-</td>
-<td class="css-4fk7u9" style="padding:1rem">
-Fraction of bases with Q-score at least 30 in the cell barcode
-sequences. This is the i7 index (I1) read for the Single Cell 3' v1
-chemistry and the R1 read for the Single Cell 3' v2 chemistry.
-</td>
-</tr>
-<tr>
-<td class="css-4fk7u9" style="padding:1rem">
-<code>Q30 Bases in RNA</code>
-</td>
-<td class="css-4fk7u9" style="padding:1rem">
-Fraction of bases with Q-score at least 30 in the RNA read sequences.
-This is Illumina R1 for the Single Cell 3' v1 chemistry and Illumina R2
-for the Single Cell 3' v2 chemistry.
-</td>
-</tr>
-<tr>
-<td class="css-4fk7u9" style="padding:1rem">
-<code>Q30 Bases in UMI</code>
-</td>
-<td class="css-4fk7u9" style="padding:1rem">
-Fraction of bases with Q-score at least 30 in the UMI sequences. This is
-the R2 read for the Single Cell 3' v1 chemistry and the R1 read for the
-Single Cell 3' v2 chemistry.
-</td>
-</tr>
-<tr>
-<td class="css-4fk7u9" style="padding:1rem">
-<code>Reads Mapped to Genome</code>
-</td>
-<td class="css-4fk7u9" style="padding:1rem">
-Fraction of reads that mapped to the genome.
-</td>
-</tr>
-<tr>
-<td class="css-4fk7u9" style="padding:1rem">
-<code>Reads Mapped Confidently to Genome</code>
-</td>
-<td class="css-4fk7u9" style="padding:1rem">
-Fraction of reads that mapped uniquely to the genome. If a read mapped
-to exonic loci from a single gene and also to non-exonic loci, it is
-considered uniquely mapped to one of the exonic loci.
-</td>
-</tr>
-<tr>
-<td class="css-4fk7u9" style="padding:1rem">
-<code>Reads Mapped Confidently to Intergenic Regions</code>
-</td>
-<td class="css-4fk7u9" style="padding:1rem">
-Fraction of reads that mapped to the intergenic regions of the genome
-with a high mapping quality score as reported by the aligner.
-</td>
-</tr>
-<tr>
-<td class="css-4fk7u9" style="padding:1rem">
-<code>Reads Mapped Confidently to Intronic Regions</code>
-</td>
-<td class="css-4fk7u9" style="padding:1rem">
-Fraction of reads that mapped to the intronic regions of the genome with
-a high mapping quality score as reported by the aligner.
-</td>
-</tr>
-<tr>
-<td class="css-4fk7u9" style="padding:1rem">
-<code>Reads Mapped Confidently to Exonic Regions</code>
-</td>
-<td class="css-4fk7u9" style="padding:1rem">
-Fraction of reads that mapped to the exonic regions of the genome with a
-high mapping quality score as reported by the aligner.
-</td>
-</tr>
-<tr>
-<td class="css-4fk7u9" style="padding:1rem">
-<code>Reads Mapped Confidently to Transcriptome</code>
-</td>
-<td class="css-4fk7u9" style="padding:1rem">
-Fraction of reads that mapped to a unique gene in the transcriptome with
-a high mapping quality score as reported by the aligner. The read must
-be consistent with annotated splice junctions when
-include-introns=false. These reads are considered for UMI counting.
-</td>
-</tr>
-<tr>
-<td class="css-4fk7u9" style="padding:1rem">
-<code>Reads Confidently Mapped Antisense</code>
-</td>
-<td class="css-4fk7u9" style="padding:1rem">
-Fraction of reads confidently mapped to the transcriptome, but on the
-opposite strand of their annotated gene. A read is counted as antisense
-if it has any alignments that are consistent with an exon of a
-transcript but antisense to it, and has no sense alignments.
-</td>
-</tr>
-<tr>
-<td class="css-4fk7u9" style="padding:1rem">
-<code>Total Genes Detected Median UMI Counts per Cell</code>
-</td>
-<td class="css-4fk7u9" style="padding:1rem">
-The number of genes with at least one UMI count in any cell.
-</td>
-</tr>
-</tbody>
 </table>
-</div>
-<div id="raw_feature_bc_matrix-filtered_feature_bc_matrix"
-class="section level3">
-<h3>Raw_feature_bc_matrix / filtered_feature_bc_matrix</h3>
-<p>The <code>cellranger</code> pipeline outputs unfiltered (raw) and
-filtered feature-barcode matrices in two file formats: the Market
-Exchange Format (MEX), which is described on this page, and Hierarchical
-Data Format (HDF5), which is described in detail here.</p>
-Each element of the feature-barcode matrix is the number of UMIs
-associated with a feature (row) and a barcode (column):
-</p>
-<style data-emotion="css ayshjd">.css-ayshjd{overflow-x:auto;}</style>
-<div class="css-ayshjd">
-<style data-emotion="css 1pyqnef">.css-1pyqnef{background-color:#DCE0E6;border-spacing:1px;border-radius:0.375rem;margin-bottom:1.5rem;table-layout:auto;width:100%;}</style>
-<table class="css-1pyqnef">
-<style data-emotion="css eckm6m">.css-eckm6m >tr>*{background-color:#F7F9FC;height:32px;padding:0 16px;}.css-eckm6m >tr>:first-of-type{border-top-left-radius:0.375rem;}.css-eckm6m >tr>:last-of-type{border-top-right-radius:0.375rem;}</style>
-<thead class="css-eckm6m">
-<tr>
-<style data-emotion="css vmhyu4">.css-vmhyu4{padding:1rem;text-align:left;vertical-align:bottom;}</style>
-<style data-emotion="css yz5ans">.css-yz5ans{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;box-sizing:border-box;color:#0A2347;font-family:Calibre,sans-serif;font-style:normal;font-weight:500;margin:0;padding:0;font-size:1.125rem;letter-spacing:0.15px;line-height:1.333;padding:1rem;text-align:left;vertical-align:bottom;}</style>
-<th class="css-yz5ans" style="padding:1rem">
-Type
-</th>
-<th class="css-yz5ans" style="padding:1rem">
-Description
-</th>
-</tr>
-</thead>
-<style data-emotion="css 8b62zi">.css-8b62zi >tr>*{background-color:#ffffff;height:32px;padding:0 16px;}.css-8b62zi >:last-of-type>:first-of-type{border-bottom-left-radius:0.375rem;}.css-8b62zi >:last-of-type>:last-of-type{border-bottom-right-radius:0.375rem;}</style>
-<tbody class="css-8b62zi">
-<tr>
-<style data-emotion="css s9mn2y">.css-s9mn2y{text-align:left;vertical-align:top;}</style>
-<style data-emotion="css 4fk7u9">.css-4fk7u9{-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;box-sizing:border-box;color:#445979;font-family:Calibre,sans-serif;font-style:normal;font-weight:400;margin:0;padding:0;font-size:1.125rem;letter-spacing:0.15px;line-height:1.333;text-align:left;vertical-align:top;}</style>
-<td class="css-4fk7u9" style="padding:1rem">
-Unfiltered feature-barcode matrix
-</td>
-<td class="css-4fk7u9" style="padding:1rem">
-Contains every barcode from the fixed list of known-good barcode
-sequences that has at least one read. This includes background and
-cell-associated barcodes. <br/>count:
-<code>outs/raw_feature_bc_matrix/</code><br/> multi:
-<code>outs/multi/count/raw_feature_bc_matrix/</code>
-</td>
-</tr>
-<tr>
-<td class="css-4fk7u9" style="padding:1rem">
-Filtered feature-barcode matrix
-</td>
-<td class="css-4fk7u9" style="padding:1rem">
-Contains only detected cell-associated barcodes. <br/>count:
-<code>outs/filtered_feature_bc_matrix/</code><br/> multi:
-<code>outs/per_sample_outs/count/sample_filtered_feature_bc_matrix/</code>
-</td>
-</tr>
-</tbody>
-</table>
-</div>
-For sparse matrices, the matrix is stored in the <a
-href="https://math.nist.gov/MatrixMarket/formats.html">Market Exchange
-Format (MEX)</a>. It contains gzipped TSV files with feature and barcode
-sequences corresponding to row and column indices respectively. For
-example, the matrices output may look like:
-</p>
-<code>cd /home/jdoe/runs/sample345/outs tree filtered_feature_bc_matrix filtered_feature_bc_matrix     ├── barcodes.tsv.gz     ├── features.tsv.gz     └── matrix.mtx.gz 0 directories, 3 files</code>
-Features correspond to row indices. For each feature, the feature ID and
-name are stored in the first and second column of the (unzipped)
-<code>features.tsv.gz</code> file, respectively. The third column
-identifies the type of feature, which will be one of
-<code>Gene Expression</code>, <code>Antibody Capture</code>,
-<code>CRISPR Guide Capture</code>, <code>Multiplexing Capture</code>, or
-<code>CUSTOM</code>, depending on the feature type. Below is a minimal
-example <code>features.tsv.gz</code> file showing data collected for
-three genes.
-</p>
-<pre><code>ENSG00000141510       TP53         Gene Expression
+<!--
+<details>
+<summary> Click to see more details about these files.</summary>
+
+##### features.tsv.gz
+
+Features correspond to row indices. For each feature, the feature ID and name are stored in the first and second column of the (unzipped) `features.tsv.gz` file, respectively. The third column identifies the type of feature, which will be one of `Gene Expression`, `Antibody Capture`, `CRISPR Guide Capture`, `Multiplexing Capture`, or `CUSTOM`, depending on the feature type. Below is a minimal example `features.tsv.gz` file showing data collected for three genes.</p>
+
+
+```
+ENSG00000141510       TP53         Gene Expression
 ENSG00000012048       BRCA1        Gene Expression
-ENSG00000139687       RB1          Gene Expression</code></pre>
-Gene Expression</code> data, the ID corresponds to
-<code class="css-q0dnij">gene_id</code> in the annotation field of the
-reference GTF. Similarly, the name corresponds to
-<code class="css-q0dnij">gene_name</code> in the annotation field of the
-reference GTF. If no <code class="css-q0dnij">gene_name</code> field is
-present in the reference GTF, gene name is equivalent to gene ID.
-Similarly, for <code class="css-q0dnij">Antibody Capture</code> and
-<code class="css-q0dnij">CRISPR Guide Capture</code> data, the
-<code class="css-q0dnij">id</code> and
-<code class="css-q0dnij">name</code> are taken from the first two
-columns of the
-<a href="/support/software/cell-ranger/latest/analysis/running-pipelines/cr-feature-bc-analysis#feature-ref" class="css-k0f5v edy1dh10">Feature
-Reference CSV file</a>.
-</p>
-For multi-species experiments, gene IDs and names are prefixed with the
-genome name to avoid name collisions between genes of different species
-e.g., GAPDH becomes <code class="css-q0dnij">hg19_GAPDH</code> and
-Gm15816 becomes <code class="css-q0dnij">mm10_Gm15816</code>.
-</p>
-Barcode sequences correspond to column indices:
-</p>
-<pre><code>head filtered_feature_bc_matrices/barcodes.tsv.gz
+ENSG00000139687       RB1          Gene Expression
+```
+
+Gene Expression</code> data, the ID corresponds to <code class="css-q0dnij">gene\_id</code> in the annotation field of the reference GTF. Similarly, the name corresponds to <code class="css-q0dnij">gene\_name</code> in the annotation field of the reference GTF. If no <code class="css-q0dnij">gene_name</code> field is present in the reference GTF, gene name is equivalent to gene ID. 
+
+##### barcodes.tsv.gz
+
+Barcode sequences correspond to column indices:</p>
+
+```
+head filtered_feature_bc_matrices/barcodes.tsv.gz
 
 AAACCCAAGGAGAGTA-1      
-AAACGCTTCAGCCCAG-1
+AAACGCTTCAdvanced Genomics CoreCCAG-1
 AAAGAACAGACGACTG-1
 AAAGAACCAATGGCAG-1    
 AAAGAACGTCTGCAAT-1    
 AAAGGATAGTAGACAT-1    
 AAAGGATCACCGGCTA-1    
-AAAGGATTCAGCTTGA-1    
+AAAGGATTCAdvanced Genomics CoreTTGA-1    
 AAAGGATTCCGTTTCG-1    
-AAAGGGCTCATGCCCT-1</code></pre>
-Each barcode sequence includes a suffix with a dash separator followed
-by a number:
-</p>
-<p class="css-d17snu">
-More details on the barcode sequence format are available in the
-<a href="/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-bam" class="css-k0f5v edy1dh10">barcoded
-BAM section</a>.
-</p>
-<p class="css-d17snu">
-R and Python support the MEX format and sparse matrices can be used for
-more efficient manipulation.
-</p>
-<p class="css-d17snu">
-For suggestions on downstream analysis with 3rd party R and Python
-tools, see the 10x Genomics
-<a href="/analysis-guides/continuing-your-journey-after-running-cell-ranger" class="css-k0f5v edy1dh10">Analysis
-Guides</a> resource.
-</p>
-<p class="css-d17snu">
-The R package Matrix supports loading MEX format data, and can be easily
-used to load the sparse feature-barcode matrix.
-</p>
-<p>###Converting matrix files to CSV format</p>
-Cell Ranger represents the feature-barcode matrix using sparse formats
-(only the nonzero entries are stored) in order to minimize file size.
-All of our programs, and many other programs for gene expression
-analysis, support sparse formats.
-</p>
-However, certain programs (e.g. Excel) only support dense formats (where
-every row-column entry is explicitly stored, even if it's a zero). Here
-are a few methods for converting feature-barcode matrices to CSV:
-</p>
-###Load matrices into Python
-<p class="css-d17snu">
-The <code class="css-q0dnij">csv</code>,
-<code class="css-q0dnij">os</code>,
-<code class="css-q0dnij">gzip</code>, and
-<code class="css-q0dnij">scipy.io</code> modules can be used to load a
-feature-barcode matrix into Python.
-</p>
-###mat2csv
-<p class="css-d17snu">
-You can convert a feature-barcode matrix to dense CSV format using the
-<code class="css-q0dnij">cellranger mat2csv</code> command.
-</p>
-<p><strong>Important</strong></p>
-<p><strong>WARNING</strong>: Dense files can be very large and may cause
-Excel to crash, or even fail in mat2csv if your computer doesn't have
-enough memory. For example, a feature-barcode matrix from a human
-reference (~33k genes) with ~3k barcodes uses at least 200MB of disk
-space. Our 1.3 million mouse neuron dataset, if converted to this
-format, would use more than 60GB of disk space. Thus, while you can use
-mat2csv for small datasets, we strongly recommend using R or Python (as
-shown in the sections above) to examine these matrix files.</p>
-This command takes two arguments - an input matrix generated by Cell
-Ranger (either an HDF5 file or a MEX directory), and an output path for
-the dense CSV. For example, to convert a matrix from a pipestance named
-<code class="css-q0dnij">sample123</code> in the current directory,
-either of the following commands would work:
-</p>
-<pre><code># Convert from MEX
-cellranger mat2csv sample123/outs/filtered_feature_bc_matrix sample123.csv
+AAAGGGCTCATGCCCT-1
+```
 
-# Or, convert from HDF5
-cellranger mat2csv sample123/outs/filtered_feature_bc_matrix.h5 sample123.csv</code></pre>
+Each barcode sequence includes a suffix with a dash separator followed by a number:</p>
+
+The matrix file (UMI counts) uses the [Market Exchange Format (MEX)](https://math.nist.gov/MatrixMarket/formats.html){target="_blank"}. It contains gzipped TSV files with feature and barcode sequences corresponding to row and column indices respectively.
+
+<p class="css-d17snu">More details on the barcode sequence format are available in the <a href="/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-bam" class="css-k0f5v edy1dh10" target="_blank" >barcoded BAM section</a>.</p>
+</details>
+-->
+<p><br/> <br/></p>
+</div>
+</div>
+<div id="re-running-cell-ranger" class="section level2">
+<h2>Re-running Cell Ranger</h2>
+<p>It’s most common for the sequence provider to run Cell Ranger on your
+behalf. Cell Ranger’s preliminary QC outputs give the provider key
+information about whether the prep and sequencing run worked as
+expected. With that in mind it’s entirely possible you may never have to
+run Cell Ranger yourself.</p>
+<p>There are a few scenarios when you might consider re-running Cell
+Ranger:</p>
+<ol style="list-style-type: decimal">
+<li>You need to combine new samples with previously processed samples
+and you want all samples to be run through the same version of cell
+ranger</li>
+<li>You need to adjust the run parameters (e.g. you want to
+exclude/include introns in the alignment).</li>
+<li>You need to align against a custom reference ( e.g. one that
+includes a transgene)</li>
+</ol>
+<p>Also, keep in mind that if you or your collaborators have to re-run
+Cell Ranger for any reason you will need the original FASTQ files.
+(<strong>Again, you are repsonsible for your data.</strong> Your
+sequencing provider may not retain a copy and even if they do there may
+be charge and/or delay for reprocessing).</p>
+<div id="system-requirements-for-running-cell-ranger"
+class="section level3">
+<h3>System Requirements for running Cell Ranger</h3>
+<p><img src="images/cellranger/onedoesntlaptop.jpg" /></p>
+<p>Running Cell Ranger can be challenging because the <a
+href="https://www.10xgenomics.com/support/software/cell-ranger/downloads/cr-system-requirements"
+target="_blank">system requirements</a> exceed the specifications for a
+typical personal computer/laptop. In particiular, Cell Ranger pipelines
+run on Linux systems that meet these minimum requirements:</p>
 <ul>
-<li>H5 vs files</li>
+<li>64-bit CentOS/RedHat 7.0 or Ubuntu 14.04</li>
+<li>8-core Intel or AMD processor (16 cores recommended).</li>
+<li>64GB RAM (128GB recommended).<br />
+</li>
+<li>1TB free disk space.</li>
 </ul>
-<p><a href="https://portal.hdfgroup.org/documentation/index.html">intro
-to HD5 format</a></p>
-<p><a
-href="https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-molecule-info">10x
-HDF docs</a></p>
-<p>The cellranger pipeline outputs an HDF5 file containing per-molecule
-information for all molecules that contain a valid barcode, a valid UMI,
-and were assigned with high confidence to a gene or Feature Barcode.
-This HDF5 file contains data corresponding to the observed molecules, as
-well as data about the libraries and feature set(s) used (general
-information about the HDF5 file format available here). This file is
-called molecule_info.h5 in cellranger count and sample_molecule_info.h5
-in cellranger multi outputs.</p>
-<pre><code>(root)
-    ├─ barcode_idx
-    ├─ barcode_info [HDF5 group]
-    │   ├─ genomes
-    │   └─ pass_filter
-    ├─ barcodes
-    ├─ count
-    ├─ feature_idx
-    ├─ features [HDF5 group]
-    │   ├─ _all_tag_keys
-    │   ├─ target_sets [for Targeted Gene Expression or Fixed RNA Profiling]
-    │   │    └─ [target set name]
-    │   ├─ feature_type
-    │   ├─ genome
-    │   ├─ id
-    │   ├─ name
-    │   ├─ pattern [Feature Barcode only]
-    │   ├─ read [Feature Barcode only]
-    │   └─ sequence [Feature Barcode only]
-    ├─ gem_group
-    ├─ library_idx
-    ├─ library_info
-    ├─ metrics_json [HDF5 dataset; see below]
-    ├── probe_idx          ---------------------|
-    ├── probes [HDF5 group]                     |
-    │   ├── feature_id                          | [For Fixed RNA Profiling, Cell Ranger v7.1+]
-    │   ├── feature_name                        |
-    │   ├── probe_id                            |
-    │   └── region         ---------------------|
-    ├─ umi
-    └─ umi_type</code></pre>
-<p>You can examine the contents of the H5 file using software such as
-HDFView or the h5dump command, as demonstrated below to show the file
-contents of the entire H5 object:</p>
-<p>```h5dump -n molecule_info.h5</p>
-<pre><code>HDF5 &quot;molecule_info.h5&quot; {
-FILE_CONTENTS {
-group      /
-dataset    /barcode_idx
-group      /barcode_info
-dataset    /barcode_info/genomes
-dataset    /barcode_info/pass_filter
-dataset    /barcodes
-dataset    /count
-dataset    /feature_idx
-group      /features
-dataset    /features/_all_tag_keys
-dataset    /features/feature_type
-dataset    /features/genome
-dataset    /features/id
-dataset    /features/name
-dataset    /gem_group
-dataset    /library_idx
-dataset    /library_info
-dataset    /metrics_json
-dataset    /umi
-dataset    /umi_type
-}
-}</code></pre>
-<p>```</p>
-<p>More details can be found at the following links:</p>
-<p><a href="https://portal.hdfgroup.org/documentation/index.html">intro
-to HD5 format</a></p>
-<p><a
-href="https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-molecule-info">10x
-HDF docs</a></p>
+<p>Note that UM Advanced Genomics Core and Bioinformatics Core use the
+<a href="https://arc.umich.edu/greatlakes/" target="_blank">Great Lakes
+Computing cluster</a> to run Cell Ranger. If your lab has signed up for
+the <a href="https://arc.umich.edu/umrcp/" target="_blank">University of
+Michigan Research Computing Package (UMRCP)</a>, you can also get access
+to the cluster and the available software.</p>
+<p><br/> <br/></p>
+<p><img src="images/cellranger/Iceberg.jpg" /></p>
+<p><br/> <br/></p>
+</div>
+</div>
+<div id="conclusions" class="section level2">
+<h2>Conclusions</h2>
+<ul>
+<li>To run <strong><code>cellranger count</code></strong> you need a
+computing cluster, the <strong><code>--id</code></strong> and
+<strong><code>--fastqs</code></strong> for each
+<strong><code>--sample</code></strong>, and the path to the cellranger
+formated <strong><code>--transcriptome</code></strong> reference
+file.</li>
+<li>The Barcode Rank Plot shows how the software determined what were
+cells compared to background. The filtered matrix files only contain
+data for cells on the barcode rank plot, wheras the raw matrices include
+cells and background.</li>
+<li>Additional sequencing is suggested if your sequencing saturation is
+low.</li>
+</ul>
+<p><br/> <br/></p>
+</div>
+<div id="references" class="section level2">
+<h2>References</h2>
+<ol style="list-style-type: decimal">
+<li>Sections of this lesson were adapted from 10x training materials.
+See the <a
+href="https://www.10xgenomics.com/support/software/cell-ranger/latest"
+target="_blank">10x Genomics support website</a> for additional
+information.</li>
+<li><a
+href="https://www.10xgenomics.com/support/software/cell-ranger/latest/tutorials/cr-tutorial-ct">10x
+Genomics Cell Ranger count tutorial</a></li>
+<li><a
+href="https://www.10xgenomics.com/support/software/cell-ranger/latest/algorithms-overview/cr-gex-algorithm#cell_calling"
+target="_blank">10x Genomics cell-calling algorithm</a></li>
+<li><a
+href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1662-y"
+target="_blank">EmptyDrops method</a></li>
+<li><a href="https://portal.hdfgroup.org/documentation/index.html"
+target="_blank">Intro to HDF5 format</a></li>
+<li><a
+href="https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-molecule-info"
+target="_blank">Detailed explanation of 10x molecule HDF5
+format</a></li>
+<li><a href="https://math.nist.gov/MatrixMarket/formats.html"
+target="_blank">Market Exchange Format (MEX)</a>.</li>
+</ol>
 <br/> <br/>
 <hr/>
-<div class="line-block"><a href="00A-OrientingOnScRNASeq.html">Previous
-lesson</a> | <a href="#top">Top of this lesson</a> | <a
-href="01-GettingStarted.html">Next lesson</a> |</div>
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="00A-OrientingOnScRNASeq.html">Previous
+lesson</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="01-GettingStarted.html">Next lesson</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
 </div>
 </div>
 
