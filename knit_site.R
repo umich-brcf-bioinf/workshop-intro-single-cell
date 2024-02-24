@@ -38,7 +38,6 @@ render_site('source/workshop_intro.md')
 render_site('source/00A-OrientingOnScRNASeq.Rmd')
 render_site('source/00B-CellRangerInAction.md')
 
-
 render_site('source/01-GettingStarted.Rmd')
 render_site('source/02-QCandFiltering.Rmd')
 render_site('source/03-Integration.Rmd')

@@ -27,7 +27,7 @@ pre {
   font-size: 12px
 }
 
-table, th, td {
+table.fig, th.fig, td.fig {
   border: 1px solid black;
   border-collapse: collapse;
   padding: 15px;
@@ -59,10 +59,10 @@ gene expression counts. Some of these steps are similar to bulk RNA-Seq and some
 are distinct. 10x Genomics provides a pipeline tool, Cell Ranger, to expedite
 these initial transformations [[1]](#References).
 
-<table>
-<tr><th>Cell Ranger inputs and outputs</th></tr>
-<tr><td>![](images/cellranger/cellranger-30k.png)</td></tr>
-<tr><td>
+<table class='fig'>
+<tr><th class='fig'>Cell Ranger inputs and outputs</th></tr>
+<tr><td class='fig'>![](images/cellranger/cellranger-30k.png)</td></tr>
+<tr><td class='fig'>
 Cell Ranger accepts a set of sample FASTQ files and a set of reference files. It 
 produces a QC web summary (detailed below), a set of matrix files (also detailed 
 below) along with a large collection of supporting files. The matrix files
@@ -71,10 +71,10 @@ can be used for downstream analysis in Seurat and other tools.
 </table>
 
 <br/><br/>
-<table>
-<tr><th>A high level view of Cell Ranger steps</th></tr>
-<tr><td>![](images/cellranger/cellranger-5k.png)</td></tr>
-<tr><td>
+<table class='fig'>
+<tr><th class='fig'>A high level view of Cell Ranger steps</th></tr>
+<tr><td class='fig'>![](images/cellranger/cellranger-5k.png)</td></tr>
+<tr><td class='fig'>
   A. For each sequence, the barcode and UMI (on read 1) is used to label and bin
   the sequences by their barcodes.<br/>
   B. The transcript sequences are aligned to a genome reference using a modified
@@ -122,8 +122,8 @@ It looks like the tree below.
 
 All you need to run 10x cellranger count are the above 10x sample FASTQ files and the correctly formatted [reference genome files](https://www.10xgenomics.com/support/software/cell-ranger/downloads#reference-downloads){target="_blank"}. 
  
-<table><tr><td>**As a researcher, what parts of these outputs should I download and save?**</td></tr>
-<tr><td>
+<table class='fig'><tr><td class='fig'>**As a researcher, what parts of these outputs should I download and save?**</td></tr>
+<tr><td class='fig'>
 1. If we sent it to you, it is probably important for either downstream analysis or
 publication of your sequencing data. So we recomend you download **all of it**. 
 1. You can verify all of your files are intact using the *.md5 file.
@@ -296,7 +296,7 @@ The important parts of the web_summary.html we look at to determine the quality 
 * **`ERROR`** alerts indicate a major issue.
 
 
-![img](images/cellranger/HODay0_alerts.png)
+![](images/cellranger/HODay0_alerts.png)
 
 Intron mode was used. [This helps with cell calling and is on by default.](https://www.10xgenomics.com/support/software/cell-ranger/latest/miscellaneous/cr-intron-mode-rec){target="_blank"}
 
@@ -304,14 +304,14 @@ Intron mode was used. [This helps with cell calling and is on by default.](https
 
 ![Report with alerts](images/cellranger/cellranger-warn-alert-3.1.png)
 
-![img](images/cellranger/cellranger-error-alert-3.1.png)
+![](images/cellranger/cellranger-error-alert-3.1.png)
 
 
 #### Summary tab
 
 The run summary from `cellranger count` can be viewed by clicking `Summary` in the top left tab of the HTML file. The summary metrics describe sequencing quality and various characteristics of the detected cells.
 
-![img](images/cellranger/HODay0_summary.png)
+![](images/cellranger/HODay0_summary.png)
 
 
 #### More on the Barcode Rank Plot
@@ -336,7 +336,7 @@ The t-SNE Projection section shows the data reduced to two dimensions, colored b
 
 The Top Features By Cluster table shows which genes are differentially expressed in each cluster relative to all other clusters (Graph-based by default). To find the genes associated with a particular cluster, click the L2FC or p-value column headers associated with a given cluster number to sort the table by a specific cluster</p>
 
-![img](images/cellranger/HODay0_tsne.png)
+![](images/cellranger/HODay0_tsne.png)
 
 
 ##### The Sequencing Saturation plot
@@ -345,7 +345,7 @@ The [Sequecing Saturation](https://kb.10xgenomics.com/hc/en-us/articles/11500506
 Similarly, the Median Genes per Cell plot shows the effect of decreased sequencing depth on median genes per cell, which is a way of measuring data yield as a function of depth. The right-most point on the line is the full sequencing depth obtained in this run.</p>
 
 
-![img](images/cellranger/HODay0_seqsat.png)
+![](images/cellranger/HODay0_seqsat.png)
 
 **The recommended sequencing saturation is >60%**. If you are below this threshold, you would probably benefit from additional sequencing for increased depth. 
 
@@ -367,12 +367,13 @@ raw_feature_bc_matrix
     └── matrix.mtx.gz
 0 directories, 3 files
 ```
-<table><tr><td>
+<table class='fig'><tr><td class='fig'>
 A) <br/>
 ![](images/cellranger/feature_bc_matrix.png)
 B) <br/>
 ![](images/cellranger/matricesBRP.png)
-</td></tr><tr><td>
+</td></tr>
+<tr><td class='fig'>
 (A) Each element of the feature-barcode matrix is the count of UMIs associated with a feature (row) and a barcode (column). Because the matrix is very sparse, storing the matrix as three individual, compressed files saves siginificant space. [[6]](#References)<br/>
 (B) In relation to the Barcode Rank Plot, raw matrices include cells and background and the filtered matrix files only contain data for cells. Downstream analysis typically uses the **filtered** matrix files.
 </td></tr>
@@ -490,3 +491,10 @@ Note that UM Advanced Genomics Core and Bioinformatics Core use the [Great Lakes
 5. [Intro to HDF5 format](https://portal.hdfgroup.org/documentation/index.html){target="_blank"}
 6. [Detailed explanation of 10x molecule HDF5 format](https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-molecule-info){target="_blank"}
 6. [Market Exchange Format (MEX)](https://math.nist.gov/MatrixMarket/formats.html){target="_blank"}. 
+
+
+<br/>
+<br/>
+<hr/>
+| [Previous lesson](00A-OrientingOnScRNASeq.html) | [Top of this lesson](#top) | [Next lesson](01-GettingStarted.html) |
+| :--- | :----: | ---: |
