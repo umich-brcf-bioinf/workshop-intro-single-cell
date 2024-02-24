@@ -47,32 +47,87 @@ E.g. Papers might report final filtering thresholds, but our process for choosin
 
 General goal: Filtering out the "cells" that either were poorly measured or are either not single-cells or not cells at all
 
-<!-- regular html comment --> 
+## Objectives
+
 <!--Add specific goals for section-->
-
-Per [hyperlink text](http://www.website.html) are ... either `plain text` or *italic* or **bold**.
-
-<Embed an image>
-<img src="images/WelcomeScriptOpened.png" alt="rstudio default session" style="width:1000px;"/>
-
-> ## Reminder: RStudio code execution {.unlisted .unnumbered}
->
-> <kbd>Ctrl</kbd>+<kbd>Enter</kbd> is a standard shortcut in RStudio to send the current line (or selected lines) to the console. If you see `>` in the Console, then R has executed the command. If you see a `+`, this means that the command is not complete, R thinks there is more to your command. You can use the <kmd>esc</kmd> to get out of this state.
-
-> ## Reminder: Object naming conventions {.unlisted .unnumbered}
-> * Cannot start with numbers
-> * Cannot include dashes
-> * Cannot have spaces
-> * Should not be identical to a named function
-> * Dots and underscores can separate parts of names, alternatively CamelCase accomplishes this
 
 ----
 
-<details>
-    <summary>*Click for additional resources regarding statistical testing and tool comparison for RNA-seq data*</summary>
-    To learn more about statistical testing and what distributions best model the behavior of RNA-seq data, a good resource is this [EdX lecture by Rafael Irizarry](https://www.youtube.com/watch?v=HK7WKsL3c2w&feature=youtu.be) or this [lecture by Kasper Hansen](https://www.youtube.com/watch?v=C8RNvWu7pAw). Another helpful guide is this [Comparative Study for Differential Expression Analysis by Zhang et al.](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0103207) from 2014.
-</details>
-<br>
+# Cell type predictions
+
+More options for human samples than mouse
+
+For mouse, we often use scCATCH
+
+For human, if a relevant reference is available, would recommend XX tools (created by authors of Seurat)
+
+Other tools?
+
+# Using scCATCH
+
+<!--- add context about scCATCH--->
+Load the scCATCH library
+```{r, eval=FALSE}
+library(scCATCH)
+```
+
+Check that we are using the expected resolution cluster results
+```{r, eval=FALSE}
+all(Idents(geo_so) == geo_so$SCT_snn_res.0.4)
+```
+
+Create scCATCH object
+```{r, eval=FALSE}
+geo_catch = createscCATCH(data = geo_so@assays$SCT@counts, cluster = as.character(Idents(geo_so)))
+```
+
+Convert marker genes to scCATCH compatible format and add to scCATCH object
+```{r, eval=FALSE}
+catch_markers = geo_markers %>% rename('logfc' = 'avg_log2FC')
+
+geo_catch@markergene = geo_markers
+```
+
+Create query for database & run tool
+```{r, eval=FALSE}
+geo_catch@marker = cellmatch[cellmatch$species == 'Mouse' & cellmatch$tissue %in% c('Blood', 'Peripheral Blood', 'Muscle', 'Skeletal muscle', 'Epidermis', 'Skin'), ]
+
+geo_catch = findcelltype(geo_catch)
+```
+
+
+Look at our results, including cell type score
+```{r, eval=FALSE}
+geo_catch@celltype %>% select(cluster, cell_type, celltype_score)
+```
+
+Add celltype predictions to our Seurat object. Note that we will create a new metadata object where we join cell types, this destroys rownames which will cause a problem in Seurat, so we have to add them back. We are implicitly relying on the same row order!
+```{r, eval=FALSE}
+catch_celltypes = geo_catch@celltype %>% select(cluster, cell_type)
+
+
+new_metadata = geo_so@meta.data %>% left_join(catch_celltypes, by = c('SCT_snn_res.0.4' = 'cluster'))
+rownames(new_metadata) = rownames(geo_so@meta.data)
+
+geo_so@meta.data = new_metadata 
+```
+
+Create a UMAP plot with our new labels
+```{r, eval=FALSE}
+catch_umap_plot = DimPlot(geo_so, group.by = 'cell_type', label = TRUE, reduction = 'umap.sct.integrated.rpca')
+
+ggsave(filename = 'ISC_R/results/figures/umap_integrated_catch.png', plot = catch_umap_plot, width = 8, height = 7, units = 'in')
+```
+
+
+
+# Summary
+
+Now that we have ... 
+
+Next steps: Differential Expression
+
+
 
 ----
 

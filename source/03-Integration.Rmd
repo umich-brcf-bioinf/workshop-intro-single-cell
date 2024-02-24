@@ -42,7 +42,8 @@ knitr_fig_path("XX")
 
 # Introduction 
 
-For larger scRNA-seq projects, data may unavoidably be generated across multiple batches. As with bulk RNA-seq, some steps during library preparation can be taken to avoid confounding batch effects with biological variables of interest. But it will remain necessary to correct for technical variation in the sample integration step. <!-- More here? --> 
+For larger scRNA-seq projects, data may unavoidably by generated across multiple batches. As with bulk RNA-seq, some steps during <!-- add - sample and --> library preparation can be taken to avoid confounding batch effects with biological variables of interest. But it will remain necessary to correct for technical variation in the sample integration step. <!-- More here? --> <!--From DK: For 3' gene expression assays, every sample will inheriantly be a batch (since each sample must be run separately on the Chromium instrument). For methods that allow samples to be multiplexed (like the flex fixed kit), we would expect less sample to sample variablity. However in practice, we observe similar amount of variablity, likely as sample isolation and cell suspension preparation steps are likely to at least some degree of variablity. -->
+
 
 In this section, we will demonstrate the steps to evaluate whether integration is needed (it usually is), and will walk through integrating the data and evaluating the effectiveness thereof. 
 
@@ -109,11 +110,14 @@ Active assay: SCT (17129 features, 3000 variable features)
 
 We observe at this point that `SCTransform()` performed its normalization and variable feature identification for each batch independently, and a consensus set of variable features is automatically identified for later use ([source](https://satijalab.org/seurat/articles/seurat5_integration)).
 
+
 We also note that within the "SCT" assay, the `counts` layer contains the corrected counts, the `data` layer contains the log(1 + counts), and the `scale.data` layer contains the pearson residuals from the SCT models.
+
 
 # Summary
 
 Next steps: Projection and clustering
+
 
 ----
 

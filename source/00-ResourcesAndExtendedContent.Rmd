@@ -42,27 +42,84 @@ E.g. Papers might report final filtering thresholds, but our process for choosin
 
 General goal: Filtering out the "cells" that either were poorly measured or are either not single-cells or not cells at all
 
-<Add specific goals for section>
+<!---Add specific goals for section--->
 
 # Topics
 
-## Cell Ranger
+# University of Michigan Resources
 
-- [10x]
-- [Overview from Ho Lab](https://holab-hku.github.io/Fundamental-scRNA/raw2matrix.html#cell-ranger)
+- [Advanced Genomics Core (AGC) - Single Cell Processing](https://medresearch.umich.edu/office-research/about-office-research/biomedical-research-core-facilities/advanced-genomics-core/technologies/single-cell-processing)
+- [Advanced Research Computing (ARC) - UM Research Computing package](https://arc.umich.edu/umrcp/)
 
-## Loupe Browser
+
+## Cell Ranger and 10x Assays:
+
+- [10x - Cell Ranger Support](https://www.10xgenomics.com/support/software/cell-ranger/latest)
+- [Cell Ranger Overview - Ho Lab](https://holab-hku.github.io/Fundamental-scRNA/raw2matrix.html#cell-ranger)
+- [10x - Cell Ranger algorithms overview](https://www.10xgenomics.com/support/software/cell-ranger/latest/algorithms-overview)
+- [Quality Assessment Using the Cell Ranger Web Summary](https://www.10xgenomics.com/analysis-guides/quality-assessment-using-the-cell-ranger-web-summary)
+
+- [10x - 3' Single Gell Gene Expression](https://www.10xgenomics.com/support/single-cell-gene-expression)
+- [10x - Fixed RNA Profiling Probe Sets Overview](https://www.10xgenomics.com/support/single-cell-gene-expression-flex/documentation/steps/probe-sets/chromium-frp-probe-sets-overview)
+
+## Loupe Browser:
 
 - [10x resources for getting started with Loupe Browser](https://www.10xgenomics.com/support/software/loupe-browser/latest/getting-started)
+- [10x tutorial -  Loupe Browser navigation for Single-cell](https://www.10xgenomics.com/support/software/loupe-browser/latest/tutorials/introduction/lb-sc-interface-and-navigation)
+- [10x tutorial - LoupeR to Generate CLOUPE files from Seurat Objects ](https://www.10xgenomics.com/support/software/loupe-browser/latest/tutorials/introduction/lb-louper)
 
-## Other Seurat tutorials/workflows:
+## Seurat tutorials/workflows:
 
 - [Single-cell Analysis - Ouyang Lab](https://ouyanglab.com/singlecell/) - materials last updated in January 2023
 - [scRNA-seq workshop - HBC training](https://hbctraining.github.io/scRNA-seq_online/schedule/links-to-lessons.html) - lastest release of materials is from March 2023
 	- To cite materials from the HBC course, please use: `Mary Piper, Meeta Mistry, Jihe Liu, William Gammerdinger, & Radhika Khetani. (2022, January 6). hbctraining/scRNA-seq_online: scRNA-seq Lessons from HCBC (first release). Zenodo. [https://doi.org/10.5281/zenodo.5826256](https://doi.org/10.5281/zenodo.5826256)`
 - [Analysis using Seurat - Ho Lab](https://holab-hku.github.io/Fundamental-scRNA/downstream.html) - materials last updated in 2021
-- [Single-cell RNA-seq - Griffith Lab](https://rnabio.org/module-08-scrna/0008/02/01/scRNA/) - materials last updated in 2020
+[Single-cell complete workflow exercise, RNA-seq Bioinformatics - Griffith Lab](https://rnabio.org/module-08-scrna/0008/08/01/scRNA/)
 
+
+## Resources and documentation for Seurat and related tools: 
+
+- [Seurat 5 - Sketch analysis](https://satijalab.org/seurat/articles/seurat5_sketch_analysis)
+- [Seurat - Cell Cycle and Regression](https://satijalab.org/seurat/articles/cell_cycle_vignette.html)
+- [Seurat - data visualization methods](https://satijalab.org/seurat/articles/visualization_vignette)
+- [Doublet Finder Example, 2022](https://rpubs.com/kenneditodd/doublet_finder_example)
+	- [Issue reported for Seurat 5](https://github.com/chris-mcginnis-ucsf/DoubletFinder/issues/171), so may not be compatible with Seurat workflow until bug is fixed
+
+## Resource compilations:
+
+- [10x - Continuing your journey after running cell ranger](https://www.10xgenomics.com/analysis-guides/continuing-your-journey-after-running-cell-ranger)
+- [Ming Tang's scRNA analysis notes repository](https://github.com/crazyhottommy/scRNAseq-analysis-notes)
+- [Sean Davis' list of single-cell packages](https://github.com/seandavi/awesome-single-cell)
+- [Mikhail Dozmorov's compilation of single-cell analysis tools and papers](https://github.com/mdozmorov/scRNA-seq_notes)
+- [Ouyang Lab's "Useful resources"](https://ouyanglab.com/singlecell/appendix.html#useful-resources)
+
+
+## Deep-dive single-cell tutorials and guides:
+
+- [Basics of Single-Cell Analysis with Bioconductor (OSCA), 2022](https://bioconductor.org/books/3.15/OSCA.basic/)
+- [Broad Institute - ANALYSIS OF SINGLE CELL RNA-SEQ DATA, 2019](https://broadinstitute.github.io/2019_scWorkshop/)
+- [Single Cell Best Practices (Python/scanpy)- Digital Book](https://www.sc-best-practices.org/preamble.html)
+
+
+
+## Resources for broader context/discussion:
+
+- [Satija Lab Website](https://satijalab.org/)
+- [Luecken MD, Theis FJ. Current best practices in single-cell RNA-seq analysis: a tutorial. Mol Syst Biol. 2019 Jun 19;15(6):e8746. doi: 10.15252/msb.20188746. PMID: 31217225; PMCID: PMC6582955.](https://www.embopress.org/doi/full/10.15252/msb.20188746)
+- [Chari T, Pachter L (2023) The specious art of single-cell genomics. PLoS Comput Biol 19(8): e1011288. https://doi.org/10.1371/journal.pcbi.1011288](https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1011288)
+
+- [Sun, Shiquan, Jiaqiang Zhu, Ying Ma, and Xiang Zhou. 2019. “Accuracy, Robustness and Scalability of Dimensionality Reduction Methods for Single-Cell RNA-Seq Analysis.” Genome Biology 20: 269. https://doi.org/10.1186/s13059-019-1898-6.](https://doi.org/10.1186/s13059-019-1898-6)
+
+- [Understanding UMAP](https://pair-code.github.io/understanding-umap/)
+- [OSCA Chapter 4: Dimensionality reduction](https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html)
+
+## Other third party tools
+
+- [BioTuring - BBrowser X](https://bioturing.com/bbrowserx) - Graphical user interface (GUI) analysis suite, similar to Loupe Browser but with more extensive functionalities (requires paid subscription but 1-month trial available)
+	- [BBrowser X documentation](https://talk2data.bioturing.com/document#h.k5o4lxkht6rz)
+- [Scanpy (Python) documentation and tutorials](https://scanpy.readthedocs.io/en/latest/_tutorials.html)
+
+<br/>
 
 ----
 
