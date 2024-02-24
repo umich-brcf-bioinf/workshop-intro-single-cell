@@ -155,9 +155,9 @@ Cell Ranger is a first-pass filter to determine what is a "cell" and what is not
 
 Let's dig deeper to determine when a droplet might contain two cells, a very stressed cell, or some technical issue in the library preparation. We will use three metrics to determine low-quality cells based on their expression profiles ([reference](https://bioconductor.org/books/3.12/OSCA/quality-control.html#choice-of-qc-metrics)).
 
-- The total number of UMIs detected. Cells with a small number of UMIs detected may indicate loss of RNA during library preparation via cell lysis or inefficient cDNA capture / amplification. Cells with relatively high number of UMIs detected may indicate a doublet.
-- The number of expressed features, defined as number of genes with non-zero counts. Cells with very few measured genes are likely to be of low-quality, and may distort downstream variance estimation or dimension reduction steps.
-- The proportion of reads mapped to the mitochondrial genome. High proportions of mitochondrial transcripts may indicate a damaged cell, the measure of which may also distort downstream analysis steps.
+1. The total number of UMIs detected. Cells with a small number of UMIs detected may indicate loss of RNA during library preparation via cell lysis or inefficient cDNA capture / amplification. Cells with relatively high number of UMIs detected may indicate a doublet.
+2. The number of expressed features, defined as number of genes with non-zero counts. Cells with very few measured genes are likely to be of low-quality, and may distort downstream variance estimation or dimension reduction steps.
+3. The proportion of reads mapped to the mitochondrial genome. High proportions of mitochondrial transcripts may indicate a damaged cell, the measure of which may also distort downstream analysis steps.
 
 The number of UMIs detected (`nCount`) and number of expressed features (`nFeature`) are already given in the meta data table.
 
@@ -394,7 +394,7 @@ In this section we:
 - Visualized these metrics across cells / samples to help identify low-quality cells.
 - Filtered low-quality cells using fixed thresholds.
 
-Next steps: dimensionality reduction using PCA
+Next steps: Normalization
 
 ----
 

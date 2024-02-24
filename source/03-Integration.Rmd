@@ -42,37 +42,23 @@ knitr_fig_path("XX")
 
 # Introduction 
 
-For larger scRNA-seq projects, data may unavoidably by generated across multiple batches. As with bulk RNA-seq, some steps during <!-- add - sample and --> library preparation can be taken to avoid confounding batch effects with biological variables of interest. But it will remain necessary to correct for technical variation in the sample integration step. <!-- More here? --> <!--From DK: For 3' gene expression assays, every sample will inheriantly be a batch (since each sample must be run separately on the Chromium instrument). For methods that allow samples to be multiplexed (like the flex fixed kit), we would expect less sample to sample variablity. However in practice, we observe similar amount of variablity, likely as sample isolation and cell suspension preparation steps are likely to at least some degree of variablity. -->
+After removing low-quality cells from the data, the next task is the normalization and variance stabiliziation of the counts for downstream analysis. Variation in scRNA-seq data comes from both biological and technical sources. It is important to control for the technical sources of variation as much as possible, without removing the biological sources of variation.
 
+Biological variation is related to differences in cell type and state, and can help answer biologically meaningful questions. Whereas technical variation may arise from fluctuations in cellular RNA content, efficiency in lysis and reverse transcription, and stochastic sampling during sequencing.
 
-In this section, we will demonstrate the steps to evaluate whether integration is needed (it usually is), and will walk through integrating the data and evaluating the effectiveness thereof. 
-
-Like in the previous section, one integration method might be reported in a research paper but several options might have been tested before determining which approach sufficiently corrected batch effects without removing expected biological variability.
+A key driver of technical variation is cellular sequencing depth (that is, the number of UMIs sequenced per cell). The known relationship between gene abundance and gene variance is also an important factor to account for. While methods exist to address these issues in bulk RNA-seq, the sparsity of scRNA-seq data presents challenges to existing methods.
 
 ## Objectives
 
 - Understand why normalization is needed.
-- Understand some options for normalization.
+- Understand normalization options.
 - Normalize the counts with `SCTransform()`.
 
 # Normalization
 
-Bulk RNA-seq suffers from two issues that must be addressed in a differential expression analysis:
+We will use the `SCTransform()` function, which uses a generalized linear model (GLM) framework to account for cell-level sequencing depth while also stabilizing the variance of the counts. Let's get the normalization started, as it takes a little time, and then we can explain what it's doing and why it is an improvement on alternate methods.
 
-1. Differences in sequencing depth contributes to technical variation.
-2. There is a confounding relationship between gene abundance and gene variation.
-
-These also affect single-cell RNA-seq! Moreover, the sparsity of scRNA-seq data poses additional issues that require new methods for normalization.
-
-We will use the `SCTransform()` method that is part of the Seurat package. [This manuscript](https://genomebiology-biomedcentral-com/articles/10.1186/s13059-021-02584-9) describes the initial approach, and [this updated manuscript](https://link.springer.com/article/10.1186/s13059-021-02584-9) describes v2 of the algorithm.
-
-The authors go to great lengths to demonstrate that there is a "strong linear relationship between unnormalized expression (gene UMI count) and cellular sequencing depth." The relationship holds across a range of abundance levels, and suggests that a single scaling factor to account for cellular sequencing depth will not be sufficient, and that a solution will depend on the abundance level.
-
-> **Other normalizations**
-> 
-> From the Seurat documentation, the `SCTransform()` function "replaces `NormalizeData()` (this is a log-normalization), `ScaleData()`, and `FindVariableFeatures()`". You may see these three commands in other vignettes, indeed even in other Seurat vignettes ([source](https://satijalab.org/seurat/articles/sctransform_vignette)).
-
-As we discussed when describing the structure of a `Seurat` object, the assay data is stored in layers. To conform to this convention, we will run the following command, which splits the "RNA" assay into a list of samples, each with its own layers.
+First, we'll run the following command to separate the data from each sample into layers, a requirement of Seurat v5:
 
 ```{r, eval = FALSE}
 geo_so[['RNA']] = split(geo_so[['RNA']], f = geo_so$orig.ident)
@@ -85,13 +71,45 @@ Active assay: RNA (26489 features, 0 variable features)
  12 layers present: counts.HO.Day0.replicate1, counts.HO.Day0.replicate2, counts.HO.Day0.replicate3, counts.HO.Day0.replicate4, counts.HO.Day21.replicate1, counts.HO.Day21.replicate2, counts.HO.Day21.replicate3, counts.HO.Day21.replicate4, counts.HO.Day7.replicate1, counts.HO.Day7.replicate2, counts.HO.Day7.replicate3, counts.HO.Day7.replicate4
 ~~~
 
-We will now run `SCTransform()`, which will result in a new assay, the `SCT` assay.
+Then, run `SCTransform()`:
 
 ```{r, eval = FALSE}
 geo_so = SCTransform(geo_so)
 ```
 
-And we can see the additional assay by viewing the `geo_so` object:
+## Details
+
+The full description and justification of the `SCTransform()` function are provided in two excellent papers:
+
+- Hafemeister & Satija, *Normalization and variance stabilization of single-cell RNA-seq data using regularized negative binomial regression*, 2019, Genome Biology ([link](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1874-1#availability-of-data-and-materials))
+
+- Choudhary & Satija, *Comparison and evaluation of statistical error models for scRNA-seq*, 2022, Genome Biology ([link](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-021-02584-9))
+
+Contained in the title of the first paper is the kernel of the approach: "regularized negative binomial regression". Let's explain the parts of that phrase at a high-level.
+
+- "Regression": For each gene in the scRNA-seq data, a generalized linear model is fit whereby the vector of UMI counts for the gene is estimated by a linear equation containing an intercept and the vector of sequencing depth of the cells. As a term in the model, the cell sequencing depth can be accounted for.
+
+- "Negative binomial": The counts are modeled with a negative binomial distribution because it has been observed in both bulk and single-cell RNA-seq that the mean and variance of the count data are related to one another. Put another way, the variance is non-constant. The negative binomial distribution allows for the variance of the counts to be a function of the mean of the counts.
+
+- "Regularized": When computing the parameters of the model, the authors observed that genes with low to moderate expression levels had widely ranging model parameter estimates, even when the genes were similar to one another. They concluded this was a result of model overfitting--not of biological origin--and decided to constrain the model parameters by combining information across similar genes. That is, regularization. In this way, the variance of the gene counts is stabilized.
+
+Finally, the Choudhary & Satija paper introduced a modified version of the regularized negative binomial regression (`sctransform` v2). The modifications include:
+
+- The slope of the NB GLM is fixed at an analytically derived `ln(10)`. Consequently, only the intercept and overdispersion parameters remain to be estimated for each gene.
+
+- Genes with very low expression or with variance less than the mean have their dispersion parameters set to infinity, essentially reverting to a Poisson count distribution.
+
+- A lower bound on the minimum variance is used to prevent genes with very low UMI counts from being given very high normalized expression values.
+
+Additionally, the benefit of this framework for normalization and variance stabilization is that the GLM can include other terms which can account for unwanted technical variation. One example of this is the percent mitochondrial reads (`percent.mt`). This can accomplished using the `vars.to.regress` parameter of `SCTransform()`. See the documentation for details.
+
+## Other normalizations
+
+From the Seurat documentation, the `SCTransform()` function "replaces `NormalizeData()` (this is a log-normalization), `ScaleData()`, and `FindVariableFeatures()`". You may see these three commands in other vignettes, indeed even in other Seurat vignettes ([source](https://satijalab.org/seurat/articles/sctransform_vignette)). In the two papers referenced above, the authors show how the log-normalization procedure does not always fully account for cell sequencing depth and overdispersion. Consequently, we urge you to use this alternative pipeline with caution.
+
+# Normalization, continued
+
+By now, `SCTransform()` should have finished running, so let's take a look at the result:
 
 ```{r, eval = FALSE}
 geo_so
@@ -104,20 +122,11 @@ Active assay: SCT (17129 features, 3000 variable features)
  1 other assay present: RNA
 ~~~
 
-> **Regressing out sources of variation**
-> 
-> In the `SCTransform()` function there is a parameter, `vars.to.regress`, which allows us to regress out sources of variation that we don't want to play a role in downstream analyses. A common variable to regress out is `percent.mt`.
-
-We observe at this point that `SCTransform()` performed its normalization and variable feature identification for each batch independently, and a consensus set of variable features is automatically identified for later use ([source](https://satijalab.org/seurat/articles/seurat5_integration)).
-
-
-We also note that within the "SCT" assay, the `counts` layer contains the corrected counts, the `data` layer contains the log(1 + counts), and the `scale.data` layer contains the pearson residuals from the SCT models.
-
+We observe that the active assay is now "SCT", but that the "RNA" assay is still present. `SCTransform()` has also determined the common variable features across the cells to be used in our downstream analysis.
 
 # Summary
 
-Next steps: Projection and clustering
-
+Next steps: PCA and integration
 
 ----
 
