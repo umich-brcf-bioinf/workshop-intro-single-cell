@@ -47,32 +47,98 @@ E.g. Papers might report final filtering thresholds, but our process for choosin
 
 General goal: Filtering out the "cells" that either were poorly measured or are either not single-cells or not cells at all
 
-<!-- regular html comment --> 
 <!--Add specific goals for section-->
 
-Per [hyperlink text](http://www.website.html) are ... either `plain text` or *italic* or **bold**.
+# Marker identification
 
-<Embed an image>
-<img src="images/WelcomeScriptOpened.png" alt="rstudio default session" style="width:1000px;"/>
+Ensure that correct resolution is selected
+```{r, eval = FALSE}
+geo_so = SetIdent(geo_so, value = 'SCT_snn_res.0.4')
+```
 
-> ## Reminder: RStudio code execution {.unlisted .unnumbered}
->
-> <kbd>Ctrl</kbd>+<kbd>Enter</kbd> is a standard shortcut in RStudio to send the current line (or selected lines) to the console. If you see `>` in the Console, then R has executed the command. If you see a `+`, this means that the command is not complete, R thinks there is more to your command. You can use the <kmd>esc</kmd> to get out of this state.
+We can use `FindAllMarkers` to run comparisons between each cluster and all other cells, regardless of the experimental group. 
 
-> ## Reminder: Object naming conventions {.unlisted .unnumbered}
-> * Cannot start with numbers
-> * Cannot include dashes
-> * Cannot have spaces
-> * Should not be identical to a named function
-> * Dots and underscores can separate parts of names, alternatively CamelCase accomplishes this
+```{r, eval=FALSE}
+geo_so = PrepSCTFindMarkers(geo_so)
+geo_markers = FindAllMarkers(geo_so, only.pos = TRUE)
+```
 
-----
+<!--- Consider adding figure showing example of what's being compared (circle cluster 1 and then circle all other cells for example) -->
 
-<details>
-    <summary>*Click for additional resources regarding statistical testing and tool comparison for RNA-seq data*</summary>
-    To learn more about statistical testing and what distributions best model the behavior of RNA-seq data, a good resource is this [EdX lecture by Rafael Irizarry](https://www.youtube.com/watch?v=HK7WKsL3c2w&feature=youtu.be) or this [lecture by Kasper Hansen](https://www.youtube.com/watch?v=C8RNvWu7pAw). Another helpful guide is this [Comparative Study for Differential Expression Analysis by Zhang et al.](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0103207) from 2014.
-</details>
-<br>
+Then we can write out the full results to file. 
+```{r, eval=FALSE}
+write_csv(geo_markers, file = 'ISC_R/results/tables/marker_genes_0.4.csv')
+```
+
+In addition to generating the full set of marker genes, it can be useful to filter the results to highlight the top positive markers (since a positive fold-change would mean that gene is more highly expressed in the cluster compared to all other cells):
+```{r, eval=FALSE}
+# add code to create table of top 5 markers per cluster
+top_5_by_log2FC = geo_markers %>% group_by(cluster) %>% arrange(p_val_adj, desc(avg_log2FC)) %>% slice_head(n = 5)
+```
+
+If we look at the marker table, we see several columns:
+```{r, eval=FALSE}
+head(top_5_by_log2FC)
+```
+~~~~
+# add expected output
+~~~~
+
+
+## Marker visualization
+
+Use SCT values, create a dotplot
+```{r, eval=FALSE}
+top_5_sct_dot_plot = DotPlot(geo_so, features = unique(top_5_by_log2FC$gene)) + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    labs(title = 'Top 5 Cluster Genes by FDR and avg_log2FC')
+```
+
+And we can save the figure to file
+```{r, eval=FALSE}
+ggsave(filename = 'ISC_R/results/figures/markers_top_5_sct_dot_plot.png', plot = top_5_sct_dot_plot, width = 12, height = 6, units = 'in') 
+```
+
+
+Can also use raw RNA values <!--- move to dropdown --->
+
+```{r, eval=FALSE}
+top_5_rna_dot_plot = DotPlot(geo_so, features = unique(top_5_by_log2FC$gene), assay = 'RNA') + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    labs(title = 'Top 5 Cluster Genes by FDR and avg_log2FC')
+
+ggsave(filename = 'ISC_R/results/figures/markers_top_5_sct_dot_plot.png', plot = top_5_rna_dot_plot, width = 12, height = 6, units = 'in') 
+```
+
+
+# Utilizing genes of interest
+
+Often we have 
+
+```{r, eval=FALSE}
+# Using genes from the paper - https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7002453/
+
+fig1g_markers = c('Cxcl1', 'Cxcl2', 'Ccl2', 'Ccl3', 'Ccl4', 'Il1b', 'Il6b', 'Tnf', 'Tgfb1', 'Tgfb2', 'Tgfb3', 'Cxcl5')
+fig1h_markers = c('Cxcr2', 'Csf1r', 'Csf3r', 'Tgfbr1', 'Tgfbr3', 'Il1r1', 'Il6ra', 'Lifr', 'Tgfbr2')
+```
+
+# Save our progress
+
+Create an output for our updated Seurat object
+```{r, eval=FALSE}
+saveRDS(object = geo_so, file = 'ISC_R/results/rdata/geo_so_sct_integrated_with_markers.rda')
+```
+
+
+# Summary
+
+Now that we have ... 
+
+However, marker genes alone might not be sufficient to determine cell-type or sub-type labels for our clusters so it can be helpful to apply other approaches, which we will discuss in the next section.
+
+Next steps: Cell type prediction tools
+
+
 
 ----
 

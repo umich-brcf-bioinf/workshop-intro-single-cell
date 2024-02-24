@@ -3,6 +3,7 @@
 **/*.RData
 **/~$*.pptx
 html/**/*.md
+html/**/*.pptx
 html/data/
 html/figures/
 html/images/source
