@@ -425,7 +425,7 @@ pre {
   font-size: 12px
 }
 
-table, th, td {
+table.fig, th.fig, td.fig {
   border: 1px solid black;
   border-collapse: collapse;
   padding: 15px;
@@ -458,19 +458,19 @@ files to gene expression counts. Some of these steps are similar to bulk
 RNA-Seq and some are distinct. 10x Genomics provides a pipeline tool,
 Cell Ranger, to expedite these initial transformations <a
 href="#References">[1]</a>.</p>
-<table>
+<table class="fig">
 <tr>
-<th>
+<th class="fig">
 Cell Ranger inputs and outputs
 </th>
 </tr>
 <tr>
-<td>
+<td class="fig">
 <img src="images/cellranger/cellranger-30k.png" />
 </td>
 </tr>
 <tr>
-<td>
+<td class="fig">
 Cell Ranger accepts a set of sample FASTQ files and a set of reference
 files. It produces a QC web summary (detailed below), a set of matrix
 files (also detailed below) along with a large collection of supporting
@@ -480,19 +480,19 @@ and other tools.
 </tr>
 </table>
 <br/><br/>
-<table>
+<table class="fig">
 <tr>
-<th>
+<th class="fig">
 A high level view of Cell Ranger steps
 </th>
 </tr>
 <tr>
-<td>
+<td class="fig">
 <img src="images/cellranger/cellranger-5k.png" />
 </td>
 </tr>
 <tr>
-<td>
+<td class="fig">
 A. For each sequence, the barcode and UMI (on read 1) is used to label
 and bin the sequences by their barcodes.<br/> B. The transcript
 sequences are aligned to a genome reference using a modified version of
@@ -541,15 +541,15 @@ samples were processed.</li>
 FASTQ files and the correctly formatted <a
 href="https://www.10xgenomics.com/support/software/cell-ranger/downloads#reference-downloads"
 target="_blank">reference genome files</a>.</p>
-<table>
+<table class="fig">
 <tr>
-<td>
+<td class="fig">
 <strong>As a researcher, what parts of these outputs should I download
 and save?</strong>
 </td>
 </tr>
 <tr>
-<td>
+<td class="fig">
 <ol style="list-style-type: decimal">
 <li>If we sent it to you, it is probably important for either downstream
 analysis or publication of your sequencing data. So we recomend you
@@ -737,10 +737,7 @@ parameter is suboptimal.</li>
 <li><strong><code>ERROR</code></strong> alerts indicate a major
 issue.</li>
 </ul>
-<div class="float">
-<img src="images/cellranger/HODay0_alerts.png" alt="img" />
-<div class="figcaption">img</div>
-</div>
+<p><img src="images/cellranger/HODay0_alerts.png" /></p>
 <p>Intron mode was used. <a
 href="https://www.10xgenomics.com/support/software/cell-ranger/latest/miscellaneous/cr-intron-mode-rec"
 target="_blank">This helps with cell calling and is on by
@@ -753,10 +750,7 @@ default.</a></p>
 alt="Report with alerts" />
 <div class="figcaption">Report with alerts</div>
 </div>
-<div class="float">
-<img src="images/cellranger/cellranger-error-alert-3.1.png" alt="img" />
-<div class="figcaption">img</div>
-</div>
+<p><img src="images/cellranger/cellranger-error-alert-3.1.png" /></p>
 </div>
 <div id="summary-tab" class="section level4">
 <h4>Summary tab</h4>
@@ -764,10 +758,7 @@ alt="Report with alerts" />
 clicking <code>Summary</code> in the top left tab of the HTML file. The
 summary metrics describe sequencing quality and various characteristics
 of the detected cells.</p>
-<div class="float">
-<img src="images/cellranger/HODay0_summary.png" alt="img" />
-<div class="figcaption">img</div>
-</div>
+<p><img src="images/cellranger/HODay0_summary.png" /></p>
 </div>
 <div id="more-on-the-barcode-rank-plot" class="section level4">
 <h4>More on the Barcode Rank Plot</h4>
@@ -827,10 +818,7 @@ default). To find the genes associated with a particular cluster, click
 the L2FC or p-value column headers associated with a given cluster
 number to sort the table by a specific cluster
 </p>
-<div class="float">
-<img src="images/cellranger/HODay0_tSNE.png" alt="img" />
-<div class="figcaption">img</div>
-</div>
+<p><img src="images/cellranger/HODay0_tSNE.png" /></p>
 <div id="the-sequencing-saturation-plot" class="section level5">
 <h5>The Sequencing Saturation plot</h5>
 The <a
@@ -845,10 +833,7 @@ sequencing depth on median genes per cell, which is a way of measuring
 data yield as a function of depth. The right-most point on the line is
 the full sequencing depth obtained in this run.
 </p>
-<div class="float">
-<img src="images/cellranger/HODay0_seqsat.png" alt="img" />
-<div class="figcaption">img</div>
-</div>
+<p><img src="images/cellranger/HODay0_seqsat.png" /></p>
 <p><strong>The recommended sequencing saturation is &gt;60%</strong>. If
 you are below this threshold, you would probably benefit from additional
 sequencing for increased depth.</p>
@@ -877,9 +862,9 @@ raw_feature_bc_matrix
     ├── features.tsv.gz
     └── matrix.mtx.gz
 0 directories, 3 files</code></pre>
-<table>
+<table class="fig">
 <tr>
-<td>
+<td class="fig">
 <ol style="list-style-type: upper-alpha">
 <li><br/> <img src="images/cellranger/feature_bc_matrix.png" /></li>
 <li><br/> <img src="images/cellranger/matricesBRP.png" /></li>
@@ -887,7 +872,7 @@ raw_feature_bc_matrix
 </td>
 </tr>
 <tr>
-<td>
+<td class="fig">
 <ol style="list-style-type: upper-alpha">
 <li>Each element of the feature-barcode matrix is the count of UMIs
 associated with a feature (row) and a barcode (column). Because the
@@ -1042,6 +1027,25 @@ format</a></li>
 <li><a href="https://math.nist.gov/MatrixMarket/formats.html"
 target="_blank">Market Exchange Format (MEX)</a>.</li>
 </ol>
+<br/> <br/>
+<hr/>
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="00A-OrientingOnScRNASeq.html">Previous
+lesson</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="01-GettingStarted.html">Next lesson</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
 </div>
 </div>
 
