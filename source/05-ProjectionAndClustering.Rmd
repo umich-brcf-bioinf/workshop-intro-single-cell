@@ -42,12 +42,15 @@ knitr_fig_path("XX")
 
 # Introduction
 
-<!--Add specific goals for section-->
+<!--- General goal: to generate clusters that reasonably approximate cell-types or sub-types of interest --->
 
-Point out possible gaps between how single-cell data is presented versus the reality of running an analysis
-E.g. Papers might report final filtering thresholds, but our process for choosing those is likely to be more iterative
+In this section, we will demonstrate graph based clustering and visualizing those clustering assignments via projection.
 
-General goal: Filtering out the "cells" that either were poorly measured or are either not single-cells or not cells at all
+<!--- Point out possible gaps between how single-cell data is presented versus the reality of running an analysis
+e.g. Papers might report final clustering parameters but multiple parameters may need to be tested/evaluated --->
+
+Considered part of data exploration so iterative approach is reasonable and often expected [source](https://bioconductor.org/books/3.15/OSCA.basic/clustering.html)
+
 
 ## Objectives
 
@@ -57,9 +60,14 @@ General goal: Filtering out the "cells" that either were poorly measured or are 
 ---
 
 
-# Projection and clustering
+# Clustering and projection
 
-Contrast the previous dimensionality reduction/nearest neighbors clustering and plotting the cells in lower dimensionality with the cluster labels.
+
+An important aspect of parameter selection for clustering is to understand the "resolution" of the underlying biology and your experimental design. Is answering your biological question dependent on identifying rarer cell types or specific subtypes? Or are broader cell-types more relevant to address your biological question?
+
+The OSCA book has a [helpful analogy comparing clustering to microscopy](https://bioconductor.org/books/3.15/OSCA.basic/clustering.html#overview-1) and points out that "asking for an unqualified “best” clustering is akin to asking for the best magnification on a microscope without any context". 
+
+<!--- Contrast the previous dimensionality reduction versus nearest neighbors clustering and plotting the cells in lower dimensionality with the cluster labels. --->
 
 
 ## Clustering
@@ -126,7 +134,7 @@ How many clusters should I get and how do I adjust the number?
 <!--- Show example of changing resolution?--->
 
 
-We can check the how well the normalization and integration .
+We can check the how well the normalization and integration merged together the data.
 
 ```{r, eval = FALSE}
 post_integration_umap_plot_day = DimPlot(geo_so, group.by = 'day', label = FALSE, reduction = 'umap.integrated.sct.rpca')
@@ -134,7 +142,7 @@ post_integration_umap_plot_day = DimPlot(geo_so, group.by = 'day', label = FALSE
 ggsave(filename = 'results/figures/umap_integrated_sct_day.png', plot = post_integration_umap_plot_day)
 ```
 
-![](./images/curriculum/umap_integrated_sct_day.png)
+![](./images/curriculum/05-ProjectionAndClustering/umap_integrated_sct_day.png)
 
 
 
@@ -144,7 +152,7 @@ post_integration_umap_plot_clusters = DimPlot(geo_so, group.by = 'seurat_cluster
 ggsave(filename = 'results/figures/umap_integrated_sct_clusters.png', plot = post_integration_umap_plot_clusters, width = 8, height = 6, units = 'in')
 ```
 
-![](./images/curriculum/umap_integrated_sct_orig.ident.png)
+![](./images/curriculum/05-ProjectionAndClustering/umap_integrated_sct_0.4.png) 
 
 
 
@@ -197,11 +205,13 @@ If we had proceeded with our filtered data and only normalized our data without 
 
 <!--Add example of UMAP / sample labels for unintegrated data from analysis folder to images-->
 
-![](umap_comparison_sct.png)
 
+![](./images/curriculum/05-ProjectionAndClustering/umap_unintegrated_sct_orig.ident.png)
 
+If we instead labeled our plot by `day`, then we would see:
+![](./images/curriculum/05-ProjectionAndClustering/umap_unintegrated_sct_day.png)
 
-In this plot, we ... see that while there are distinct clusters, those clusters seem to separate primarily by sample id. This suggests that without integration, these batch effects could skew the biological variability in our data. <!--move this section to end of Projection module to contrast with integrated results-->
+In this plot, we see that while there are distinct clusters, those clusters seem to stratifid by day. This suggests that without integration, these batch effects could skew the biological variability in our data. <!--move this section to end of Projection module to contrast with integrated results-->
 
 
 <!-- Edit section to incorporate --->
