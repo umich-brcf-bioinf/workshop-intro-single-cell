@@ -54,6 +54,8 @@ A key driver of technical variation is cellular sequencing depth (that is, the n
 - Understand normalization options.
 - Normalize the counts with `SCTransform()`.
 
+---
+
 # Normalization
 
 We will use the `SCTransform()` function, which uses a generalized linear model (GLM) framework to account for cell-level sequencing depth while also stabilizing the variance of the counts. Let's get the normalization started, as it takes a little time, and then we can explain what it's doing and why it is an improvement on alternate methods.

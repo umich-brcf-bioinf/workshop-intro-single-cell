@@ -61,6 +61,8 @@ Similar to many other areas of research, there are often gaps between how single
 - Adding checks to ensure object is updated by learners since want to avoid generating copied objects
 - Note what layers should be used for what, for example, counts used for FeaturePlots. RNA vs SCT assay. -->
 
+---
+
 # Adding metadata
 
 We're going to alter and add some columns to `meta.data` to ease some downstream analysis and plotting steps. This will often be necessary, as sample names contain combined information about phenotypes. Let's take a look at the first few rows again, to reacquaint ourselves.
