@@ -55,17 +55,18 @@ General goal: Filtering out the "cells" that either were poorly measured or are 
 
 # Cell type predictions
 
-More options for human samples than mouse
+<!--For mouse, we often use scCATCH-->
 
-For mouse, we often use scCATCH
+<!--More options for human samples than mouse-->
 
-For human, if a relevant reference is available, would recommend XX tools (created by authors of Seurat)
+For human, if a relevant reference is available would recommend using [Azimuth (created by authors of Seurat)](https://azimuth.hubmapconsortium.org/) <!-- and [10x tutorial](https://www.10xgenomics.com/analysis-guides/automated-cell-type-annotation-from-r-to-loupe-using-louper) that includes example of using Azimuth -->
 
 Other tools?
 
 # Using scCATCH
 
 <!--- add context about scCATCH--->
+
 Load the scCATCH library
 ```{r, eval=FALSE}
 library(scCATCH)

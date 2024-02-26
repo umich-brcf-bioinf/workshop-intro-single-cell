@@ -42,55 +42,81 @@ knitr_fig_path("XX")
 
 # Introduction
 
-<!--Add specific goals for section-->
+<!--- General goal: to generate clusters that reasonably approximate cell-types or sub-types of interest --->
+One of our goals in a single-cell analysis is to generate clusters that reasonably approximate cell-types or sub-types of interest in our samples before determining if there are differences in the proportions of these populations or differences in gene expression within these populations between experimental conditions.
 
-Point out possible gaps between how single-cell data is presented versus the reality of running an analysis
-E.g. Papers might report final filtering thresholds, but our process for choosing those is likely to be more iterative
 
-General goal: Filtering out the "cells" that either were poorly measured or are either not single-cells or not cells at all
+In this section, we will demonstrate how to generate clusters using Seurat's graph based clustering approach and visualizing those clustering assignments via a lower dimensionality projection of the full dataset.
+
+Like other steps in our analysis, multiple parameters may need to be tested and evaluated while we would expect that only the final would be reported. Clustering is considered part of data exploration so an iterative approach is reasonable and often expected [source](https://bioconductor.org/books/3.15/OSCA.basic/clustering.html). 
+
 
 ## Objectives
 
-- XX
-- XX
+- Understand the clustering process and input parameters
+- Generate initial clusters and visualize the results
 
 ---
 
 
-# Projection and clustering
+# Clustering and projection
 
-Contrast the previous dimensionality reduction/nearest neighbors clustering and plotting the cells in lower dimensionality with the cluster labels.
+
+An important aspect of parameter selection for clustering is to understand the "resolution" of the underlying biology and your experimental design. Is answering your biological question dependent on identifying rarer cell types or specific subtypes? Or are broader cell-types more relevant to address your biological question?
+
+The OSCA book has a [helpful analogy comparing clustering to microscopy](https://bioconductor.org/books/3.15/OSCA.basic/clustering.html#overview-1) and points out that "asking for an unqualified “best” clustering is akin to asking for the best magnification on a microscope without any context". 
+
+We've already selected a number of PCs that we think are likely to represent biological variation in our data while excluding technical variability. Next, we'll need to determine the "community" of cells based on the selected PCs (and the corresponding gene expression) and before selecting a resolution to use to divide those communities into discrete clusters. 
+
+<!--- Contrast the previous dimensionality reduction versus nearest neighbors clustering and plotting the cells in lower dimensionality with the cluster labels? --->
 
 
 ## Clustering
 
-Nearest neighbors algorithm - based on similarity of expression pattern (just for genes/PCs selected)
-
-Again, how are you defining a “cell type” or “subtype” should help with ambiguity not only with "How do I decide how many PCs to include?" but also "How do I choose a resolution for finding clusters?" (as well as evaluating in the downstream if your initial choices should be revised).
+Seurat uses a graph-based clustering approach to assign cells to clusters using a distance metric based on the previously generated PCs, with improvements based on work by ([Xu and Su 2015](https://academic.oup.com/bioinformatics/article/31/12/1974/214505)) and CyTOF data ([Levine et al. 2015](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4508757/) implemented in Seurat v3 and v5 and building on the initial strategies for droplet based single cell technology [Macosko et al. 2015](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4481139/)  [source](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html). A key aspect of this process is that while the clusters are based on similarity of expression between the cells, the clustering is based on the selected PCs and therefore limited to the genes contributing to those PCs. 
 
 
-<!-- per [Ho Lab](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction) - The previous version of Seurat (v3) applied a graph-based clustering approach, building upon initial strategies in the development of the initial droplet based single cell technology([Macosko et al. 2015](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4481139/)). "Importantly, the distance metric which drives the clustering analysis (based on previously identified PCs) remains the same."
+![KNN example - section on graph based clustering (from Cambridge Bioinformatics course)](./images/curriculum/05-ProjectionAndClustering/BioCellGene-NearestNeighborNetworks.png)
 
-"However, approach in Seurat to partitioning the cellular distance matrix into clusters has dramatically improved. This approach was heavily inspired by recent publications which applied graph-based clustering approaches to scRNA-seq data ([Xu and Su 2015](https://academic.oup.com/bioinformatics/article/31/12/1974/214505)) and CyTOF data ([Levine et al. 2015](https://www.cell.com/cell/pdfExtended/S0092-8674(15)00637-6)). Briefly, these methods embed cells in a graph structure - for example a K-nearest neighbor (KNN) graph, with edges drawn between cells with similar feature expression patterns, and then attempt to partition this graph into highly interconnected ‘quasi-cliques’ or ‘communities’.
+To briefly summarize, cells are embedded in a KNN graph (illustrated above) based on "the euclidean distance in PCA space" between the cells [source](https://hbctraining.github.io/scRNA-seq_online/lessons/07_SC_clustering_cells_SCT.html) and the edge weights between any two cells (e.g. their "closeness") is refined based on Jaccard similarity.
 
-As in PhenoGraph, they first construct a KNN graph based on the euclidean distance in PCA space, and refine the edge weights between any two cells based on the shared overlap in their local neighborhoods (Jaccard similarity). This step is performed using the FindNeighbors() function, and takes as input the previously defined dimensionality of the dataset (first 20 PCs)." -->
+<details>
+    <summary>*Additional context and sources for graph-based clustering*</summary>
+    [Cambridge Bioinformatics' Analysis of single cell RNA-seq data course materials](https://biocellgen-public.svi.edu.au/mig_2019_scrnaseq-workshop/clustering-and-cell-annotation.html), the source of the image above, delves into KNN and other graph based clustering methods in much greater detail, including outlining possible downsides for these methods. 
+     To described KNN, we have also drawn from the [Ho Lab's description of this process for Seurat v3](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction) as well as the [HBC materials on clustering](https://hbctraining.github.io/scRNA-seq_online/lessons/07_SC_clustering_cells_SCT.html) and the [OSCA book's more general overview of graph based clustering](https://bioconductor.org/books/3.15/OSCA.basic/clustering.html#clustering-graph), which also describes the drawbacks for these methods.
+</details>
+<br>
 
-Our first step is to generate the k-Nearest Neighbor (KNN) graph using the number of principal components chosen in the previous section.
+
+This process is performed with the `FindNeighbors` [command](https://satijalab.org/seurat/reference/findclusters), using the number of principal components we selected in the previous section.
 
 ```{r, eval = FALSE}
 geo_so = FindNeighbors(geo_so, dims = 1:pcs, reduction = 'integrated.sct.rpca.clusters')
 ```
 
-<!--- per [Ho Lab](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction) - "To cluster the cells, we next apply modularity optimization techniques such as the Louvain algorithm (default) or SLM (Blondel et al. 2008), to iteratively group cells together, with the goal of optimizing the standard modularity function. The FindClusters() function implements this procedure, and contains a resolution parameter that sets the ‘granularity’ of the downstream clustering, with increased values leading to a greater number of clusters. We find that setting this parameter between 0.4-1.2 typically returns good results for single-cell datasets of around 3K cells. Optimal resolution often increases for larger datasets. The clusters can be found using the Idents() function."" --->
+The second step is to iteratively partition the kNN graph into "cliques" or clusters using the Louvain modularity optimization algorithm (for the default parameters), with the "granularity" of the clusters set by a `resolution` parameter [source](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html).
 
-The second step is to partition the kNN graph into "cliques" or clusters using the Louvain modularity optimization algorithm, specifying the cluster resolution. 
+![K-means clustering example (from Cambridge Bioinformatics course)](./images/curriculum/05-ProjectionAndClustering/HBC-07-k-meansFigure.png)
 
+
+We'll use the `FindClusters` [function](https://satijalab.org/seurat/reference/findclusters), selecting a resolution of `0.4` to start, although we could also add other resolutions at this stage to look at in later steps. 
 ```{r, eval=FALSE}
-geo_so = FindClusters(geo_so, resolution = 0.4, cluster.name = 'integrated.sct.rpca.clusterss')
+geo_so = FindClusters(geo_so, resolution = 0.4, cluster.name = 'integrated.sct.rpca.clusters')
 ```
 
-A larger cluster resolution would generate more clusters; generally it can be preferable to err on the side of too many clusters, as they can be combined manually in later steps. However, this is another parameter that may need to be revised after evaluating this initial clustering in later steps. Recommended resolution ranges are often dependent on cell number but the [Ho Lab recommends](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction) resolutions between 0.4-1.2 for datasets of approximately 3k cells.
+> Note - Seurat's `FindClusters` function is based on algorithms described by [Waltman and Jan van Eck (2013)](https://link.springer.com/article/10.1140/epjb/e2013-40829-0)
 
+Generally it's preferable to err on the side of too many clusters, as they can be combined manually in later steps. However, this is another parameter that in our experience may need to be iteratively revised and reviewed. 
+
+<details>
+    <summary>*Resolution parameter recommendations*</summary>
+    The [Seurat clustering tutorial](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction) recommends selecting a resolution between 0.4 - 1.2 for datasets of approximately 3k cells, while the [HBC course](https://hbctraining.github.io/scRNA-seq_online/lessons/07_SC_clustering_cells_SCT.html) recommends 0.4-1.4 for 3k-5k cells. However, in our experience reasonable starting resolutions can be very dataset dependent.
+</details>
+<br>
+
+Again, how a “cell type” or “subtype” should be defined for your data is helpful to consider in selecting a resolution - we'd start with a higher resolution for smaller/more rare clusters and a lower resolution for larger/more general clusters.  
+
+If we look at our object after running these commands, we don't see a change.
 ```{r, eval=FALSE}
 geo_so
 ```
@@ -104,39 +130,51 @@ geo_so
 #  3 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca, umap.unintegrated.sct.pca
 ~~~
 
+However, if we look at the meta data we can see that cluster labels have now been added for each cell:
+
+```{r, eval = FALSE}
+head(geo_so@meta.data)
+```
+
+~~~~
+#                                             orig.ident nCount_RNA nFeature_RNA  day  replicate percent.mt nCount_SCT nFeature_SCT
+HODay0replicate1_AAACCTGAGAGAACAG-1 HO.Day0.replicate1      10234         3226 Day0 replicate1   1.240962       6061         2865
+HODay0replicate1_AAACCTGGTCATGCAT-1 HO.Day0.replicate1       3158         1499 Day0 replicate1   7.536415       4625         1510
+HODay0replicate1_AAACCTGTCAGAGCTT-1 HO.Day0.replicate1      13464         4102 Day0 replicate1   3.112002       5426         2485
+HODay0replicate1_AAACGGGAGGCCCGTT-1 HO.Day0.replicate1       1189          629 Day0 replicate1   3.700589       4165          919
+HODay0replicate1_AAACGGGCAACTGGCC-1 HO.Day0.replicate1       7726         2602 Day0 replicate1   2.938131       5858         2585
+HODay0replicate1_AAACGGGGTCCGAATT-1 HO.Day0.replicate1       5165         2362 Day0 replicate1   9.196515       5162         2348
+#                                     unintegrated.sct.clusters seurat_clusters integrated.sct.rpca.clusters SCT_snn_res.0.4 SCT_snn_res.0.8
+HODay0replicate1_AAACCTGAGAGAACAG-1                         4               8                            2               2               8
+HODay0replicate1_AAACCTGGTCATGCAT-1                         4               8                            2               2               8
+HODay0replicate1_AAACCTGTCAGAGCTT-1                         4               6                            3               3               6
+HODay0replicate1_AAACGGGAGGCCCGTT-1                         4               2                            2               2               2
+HODay0replicate1_AAACGGGCAACTGGCC-1                         4               8                            2               2               8
+HODay0replicate1_AAACGGGGTCCGAATT-1                        11               9                            8               8               9
+~~~~
+
+*Note - the example output has more resolutions represented than is currently specified in the code above*
+
 
 # Cluster plots 
 
-Note how dimensionality choices are carried through downstream functions.
+To visualize the cell clusters, we can use dimensionality reduction techniques to visualize and explore our large, high dimensional dataset. Two popular methods that are supported by Seurat are t-distributed stochastic neighbor embedding (t-SNE) and Uniform Manifold Approximation and Projection (UMAP) techniques. These techniques allow us to visualize our high dimensional single-cell data in 2D space and see if cells grouped together within graph-based clusters co-localize in these representations [source](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#run-non-linear-dimensional-reduction-umaptsne).
 
-What's different beteween PCA, tSNE, and UMAP?
+While we unfortunately don't have time to compare and contrast tSNE, and UMAP, we would highly recommend [this blog post contrasting tSNE and UMAP](https://pair-code.github.io/understanding-umap/) for illustrative examples. The Seurat authors additionally caution that while these methods are useful for data exploration, to avoid drawing biological conclusions solely based on these visualizations [source](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#run-non-linear-dimensional-reduction-umaptsne)
 
-Note: tSNE vs UMAP example: https://pair-code.github.io/understanding-umap/ 
-
-<!-- per [Ho Lab](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#run-non-linear-dimensional-reduction-umaptsne) "Seurat offers several non-linear dimensional reduction techniques, such as tSNE and UMAP, to visualize and explore these datasets. The goal of these algorithms is to learn the underlying manifold of the data in order to place similar cells together in low-dimensional space. Cells within the graph-based clusters determined above should co-localize on these dimension reduction plots. As input to the UMAP and tSNE, we suggest using the same PCs as input to the clustering analysis."" --->
+To start this process, we'll use the `RunUMAP` function to calculate the UMAP reduction for our data. Notice how the previous dimensionality choices carry through the downstream analysis and that the number of PCs selected in the previous steps are included as an argument.
 
 ```{r, eval=FALSE}
-geo_so = RunUMAP(geo_so, dims = 1:25, reduction = 'unintegrated.sct.pca', reduction.name = 'umap.unintegrated.sct.pca')
+geo_so = RunUMAP(geo_so, dims = 1:pcs, reduction = 'integrated.sct.pca', reduction.name = 'umap.integrated.sct.pca')
 ```
 
 # Visualizing and evaluating clustering
 
-How many clusters should I get and how do I adjust the number?
+<!--- How many clusters should I get and how do I adjust the number? --->
 
-<!--- Show example of changing resolution?--->
+<!--- Add example of changing resolution?--->
 
-
-We can check the how well the normalization and integration .
-
-```{r, eval = FALSE}
-post_integration_umap_plot_day = DimPlot(geo_so, group.by = 'day', label = FALSE, reduction = 'umap.integrated.sct.rpca')
-
-ggsave(filename = 'results/figures/umap_integrated_sct_day.png', plot = post_integration_umap_plot_day)
-```
-
-![](./images/curriculum/umap_integrated_sct_day.png)
-
-
+After we generate the UMAP reduction, we can then visualize the results using the `DimPlot` function, labeling our plot by the auto generated `seurat_clusters` that correspond to the most recent clustering results generated:
 
 ```{r, eval = FALSE}
 post_integration_umap_plot_clusters = DimPlot(geo_so, group.by = 'seurat_clusters', label = FALSE, reduction = 'umap.integrated.sct.rpca')
@@ -144,8 +182,22 @@ post_integration_umap_plot_clusters = DimPlot(geo_so, group.by = 'seurat_cluster
 ggsave(filename = 'results/figures/umap_integrated_sct_clusters.png', plot = post_integration_umap_plot_clusters, width = 8, height = 6, units = 'in')
 ```
 
-![](./images/curriculum/umap_integrated_sct_orig.ident.png)
+![](./images/curriculum/05-ProjectionAndClustering/umap_integrated_sct_0.4.png) 
 
+At this stage, we want to determine if the clusters look fairly well separated, if they seem to correspond to how cells are grouped in the UMAP, and if the number of clusters are aligned with the resolution of our biological question. 
+
+
+We can also look at the same UMAP, but labeling by `day` instead of cluster:
+
+```{r, eval = FALSE}
+post_integration_umap_plot_day = DimPlot(geo_so, group.by = 'day', label = FALSE, reduction = 'umap.integrated.sct.rpca')
+
+ggsave(filename = 'results/figures/umap_integrated_sct_day.png', plot = post_integration_umap_plot_day)
+```
+
+A plot like this can tell us how much possible technical sources of variation groupings might be driving or stratifying the clusters or if we see good correction after the normalization and integration steps.
+
+![](./images/curriculum/05-ProjectionAndClustering/umap_integrated_sct_day.png)
 
 
 We can also evaluate the number of cells per cluster using the `table()` function, split by `day`:
@@ -186,9 +238,10 @@ HO.Day21.replicate4  639  118  290  263  144   56   31  145   55  186  152   80 
 ~~~
 
 
+<!-- consider adding later 
 # Other approaches for visualizing scRNA-sq data
 
-tSNE, PCA
+code for tSNE visualization --->
 
 
 # Comparing to unintegrated data
@@ -197,53 +250,55 @@ If we had proceeded with our filtered data and only normalized our data without 
 
 <!--Add example of UMAP / sample labels for unintegrated data from analysis folder to images-->
 
-![](umap_comparison_sct.png)
 
+![](./images/curriculum/05-ProjectionAndClustering/umap_unintegrated_sct_orig.ident.png)
 
+If we instead labeled our plot by `day`, then we would see:
+![](./images/curriculum/05-ProjectionAndClustering/umap_unintegrated_sct_day.png)
 
-In this plot, we ... see that while there are distinct clusters, those clusters seem to separate primarily by sample id. This suggests that without integration, these batch effects could skew the biological variability in our data. <!--move this section to end of Projection module to contrast with integrated results-->
-
+In this plot, we see that while there are distinct clusters, those clusters seem to stratified by day. This suggests that without integration, these batch effects could skew the biological variability in our data. 
 
 <!-- Edit section to incorporate --->
 
-# Rewind: Pre-integration evaluation
+<details>
+    <summary>**Rewind: Pre-integration evaluation clustering and visualization**</summary>
+    Prior to integration, could follow the same steps we've just run for the integrated to see if the resulting clusters tend to be determined by sample or condition (in this case, the day):
+  ```{r, eval=FALSE}
+	# DefaultAssay(geo_so) = 'RNA'
 
-Prior to integration, we would like to know if there are any batch effects that carry through to the cell clusters. Most importantly, we would like to know if clusters tend to be determined by sample or condition (in this case, the day). In order to figure this out we have already run the following three commands, which we will describe in more detail later.
+	geo_so = RunPCA(geo_so, reduction.name = 'unintegrated.sct.pca')
+	geo_so = FindNeighbors(geo_so, dims = 1:25, reduction = 'unintegrated.sct.pca')
+	geo_so = FindClusters(geo_so, resolution = 0.4, cluster.name = 'unintegrated.sct.clusters')
+	geo_so = RunUMAP(geo_so, dims = 1:25, reduction = 'unintegrated.sct.pca', 	reduction.name = 'umap.unintegrated.sct.pca')
+	```
+	
+	From this image, we can qualitatively see that some clusters seem to be driven by the original identity. We can see this even more clearly if we use `group.by = 'day'`:
 
-```{r, eval=FALSE}
-# DefaultAssay(geo_so) = 'RNA'
-
-geo_so = RunPCA(geo_so, reduction.name = 'unintegrated.sct.pca')
-geo_so = FindNeighbors(geo_so, dims = 1:25, reduction = 'unintegrated.sct.pca')
-geo_so = FindClusters(geo_so, resolution = 0.4, cluster.name = 'unintegrated.sct.clusters')
-geo_so = RunUMAP(geo_so, dims = 1:25, reduction = 'unintegrated.sct.pca', reduction.name = 'umap.unintegrated.sct.pca')
-```
-
-From this image, we can qualitatively see that some clusters seem to be driven by the original identity. We can see this even more clearly if we use `group.by = 'day'`:
-
-```{r, eval=FALSE}
-pre_integration_umap_plot = DimPlot(geo_so, group.by = 'day', label = FALSE, reduction = 'umap.unintegrated.sct.pca') + NoLegend()
-ggsave(filename = 'ISC_R/results/figures/umap_unintegrated_sct_day.png', plot = pre_integration_umap_plot)
-```
-
-![](./images/curriculum/umap_unintegrated_sct_day.png)
+	```{r, eval=FALSE}
+	pre_integration_umap_plot = DimPlot(geo_so, group.by = 'day', label = FALSE, 	reduction = 'umap.unintegrated.sct.pca') + NoLegend()
+	ggsave(filename = 'ISC_R/results/figures/umap_unintegrated_sct_day.png', plot = pre_integration_umap_plot)
+	```
 
 
-```{r, eval=FALSE}
-pre_post_integration_plot = pre_integration_umap_plot_day | post_integration_umap_plot_day
+	```{r, eval=FALSE}
+	pre_post_integration_plot = pre_integration_umap_plot_day | 	post_integration_umap_plot_day
 
-ggsave(filename = 'results/figures/umap_comparison_sct.png', plot = pre_post_integration_plot, width = 12, height = 6, units = 'in')
-```
+	ggsave(filename = 'results/figures/umap_comparison_sct.png', plot = pre_post_integration_plot, width = 12, height = 6, units = 'in')
+	```
+</details>
+<br>
+<br>
+<br>
 
-<!-- Make sure above section is edited -->
 
-## Alternative clustering resolutions
+<details>
+    <summary>**Alternative clustering resolutions**</summary>
+    While we show a single resolution, we can generate and plot multiple resolutions iteratively and compare between them before selecting a clustering result for the next steps:
+	  ```{r, eval=FALSE}
+	  resolutions = c(0.4, 0.8)
+	  # seq(from = 0.1, to = 1, by = 0.1)
 
-```{r, eval=FALSE}
-resolutions = c(0.4, 0.8)
-# seq(from = 0.1, to = 1, by = 0.1)
-
-for(res in resolutions) {
+	  for(res in resolutions) {
     message(res)
     
     cluster_column = sprintf('SCT_snn_res.%s', res)
@@ -253,35 +308,21 @@ for(res in resolutions) {
     
     DimPlot(geo_so, group.by = cluster_column, label = FALSE, reduction = 'umap.integrated.sct.rpca')
     ggsave(filename = umap_file, width = 8, height = 7, units = 'in')
-}
-```
+	  }
+	  ```
 
-
-Look at our results
-```{r, eval=FALSE}
-head(geo_so@meta.data)
-```
-
-~~~
-#									orig.ident nCount_RNA nFeature_RNA  day  replicate percent.mt nCount_SCT nFeature_SCT
- HODay0replicate1_AAACCTGAGAGAACAG-1 HO.Day0.replicate1      10234         3226 Day0 replicate1   1.240962       6061         2865
- HODay0replicate1_AAACCTGGTCATGCAT-1 HO.Day0.replicate1       3158         1499 Day0 replicate1   7.536415       4625         1510
- HODay0replicate1_AAACCTGTCAGAGCTT-1 HO.Day0.replicate1      13464         4102 Day0 replicate1   3.112002       5426         2485
- HODay0replicate1_AAACGGGAGGCCCGTT-1 HO.Day0.replicate1       1189          629 Day0 replicate1   3.700589       4165          919
- HODay0replicate1_AAACGGGCAACTGGCC-1 HO.Day0.replicate1       7726         2602 Day0 replicate1   2.938131       5858         2585
- HODay0replicate1_AAACGGGGTCCGAATT-1 HO.Day0.replicate1       5165         2362 Day0 replicate1   9.196515       5162         2348
-#                                     unintegrated.sct.clusters seurat_clusters integrated.sct.rpca.clusters SCT_snn_res.0.4 SCT_snn_res.0.8
- HODay0replicate1_AAACCTGAGAGAACAG-1                         4               8                            2               2               8
- HODay0replicate1_AAACCTGGTCATGCAT-1                         4               8                            2               2               8
- HODay0replicate1_AAACCTGTCAGAGCTT-1                         4               6                            3               3               6
- HODay0replicate1_AAACGGGAGGCCCGTT-1                         4               2                            2               2               2
- HODay0replicate1_AAACGGGCAACTGGCC-1                         4               8                            2               2               8
- HODay0replicate1_AAACGGGGTCCGAATT-1                        11               9                            8               8               9 
-~~~
+	If we look at the results... :
+	  ```{r, eval=FALSE}
+	  head(geo_so@meta.data)
+	  ```
+	... multiple resolutions should now be added to the metadata slot.
+</details>
+<br>
 
 
 ## Save our progress
 
+Before moving on to our next section, we will output our updated Seurat object to file:
 ```{r, eval=FALSE}
 saveRDS(object = geo_so, file = 'results/rdata/geo_so_sct_clustered.rda')
 ```
@@ -290,9 +331,9 @@ saveRDS(object = geo_so, file = 'results/rdata/geo_so_sct_clustered.rda')
 
 In this section we:
 
-- XX
-- XX
-- XX
+- Generated cluster assignments for our cells using `FindNeighbors` and `FindClusters`
+- Evaluated our initial clusters using `RunUMAP` dimensional reduction and visualization
+
 
 Next steps: Marker genes
 
