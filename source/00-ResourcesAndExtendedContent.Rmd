@@ -88,6 +88,7 @@ General goal: Filtering out the "cells" that either were poorly measured or are 
 ## Resource compilations:
 
 - [10x - Continuing your journey after running cell ranger](https://www.10xgenomics.com/analysis-guides/continuing-your-journey-after-running-cell-ranger)
+- [10x Analysis Guides - single-cell gene expression](https://www.10xgenomics.com/analysis-guides?query=&page=1&refinementList%5Bproducts.name%5D%5B0%5D=Single%20Cell%20Gene%20Expression)
 - [Ming Tang's scRNA analysis notes repository](https://github.com/crazyhottommy/scRNAseq-analysis-notes)
 - [Sean Davis' list of single-cell packages](https://github.com/seandavi/awesome-single-cell)
 - [Mikhail Dozmorov's compilation of single-cell analysis tools and papers](https://github.com/mdozmorov/scRNA-seq_notes)

@@ -113,6 +113,8 @@ Standard approach versus pseudobulk
 
 <!-- add UMAP with facets by sample to show what's being compared? -->
 
+<!-- [10x analysis guide for differential expression with biological replicates](https://www.10xgenomics.com/analysis-guides/differential-gene-expression-analysis-in-scrna-seq-data-between-conditions-with-biological-replicates) -->
+
 ```{r, eval=FALSE}
 pseudo_catch_so = AggregateExpression(geo_so, assays = 'RNA', return.seurat = TRUE, group.by = c('cell_type', 'day', 'replicate'))
 ```
