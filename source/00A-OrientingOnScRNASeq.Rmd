@@ -26,68 +26,305 @@ code.r{
 pre {
   font-size: 12px
 }
+
+table.fig, th.fig, td.fig {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 15px;
+}
+
 </style>
 
+# Workflow Overview {.unlisted .unnumbered}
+
+<br/>
+<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<br/>
+<br/>
 
 # Objectives
 
-- Compare and contrast the capabilities and approach in scRNA-Seq vs bulk RNA-Seq approaches.
-- Review the details of the 10x Genomics approach to single-cell sequencing
-- Introduce a specific experimental model to guide discussion and learning
-- Outline the high-level steps to analyze scRNA-Seq
+- List some applications of scRNA-Seq.
+- Compare and contrast the capabilities and challenges in scRNA-Seq vs bulk RNA-Seq approaches.
+- Introduce a specific experimental model to guide discussion and learning.
+- Outline the abstract approach to single-cell sequencing and consider the 10x Genomics platform in more detail.
+- Consider common challenges in executing these initial steps.
 
-## Bulk RNA-seq and scRNA-Seq
-Bulk RNA-seq typically involves comparing the expression levels of genes between sets of tissues, such as untreated and treated mice. It allows researchers to characterize gene expression differences across entire tissues, providing a snapshot of the average expression program.
+<br/>
+<br/>
 
-![](images/00A-OrientingOnScRNASeq/bulk-rna-seq.png)
+# Overview of bulk RNA-seq and scRNA-Seq
+
+Next Generation Sequencing (NGS) enables many powerful experimental designs and
+analysis approaches including variant identification, chromatin accessibility, 
+gene expression, and more. Before we dive into the complexities of single-cell
+RNA-Seq analysis, it's beneficial to review the new perspectives afforded by
+a scRNA-Seq single cell approach and helpful to consider scRNA-Seq alongside a
+traditional bulk RNA-Seq approach.
+
+<table class='fig'><tr><th class='fig'>Bulk RNA-Seq approach</th></tr>
+<tr><td class='fig'>![](images/00A-OrientingOnScRNASeq/bulkRNA-Seq-capabilities.png)</td></tr>
+<tr><td class='fig'>
+Bulk RNA-seq typically involves comparing the expression levels of genes between
+sets of tissues, e.g. untreated and treated mice. This enables researchers to 
+characterize distinct expression patterns for a specific gene and also 
+expression changes across functionally related genes or pathways. This is 
+valuable because it provides an overall snapshot of the average expression 
+program across the sample. However, considering the sample a single homogeneous
+population of cells can obscure subtle changes or patterns in expression.
+</td></tr>
+</table>
+<br/>
+<br/>
+<table class='fig'><tr><th class='fig'>Single-cell RNA-Seq approach</th></tr>
+<tr><td class='fig'>![](images/00A-OrientingOnScRNASeq/scRNA-Seq-capabilities.png)</td></tr>
+<tr><td class='fig'>
+Instead of looking at the whole forest, that is to say, the average of the gene 
+expression in a tissue or a biofluid, single cell illuminates expression for a 
+collection of individual cells (i.e. you can now see consider individual trees).
+This enables similar perspectives to bulk plus a few more:
+
+1. What kinds of cells are present in this sample? 
+1. How does the cell population structure change between groups/conditions?
+1. What are the expression patterns between cell types or between groups/conditions?
+1. How do cells change over time and how might we affect that development?
+
+</td></tr>
+</table>
+
+<br/>
+<br/>
+
+## Contrasting bulk RNA-seq with scRNA-Seq
+
+Bulk and single-cell approaches are fundamentally complementary approaches where
+bulk RNA-Seq provides a "forest-level" view while scRNA-Seq shows the individual 
+trees. Compared to bulk RNA-Seq, scRNA-Seq provides powerful new perspectives. 
+But it isn't without challenges or downsides.
+
+<table class='fig'><tr><th class='fig'>Bulk vs. Single-Cell</th></tr>
+<tr><td class='fig'>![](images/00A-OrientingOnScRNASeq/bulk_v_sc.png)</td></tr>
+<tr><td class='fig'>
+
+1. Single-cell is less mature than bulk.
+1. Single-cell sample prep is more complex than bulk.
+1. Single-cell typically sees only the subset of highly expressed genes.
+1. Single cell analysis is typically more complex.
+1. Single cell analysis costs more than bulk analysis.
+
+</td></tr>
+</table>
+
+<br/>
+<br/>
+
+# Consider a specific scRNA-Seq experiment
+
+These concepts can be abstract. Acknowledging that the basic concepts are
+broadly applicable, it's helpful to ground the conversation in aspecific 
+scRNA-Seq experiment.
+
+<table class='fig'><tr><th class='fig'>Consider a specific experiment</th></tr>
+<tr><td class='fig'>![](images/00A-OrientingOnScRNASeq/specific-experiment.png)</td></tr>
+<tr><td class='fig'>
+In this workshop we will be focusing on an experiment conducted at UM on a mouse 
+model where a soft tissue injury is followed by an aberrant injury response
+that generates bone tissue. For more details on this experiment, it's original
+analysis and the biology of heterotopic ossification, see the full paper [[1]](#References).
 
 
-scRNA-seq leverages the approaches and protocols of bulk RNA-seq, but instead at the level of cells instead of tissues/bulk samples. There are several distinct ways to do this, but common steps include
-![](images/00A-OrientingOnScRNASeq/scRNA-Seq.png)
+A) A simplified version of the experiment:
+
+1. A sample of mouse tissue is extracted from a healthy mouse.
+1. The researcher induces a burn at the sample site.
+1. The researchers re-sample tissue from the site at several time points.
+1. Each sample undergoes scRNA-Seq prep and analysis.
+(This is replicated across four mice.)
+
+B) The scRNA-Seq analysis of this sample can reveal the population of cell types
+present and also the gene expression patterns of each cell time over time.
+
+</td></tr>
+</table>
 
 
-### Key Advantages of Single-Cell RNA-Seq
+<br/>
+<br/>
 
-1. **Cell-Level Insights:** Unlike bulk RNA-seq, single-cell analysis provides insights into expression programs at the individual cell or cell group level.
-1. **Heterogeneity Detection:** Single-cell RNA-seq reveals variations in gene expression among different cell types within a tissue.
-1. **Response to Interventions:** It enables the examination of cell-level responses to interventions, offering a detailed understanding of how individual cells react to stimuli.
-1. **Temporal Analysis:** It allows the study of how cell states change over time and how cells differentiate.
+# How scRNA-Seq works
 
-### Challenges of Single-Cell RNA-Seq
+It's also useful to orient on how scRNA-Seq works at an abstract level. There 
+are many different platforms and protocols, but many have steps similar to below.
 
-While powerful, single-cell RNA-seq comes with added complexity and cost. The protocol requires nuanced decision-making, iterative analysis, and considerations for data storage and computational resources.
+<table class='fig'><tr><th class='fig'>Single cell protocol (from 30k feet)</th></tr>
+<tr><td class='fig'>![](images/00A-OrientingOnScRNASeq/scRNA-Seq-from-30k.png)</td></tr>
+<tr><td class='fig'>
 
-![](images/00A-OrientingOnScRNASeq/forest_trees.png)
+A) Sample tissue (or biofluid) is collected. <br/>
+B) Tissue is dissociated into a suspension of **healthy, intact** cells
+C) Cells are physically isolated.
+D) Cell transcripts converted to cDNA labeled with their cell of origin.
+E) cDNAs from all cells is pooled
+F) cDNAs are undergo library prep and are sequenced
+G) The resulting transcript sequences can be partitioned into (putative) cells computationally. 
 
-## A Practical Example
+</td></tr>
+</table>
 
-The blog post concludes with a focus on a specific experiment involving mice that underwent a soft tissue injury. The researchers aim to identify cell types associated with an aberrant injury response using single-cell RNA-seq techniques.
+<br/>
+<br/>
 
-![](images/00A-OrientingOnScRNASeq/mouse_injury.png)
+## 10x Genomics 3' gene expression
+
+It's useful to elaborate how transcripts are labeled with their cell of origin
+because this will help us understand how downstream QC and analysis works. The
+specifics of the steps depend on the platform and the specific libary prep 
+protocol. We will focus on the **10x Genomics 3' gene expression** approach[[2]](#References).
+
+<table class='fig'><tr><th class='fig'>A 10x Genomics single cell protocol (from 10k feet)</th></tr>
+<tr><td class='fig'>![](images/00A-OrientingOnScRNASeq/10x-genomics-scRNA-Seq-from-10k.png)</td></tr>
+<tr><td class='fig'>
+
+A) 10x Genomics uses microfluidics to combine an isolated cell with a 
+manufactured oligo-bead in an aqueous droplet in an oil emulsion. The oil 
+isolates each droplet, effectively creating a reaction vessel for each cell-bead 
+dyad.
+B) Ideally, each droplet contains reaction enzymes (carried in the aqueous 
+solution), a single bead and a single healthy, intact cell. The cell is lysed to
+release the mRNA transcripts into the droplet.
+C) The beads are covered with a lawn of milions of oligos. Each oligo is 
+designed to interact with poly-A tailed mRNAs and the enzymes to produce a 
+complementary DNA molecule (cDNA).
+D) Each cDNA contains:
+  - the sequence of an individual mRNA transcript (from the cell)
+  - flanking sequence added for downstream library prep
+  - a 12bp Unique Molecular Identifier (UMI): the UMIs are unique for each of the
+    oligos on the bead ensuring **each UMI represents a single mRNA**.
+    (This enables reliable de-duplication following sequencing.)
+  - 16 bp barcode sequence: all barcodes are identical for a given bead, so the
+    barcode sequence acts as a molecular label for each transcript; 
+    **each barcode represent a distinct cell of origin for that mRNA**.
+</td></tr>
+</table>
+
+<br/>
+<br/>
+
+<table class='fig'><tr><th class='fig'>Consider (just) two droplets</th></tr>
+<tr><td class='fig'>![](images/00A-OrientingOnScRNASeq/two-droplets.png)</td></tr>
+<tr><td class='fig'>
+
+- Each droplet converts mRNAs into cDNAs that contain the oligo sequence and the 
+mRNA sequence.
+- Each mRNA sequence will get a distinct UMI, so one UMI = one mRNA.
+- For a single droplet, the cDNA barcodes will all match. Barcodes will be 
+  distinct across droplets.
+
+</td></tr>
+</table>
+
+<br/>
+<br/>
 
 
-## Workshop Overview
+<table class='fig'><tr><th class='fig'>From droplets to matrix</th></tr>
+<tr><td class='fig'>![](images/00A-OrientingOnScRNASeq/droplets-to-matrix.png)</td></tr>
+<tr><td class='fig'>
 
-The steps of the workshop, including running cell ranger to transform raw sequence data, generating a count matrix, and performing quality control evaluations. Further steps involve data analysis in RStudio, dimensional reduction to separate signal from noise, and potential projections to visualize cell populations.
+A) Once mRNA transcripts have been converted to barcode-labeled cDNA the oil
+emulsion can be broken and the cDNA molecules are pooled together.
+B) cDNA molecules undergo several conventional library prep steps to enable
+sequencing
+C) The sequencer call bases for each sequence. For a large sequencing run, this
+might contain many samples, several experiments, and even multiple experiment 
+types.
+D) The resulting 10x FASTQ files have a specific structure. 
+- Read2 represents the mRNA sequence.
+- Read1 represents the barcode and UMI
+E) Specialized software bins each distinct barcode into a a putative cell and
+aligns the mRNA sequence against a genome build.
+F) Alignments for features (genes) are quantified across all barcodes to create
+a feature barcode matrix.
+</td></tr>
+</table>
 
-![](images/00A-OrientingOnScRNASeq/sc_analysis.png)
+<br/>
+<br/>
 
-Represented Another way:
-<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+# Common problems and challenges
 
+<table class='fig'><tr><th class='fig'>Some droplets don't work as intended</th></tr>
+<tr><td class='fig'>![](images/00A-OrientingOnScRNASeq/problem-droplets.png)</td></tr>
+<tr><td class='fig'>
 
-## A whirlwind intro to 10x Genomics basics
+A) Interpreting the sequencing outputs is simplest when each droplet contains a 
+single bead and a single healthy cell. The system is optimized for this outcome
+and typically the majority of droplets will follow this pattern. However, in 
+each run there are always a few complicating edge cases to consider. 
+B) Sometimes a droplet contains a bead but no cell. This is actually common but
+it's impact is slight because in the absence of mRNA, the enzymes won't produce
+cDNA. In effect, the droplet appears empty and is discarded.
+C) Sometimes two beads land in the same droplet with a cell. In theory, the 
+cells mRNA would appear to come from two droplets (i.e. two cells) each with 
+half the expected expression levels. In practice this rarely happens because the
+microfluidics are tuned to avoid this.
+D) Sometimes two cells join with a single bead in a droplet creating a 
+**doublet**. This happens when some of the cells are not fully dissociated from 
+each other. In this case, the mRNAs from two cells will receive the same label; 
+the expression programs are merged and the overall expected expression is 
+roughly doubled.
+E) Sometimes the stress of the protocol induces cells to start apoptosis. This 
+confounds analysis because the expression programs aren't about the model 
+biology but instead artifacts from the experimental platform.
+F) Sometimes dissociated cells become so stressed they start to break down in 
+the suspension. When that happens, the mRNAs from the popped cell's combine
+together in the aqueous flow to create soup of ambient RNA. This appears as a 
+droplet with extremely low expression.
+</td></tr>
+</table>
 
-One common microfluidic approach, like the 10X Genomics method, uses beads with unique identifiers. These beads, along with cells, pass through a microfluidic device, creating isolated reaction vessels.
+<br/>
+<br/>
 
-The bead contains oligomers with a PCR handle, a cell barcode, and a unique molecular identifier (UMI). After cell lysis, transcripts are reverse transcribed, incorporating the cell-specific barcode. This enables the association of each transcript with a specific cell. Computational analysis of these barcodes allows the separation of transcripts into constituent cells.
+To reliably interpret the sequence output we need to solve three problems:
+
+<table class='fig'><tr><th class='fig'>Interpreting 10x sequence output </th></tr>
+<tr><td class='fig'>![](images/00A-OrientingOnScRNASeq/primary-analysis-qc.png)</td></tr>
+<tr><td class='fig'>
+A) How do we associate each sequence with an individual cell?
+B) How do we align and quantify the sequences to create an expression matrix?
+C) How do we distinguish good cells from problem edge cases?
+</td></tr>
+</table>
+
+To expedite the primary analysis and QC tasks above, 10x Genomics provides the
+tool Cell Ranger, which we will discuss in the next lesson.
+
+<br/>
+<br/>
 
 
 # Conclusion
 
-scRNA-seq offers a powerful and nuanced approach to studying gene expression at the cellular level. This technique can elaborate our understanding of cellular heterogeneity, responses to interventions, and the cell state dynamics.
+- scRNA-seq offers a powerful and nuanced approach to studying gene expression at
+the cellular level. This technique can illuminate biological mechanisms of 
+healthy tissue or disease as well as extend our understanding of cellular
+heterogeneity, responses to interventions, and the cell state dynamics.
+- scRNA-Seq experiments are typically more complex and often more expensive than
+bulk RNA-Seq.
+- scRNA-Seq experiments leverage existing NGS approaches by adding a molecular 
+label to each mRNA, enabling us to connect all the mRNA's from a cell to a 
+distinct cell of origin computationally following sequencing.
 
+<br/>
+<br/>
 
+# References
+
+1. Sorkin, Michael et al. **“Regulation of heterotopic ossification by monocytes in a mouse model of aberrant wound healing.”**
+   Nature communications vol. 11,1 722. 5 Feb. 2020.<br/>
+   [https://pubmed.ncbi.nlm.nih.gov/32024825](https://pubmed.ncbi.nlm.nih.gov/32024825){target="_blank"}
+2. [10x Genomics 3' gene expression](https://www.10xgenomics.com/support/single-cell-gene-expression/documentation/steps/experimental-design-and-planning/getting-started-single-cell-3-gene-expression){target="_blank"}
 <br/>
 <br/>
 <hr/>

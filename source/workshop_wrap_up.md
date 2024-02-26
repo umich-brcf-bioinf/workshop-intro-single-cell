@@ -44,16 +44,15 @@ connect to enable single-cell gene expression analysis from RNA-Seq data.
 
 ## Housekeeping
 
-- Please take our optional <a class="external" href="https://forms.gle/mafY39iccNRoEAVZ8" target="_blank">post-workshop survey</a> (5-10 minutes)
+- Please take our optional [post-workshop survey](https://forms.gle/mafY39iccNRoEAVZ8){target="_blank"} (5-10 minutes).
 
-- 3/8 11-12 ET: <a class="external" href="https://forms.gle/tJ1fSR4fPgcpPKws5" target="_blank">Virtual office hours</a>
+- Sign up here to attend [virtual office hours](https://forms.gle/tJ1fSR4fPgcpPKws5){target="_blank"} on 3/8 11-12 ET.
 
-- We will email you a link to the final session recordings by next week.
+- We will email you a link to the final session recordings by the end of next week.
 
 - The website/notes for this workshop will be available.
 
-- The <a class="external" href="https://umbioinfcoreworkshops.slack.com" target="_blank">UM Bioinformatics Core Workshop Slack channel</a> will be available
-for 90 days.
+- The [UM Bioinformatics Core Workshop Slack channel](https://umbioinfcoreworkshops.slack.com){target="_blank"} content will be available for 90 days.
 
 ---
 
@@ -69,8 +68,8 @@ for 90 days.
   cd intro_scrnaseq-workshop
   scp -r YOUR_USERNAME@bfx-workshop01.med.umich.edu:"ISC_R*" .
   ```
-  - Note that the full download or the R data is about 8Gb, so depending on your internet 
-    speeds it could take while. (We do not recommend you download the full set of Cell 
+  - Note that the full download of the R data is about 8Gb, so depending on your internet 
+    speeds it could take a while. (We do not recommend you download the full set of Cell 
     Ranger outputs.)
 
 #### Installing software locally
@@ -86,42 +85,42 @@ for 90 days.
 
 
 ## University of Michigan Resources
-- <a class="external" href="https://datascience.isr.umich.edu/events/coderspaces/" target="_blank">UM CoderSpaces "office hours"</a> and UM CoderSpaces Slack workspace. _(See "Useful Resources" section in above page for instructions on how to join and access the CoderSpaces Slack workspace.)_
-- Upcoming <a class="external" href="https://arc.umich.edu/events/" target="_blank">UM Advanced Research Computing workshops</a>.
+- [UM CoderSpaces "office hours"](https://datascience.isr.umich.edu/events/coderspaces/){target="_blank"} and UM CoderSpaces Slack workspace. _(See "Useful Resources" section of the CoderSpaces page for instructions on how to join the CoderSpaces Slack workspace.)_
+- Upcoming [UM Advanced Research Computing workshops](https://arc.umich.edu/events/){target="_blank"}.
 - Advanced Research Computing (ARC) at University of Michigan hosts a
   high-performance computing (HPC) platform called _Great Lakes_ which combines
   high-end computers, fast/resilient storage, and pre-installed software.
-  GreatLakes may be a good resource for folks who need to run the more compute
+  Great Lakes may be a good resource for folks who need to run the more compute
   intensive steps and a substantial block of compute and storage is subsidized
-  by ARC making it essentially free to many researchers.
-  - About <a class="external" href="https://arc.umich.edu/greatlakes/" target="_blank">Great Lakes HPC</a>.
-  - About the ARC <a class="external" href="https://arc.umich.edu/umrcp/" target="_blank">Research Computing Package</a>.
-  - Videos on <a class="external" href="https://www.mivideo.it.umich.edu/channel/ARC-TS%2BTraining/181860561/" target="_blank">getting started with Great Lakes</a>. (available to UM folks)
+  by ARC making it essentially free to many UM researchers.
+  - About [Great Lakes](https://arc.umich.edu/greatlakes/){target="_blank"}.
+  - About the ARC [Research Computing Package](https://arc.umich.edu/umrcp/){target="_blank"}.
+  - Videos on [getting started with Great Lakes](https://www.mivideo.it.umich.edu/channel/ARC-TS%2BTraining/181860561/){target="_blank"}. (Videos are available to UM folks.)
 
 
 ## Resources for continued learning
-  - Learning bioinformatic analyses more like a process than a task. Resources 
+  - Learning bioinformatic analyses is more like a process than a task. Resources 
     to consider:
-    - UM Bioinformatics Core links to <a class="external" href="https://brcf.medicine.umich.edu/cores/bioinformatics-core/training/" target="_blank">training resources/workshops</a>
+    - UM Bioinformatics Core links to [training resources/workshops](https://brcf.medicine.umich.edu/cores/bioinformatics-core/training/){target="_blank"}.
     - **Techniques in Bash and R**
-      - Notes the recent <a class="external"
-        href="https://umich-brcf-bioinf.github.io/workshop-computational-foundations/main/html/" target="_blank">
-        Computational Foundations Workshop.</a>
+      - Lesson plans from the UM Bioinformatics Core's recent [Computational Foundations Workshop](https://umich-brcf-bioinf.github.io/workshop-computational-foundations/main/html/){target="_blank"}.
       - Lessons and workshops in Bash / Git / R / Python : <a href="https://software-carpentry.org/lessons/" target="_blank">
         Software Carpentry</a> and also the <a class="external" href="https://umcarpentries.org/" target="_blank">
         UM Software Carpentry Group.</a>
 
     - **More info on NGS analysis**
-      - Lesson plans from <a class="external" 
-        href="https://umich-brcf-bioinf.github.io/workshop-computational-foundations/main/html/" target="_blank">
-        RNA-Seq Demystified Workshop.</a> (Note this is for bulk RNA-Seq.)
-      - <a class="external" href="https://hbctraining.github.io/main/" target="_blank">Harvard Chan Bioinformatics Core.</a>
-      - <a class="external" href="https://bioconductor.org/books/3.12/OSCA/index.html" target="_blank">Orchestrating Single-Cell Analysis 
-        with Bioconductor.</a>
-      - The <a class="external" href="https://satijalab.org/">Satija lab</a> publishes many excellent step-by-step tutorials on single-cell
-        analysis, e.g. <a class="external" href="https://satijalab.org/seurat/articles/pbmc3k_tutorial" target="_blank">
-        Seurat - Guided Clustering Tutorial.</a> The Satija lab also hosts <a class="external" href="https://satijalab.org/scgd24/">
-        Single Cell Genomics Day</a> an annual symposium (live-streamed) on emerging techniques in single-cell analysis.
+      (A decidedly non-exhaustive list in no discernible order.)
+      - Lesson plans from UM Bioinformatics Core's recent [RNA-Seq Demystified Workshop](https://umich-brcf-bioinf.github.io/workshop-rnaseq-demystified/main/html/){target="_blank"}. (Note this is for bulk RNA-Seq.)
+      - Training materials from [Harvard Chan Bioinformatics Core](https://hbctraining.github.io/main/#advanced-topics-analysis-of-high-throughput-sequencing-ngs-data){target="_blank"}.
+      - [Orchestrating Single-Cell Analysis with Bioconductor](https://bioconductor.org/books/3.12/OSCA/index.html){ target="_blank"}.
+      - Welcome Sanger Instutute's [Analysis of single cell RNA-seq data](https://www.singlecellcourse.org/index.html){target="_blank"}.
+      - In addition to maintaining the Seurat analysis platform, New York Genome
+        Center's [Satija lab](https://satijalab.org/){target="_blank"} publishes
+        many excellent step-by-step tutorials on single-cell analysis, e.g.
+        [Seurat - Guided Clustering Tutorial](https://satijalab.org/seurat/articles/pbmc3k_tutorial){target="_blank"}.
+        The Satija lab also hosts [Single Cell Genomics Day](https://satijalab.org/scgd24/){target="_blank"}, 
+        a live-streamed annual symposium on emerging techniques in single-cell
+        analysis.
       - Nayak, Richa, and Yasha Hasija. **“A hitchhiker's guide to single-cell transcriptomics and data analysis pipelines.”** 
         Genomics vol. 113,2 (2021): 606-619.<br/>
         https://pubmed.ncbi.nlm.nih.gov/33485955/
@@ -164,4 +163,4 @@ Thank you for participating in our workshop. We welcome your questions and feedb
 Bioinformatics Workshop Team
 
 [bioinformatics-workshops@umich.edu](mailto:bioinformatics-workshops@umich.edu) <br/>
-[https://brcf.medicine.umich.edu/bioinformatics](https://brcf.medicine.umich.edu/bioinformatics)
+[UM BRCF Bioinformatics Core](https://medresearch.umich.edu/office-research/about-office-research/biomedical-research-core-facilities/bioinformatics-core){target="_blank"}
