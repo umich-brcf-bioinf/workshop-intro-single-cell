@@ -81,36 +81,15 @@ population of cells can obscure subtle changes or patterns in expression.
 <tr><td class='fig'>
 Instead of looking at the whole forest, that is to say, the average of the gene 
 expression in a tissue or a biofluid, single cell illuminates expression for a 
-collection of individual cells (i.e. you can now see individual trees).
-This enables similar perspectives to bulk plus a few more:
+collection of individual cells (i.e. you can now see consider individual trees).
+This enables similar perspectives to bulk (e.g. insight into biological 
+mechanisms and distinct response to interventions) but also new views informed
+by cellular heterogeneity:
 
 1. What kinds of cells are present in this sample? 
 1. How does the cell population structure change between groups/conditions?
 1. What are the expression patterns between cell types or between groups/conditions?
 1. How do cells change over time and how might we affect that development?
-
-</td></tr>
-</table>
-
-<br/>
-<br/>
-
-## Contrasting bulk RNA-seq with scRNA-Seq
-
-Bulk and single-cell approaches are fundamentally complementary approaches where
-bulk RNA-Seq provides a "forest-level" view while scRNA-Seq shows the individual 
-trees. Compared to bulk RNA-Seq, scRNA-Seq provides powerful new perspectives. 
-But it isn't without challenges or downsides.
-
-<table class='fig'><tr><th class='fig'>Bulk vs. Single-Cell</th></tr>
-<tr><td class='fig'>![](images/00A-OrientingOnScRNASeq/bulk_v_sc.png)</td></tr>
-<tr><td class='fig'>
-
-1. Single-cell is less mature than bulk.
-1. Single-cell sample prep is more complex than bulk.
-1. Single-cell typically sees only the subset of highly expressed genes.
-1. Single cell analysis is typically more complex.
-1. Single cell analysis costs more than bulk analysis.
 
 </td></tr>
 </table>
@@ -299,6 +278,29 @@ C) How do we distinguish good cells from problem edge cases?
 
 To expedite the primary analysis and QC tasks above, 10x Genomics provides the
 tool Cell Ranger, which we will discuss in the next lesson.
+
+<br/>
+<br/>
+
+## Contrasting bulk RNA-seq with scRNA-Seq
+
+Bulk and single-cell approaches are fundamentally complementary approaches where
+bulk RNA-Seq provides a "forest-level" view while scRNA-Seq shows the individual 
+trees. Compared to bulk RNA-Seq, scRNA-Seq provides powerful new perspectives. 
+But it isn't without challenges or downsides.
+
+<table class='fig'><tr><th class='fig'>Bulk vs. Single-Cell</th></tr>
+<tr><td class='fig'>![](images/00A-OrientingOnScRNASeq/bulk_v_sc.png)</td></tr>
+<tr><td class='fig'>
+
+1. Single-cell is less mature than bulk.
+1. Single-cell sample prep is more complex than bulk.
+1. Single-cell typically sees only the subset of highly expressed genes.
+1. Single cell analysis is typically more complex.
+1. Single cell analysis costs more than bulk analysis.
+
+</td></tr>
+</table>
 
 <br/>
 <br/>

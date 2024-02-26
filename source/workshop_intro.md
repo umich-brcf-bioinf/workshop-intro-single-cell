@@ -129,7 +129,7 @@ Take a moment to briefly introduce yourself (name, dept/lab, area of study) in a
 breakout room.
 
   - Zoom: Click Breakout Rooms
-  - Find the room corresponding to the first letter of your last name
+  - Find the room corresponding to the first letter of your first name
   - Click **Join** button to the right of the room.
   - When you have completed introductions, you can leave the breakout room to rejoin the main room.
 
@@ -174,6 +174,28 @@ In your scRNA-Seq experiment, what do/did you hope to find?
 ### Exercise: Group checkpoint
   - Using Zoom, give me a **green-check** if you feel like you understand
     communication patterns or **red-X** if you need clarification.
+<br/>
+<br/>
+
+## Logging in to the shared server
+
+To start, we will access our shared RStudio server by opening a web browser to the following URL:
+
+[https://bfx-workshop02.med.umich.edu/](https://bfx-workshop02.med.umich.edu/)
+
+You should now be looking at a page that will allow you to login to the RStudio server:
+
+![Image: Login page for RStudio server.](images/curriculum/server_login.png)
+
+Enter your user credentials and click <kbd>Sign In</kbd>. Your username and password were provided via email, but if you need help, a helper can retrieve it for you if you ask in Slack.
+
+Once you click <kdb>Sign In</kbd>, your screen will go blank for a few seconds. 
+This sometimes will feel like a longer delay (possibly up to **60 seconds**);
+this is ok.
+
+Once logged in, you should now see the RStudio interface:
+
+![Image: Landing page after successful login to RStudio server.](images/curriculum/RStudio_landing.png)
 <br/>
 <br/>
 
