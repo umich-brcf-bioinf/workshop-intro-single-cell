@@ -42,29 +42,51 @@ knitr_fig_path("XX")
 
 # Introduction
 
-General goal: Filtering out the "cells" that either were poorly measured or are either not single-cells or not cells at all
+To interpret our initial clustering results for all cells in our experiment, we'll need to characterized the gene expression driving separation between the clusters. 
 
-In this section, we will demonstrate ...
+In this section, we will demonstrate how to generate analytical marker genes for each cluster and how to visualize the expression of genes of interest to aid in cluster identification and labeling in subsequent steps. 
 
-Point out possible gaps between how single-cell data is presented versus the reality of running an analysis
-E.g. Papers might report final filtering thresholds, but our process for choosing those is likely to be more iterative
+This process can be a highly variable process, from seeing well-characterized marker genes as top markers to needing to dig through the literature and plot the expression for multiple sets of genes of interest. Like the previous sections (and like other areas of research), when this process is more involved or iterative the final results then often only the final results are reported.
 
-<!--Add specific goals for section-->
 ## Objectives
-
+<!--Add specific goals for section-->
 - XX
 - XX
 
 ---
 
-# Marker identification
+# Cluster markers and characterization
+
+<!-- [OSCA](https://bioconductor.org/books/3.15/OSCA.basic/marker-detection.html) "o interpret our clustering results from Chapter 5, we identify the genes that drive separation between clusters. These marker genes allow us to assign biological meaning to each cluster based on their functional annotation. In the simplest case, we have a priori knowledge of the marker genes associated with particular cell types, allowing us to treat the clustering as a proxy for cell type identity. The same principle can be applied to discover more subtle differences between clusters (e.g., changes in activation or differentiation state) based on the behavior of genes in the affected pathways.
+
+The most straightforward approach to marker gene detection involves testing for differential expression between clusters. If a gene is strongly DE between clusters, it is likely to have driven the separation of cells in the clustering algorithm. Several methods are available to quantify the differences in expression profiles between clusters and obtain a single ranking of genes for each cluster. We will demonstrate some of these choices in this chapter using the 10X PBMC dataset:" --> 
+
+<!-- [Ouyang](https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes) "After identifying the cell clusters in an unbiased manner, we next seek to find the genes that distinguishes these cell clusters. To achieve this, we need to perform differential expression (DE) analysis to identify differentially expressed genes (DEGs) between cell clusters. These marker genes can then be used to characterize and annotate the cell clusters (Section 3.3)." 
+"Before the prominence of scRNA-seq, there already exist a plethora of DE tools designed for comparative transcriptomic analysis between bulk RNA-seq samples. The large number of DE tools arises because of the difficulty in estimating gene dispersion using a small number of bulk RNA-seq samples (typically  
+n
+  = 2 or 3). Accurate estimates of gene dispersion is important in quantifying the DE significance. Thus, different DE methods differ in how they estimate gene dispersion, which consequently affect their accuracy in identifying DEGs.
+
+In the case of scRNA-seq, gene dispersion is a lot easier to estimate since there are a lot more single cells ( 
+n
+  > 100) in DE comparisons. As a result, “simpler” statistical tests such as the Wilcoxon test (which is the default in Seurat) and the t-test perform well, as shown in a recent review by Soneson and Robinson (2018) (Figure 3.7). In fact, these simple statistical tests seem to outperform DE tools that are dedicated for scRNA-seq. These dedicated DE tools often use a zero-inflated model to account for the large number of zeros in single-cell gene expression. However, a recent report by Svensson (2020) suggests that single-cell expression is not zero-inflated and the large number of zeros are expected under a conventional negative binomial distribution. This could explain the poor performance of some of the single-cell dedicated DE tools. Another consideration is that some of the DE tools initially designed for bulk RNA-seq may not scale well computationally with the increasing number of single cells. From personal experience, the wilcoxon test suffices for simple pairwise DE while edgeR (Robinson, McCarthy, and Smyth 2010) can be used for more complex designs."
+-->
+
+After generating clusters, to identify the genes that distinguish them we need to perform differential expression analysis to identify differentially expressed genes for each cluster. [source](https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes).
+
+<details>
+    <summary>*Additional considerations for differential expression*</summary>
+    The Ouyang Lab has a [section of their tutorial](https://ouyanglab.com/singlecell/clust.html#sec:diffexpr) that discusses the methods available for differential expression as well as [threshold considerations](https://ouyanglab.com/singlecell/clust.html#sec:diffexpr).
+</details>
+<br>
+
+## Marker identification
 
 Ensure that correct resolution is selected from Seurat object
 ```{r, eval = FALSE}
 geo_so = SetIdent(geo_so, value = 'SCT_snn_res.0.4')
 ```
 
-We can use `FindAllMarkers` to run comparisons between each cluster and all other cells, regardless of the experimental group. 
+We can use `FindAllMarkers` to run comparisons between each cluster and all other cells, regardless of the experimental group. Note that the default option for this function uses a Wilcoxon test to generate the resulting statistics.
 
 ```{r, eval=FALSE}
 geo_so = PrepSCTFindMarkers(geo_so)
@@ -143,6 +165,8 @@ saveRDS(object = geo_so, file = 'ISC_R/results/rdata/geo_so_sct_integrated_with_
 Now that we have ... 
 
 However, marker genes alone might not be sufficient to determine cell-type or sub-type labels for our clusters so it can be helpful to apply other approaches, which we will discuss in the next section.
+
+<!-- While there are some automated cluster annotation tools, one of which we'll discuss in the next section, often manual cluster annotation is part of characterizing clusters in single cell data.  -->
 
 Next steps: Cell type prediction tools
 

@@ -42,10 +42,12 @@ knitr_fig_path("XX")
 
 # Introduction
 
-Point out possible gaps between how single-cell data is presented versus the reality of running an analysis
-E.g. Papers might report final filtering thresholds, but our process for choosing those is likely to be more iterative
-
 General goal: Filtering out the "cells" that either were poorly measured or are either not single-cells or not cells at all
+
+<!-- Point out possible gaps between how single-cell data is presented versus the reality of running an analysis
+E.g. Papers might report final filtering thresholds, but our process for choosing those is likely to be more iterative -->
+
+Even more so than the previous sections, cell type annotation is ...
 
 ## Objectives
 
