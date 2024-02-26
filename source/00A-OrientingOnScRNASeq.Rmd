@@ -82,7 +82,9 @@ population of cells can obscure subtle changes or patterns in expression.
 Instead of looking at the whole forest, that is to say, the average of the gene 
 expression in a tissue or a biofluid, single cell illuminates expression for a 
 collection of individual cells (i.e. you can now see consider individual trees).
-This enables similar perspectives to bulk plus a few more:
+This enables similar perspectives to bulk (e.g. insight into biological 
+mechanisms and distinct response to interventions) but also new views informed
+by cellular heterogeneity:
 
 1. What kinds of cells are present in this sample? 
 1. How does the cell population structure change between groups/conditions?
