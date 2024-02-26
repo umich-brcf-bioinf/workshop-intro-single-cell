@@ -345,8 +345,8 @@ geo_so = IntegrateLayers(
 
 In this section, we:
 
-- Selected a number of principal components that likely correspond to biological variation of interest in our data
-- Integrated our `SCTransformed` data using the `RPCA` method
+-
+- 
 
 Next steps: Clustering and projection
 
