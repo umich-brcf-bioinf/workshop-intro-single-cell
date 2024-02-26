@@ -61,6 +61,8 @@ To investigate this, cells from day 0 (prior to injury), and days 3, 7, and 21 p
 - Learn how to read 10X data into Seurat.
 - Introduce the Seurat object, and how to access parts of it.
 
+---
+
 # Project setup
 
 To start, we will access our shared RStudio server by opening a web browser to the following URL:
