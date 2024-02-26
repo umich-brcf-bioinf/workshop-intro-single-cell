@@ -68,9 +68,9 @@ Similar to the previous sections, the process of selecting informative dimension
 
 In addition to the "high dimensionality" expected for single-cell data, we expect the data to be both "sparse", as many genes will either not be expressed or not measured in many of the cells and have zero values, and "noisy" -  due to biological variability and practical limitations of both capture and sequencing depth [source](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr). 
 
-> #### Zero "inflation" of single-cell data{.unlisted .unnumbered}
+> *Note on zero "inflation" of single-cell data*
 >
-> Single-cell data is sometimes described as "zero inflated", however work by [Svensson](https://www.biorxiv.org/content/10.1101/582064v1.full) has challenged that characterization and argued that the higher number of zeros observed in scRNA-seq compared to bulk RNA-seq is more likely due to biological variance and lower sequencing saturation than a technical artifact.
+> Single-cell data is sometimes described as "zero inflated", however work by [Svensson](https://www.biorxiv.org/content/10.1101/582064v1.full) has challenged that characterization and argued that the higher number of zeros observed in scRNA-seq compared to bulk RNA-seq is more likely due to biological variance and lower sequencing saturation than technical artifacts. Work by [Choi et al. (2020)](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-020-02103-2) support that zeros in single-cell data are due to biology but [Jiang et al. (2022)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8783472/) delves more into the "controversy" zero inflation, including common approaches for handling zeros and the downstream impacts.
 
 For sparse high dimensional _biological_ data, we expect many genes to have correlated expression as they would be impacted by the same biological process and for many genes with either low (more noisy) or similar expression across the cell population. 
 
@@ -78,7 +78,7 @@ So how do we determine what and how many genes to use before classifying cells i
 
 <details>
     <summary>*More detail on dimensionality reduction *</summary>
-    The [Ouyang Lab has a "gentle introduction" section of their materials](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr) that goes into greater details on dimensionality reduction including how similar strategies are used in deep learning models. Additionaly, the OSCA book has a [chapter on Dimensionality reduction(https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html)
+    The [Ouyang Lab has a "gentle introduction" section of their materials](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr) that goes into greater details on dimensionality reduction including how similar strategies are used in deep learning models. Additionaly, the OSCA book has a [chapter on Dimensionality reduction(https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html) that has useful context. 
 </details>
 <br>
 
