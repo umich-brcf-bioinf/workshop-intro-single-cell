@@ -42,16 +42,24 @@ knitr_fig_path("XX")
 
 # Introduction
 
+General goal: Filtering out the "cells" that either were poorly measured or are either not single-cells or not cells at all
+
+In this section, we will demonstrate ...
+
 Point out possible gaps between how single-cell data is presented versus the reality of running an analysis
 E.g. Papers might report final filtering thresholds, but our process for choosing those is likely to be more iterative
 
-General goal: Filtering out the "cells" that either were poorly measured or are either not single-cells or not cells at all
-
 <!--Add specific goals for section-->
+## Objectives
+
+- XX
+- XX
+
+---
 
 # Marker identification
 
-Ensure that correct resolution is selected
+Ensure that correct resolution is selected from Seurat object
 ```{r, eval = FALSE}
 geo_so = SetIdent(geo_so, value = 'SCT_snn_res.0.4')
 ```

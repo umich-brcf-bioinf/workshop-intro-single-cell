@@ -97,33 +97,10 @@ by cellular heterogeneity:
 <br/>
 <br/>
 
-## Contrasting bulk RNA-seq with scRNA-Seq
-
-Bulk and single-cell approaches are fundamentally complementary approaches where
-bulk RNA-Seq provides a "forest-level" view while scRNA-Seq shows the individual 
-trees. Compared to bulk RNA-Seq, scRNA-Seq provides powerful new perspectives. 
-But it isn't without challenges or downsides.
-
-<table class='fig'><tr><th class='fig'>Bulk vs. Single-Cell</th></tr>
-<tr><td class='fig'>![](images/00A-OrientingOnScRNASeq/bulk_v_sc.png)</td></tr>
-<tr><td class='fig'>
-
-1. Single-cell is less mature than bulk.
-1. Single-cell sample prep is more complex than bulk.
-1. Single-cell typically sees only the subset of highly expressed genes.
-1. Single cell analysis is typically more complex.
-1. Single cell analysis costs more than bulk analysis.
-
-</td></tr>
-</table>
-
-<br/>
-<br/>
-
 # Consider a specific scRNA-Seq experiment
 
 These concepts can be abstract. Acknowledging that the basic concepts are
-broadly applicable, it's helpful to ground the conversation in aspecific 
+broadly applicable, it's helpful to ground the conversation in a specific 
 scRNA-Seq experiment.
 
 <table class='fig'><tr><th class='fig'>Consider a specific experiment</th></tr>
@@ -167,7 +144,7 @@ B) Tissue is dissociated into a suspension of **healthy, intact** cells
 C) Cells are physically isolated.
 D) Cell transcripts converted to cDNA labeled with their cell of origin.
 E) cDNAs from all cells is pooled
-F) cDNAs are undergo library prep and are sequenced
+F) cDNAs undergo library prep and are sequenced
 G) The resulting transcript sequences can be partitioned into (putative) cells computationally. 
 
 </td></tr>
@@ -194,7 +171,7 @@ dyad.
 B) Ideally, each droplet contains reaction enzymes (carried in the aqueous 
 solution), a single bead and a single healthy, intact cell. The cell is lysed to
 release the mRNA transcripts into the droplet.
-C) The beads are covered with a lawn of milions of oligos. Each oligo is 
+C) The beads are covered with a lawn of millions of oligos. Each oligo is 
 designed to interact with poly-A tailed mRNAs and the enzymes to produce a 
 complementary DNA molecule (cDNA).
 D) Each cDNA contains:
@@ -219,7 +196,7 @@ D) Each cDNA contains:
 - Each droplet converts mRNAs into cDNAs that contain the oligo sequence and the 
 mRNA sequence.
 - Each mRNA sequence will get a distinct UMI, so one UMI = one mRNA.
-- For a single droplet, the cDNA barcodes will all match. Barcodes will be 
+- For a single droplet, the cell barcodes will all match. Cell barcodes will be 
   distinct across droplets.
 
 </td></tr>
@@ -236,14 +213,14 @@ mRNA sequence.
 A) Once mRNA transcripts have been converted to barcode-labeled cDNA the oil
 emulsion can be broken and the cDNA molecules are pooled together.
 B) cDNA molecules undergo several conventional library prep steps to enable
-sequencing
-C) The sequencer call bases for each sequence. For a large sequencing run, this
+sequencing.
+C) The sequencer calls bases for each sequence. For a large sequencing run, this
 might contain many samples, several experiments, and even multiple experiment 
 types.
 D) The resulting 10x FASTQ files have a specific structure. 
 - Read2 represents the mRNA sequence.
 - Read1 represents the barcode and UMI
-E) Specialized software bins each distinct barcode into a a putative cell and
+E) Specialized software bins each distinct barcode into a putative cell and
 aligns the mRNA sequence against a genome build.
 F) Alignments for features (genes) are quantified across all barcodes to create
 a feature barcode matrix.
@@ -280,7 +257,7 @@ confounds analysis because the expression programs aren't about the model
 biology but instead artifacts from the experimental platform.
 F) Sometimes dissociated cells become so stressed they start to break down in 
 the suspension. When that happens, the mRNAs from the popped cell's combine
-together in the aqueous flow to create soup of ambient RNA. This appears as a 
+together in the aqueous flow to create a soup of ambient RNA. This appears as a 
 droplet with extremely low expression.
 </td></tr>
 </table>
@@ -305,6 +282,29 @@ tool Cell Ranger, which we will discuss in the next lesson.
 <br/>
 <br/>
 
+## Contrasting bulk RNA-seq with scRNA-Seq
+
+Bulk and single-cell approaches are fundamentally complementary approaches where
+bulk RNA-Seq provides a "forest-level" view while scRNA-Seq shows the individual 
+trees. Compared to bulk RNA-Seq, scRNA-Seq provides powerful new perspectives. 
+But it isn't without challenges or downsides.
+
+<table class='fig'><tr><th class='fig'>Bulk vs. Single-Cell</th></tr>
+<tr><td class='fig'>![](images/00A-OrientingOnScRNASeq/bulk_v_sc.png)</td></tr>
+<tr><td class='fig'>
+
+1. Single-cell is less mature than bulk.
+1. Single-cell sample prep is more complex than bulk.
+1. Single-cell typically sees only the subset of highly expressed genes.
+1. Single cell analysis is typically more complex.
+1. Single cell analysis costs more than bulk analysis.
+
+</td></tr>
+</table>
+
+<br/>
+<br/>
+
 
 # Conclusion
 
@@ -315,7 +315,7 @@ heterogeneity, responses to interventions, and the cell state dynamics.
 - scRNA-Seq experiments are typically more complex and often more expensive than
 bulk RNA-Seq.
 - scRNA-Seq experiments leverage existing NGS approaches by adding a molecular 
-label to each mRNA, enabling us to connect all the mRNA's from a cell to a 
+label to each mRNA, enabling us to connect all the mRNAs from a cell to a 
 distinct cell of origin computationally following sequencing.
 
 <br/>
