@@ -115,6 +115,8 @@ Standard approach versus pseudobulk
 
 <!-- [10x analysis guide for differential expression with biological replicates](https://www.10xgenomics.com/analysis-guides/differential-gene-expression-analysis-in-scrna-seq-data-between-conditions-with-biological-replicates) -->
 
+<!-- [Ouyang](https://ouyanglab.com/singlecell/clust.html#sec:diffexpr) For (ii), single-cell studies are now more complex, often including samples from multiple donors. It is possible that there are more cells being profiled from a specific donor than others and this can skew the DE results. For example, consider a study where there are three diseased samples (D1,D2,D3) and three healthy samples (H1,H2,H3_ and there are a lot more cells from sample D1. In this scenario, a gene that is specifically expressed in D1 may be identified as differentially expressed when comparing diseased and healthy single-cells. In fact, Squair et al. have shown that ignoring biological replicates can often result in false discoveries in single-cell DE (Squair et al. 2021). To circumvent this, Squair et al. suggested the use of pseudo-bulk profiles where the single-cell profiles from each individual is being collected and then subjected to bulk RNA-seq based DE methods. Another possible approach is to downsample the number of single cells such that each individual have roughly a similar number of cells. -->
+
 ```{r, eval=FALSE}
 pseudo_catch_so = AggregateExpression(geo_so, assays = 'RNA', return.seurat = TRUE, group.by = c('cell_type', 'day', 'replicate'))
 ```
@@ -173,6 +175,6 @@ These materials have been adapted and extended from materials listed above. Thes
 <br/>
 <br/>
 <hr/>
-| [Previous lesson](07-CellTypeAnnos.html) | [Top of this lesson](#top) | [Next lesson](09-IndependentExercise.html) |
+| [Previous lesson](07-CellTypeAnnos.html) | [Top of this lesson](#top) | [Workshop Wrap Up](workshop_wrap_up.html) |
 | :--- | :----: | ---: |
 
