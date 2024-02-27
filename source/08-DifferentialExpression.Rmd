@@ -175,6 +175,6 @@ These materials have been adapted and extended from materials listed above. Thes
 <br/>
 <br/>
 <hr/>
-| [Previous lesson](07-CellTypeAnnos.html) | [Top of this lesson](#top) | [Next lesson](09-IndependentExercise.html) |
+| [Previous lesson](07-CellTypeAnnos.html) | [Top of this lesson](#top) | [Workshop Wrap Up](workshop_wrap_up.html) |
 | :--- | :----: | ---: |
 

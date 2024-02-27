@@ -32,7 +32,7 @@ table.fig, th.fig, td.fig {
   border-collapse: collapse;
   padding: 15px;
 }
-
+  
 </style>
 
 # Workflow Overview {.unlisted .unnumbered}
@@ -109,7 +109,7 @@ scRNA-Seq experiment.
 In this workshop we will be focusing on an experiment conducted at UM on a mouse 
 model where a soft tissue injury is followed by an aberrant injury response
 that generates bone tissue. For more details on this experiment, it's original
-analysis and the biology of heterotopic ossification, see the full paper [[1]](#References).
+analysis and the biology of heterotopic ossification, see the full paper [[1]](#references).
 
 
 A) A simplified version of the experiment:
@@ -158,7 +158,7 @@ G) The resulting transcript sequences can be partitioned into (putative) cells c
 It's useful to elaborate how transcripts are labeled with their cell of origin
 because this will help us understand how downstream QC and analysis works. The
 specifics of the steps depend on the platform and the specific libary prep 
-protocol. We will focus on the **10x Genomics 3' gene expression** approach[[2]](#References).
+protocol. We will focus on the **10x Genomics 3' gene expression** approach[[2]](#references).
 
 <table class='fig'><tr><th class='fig'>A 10x Genomics single cell protocol (from 10k feet)</th></tr>
 <tr><td class='fig'>![](images/00A-OrientingOnScRNASeq/10x-genomics-scRNA-Seq-from-10k.png)</td></tr>

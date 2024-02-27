@@ -57,7 +57,7 @@ table.fig, th.fig, td.fig {
 The initial data processing steps in scRNA-Seq transform sample FASTQ files to 
 gene expression counts. Some of these steps are similar to bulk RNA-Seq and some
 are distinct. 10x Genomics provides a pipeline tool, Cell Ranger, to expedite
-these initial transformations [[1]](#References).
+these initial transformations [[1]](#references).
 
 <table class='fig'>
 <tr><th class='fig'>Cell Ranger inputs and outputs</th></tr>
@@ -82,7 +82,7 @@ can be used for downstream analysis in Seurat and other tools.
   C. For each transcript that falls in a gene, count the pile-up of sequences 
      aligned to each gene; deduplicate the reads based on UMI. Use these 
      deduplicated counts to build a feature barcode matrix.<br/>
-  D. Apply a cell-calling algorithm to distinguish putative cells from background [[3,4]](#References)<br/>
+  D. Apply a cell-calling algorithm to distinguish putative cells from background [[3,4]](#references)<br/>
   E. Subset the raw matrix to only putative cells to create the filtered matrix.<br/>
   F. Use information from all previous steps to build a web summary QC report as
   well as basic gene expression clustering visualizations and other supporting
@@ -136,7 +136,7 @@ regularly delete project data following delivery.)
 
 ## How to run Cell Ranger
 
-Cell Ranger is run from a Linux/Unix command shell [[2]](#References). You can print the usage
+Cell Ranger is run from a Linux/Unix command shell [[2]](#references). You can print the usage
 statement to see what is needed to build the command: `cellranger count --help`
 
 ```
@@ -260,9 +260,9 @@ count_run_HODay0replicate1
   barcode count table; includes all detected barcodes. (Format details 
   elaborated below.)
 * **filtered\_feature\_bc\_matrix** : As above, but filtered to include only
-  barcodes that passed Cell Ranger's cell-calling algorithm [[3]](#References).
+  barcodes that passed Cell Ranger's cell-calling algorithm [[3]](#references).
 * **molecule.h5** : An HDF5 (binary) file all containing information for all 
-  molecules assigned to a feature/barcode. See references [[6]](#References) for 
+  molecules assigned to a feature/barcode. See references [[6]](#references) for 
   more info on this format. 
 * **cloupe file** : Used with the 10x Loupe Browser visualization software.
 
@@ -374,7 +374,7 @@ B) <br/>
 ![](images/cellranger/matricesBRP.png)
 </td></tr>
 <tr><td class='fig'>
-(A) Each element of the feature-barcode matrix is the count of UMIs associated with a feature (row) and a barcode (column). Because the matrix is very sparse, storing the matrix as three individual, compressed files saves siginificant space. [[6]](#References)<br/>
+(A) Each element of the feature-barcode matrix is the count of UMIs associated with a feature (row) and a barcode (column). Because the matrix is very sparse, storing the matrix as three individual, compressed files saves siginificant space. [[6]](#references)<br/>
 (B) In relation to the Barcode Rank Plot, raw matrices include cells and background and the filtered matrix files only contain data for cells. Downstream analysis typically uses the **filtered** matrix files.
 </td></tr>
 </table>
