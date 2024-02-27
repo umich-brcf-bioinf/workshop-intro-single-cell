@@ -50,8 +50,8 @@ This process can be a highly variable process, from seeing well-characterized ma
 
 ## Objectives
 <!--Add specific goals for section-->
-- Determine gene markers for each of the clusters
-- Visualize expression across clusters for genes of interest
+- Determine gene markers for each of the clusters using `FindAllMarkers`
+- Visualize expression across clusters for genes of interest using `DotPlot`
 
 ---
 
@@ -63,7 +63,8 @@ Many of the differential expression (DE) tools designed for bulk RNA-seq samples
 
 <!-- Additional context from [Ouyang](https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes) regarding tool options and [HBC materials](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html) regarding FindMarkers vs FindConservedMarkers, etc. -->
 
-![Comparison of the performance of DE methods applied to scRNA-seq datasets. Methods are ranked by their average performance across all the listed criteria. Image taken from [Soneson and Robinson (2018)](https://pubmed.ncbi.nlm.nih.gov/29481549/)](./images/curriculum/05) <!--- add figure from Ouyang materials-->
+![Comparison of the performance of DE methods applied to scRNA-seq datasets. Methods are ranked by their average performance across all the listed criteria. Image taken from Soneson and Robinson (2018)](./images/curriculum/06-MarkerIdentAndViz/Ouyang_clust-deCompare.png)
+
 
 
 <details>
@@ -84,6 +85,7 @@ Next we'll run the`FindAllMarkers` [function](https://satijalab.org/seurat/refer
 ```{r, eval=FALSE}
 geo_markers = FindAllMarkers(geo_so, only.pos = TRUE)
 ```
+
 <!--- Consider adding figure showing example of what's being compared (circle cluster 1 and then circle all other cells for example) -->
 
 <details>
@@ -138,8 +140,7 @@ top_5_sct_dot_plot
 
 In the dotplot we can see that the color indicates the expression of the gene while the size of the dot indicates the proportion of cells expressing that gene in each cluster [source](https://ouyanglab.com/singlecell/clust.html#visualising-marker-genes). 
 
-
-![](./images/curriculum/05) <!-- file: markers_top_5_sct_dot_plot.png -->
+![](./images/curriculum/06-MarkerIdentAndViz/markers_top_5_sct_dot_plot.png) <!-- file: markers_top_5_sct_dot_plot.png -->
 
 And then we can save the figure to file
 ```{r, eval=FALSE}
@@ -181,6 +182,14 @@ Then we can use the same `DotPlot` function to visualize the expression level an
 fig1g_sct_dot_plot = DotPlot(geo_so, features = fig1g_markers, assay = 'SCT')
 fig1h_sct_dot_plot = DotPlot(geo_so, features = fig1h_markers, assay = 'SCT')
 
+View(fig1g_sct_dot_plot)
+```
+
+![](./images/curriculum/06-MarkerIdentAndViz/markers_fig1g_sct_dot_plot.png)
+
+
+And save the figures to file:
+```{r, eval=FALSE}
 ggsave(filename = 'results/figures/markers_fig1g_sct_dot_plot.png', plot = fig1g_sct_dot_plot, width = 8, height = 6, units = 'in')
 ggsave(filename = 'results/figures/markers_fig1h_sct_dot_plot.png', plot = fig1h_sct_dot_plot, width = 8, height = 6, units = 'in')
 ```
@@ -199,13 +208,11 @@ ggsave(filename = 'results/figures/markers_fig1h_rna_dot_plot.png', plot = fig1h
 <br>
 
 
-<!--- [Sc best practices](https://www.sc-best-practices.org/cellular_structure/annotation.html) "Note that markers at the protein level (e.g. used for FACS) sometimes do not work as well in transcriptomic data, hence using markers from RNA-based papers is often more likely to work. Moreover, sometimes markers in one dataset do not turn out to work as well in other datasets. Ideally a marker set is therefore validated across multiple datasets. Finally, it is often useful to work together with experts: as a bioinformatician, try to team up with a biologist who has more extensive knowledge of the tissue, the biology, the expected cell types and markers etc." -->
-
-For known marker genes, it's important to note that since scRNA-seq is only measuring transcriptional signals that markers at the protein level (e.g used for approaches like FACS) may be less effective. The  ["Best practices for single-cell analysis across modalities" book by Heumos, Schaar, Lance, et al. ](https://www.sc-best-practices.org/cellular_structure/annotation.html)
+For known marker genes, it's important to note that since scRNA-seq is only measuring transcriptional signals that markers at the protein level (e.g used for approaches like FACS) may be less effective. The book ["Best practices for single-cell analysis across modalities" by Heumos, Schaar, Lance, et al. ](https://www.sc-best-practices.org/cellular_structure/annotation.html) points out that ideally marker genes are validated across multiple datasets but "it is often useful to work together with experts ... [like a] biologist who has more extensive knowledge of the tissue, the biology, the expected cell types and markers etc.". In our experience, we find that experience and knowledge of the the researchers we work with is invaluable. 
 
 # Save our progress
 
-Create an output for our updated Seurat object
+Finally, we can create an output file for our updated Seurat object
 ```{r, eval=FALSE}
 saveRDS(object = geo_so, file = 'ISC_R/results/rdata/geo_so_sct_integrated_with_markers.rda')
 ```
@@ -213,9 +220,9 @@ saveRDS(object = geo_so, file = 'ISC_R/results/rdata/geo_so_sct_integrated_with_
 
 # Summary
 
-Now that we have ... 
+Now that we have characterized the expression of both analytical marker genes and literature or knowledge based marker genes, we may have a better sense of what cell-types or subtypes our clusters might correspond to.   
 
-However, marker genes alone might not be sufficient to determine cell-type or sub-type labels for our clusters so it can be helpful to apply other approaches, which we will discuss in the next section.
+However, marker genes alone might not be sufficient to determine cell-type or sub-type labels for our clusters so we will discuss other more automated approaches to complement these results.
 
 <!-- While there are some automated cluster annotation tools, one of which we'll discuss in the next section, often manual cluster annotation is part of characterizing clusters in single cell data.  -->
 
