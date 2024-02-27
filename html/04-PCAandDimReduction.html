@@ -15,7 +15,7 @@
 
 <title>PCA and dimensionality reduction</title>
 
-<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -459,7 +459,7 @@ and/or between conditions within clusters. However, in our dataset the
 per cell and current single cell experiments can generate up to 10K-12K
 cells per sample.</p>
 <p>This means that even after filtering the data, we are working very
-“high dimensional” data. High dimensional data presents some major
+“high-dimensional” data. High dimensional data presents some major
 challenges and requires something called dimensionality reduction.
 Dimension reduction helps us reduce the number of separate dimensions by
 grouping correlated features into a single dimension. This makes
@@ -468,9 +468,12 @@ downstream analysis steps more computationally feasible.</p>
 dimensionality reduction on our data using principal component analysis
 (PCA).</p>
 <p>Similar to the previous sections, the process of selecting
-informative dimensions in a dataset is often iterative only a single
-value is likely to be reported, even when multiple parameter choices may
-have lead to similar results/conclusions.</p>
+informative dimensions in a dataset is often iterative, but only a
+single value is likely to be reported even when multiple parameter
+choices may have lead to similar results/conclusions.</p>
+<p>In this section, we will demonstrate the steps to perform
+dimensionality reduction on our data using principal component analysis
+(PCA).</p>
 <div id="objectives" class="section level2">
 <h2>Objectives</h2>
 <ul>
@@ -485,11 +488,12 @@ data</li>
 <h1>Dimensionality reduction</h1>
 <!--Before this section - Day 1: Starting w/ Seurat, Initial QC, & Batch correction (SCtransform)-->
 <!--Instruction Note: Using integrated data here and will compare to unintegrated results in next section, similar to  [here](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-021-03957-4)?-->
-<p>In addition to the “high dimensionality” expected for single-cell
-data, we expect the data to be both “sparse”, as many genes will either
-not be expressed or not measured in many of the cells and have zero
-values, and “noisy” - due to biological variability and practical
-limitations of both capture and sequencing depth <a
+<p>In addition to the “high-dimensionality” expected for single-cell
+data, we expect the data to be both “sparse” and “noisy”. Sparse in the
+sense that many genes will either not be expressed or not measured in
+many of the cells and have zero values. Noisy due to biological
+variability and practical limitations of both capture and sequencing
+depth <a
 href="https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr">source</a>.</p>
 <blockquote>
 <p><em>Note on zero “inflation” of single-cell data</em></p>
@@ -508,10 +512,10 @@ al. (2022)</a> delves more into the “controversy” zero inflation,
 including common approaches for handling zeros and the downstream
 impacts.</p>
 </blockquote>
-<p>For sparse high dimensional <em>biological</em> data, we expect many
-genes to have correlated expression as they would be impacted by the
-same biological process and for many genes with either low (more noisy)
-or similar expression across the cell population.</p>
+<p>For sparse, high-dimensional, <em>biological</em> data, we expect
+many genes to have correlated expression as they would be impacted by
+the same biological process and for many genes with either low (more
+noisy) or similar expression across the cell population.</p>
 <p>So how do we determine what and how many genes to use before
 classifying cells in our samples into cell-types/subtypes based on their
 expression?</p>
@@ -579,14 +583,13 @@ single-cell data set.</p>
 genes in a coordinated way. Therefore the top PCs likely represent
 biological structure rather than random technical or biological noise,
 which affects each gene independently and and we can use the top several
-PCs to approximate the full data set in downstream analysis[(source)[<a
-href="https://bioconductor.org/books/3.12/OSCA/dimensionality-reduction.html#principal-components-analysis"
-class="uri">https://bioconductor.org/books/3.12/OSCA/dimensionality-reduction.html#principal-components-analysis</a>]].</p>
-<p>This reduction in dimensionality, from 10,000 cells x 19,000 genes
+PCs to approximate the full data set in downstream analysis (<a
+href="https://bioconductor.org/books/3.12/OSCA/dimensionality-reduction.html#principal-components-analysis">source</a>).</p>
+<p>This reduction in dimensionality, from 10,000 cells x 19,000 genes,
 for example, to several order magnitudes less of PCs (often 30-60 PCs
 will be considered) and allows us to select PCs that are more likely to
 distinguish between biological variation related to the expected cell
-types/subtypes and (uninteresting) technical variation.</p>
+types/subtypes and (confounding) technical variation.</p>
 <blockquote>
 <h4 id="more-context-using-pca-for-single-cell-data"
 class="unlisted unnumbered">More context using PCA for single-cell
@@ -594,10 +597,10 @@ data</h4>
 <p>To read more on PCA, please refer to the <a
 href="https://hbctraining.github.io/scRNA-seq_online/lessons/05_theory_of_PCA.html">HBC
 - Theory of PCA content</a>, from which this section is adapted and the
-original source material for that content, specifically- <a
+original source material for that content, specifically <a
 href="https://www.youtube.com/watch?v=_UVHneBUBW0">Josh Starmer’s
 StatQuest video</a>. For additional detail, the OSCA chapter on <a
-href="https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html">Principle
+href="https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html">Principal
 components analysis</a> includes a more descriptive overview of PCA in
 the context of single-cell data.</p>
 </blockquote>
@@ -628,7 +631,7 @@ Active assay: SCT (17129 features, 3000 variable features)
  1 dimensional reductions calculated: unintegrated.sct.pca</code></pre>
 <!--- Should this dim loading section drawn from [Ho Lab](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#standard-pre-processing-workflow) be included in the main content? Note - would need to run command in script & capture output  --->
 <p>We can also visualize both the cell and gene features that define
-each principle components using Seurat provided functions <a
+each principal components using Seurat provided functions <a
 href="https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction">source</a>.</p>
 <p>First, we can print out the top 5 (gene) features per dimension by
 accessing that part of the Seurat object:</p>
@@ -654,7 +657,7 @@ visualization:</p>
 ggsave(filename = &#39;results/figures/qc_pca_loadings.png&#39;, width = 12, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img
 src="images/curriculum/04-PCAandDimReduction/qc_pca_loadings.png" /></p>
-<p>We can look at how cells load on the first two principle components,
+<p>We can look at how cells load on the first two principal components,
 similarly to how we often look at samples for bulk RNA-seq, with the
 <code>DimPlot</code> function:</p>
 <pre class="r"><code>DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;day&#39;)
@@ -697,9 +700,14 @@ reduction</h2>
 Using too many PCs risks including uninteresting technical variation and
 a single cell itself is not a reasonable functional unit for most
 biology.</p>
-<p>For this dataset, we are expected a diversity of cell types and the
-cell populations that mediate wound healing or that are part of the
-aberrant transition to bone might be more rare in the population so
+<p>A good starting point for determining how many PCs to select for your
+single-cell analysis is to understand the “resolution” of your
+biological question. Is answering your biological question dependent on
+identifying rarer cell types or specific subtypes? Or are broader
+cell-types more relevant?</p>
+<p>For this dataset, we are expecting a diversity of cell types and the
+cell populations that mediate wound healing, or that are part of the
+aberrant transition to bone, might be more rare in the population so
 after evaluating the relative contributions across the first set of PCs,
 we might want to consider selecting too many rather than too few PCs to
 start.</p>
