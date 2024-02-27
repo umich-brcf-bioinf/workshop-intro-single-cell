@@ -246,6 +246,6 @@ These materials have been adapted and extended from materials listed above. Thes
 <br/>
 <br/>
 <hr/>
-| [Previous lesson](cellranger.html) | [Top of this lesson](#top) | [Next lesson](02-QCandFiltering.html) |
+| [Previous lesson](00B-CellRangerInAction.html) | [Top of this lesson](#top) | [Next lesson](02-QCandFiltering.html) |
 | :--- | :----: | ---: |
 
