@@ -61,6 +61,8 @@ Similar to many other areas of research, there are often gaps between how single
 - Adding checks to ensure object is updated by learners since want to avoid generating copied objects
 - Note what layers should be used for what, for example, counts used for FeaturePlots. RNA vs SCT assay. -->
 
+---
+
 # Adding metadata
 
 We're going to alter and add some columns to `meta.data` to ease some downstream analysis and plotting steps. This will often be necessary, as sample names contain combined information about phenotypes. Let's take a look at the first few rows again, to reacquaint ourselves.
@@ -227,7 +229,7 @@ ggsave(filename = 'ISC_R/results/figures/qc_nFeature_violin.png', width = 12, he
 
 ![](./images/curriculum/qc_nFeature_violin.png)
 
-We already note that the Day0 samples appear to have systematically lower features detected per cell. Let's continue with the `nCount_RNA` plot.
+We observe what look like systematic differences between the days. Day 7 appears to have many cells with a low number of genes measured, but also many cells with a higher number of genes measured. Let's continue with the `nCount_RNA` plot.
 
 ```{r, eval = FALSE}
 VlnPlot(geo_so, features = 'nCount_RNA', assay = 'RNA', layer = 'counts') + NoLegend()
@@ -236,7 +238,7 @@ ggsave(filename = 'ISC_R/results/figures/qc_nCount_violin.png', width = 12, heig
 
 ![](./images/curriculum/qc_nCount_violin.png)
 
-We obesrve a similar pattern, where the Day0 samples appear to have lower counts per cell than their Day7 and Day21 counterparts. There is even an outlier cell in HODay0replicate1, with over 100K unique UMIs detected. This cell is very likely a doublet. Finally, lets plot the `percent.mt`.
+We observe a similar systematic difference between the days in the total UMI counts per cell, with Day 0 having fewer depth overall. There is an outlier cell in HODay0replicate1, with over 100K unique UMIs detected. This cell is very likely a doublet. Finally, lets plot the `percent.mt`.
 
 ```{r, eval = FALSE}
 VlnPlot(geo_so, features = 'percent.mt', assay = 'RNA', layer = 'counts') + NoLegend()
@@ -247,7 +249,7 @@ ggsave(filename = 'ISC_R/results/figures/qc_mito_violin.png', width = 12, height
 
 We see that most samples have cells with a majority of mitochondrial reads <25%, but many samples have cells with >25%. We'll want to make sure to filter out these cells.
 
-Generally, many tutorials use a cutoff of 5-10% mitochondrial. However, for some experiments high mitochondrial reads would be expected (such as in cases where the condition/treatment or genotype increases cell death), then a relaxed threshold would be necessary to preserve biologically relevant cells.
+Generally, many tutorials use a cutoff of 5-10% mitochondrial. However, for some experiments high mitochondrial reads would be expected (such as in cases where the condition/treatment or genotype increases cell death), then a relaxed threshold would be necessary to preserve biologically relevant cells. In our case, the cells were collected as part of an injury model, perhaps justifying a more lenient percent mitochondrial read filter.
 
 ## Cell counts
 
@@ -309,7 +311,7 @@ subset(geo_so, subset = nFeature_RNA > 500 & percent.mt < 25)@meta.data %>%
 
 ## Using adaptive thresholds
 
-We could choose to remove outlier cells adaptively. This approach assumes that most of the cells are of acceptable quality. Note, we've already seen that many of the cells in HODay0replicate1 appear to be of poor quality, and many of the Day0 cells have much lower `nCount`s and `nFeature`s than their Day7 and Day21 counterparts. For thus workshop we will use the above fixed thresholds to match the publication.
+We could choose to remove outlier cells adaptively. This approach assumes that most of the cells are of acceptable quality. For this workshop we will use the above fixed thresholds to match the publication.
 
 <!-- Resources for adaptive outlier detection https://bioconductor.org/books/3.12/OSCA/quality-control.html#identifying-low-quality-cells -->
 
