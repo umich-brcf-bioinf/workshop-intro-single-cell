@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core" />
 
-<meta name="date" content="2024-02-22" />
+<meta name="date" content="2024-02-27" />
 
 <title>Module title</title>
 
-<script src="site_libs/header-attrs-2.21/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -31,7 +31,7 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
@@ -360,10 +360,13 @@ div.tocify {
       <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
     </li>
     <li>
-      <a href="01-GettingStarted.html">Seurat</a>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
     </li>
     <li>
       <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
+    </li>
+    <li>
+      <a href="03-Normalization.html">Normalization</a>
     </li>
   </ul>
 </li>
@@ -375,10 +378,7 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="03-Integration.html">Normalization</a>
-    </li>
-    <li>
-      <a href="04-PCAandDimReduction.html">PCA &amp; Integration</a>
+      <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
     </li>
     <li>
       <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
@@ -427,7 +427,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Module title</h1>
 <h4 class="author">UM Bioinformatics Core</h4>
-<h4 class="date">2024-02-22</h4>
+<h4 class="date">2024-02-27</h4>
 
 </div>
 
@@ -454,29 +454,59 @@ filtering thresholds, but our process for choosing those is likely to be
 more iterative</p>
 <p>General goal: Filtering out the “cells” that either were poorly
 measured or are either not single-cells or not cells at all</p>
-<p><Add specific goals for section></p>
+<!---Add specific goals for section--->
 </div>
 <div id="topics" class="section level1">
 <h1>Topics</h1>
-<div id="cell-ranger" class="section level2">
-<h2>Cell Ranger</h2>
+</div>
+<div id="university-of-michigan-resources" class="section level1">
+<h1>University of Michigan Resources</h1>
 <ul>
-<li>[10x]</li>
 <li><a
-href="https://holab-hku.github.io/Fundamental-scRNA/raw2matrix.html#cell-ranger">Overview
-from Ho Lab</a></li>
+href="https://medresearch.umich.edu/office-research/about-office-research/biomedical-research-core-facilities/advanced-genomics-core/technologies/single-cell-processing">Advanced
+Genomics Core (AGC) - Single Cell Processing</a></li>
+<li><a href="https://arc.umich.edu/umrcp/">Advanced Research Computing
+(ARC) - UM Research Computing package</a></li>
+</ul>
+<div id="cell-ranger-and-10x-assays" class="section level2">
+<h2>Cell Ranger and 10x Assays:</h2>
+<ul>
+<li><p><a
+href="https://www.10xgenomics.com/support/software/cell-ranger/latest">10x
+- Cell Ranger Support</a></p></li>
+<li><p><a
+href="https://holab-hku.github.io/Fundamental-scRNA/raw2matrix.html#cell-ranger">Cell
+Ranger Overview - Ho Lab</a></p></li>
+<li><p><a
+href="https://www.10xgenomics.com/support/software/cell-ranger/latest/algorithms-overview">10x
+- Cell Ranger algorithms overview</a></p></li>
+<li><p><a
+href="https://www.10xgenomics.com/analysis-guides/quality-assessment-using-the-cell-ranger-web-summary">Quality
+Assessment Using the Cell Ranger Web Summary</a></p></li>
+<li><p><a
+href="https://www.10xgenomics.com/support/single-cell-gene-expression">10x
+- 3’ Single Gell Gene Expression</a></p></li>
+<li><p><a
+href="https://www.10xgenomics.com/support/single-cell-gene-expression-flex/documentation/steps/probe-sets/chromium-frp-probe-sets-overview">10x
+- Fixed RNA Profiling Probe Sets Overview</a></p></li>
 </ul>
 </div>
 <div id="loupe-browser" class="section level2">
-<h2>Loupe Browser</h2>
+<h2>Loupe Browser:</h2>
 <ul>
 <li><a
 href="https://www.10xgenomics.com/support/software/loupe-browser/latest/getting-started">10x
 resources for getting started with Loupe Browser</a></li>
+<li><a
+href="https://www.10xgenomics.com/support/software/loupe-browser/latest/tutorials/introduction/lb-sc-interface-and-navigation">10x
+tutorial - Loupe Browser navigation for Single-cell</a></li>
+<li><a
+href="https://www.10xgenomics.com/support/software/loupe-browser/latest/tutorials/introduction/lb-louper">10x
+tutorial - LoupeR to Generate CLOUPE files from Seurat Objects</a></li>
 </ul>
 </div>
-<div id="other-seurat-tutorialsworkflows" class="section level2">
-<h2>Other Seurat tutorials/workflows:</h2>
+<div id="seurat-tutorialsworkflows" class="section level2">
+<h2>Seurat tutorials/workflows:</h2>
 <ul>
 <li><a href="https://ouyanglab.com/singlecell/">Single-cell Analysis -
 Ouyang Lab</a> - materials last updated in January 2023</li>
@@ -490,11 +520,114 @@ workshop - HBC training</a> - lastest release of materials is from March
 </ul></li>
 <li><a
 href="https://holab-hku.github.io/Fundamental-scRNA/downstream.html">Analysis
-using Seurat - Ho Lab</a> - materials last updated in 2021</li>
-<li><a
-href="https://rnabio.org/module-08-scrna/0008/02/01/scRNA/">Single-cell
-RNA-seq - Griffith Lab</a> - materials last updated in 2020</li>
+using Seurat - Ho Lab</a> - materials last updated in 2021 <a
+href="https://rnabio.org/module-08-scrna/0008/08/01/scRNA/">Single-cell
+complete workflow exercise, RNA-seq Bioinformatics - Griffith
+Lab</a></li>
 </ul>
+</div>
+<div id="resources-and-documentation-for-seurat-and-related-tools"
+class="section level2">
+<h2>Resources and documentation for Seurat and related tools:</h2>
+<ul>
+<li><a
+href="https://satijalab.org/seurat/articles/seurat5_sketch_analysis">Seurat
+5 - Sketch analysis</a></li>
+<li><a
+href="https://satijalab.org/seurat/articles/cell_cycle_vignette.html">Seurat
+- Cell Cycle and Regression</a></li>
+<li><a
+href="https://satijalab.org/seurat/articles/visualization_vignette">Seurat
+- data visualization methods</a></li>
+<li><a
+href="https://rpubs.com/kenneditodd/doublet_finder_example">Doublet
+Finder Example, 2022</a>
+<ul>
+<li><a
+href="https://github.com/chris-mcginnis-ucsf/DoubletFinder/issues/171">Issue
+reported for Seurat 5</a>, so may not be compatible with Seurat workflow
+until bug is fixed</li>
+</ul></li>
+</ul>
+</div>
+<div id="resource-compilations" class="section level2">
+<h2>Resource compilations:</h2>
+<ul>
+<li><a
+href="https://www.10xgenomics.com/analysis-guides/continuing-your-journey-after-running-cell-ranger">10x
+- Continuing your journey after running cell ranger</a></li>
+<li><a
+href="https://www.10xgenomics.com/analysis-guides?query=&amp;page=1&amp;refinementList%5Bproducts.name%5D%5B0%5D=Single%20Cell%20Gene%20Expression">10x
+Analysis Guides - single-cell gene expression</a></li>
+<li><a
+href="https://github.com/crazyhottommy/scRNAseq-analysis-notes">Ming
+Tang’s scRNA analysis notes repository</a></li>
+<li><a href="https://github.com/seandavi/awesome-single-cell">Sean
+Davis’ list of single-cell packages</a></li>
+<li><a href="https://github.com/mdozmorov/scRNA-seq_notes">Mikhail
+Dozmorov’s compilation of single-cell analysis tools and papers</a></li>
+<li><a
+href="https://ouyanglab.com/singlecell/appendix.html#useful-resources">Ouyang
+Lab’s “Useful resources”</a></li>
+</ul>
+</div>
+<div id="deep-dive-single-cell-tutorials-and-guides"
+class="section level2">
+<h2>Deep-dive single-cell tutorials and guides:</h2>
+<ul>
+<li><a href="https://bioconductor.org/books/3.15/OSCA.basic/">Basics of
+Single-Cell Analysis with Bioconductor (OSCA), 2022</a></li>
+<li><a href="https://broadinstitute.github.io/2019_scWorkshop/">Broad
+Institute - ANALYSIS OF SINGLE CELL RNA-SEQ DATA, 2019</a></li>
+<li><a href="https://www.sc-best-practices.org/preamble.html">Single
+Cell Best Practices (Python/scanpy)- Digital Book</a></li>
+</ul>
+</div>
+<div id="resources-for-broader-contextdiscussion"
+class="section level2">
+<h2>Resources for broader context/discussion:</h2>
+<ul>
+<li><p><a href="https://satijalab.org/">Satija Lab Website</a></p></li>
+<li><p><a
+href="https://www.embopress.org/doi/full/10.15252/msb.20188746">Luecken
+MD, Theis FJ. Current best practices in single-cell RNA-seq analysis: a
+tutorial. Mol Syst Biol. 2019 Jun 19;15(6):e8746. doi:
+10.15252/msb.20188746. PMID: 31217225; PMCID: PMC6582955.</a></p></li>
+<li><p><a
+href="https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1011288">Chari
+T, Pachter L (2023) The specious art of single-cell genomics. PLoS
+Comput Biol 19(8): e1011288.
+https://doi.org/10.1371/journal.pcbi.1011288</a></p></li>
+<li><p><a href="https://doi.org/10.1186/s13059-019-1898-6">Sun, Shiquan,
+Jiaqiang Zhu, Ying Ma, and Xiang Zhou. 2019. “Accuracy, Robustness and
+Scalability of Dimensionality Reduction Methods for Single-Cell RNA-Seq
+Analysis.” Genome Biology 20: 269.
+https://doi.org/10.1186/s13059-019-1898-6.</a></p></li>
+<li><p><a
+href="https://pair-code.github.io/understanding-umap/">Understanding
+UMAP</a></p></li>
+<li><p><a
+href="https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html">OSCA
+Chapter 4: Dimensionality reduction</a></p></li>
+</ul>
+</div>
+<div id="other-third-party-tools" class="section level2">
+<h2>Other third party tools</h2>
+<ul>
+<li><a href="https://bioturing.com/bbrowserx">BioTuring - BBrowser X</a>
+- Graphical user interface (GUI) analysis suite, similar to Loupe
+Browser but with more extensive functionalities (requires paid
+subscription but 1-month trial available)
+<ul>
+<li><a
+href="https://talk2data.bioturing.com/document#h.k5o4lxkht6rz">BBrowser
+X documentation</a></li>
+</ul></li>
+<li><a
+href="https://scanpy.readthedocs.io/en/latest/_tutorials.html">Scanpy
+(Python) documentation and tutorials</a></li>
+</ul>
+<p><br/></p>
 <hr />
 <p>These materials have been adapted and extended from materials listed
 above. These are open access materials distributed under the terms of
@@ -523,7 +656,7 @@ author and source are credited.</p>
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tCnRpdGxlOiAiTW9kdWxlIHRpdGxlIgphdXRob3I6ICJVTSBCaW9pbmZvcm1hdGljcyBDb3JlIgpkYXRlOiAiYHIgU3lzLkRhdGUoKWAiCm91dHB1dDoKICAgICAgICBodG1sX2RvY3VtZW50OgogICAgICAgICAgICBpbmNsdWRlczoKICAgICAgICAgICAgICAgIGluX2hlYWRlcjogaGVhZGVyLmh0bWwKICAgICAgICAgICAgdGhlbWU6IHBhcGVyCiAgICAgICAgICAgIHRvYzogdHJ1ZQogICAgICAgICAgICB0b2NfZGVwdGg6IDQKICAgICAgICAgICAgdG9jX2Zsb2F0OiB0cnVlCiAgICAgICAgICAgIG51bWJlcl9zZWN0aW9uczogZmFsc2UKICAgICAgICAgICAgZmlnX2NhcHRpb246IHRydWUKICAgICAgICAgICAgbWFya2Rvd246IEdGTQogICAgICAgICAgICBjb2RlX2Rvd25sb2FkOiB0cnVlCi0tLQoKPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KYm9keSwgdGQgewogICBmb250LXNpemU6IDE4cHg7Cn0KY29kZS5yewogIGZvbnQtc2l6ZTogMTJweDsKfQpwcmUgewogIGZvbnQtc2l6ZTogMTJweAp9Cjwvc3R5bGU+CgpgYGB7ciwgaW5jbHVkZSA9IEZBTFNFfQpzb3VyY2UoIi4uL2Jpbi9jaHVuay1vcHRpb25zLlIiKQprbml0cl9maWdfcGF0aCgiWFgiKQpgYGAKCiMgV29ya2Zsb3cgT3ZlcnZpZXcgey51bmxpc3RlZCAudW5udW1iZXJlZH0KCiMgSW50cm9kdWN0aW9uCgpQb2ludCBvdXQgcG9zc2libGUgZ2FwcyBiZXR3ZWVuIGhvdyBzaW5nbGUtY2VsbCBkYXRhIGlzIHByZXNlbnRlZCB2ZXJzdXMgdGhlIHJlYWxpdHkgb2YgcnVubmluZyBhbiBhbmFseXNpcwpFLmcuIFBhcGVycyBtaWdodCByZXBvcnQgZmluYWwgZmlsdGVyaW5nIHRocmVzaG9sZHMsIGJ1dCBvdXIgcHJvY2VzcyBmb3IgY2hvb3NpbmcgdGhvc2UgaXMgbGlrZWx5IHRvIGJlIG1vcmUgaXRlcmF0aXZlCgpHZW5lcmFsIGdvYWw6IEZpbHRlcmluZyBvdXQgdGhlICJjZWxscyIgdGhhdCBlaXRoZXIgd2VyZSBwb29ybHkgbWVhc3VyZWQgb3IgYXJlIGVpdGhlciBub3Qgc2luZ2xlLWNlbGxzIG9yIG5vdCBjZWxscyBhdCBhbGwKCjxBZGQgc3BlY2lmaWMgZ29hbHMgZm9yIHNlY3Rpb24+CgojIFRvcGljcwoKIyMgQ2VsbCBSYW5nZXIKCi0gWzEweF0KLSBbT3ZlcnZpZXcgZnJvbSBIbyBMYWJdKGh0dHBzOi8vaG9sYWItaGt1LmdpdGh1Yi5pby9GdW5kYW1lbnRhbC1zY1JOQS9yYXcybWF0cml4Lmh0bWwjY2VsbC1yYW5nZXIpCgojIyBMb3VwZSBCcm93c2VyCgotIFsxMHggcmVzb3VyY2VzIGZvciBnZXR0aW5nIHN0YXJ0ZWQgd2l0aCBMb3VwZSBCcm93c2VyXShodHRwczovL3d3dy4xMHhnZW5vbWljcy5jb20vc3VwcG9ydC9zb2Z0d2FyZS9sb3VwZS1icm93c2VyL2xhdGVzdC9nZXR0aW5nLXN0YXJ0ZWQpCgojIyBPdGhlciBTZXVyYXQgdHV0b3JpYWxzL3dvcmtmbG93czoKCi0gW1NpbmdsZS1jZWxsIEFuYWx5c2lzIC0gT3V5YW5nIExhYl0oaHR0cHM6Ly9vdXlhbmdsYWIuY29tL3NpbmdsZWNlbGwvKSAtIG1hdGVyaWFscyBsYXN0IHVwZGF0ZWQgaW4gSmFudWFyeSAyMDIzCi0gW3NjUk5BLXNlcSB3b3Jrc2hvcCAtIEhCQyB0cmFpbmluZ10oaHR0cHM6Ly9oYmN0cmFpbmluZy5naXRodWIuaW8vc2NSTkEtc2VxX29ubGluZS9zY2hlZHVsZS9saW5rcy10by1sZXNzb25zLmh0bWwpIC0gbGFzdGVzdCByZWxlYXNlIG9mIG1hdGVyaWFscyBpcyBmcm9tIE1hcmNoIDIwMjMKCS0gVG8gY2l0ZSBtYXRlcmlhbHMgZnJvbSB0aGUgSEJDIGNvdXJzZSwgcGxlYXNlIHVzZTogYE1hcnkgUGlwZXIsIE1lZXRhIE1pc3RyeSwgSmloZSBMaXUsIFdpbGxpYW0gR2FtbWVyZGluZ2VyLCAmIFJhZGhpa2EgS2hldGFuaS4gKDIwMjIsIEphbnVhcnkgNikuIGhiY3RyYWluaW5nL3NjUk5BLXNlcV9vbmxpbmU6IHNjUk5BLXNlcSBMZXNzb25zIGZyb20gSENCQyAoZmlyc3QgcmVsZWFzZSkuIFplbm9kby4gW2h0dHBzOi8vZG9pLm9yZy8xMC41MjgxL3plbm9kby41ODI2MjU2XShodHRwczovL2RvaS5vcmcvMTAuNTI4MS96ZW5vZG8uNTgyNjI1NilgCi0gW0FuYWx5c2lzIHVzaW5nIFNldXJhdCAtIEhvIExhYl0oaHR0cHM6Ly9ob2xhYi1oa3UuZ2l0aHViLmlvL0Z1bmRhbWVudGFsLXNjUk5BL2Rvd25zdHJlYW0uaHRtbCkgLSBtYXRlcmlhbHMgbGFzdCB1cGRhdGVkIGluIDIwMjEKLSBbU2luZ2xlLWNlbGwgUk5BLXNlcSAtIEdyaWZmaXRoIExhYl0oaHR0cHM6Ly9ybmFiaW8ub3JnL21vZHVsZS0wOC1zY3JuYS8wMDA4LzAyLzAxL3NjUk5BLykgLSBtYXRlcmlhbHMgbGFzdCB1cGRhdGVkIGluIDIwMjAKCgotLS0tCgpUaGVzZSBtYXRlcmlhbHMgaGF2ZSBiZWVuIGFkYXB0ZWQgYW5kIGV4dGVuZGVkIGZyb20gbWF0ZXJpYWxzIGxpc3RlZCBhYm92ZS4gVGhlc2UgYXJlIG9wZW4gYWNjZXNzIG1hdGVyaWFscyBkaXN0cmlidXRlZCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIFtDcmVhdGl2ZSBDb21tb25zIEF0dHJpYnV0aW9uIGxpY2Vuc2UgKENDIEJZIDQuMCldKGh0dHA6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC8pLCB3aGljaCBwZXJtaXRzIHVucmVzdHJpY3RlZCB1c2UsIGRpc3RyaWJ1dGlvbiwgYW5kIHJlcHJvZHVjdGlvbiBpbiBhbnkgbWVkaXVtLCBwcm92aWRlZCB0aGUgb3JpZ2luYWwgYXV0aG9yIGFuZCBzb3VyY2UgYXJlIGNyZWRpdGVkLgoKPGJyLz4KPGJyLz4KPGhyLz4KfCBbQmFjayB0byBpbnRyb2R1Y3Rpb25dKHdvcmtzaG9wX2ludHJvKSB8IFtUb3Agb2YgdGhpcyBsZXNzb25dKCN0b3ApIHwgW05leHQgbGVzc29uXSgwMS1HZXR0aW5nU3RhcnRlZC5odG1sKSB8CnwgOi0tLSB8IDotLS0tOiB8IC0tLTogfAoK</div>
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiTW9kdWxlIHRpdGxlIgphdXRob3I6ICJVTSBCaW9pbmZvcm1hdGljcyBDb3JlIgpkYXRlOiAiYHIgU3lzLkRhdGUoKWAiCm91dHB1dDoKICAgICAgICBodG1sX2RvY3VtZW50OgogICAgICAgICAgICBpbmNsdWRlczoKICAgICAgICAgICAgICAgIGluX2hlYWRlcjogaGVhZGVyLmh0bWwKICAgICAgICAgICAgdGhlbWU6IHBhcGVyCiAgICAgICAgICAgIHRvYzogdHJ1ZQogICAgICAgICAgICB0b2NfZGVwdGg6IDQKICAgICAgICAgICAgdG9jX2Zsb2F0OiB0cnVlCiAgICAgICAgICAgIG51bWJlcl9zZWN0aW9uczogZmFsc2UKICAgICAgICAgICAgZmlnX2NhcHRpb246IHRydWUKICAgICAgICAgICAgbWFya2Rvd246IEdGTQogICAgICAgICAgICBjb2RlX2Rvd25sb2FkOiB0cnVlCi0tLQoKPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KYm9keSwgdGQgewogICBmb250LXNpemU6IDE4cHg7Cn0KY29kZS5yewogIGZvbnQtc2l6ZTogMTJweDsKfQpwcmUgewogIGZvbnQtc2l6ZTogMTJweAp9Cjwvc3R5bGU+CgpgYGB7ciwgaW5jbHVkZSA9IEZBTFNFfQpzb3VyY2UoIi4uL2Jpbi9jaHVuay1vcHRpb25zLlIiKQprbml0cl9maWdfcGF0aCgiWFgiKQpgYGAKCiMgV29ya2Zsb3cgT3ZlcnZpZXcgey51bmxpc3RlZCAudW5udW1iZXJlZH0KCiMgSW50cm9kdWN0aW9uCgpQb2ludCBvdXQgcG9zc2libGUgZ2FwcyBiZXR3ZWVuIGhvdyBzaW5nbGUtY2VsbCBkYXRhIGlzIHByZXNlbnRlZCB2ZXJzdXMgdGhlIHJlYWxpdHkgb2YgcnVubmluZyBhbiBhbmFseXNpcwpFLmcuIFBhcGVycyBtaWdodCByZXBvcnQgZmluYWwgZmlsdGVyaW5nIHRocmVzaG9sZHMsIGJ1dCBvdXIgcHJvY2VzcyBmb3IgY2hvb3NpbmcgdGhvc2UgaXMgbGlrZWx5IHRvIGJlIG1vcmUgaXRlcmF0aXZlCgpHZW5lcmFsIGdvYWw6IEZpbHRlcmluZyBvdXQgdGhlICJjZWxscyIgdGhhdCBlaXRoZXIgd2VyZSBwb29ybHkgbWVhc3VyZWQgb3IgYXJlIGVpdGhlciBub3Qgc2luZ2xlLWNlbGxzIG9yIG5vdCBjZWxscyBhdCBhbGwKCjwhLS0tQWRkIHNwZWNpZmljIGdvYWxzIGZvciBzZWN0aW9uLS0tPgoKIyBUb3BpY3MKCiMgVW5pdmVyc2l0eSBvZiBNaWNoaWdhbiBSZXNvdXJjZXMKCi0gW0FkdmFuY2VkIEdlbm9taWNzIENvcmUgKEFHQykgLSBTaW5nbGUgQ2VsbCBQcm9jZXNzaW5nXShodHRwczovL21lZHJlc2VhcmNoLnVtaWNoLmVkdS9vZmZpY2UtcmVzZWFyY2gvYWJvdXQtb2ZmaWNlLXJlc2VhcmNoL2Jpb21lZGljYWwtcmVzZWFyY2gtY29yZS1mYWNpbGl0aWVzL2FkdmFuY2VkLWdlbm9taWNzLWNvcmUvdGVjaG5vbG9naWVzL3NpbmdsZS1jZWxsLXByb2Nlc3NpbmcpCi0gW0FkdmFuY2VkIFJlc2VhcmNoIENvbXB1dGluZyAoQVJDKSAtIFVNIFJlc2VhcmNoIENvbXB1dGluZyBwYWNrYWdlXShodHRwczovL2FyYy51bWljaC5lZHUvdW1yY3AvKQoKCiMjIENlbGwgUmFuZ2VyIGFuZCAxMHggQXNzYXlzOgoKLSBbMTB4IC0gQ2VsbCBSYW5nZXIgU3VwcG9ydF0oaHR0cHM6Ly93d3cuMTB4Z2Vub21pY3MuY29tL3N1cHBvcnQvc29mdHdhcmUvY2VsbC1yYW5nZXIvbGF0ZXN0KQotIFtDZWxsIFJhbmdlciBPdmVydmlldyAtIEhvIExhYl0oaHR0cHM6Ly9ob2xhYi1oa3UuZ2l0aHViLmlvL0Z1bmRhbWVudGFsLXNjUk5BL3JhdzJtYXRyaXguaHRtbCNjZWxsLXJhbmdlcikKLSBbMTB4IC0gQ2VsbCBSYW5nZXIgYWxnb3JpdGhtcyBvdmVydmlld10oaHR0cHM6Ly93d3cuMTB4Z2Vub21pY3MuY29tL3N1cHBvcnQvc29mdHdhcmUvY2VsbC1yYW5nZXIvbGF0ZXN0L2FsZ29yaXRobXMtb3ZlcnZpZXcpCi0gW1F1YWxpdHkgQXNzZXNzbWVudCBVc2luZyB0aGUgQ2VsbCBSYW5nZXIgV2ViIFN1bW1hcnldKGh0dHBzOi8vd3d3LjEweGdlbm9taWNzLmNvbS9hbmFseXNpcy1ndWlkZXMvcXVhbGl0eS1hc3Nlc3NtZW50LXVzaW5nLXRoZS1jZWxsLXJhbmdlci13ZWItc3VtbWFyeSkKCi0gWzEweCAtIDMnIFNpbmdsZSBHZWxsIEdlbmUgRXhwcmVzc2lvbl0oaHR0cHM6Ly93d3cuMTB4Z2Vub21pY3MuY29tL3N1cHBvcnQvc2luZ2xlLWNlbGwtZ2VuZS1leHByZXNzaW9uKQotIFsxMHggLSBGaXhlZCBSTkEgUHJvZmlsaW5nIFByb2JlIFNldHMgT3ZlcnZpZXddKGh0dHBzOi8vd3d3LjEweGdlbm9taWNzLmNvbS9zdXBwb3J0L3NpbmdsZS1jZWxsLWdlbmUtZXhwcmVzc2lvbi1mbGV4L2RvY3VtZW50YXRpb24vc3RlcHMvcHJvYmUtc2V0cy9jaHJvbWl1bS1mcnAtcHJvYmUtc2V0cy1vdmVydmlldykKCiMjIExvdXBlIEJyb3dzZXI6CgotIFsxMHggcmVzb3VyY2VzIGZvciBnZXR0aW5nIHN0YXJ0ZWQgd2l0aCBMb3VwZSBCcm93c2VyXShodHRwczovL3d3dy4xMHhnZW5vbWljcy5jb20vc3VwcG9ydC9zb2Z0d2FyZS9sb3VwZS1icm93c2VyL2xhdGVzdC9nZXR0aW5nLXN0YXJ0ZWQpCi0gWzEweCB0dXRvcmlhbCAtICBMb3VwZSBCcm93c2VyIG5hdmlnYXRpb24gZm9yIFNpbmdsZS1jZWxsXShodHRwczovL3d3dy4xMHhnZW5vbWljcy5jb20vc3VwcG9ydC9zb2Z0d2FyZS9sb3VwZS1icm93c2VyL2xhdGVzdC90dXRvcmlhbHMvaW50cm9kdWN0aW9uL2xiLXNjLWludGVyZmFjZS1hbmQtbmF2aWdhdGlvbikKLSBbMTB4IHR1dG9yaWFsIC0gTG91cGVSIHRvIEdlbmVyYXRlIENMT1VQRSBmaWxlcyBmcm9tIFNldXJhdCBPYmplY3RzIF0oaHR0cHM6Ly93d3cuMTB4Z2Vub21pY3MuY29tL3N1cHBvcnQvc29mdHdhcmUvbG91cGUtYnJvd3Nlci9sYXRlc3QvdHV0b3JpYWxzL2ludHJvZHVjdGlvbi9sYi1sb3VwZXIpCgojIyBTZXVyYXQgdHV0b3JpYWxzL3dvcmtmbG93czoKCi0gW1NpbmdsZS1jZWxsIEFuYWx5c2lzIC0gT3V5YW5nIExhYl0oaHR0cHM6Ly9vdXlhbmdsYWIuY29tL3NpbmdsZWNlbGwvKSAtIG1hdGVyaWFscyBsYXN0IHVwZGF0ZWQgaW4gSmFudWFyeSAyMDIzCi0gW3NjUk5BLXNlcSB3b3Jrc2hvcCAtIEhCQyB0cmFpbmluZ10oaHR0cHM6Ly9oYmN0cmFpbmluZy5naXRodWIuaW8vc2NSTkEtc2VxX29ubGluZS9zY2hlZHVsZS9saW5rcy10by1sZXNzb25zLmh0bWwpIC0gbGFzdGVzdCByZWxlYXNlIG9mIG1hdGVyaWFscyBpcyBmcm9tIE1hcmNoIDIwMjMKCS0gVG8gY2l0ZSBtYXRlcmlhbHMgZnJvbSB0aGUgSEJDIGNvdXJzZSwgcGxlYXNlIHVzZTogYE1hcnkgUGlwZXIsIE1lZXRhIE1pc3RyeSwgSmloZSBMaXUsIFdpbGxpYW0gR2FtbWVyZGluZ2VyLCAmIFJhZGhpa2EgS2hldGFuaS4gKDIwMjIsIEphbnVhcnkgNikuIGhiY3RyYWluaW5nL3NjUk5BLXNlcV9vbmxpbmU6IHNjUk5BLXNlcSBMZXNzb25zIGZyb20gSENCQyAoZmlyc3QgcmVsZWFzZSkuIFplbm9kby4gW2h0dHBzOi8vZG9pLm9yZy8xMC41MjgxL3plbm9kby41ODI2MjU2XShodHRwczovL2RvaS5vcmcvMTAuNTI4MS96ZW5vZG8uNTgyNjI1NilgCi0gW0FuYWx5c2lzIHVzaW5nIFNldXJhdCAtIEhvIExhYl0oaHR0cHM6Ly9ob2xhYi1oa3UuZ2l0aHViLmlvL0Z1bmRhbWVudGFsLXNjUk5BL2Rvd25zdHJlYW0uaHRtbCkgLSBtYXRlcmlhbHMgbGFzdCB1cGRhdGVkIGluIDIwMjEKW1NpbmdsZS1jZWxsIGNvbXBsZXRlIHdvcmtmbG93IGV4ZXJjaXNlLCBSTkEtc2VxIEJpb2luZm9ybWF0aWNzIC0gR3JpZmZpdGggTGFiXShodHRwczovL3JuYWJpby5vcmcvbW9kdWxlLTA4LXNjcm5hLzAwMDgvMDgvMDEvc2NSTkEvKQoKCiMjIFJlc291cmNlcyBhbmQgZG9jdW1lbnRhdGlvbiBmb3IgU2V1cmF0IGFuZCByZWxhdGVkIHRvb2xzOiAKCi0gW1NldXJhdCA1IC0gU2tldGNoIGFuYWx5c2lzXShodHRwczovL3NhdGlqYWxhYi5vcmcvc2V1cmF0L2FydGljbGVzL3NldXJhdDVfc2tldGNoX2FuYWx5c2lzKQotIFtTZXVyYXQgLSBDZWxsIEN5Y2xlIGFuZCBSZWdyZXNzaW9uXShodHRwczovL3NhdGlqYWxhYi5vcmcvc2V1cmF0L2FydGljbGVzL2NlbGxfY3ljbGVfdmlnbmV0dGUuaHRtbCkKLSBbU2V1cmF0IC0gZGF0YSB2aXN1YWxpemF0aW9uIG1ldGhvZHNdKGh0dHBzOi8vc2F0aWphbGFiLm9yZy9zZXVyYXQvYXJ0aWNsZXMvdmlzdWFsaXphdGlvbl92aWduZXR0ZSkKLSBbRG91YmxldCBGaW5kZXIgRXhhbXBsZSwgMjAyMl0oaHR0cHM6Ly9ycHVicy5jb20va2VubmVkaXRvZGQvZG91YmxldF9maW5kZXJfZXhhbXBsZSkKCS0gW0lzc3VlIHJlcG9ydGVkIGZvciBTZXVyYXQgNV0oaHR0cHM6Ly9naXRodWIuY29tL2NocmlzLW1jZ2lubmlzLXVjc2YvRG91YmxldEZpbmRlci9pc3N1ZXMvMTcxKSwgc28gbWF5IG5vdCBiZSBjb21wYXRpYmxlIHdpdGggU2V1cmF0IHdvcmtmbG93IHVudGlsIGJ1ZyBpcyBmaXhlZAoKIyMgUmVzb3VyY2UgY29tcGlsYXRpb25zOgoKLSBbMTB4IC0gQ29udGludWluZyB5b3VyIGpvdXJuZXkgYWZ0ZXIgcnVubmluZyBjZWxsIHJhbmdlcl0oaHR0cHM6Ly93d3cuMTB4Z2Vub21pY3MuY29tL2FuYWx5c2lzLWd1aWRlcy9jb250aW51aW5nLXlvdXItam91cm5leS1hZnRlci1ydW5uaW5nLWNlbGwtcmFuZ2VyKQotIFsxMHggQW5hbHlzaXMgR3VpZGVzIC0gc2luZ2xlLWNlbGwgZ2VuZSBleHByZXNzaW9uXShodHRwczovL3d3dy4xMHhnZW5vbWljcy5jb20vYW5hbHlzaXMtZ3VpZGVzP3F1ZXJ5PSZwYWdlPTEmcmVmaW5lbWVudExpc3QlNUJwcm9kdWN0cy5uYW1lJTVEJTVCMCU1RD1TaW5nbGUlMjBDZWxsJTIwR2VuZSUyMEV4cHJlc3Npb24pCi0gW01pbmcgVGFuZydzIHNjUk5BIGFuYWx5c2lzIG5vdGVzIHJlcG9zaXRvcnldKGh0dHBzOi8vZ2l0aHViLmNvbS9jcmF6eWhvdHRvbW15L3NjUk5Bc2VxLWFuYWx5c2lzLW5vdGVzKQotIFtTZWFuIERhdmlzJyBsaXN0IG9mIHNpbmdsZS1jZWxsIHBhY2thZ2VzXShodHRwczovL2dpdGh1Yi5jb20vc2VhbmRhdmkvYXdlc29tZS1zaW5nbGUtY2VsbCkKLSBbTWlraGFpbCBEb3ptb3JvdidzIGNvbXBpbGF0aW9uIG9mIHNpbmdsZS1jZWxsIGFuYWx5c2lzIHRvb2xzIGFuZCBwYXBlcnNdKGh0dHBzOi8vZ2l0aHViLmNvbS9tZG96bW9yb3Yvc2NSTkEtc2VxX25vdGVzKQotIFtPdXlhbmcgTGFiJ3MgIlVzZWZ1bCByZXNvdXJjZXMiXShodHRwczovL291eWFuZ2xhYi5jb20vc2luZ2xlY2VsbC9hcHBlbmRpeC5odG1sI3VzZWZ1bC1yZXNvdXJjZXMpCgoKIyMgRGVlcC1kaXZlIHNpbmdsZS1jZWxsIHR1dG9yaWFscyBhbmQgZ3VpZGVzOgoKLSBbQmFzaWNzIG9mIFNpbmdsZS1DZWxsIEFuYWx5c2lzIHdpdGggQmlvY29uZHVjdG9yIChPU0NBKSwgMjAyMl0oaHR0cHM6Ly9iaW9jb25kdWN0b3Iub3JnL2Jvb2tzLzMuMTUvT1NDQS5iYXNpYy8pCi0gW0Jyb2FkIEluc3RpdHV0ZSAtIEFOQUxZU0lTIE9GIFNJTkdMRSBDRUxMIFJOQS1TRVEgREFUQSwgMjAxOV0oaHR0cHM6Ly9icm9hZGluc3RpdHV0ZS5naXRodWIuaW8vMjAxOV9zY1dvcmtzaG9wLykKLSBbU2luZ2xlIENlbGwgQmVzdCBQcmFjdGljZXMgKFB5dGhvbi9zY2FucHkpLSBEaWdpdGFsIEJvb2tdKGh0dHBzOi8vd3d3LnNjLWJlc3QtcHJhY3RpY2VzLm9yZy9wcmVhbWJsZS5odG1sKQoKCgojIyBSZXNvdXJjZXMgZm9yIGJyb2FkZXIgY29udGV4dC9kaXNjdXNzaW9uOgoKLSBbU2F0aWphIExhYiBXZWJzaXRlXShodHRwczovL3NhdGlqYWxhYi5vcmcvKQotIFtMdWVja2VuIE1ELCBUaGVpcyBGSi4gQ3VycmVudCBiZXN0IHByYWN0aWNlcyBpbiBzaW5nbGUtY2VsbCBSTkEtc2VxIGFuYWx5c2lzOiBhIHR1dG9yaWFsLiBNb2wgU3lzdCBCaW9sLiAyMDE5IEp1biAxOTsxNSg2KTplODc0Ni4gZG9pOiAxMC4xNTI1Mi9tc2IuMjAxODg3NDYuIFBNSUQ6IDMxMjE3MjI1OyBQTUNJRDogUE1DNjU4Mjk1NS5dKGh0dHBzOi8vd3d3LmVtYm9wcmVzcy5vcmcvZG9pL2Z1bGwvMTAuMTUyNTIvbXNiLjIwMTg4NzQ2KQotIFtDaGFyaSBULCBQYWNodGVyIEwgKDIwMjMpIFRoZSBzcGVjaW91cyBhcnQgb2Ygc2luZ2xlLWNlbGwgZ2Vub21pY3MuIFBMb1MgQ29tcHV0IEJpb2wgMTkoOCk6IGUxMDExMjg4LiBodHRwczovL2RvaS5vcmcvMTAuMTM3MS9qb3VybmFsLnBjYmkuMTAxMTI4OF0oaHR0cHM6Ly9qb3VybmFscy5wbG9zLm9yZy9wbG9zY29tcGJpb2wvYXJ0aWNsZT9pZD0xMC4xMzcxL2pvdXJuYWwucGNiaS4xMDExMjg4KQoKLSBbU3VuLCBTaGlxdWFuLCBKaWFxaWFuZyBaaHUsIFlpbmcgTWEsIGFuZCBYaWFuZyBaaG91LiAyMDE5LiDigJxBY2N1cmFjeSwgUm9idXN0bmVzcyBhbmQgU2NhbGFiaWxpdHkgb2YgRGltZW5zaW9uYWxpdHkgUmVkdWN0aW9uIE1ldGhvZHMgZm9yIFNpbmdsZS1DZWxsIFJOQS1TZXEgQW5hbHlzaXMu4oCdIEdlbm9tZSBCaW9sb2d5IDIwOiAyNjkuIGh0dHBzOi8vZG9pLm9yZy8xMC4xMTg2L3MxMzA1OS0wMTktMTg5OC02Ll0oaHR0cHM6Ly9kb2kub3JnLzEwLjExODYvczEzMDU5LTAxOS0xODk4LTYpCgotIFtVbmRlcnN0YW5kaW5nIFVNQVBdKGh0dHBzOi8vcGFpci1jb2RlLmdpdGh1Yi5pby91bmRlcnN0YW5kaW5nLXVtYXAvKQotIFtPU0NBIENoYXB0ZXIgNDogRGltZW5zaW9uYWxpdHkgcmVkdWN0aW9uXShodHRwczovL2Jpb2NvbmR1Y3Rvci5vcmcvYm9va3MvMy4xNS9PU0NBLmJhc2ljL2RpbWVuc2lvbmFsaXR5LXJlZHVjdGlvbi5odG1sKQoKIyMgT3RoZXIgdGhpcmQgcGFydHkgdG9vbHMKCi0gW0Jpb1R1cmluZyAtIEJCcm93c2VyIFhdKGh0dHBzOi8vYmlvdHVyaW5nLmNvbS9iYnJvd3NlcngpIC0gR3JhcGhpY2FsIHVzZXIgaW50ZXJmYWNlIChHVUkpIGFuYWx5c2lzIHN1aXRlLCBzaW1pbGFyIHRvIExvdXBlIEJyb3dzZXIgYnV0IHdpdGggbW9yZSBleHRlbnNpdmUgZnVuY3Rpb25hbGl0aWVzIChyZXF1aXJlcyBwYWlkIHN1YnNjcmlwdGlvbiBidXQgMS1tb250aCB0cmlhbCBhdmFpbGFibGUpCgktIFtCQnJvd3NlciBYIGRvY3VtZW50YXRpb25dKGh0dHBzOi8vdGFsazJkYXRhLmJpb3R1cmluZy5jb20vZG9jdW1lbnQjaC5rNW80bHhraHQ2cnopCi0gW1NjYW5weSAoUHl0aG9uKSBkb2N1bWVudGF0aW9uIGFuZCB0dXRvcmlhbHNdKGh0dHBzOi8vc2NhbnB5LnJlYWR0aGVkb2NzLmlvL2VuL2xhdGVzdC9fdHV0b3JpYWxzLmh0bWwpCgo8YnIvPgoKLS0tLQoKVGhlc2UgbWF0ZXJpYWxzIGhhdmUgYmVlbiBhZGFwdGVkIGFuZCBleHRlbmRlZCBmcm9tIG1hdGVyaWFscyBsaXN0ZWQgYWJvdmUuIFRoZXNlIGFyZSBvcGVuIGFjY2VzcyBtYXRlcmlhbHMgZGlzdHJpYnV0ZWQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBbQ3JlYXRpdmUgQ29tbW9ucyBBdHRyaWJ1dGlvbiBsaWNlbnNlIChDQyBCWSA0LjApXShodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9saWNlbnNlcy9ieS80LjAvKSwgd2hpY2ggcGVybWl0cyB1bnJlc3RyaWN0ZWQgdXNlLCBkaXN0cmlidXRpb24sIGFuZCByZXByb2R1Y3Rpb24gaW4gYW55IG1lZGl1bSwgcHJvdmlkZWQgdGhlIG9yaWdpbmFsIGF1dGhvciBhbmQgc291cmNlIGFyZSBjcmVkaXRlZC4KCjxici8+Cjxici8+Cjxoci8+CnwgW0JhY2sgdG8gaW50cm9kdWN0aW9uXSh3b3Jrc2hvcF9pbnRybykgfCBbVG9wIG9mIHRoaXMgbGVzc29uXSgjdG9wKSB8IFtOZXh0IGxlc3Nvbl0oMDEtR2V0dGluZ1N0YXJ0ZWQuaHRtbCkgfAp8IDotLS0gfCA6LS0tLTogfCAtLS06IHwKCg==</div>
 
 
 </div>
