@@ -129,7 +129,7 @@ Take a moment to briefly introduce yourself (name, dept/lab, area of study) in a
 breakout room.
 
   - Zoom: Click Breakout Rooms
-  - Find the room corresponding to the first letter of your last name
+  - Find the room corresponding to the first letter of your first name
   - Click **Join** button to the right of the room.
   - When you have completed introductions, you can leave the breakout room to rejoin the main room.
 
@@ -174,6 +174,28 @@ In your scRNA-Seq experiment, what do/did you hope to find?
 ### Exercise: Group checkpoint
   - Using Zoom, give me a **green-check** if you feel like you understand
     communication patterns or **red-X** if you need clarification.
+<br/>
+<br/>
+
+## Logging in to the shared server
+
+To start, we will access our shared RStudio server by opening a web browser to the following URL:
+
+[https://bfx-workshop02.med.umich.edu/](https://bfx-workshop02.med.umich.edu/)
+
+You should now be looking at a page that will allow you to login to the RStudio server:
+
+![Image: Login page for RStudio server.](images/curriculum/server_login.png)
+
+Enter your user credentials and click <kbd>Sign In</kbd>. Your username and password were provided via email, but if you need help, a helper can retrieve it for you if you ask in Slack.
+
+Once you click <kdb>Sign In</kbd>, your screen will go blank for a few seconds. 
+This sometimes will feel like a longer delay (possibly up to **60 seconds**);
+this is ok.
+
+Once logged in, you should now see the RStudio interface:
+
+![Image: Landing page after successful login to RStudio server.](images/curriculum/RStudio_landing.png)
 <br/>
 <br/>
 
@@ -243,8 +265,18 @@ It is important that you can see:
 
 ## Acknowledgements
 
-* TODO Acknowledgements
+* Sections of the workshop were extended/adapted from or inspired by sources
+below. These and other specific references are cited in the __References__ 
+section of each lesson.
+  * [Harvard Chan Bioinformatics Core Single-cell RNA-seq data analysis workshop](https://hbctraining.github.io/scRNA-seq_online/)
+  * [Orchestrating Single-Cell Analysis with Bioconductor](https://bioconductor.org/books/3.15/OSCA/)
+  * [Satija lab @ New York Genome Center](https://satijalab.org/)
+  * [10x Genomics](https://www.10xgenomics.com/support/single-cell-gene-expression/documentation)
 
-* The workshop Code of Conduct has been adapted the NumFocus Code of Conduct (https://numfocus.org/code-of-conduct) which itself draws frin from numerous sources, including the Geek Feminism wiki, created by the Ada Initiative and other volunteers, which is under a Creative Commons Zero license, the Contributor Covenant version 1.2.0, the Bokeh Code of Conduct, the SciPy Code of Conduct, the Carpentries Code of Conduct, and the NeurIPS Code of Conduct.
+* The workshop Code of Conduct has been adapted the NumFocus Code of Conduct (https://numfocus.org/code-of-conduct) which itself draws from from numerous sources, including the Geek Feminism wiki, created by the Ada Initiative and other volunteers, which is under a Creative Commons Zero license, the Contributor Covenant version 1.2.0, the Bokeh Code of Conduct, the SciPy Code of Conduct, the Carpentries Code of Conduct, and the NeurIPS Code of Conduct.
 
-* This workshop content is licensed under a [Creative Commons Attribution 4 License](https://creativecommons.org/licenses/by/4.0/).
+* These workshop lesson plans have been adapted and extended from materials 
+listed above. These are open access materials distributed under the terms of the
+[Creative Commons Attribution license (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/), 
+which permits unrestricted use, distribution, and reproduction in any medium,
+provided the original author and source are credited.
