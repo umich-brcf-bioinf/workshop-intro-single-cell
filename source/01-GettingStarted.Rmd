@@ -166,7 +166,6 @@ This reads in the expression matrix which has genes as rows and cells as columns
 geo_so = CreateSeuratObject(counts = geo_mat, min.cells = 1, min.features = 50)
 geo_so
 ```
-
 ~~~
 An object of class Seurat 
 26489 features across 35216 samples within 1 assay 
@@ -239,22 +238,21 @@ The only slot of the `Seurat` object that we'll typically access or modify by ha
 ```{r, eval = FALSE}
 head(geo_so@meta.data)
 ```
-
 ~~~
                                           orig.ident nCount_RNA nFeature_RNA
-HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1       9258         2709
-HODay0replicate1_AAACCTGAGGAGTACC-1 HODay0replicate1         99           76
-HODay0replicate1_AAACCTGAGGATCGCA-1 HODay0replicate1         71           55
-HODay0replicate1_AAACCTGAGGCATTGG-1 HODay0replicate1         63           53
-HODay0replicate1_AAACCTGCAACAACCT-1 HODay0replicate1         70           54
-HODay0replicate1_AAACCTGCACCACCAG-1 HODay0replicate1        131          104
+HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1      10234         3226
+HODay0replicate1_AAACCTGGTCATGCAT-1 HODay0replicate1       3158         1499
+HODay0replicate1_AAACCTGTCAGAGCTT-1 HODay0replicate1      13464         4102
+HODay0replicate1_AAACGGGAGAGACTTA-1 HODay0replicate1        577          346
+HODay0replicate1_AAACGGGAGGCCCGTT-1 HODay0replicate1       1189          629
+HODay0replicate1_AAACGGGCAACTGGCC-1 HODay0replicate1       7726         2602
 ~~~
 
 Here, each row is a cell, and each column is information about that cell. The rows of the table are named according to the uniquely identifiable name for the cell. In this case, the day and replicate, as well as the barcode for that cell. As we continue the workshop, we will check in on the `meta.data` slot and observe changes we want to make, and that other functions will make. We'll also observe the other assays and layers and note their changes.
 
 ## Saving a Seurat object
 
-Let's save the Seurat object as an RDS file with `saveRDS()`; this allows us to have a copy of the object that we can read back into our session with the `readRDS()` commmand.
+Let's save the Seurat object as an RDS file with `saveRDS()`; this allows us to have a copy of the object that we can read back into our session with the `readRDS()` commmand. Periodically we will be saving our Seurat object so that we can have a version of it at different steps of the analysis. These will also help us get untangled if we get into an odd state.
 
 ```{r, eval = FALSE}
 saveRDS(geo_so, file = 'results/rdata/geo_so_unfiltered.rds')

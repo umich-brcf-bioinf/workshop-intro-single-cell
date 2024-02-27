@@ -72,12 +72,12 @@ head(geo_so@meta.data)
 ```
 ~~~
                                           orig.ident nCount_RNA nFeature_RNA
-HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1       9258         2709
-HODay0replicate1_AAACCTGAGGAGTACC-1 HODay0replicate1         99           76
-HODay0replicate1_AAACCTGAGGATCGCA-1 HODay0replicate1         71           55
-HODay0replicate1_AAACCTGAGGCATTGG-1 HODay0replicate1         63           53
-HODay0replicate1_AAACCTGCAACAACCT-1 HODay0replicate1         70           54
-HODay0replicate1_AAACCTGCACCACCAG-1 HODay0replicate1        131          104
+HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1      10234         3226
+HODay0replicate1_AAACCTGGTCATGCAT-1 HODay0replicate1       3158         1499
+HODay0replicate1_AAACCTGTCAGAGCTT-1 HODay0replicate1      13464         4102
+HODay0replicate1_AAACGGGAGAGACTTA-1 HODay0replicate1        577          346
+HODay0replicate1_AAACGGGAGGCCCGTT-1 HODay0replicate1       1189          629
+HODay0replicate1_AAACGGGCAACTGGCC-1 HODay0replicate1       7726         2602
 ~~~
 
 We can add arbitrary per-cell information to this table such as:
@@ -112,11 +112,9 @@ Finally, we'll grab the day information and the replicate information. We'll als
 
 ```{r, eval = FALSE}
 # Add day information
-
 tmp_meta$day = factor(str_split(tmp_meta$orig.ident, pattern = '[.]', simplify = TRUE)[,2], levels = c('Day0', 'Day7', 'Day21'))
 
 # Add replicate column
-
 tmp_meta$replicate = str_split(tmp_meta$orig.ident, pattern = '[.]', simplify = TRUE)[,3]
 ```
 
@@ -192,7 +190,6 @@ geo_so[['percent.mt']] = PercentageFeatureSet(geo_so, pattern = '^mt-')
 # Use summary() to quickly check the range of values
 summary(geo_so$percent.mt)
 ```
-
 ~~~
    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
   0.000   1.817   2.582   5.281   3.865  98.244
@@ -224,7 +221,7 @@ Now let's look at the `nFeature_RNA` violin plot across all the samples.
 
 ```{r, eval = FALSE}
 VlnPlot(geo_so, features = 'nFeature_RNA', assay = 'RNA', layer = 'counts') + NoLegend()
-ggsave(filename = 'ISC_R/results/figures/qc_nFeature_violin.png', width = 12, height = 6, units = 'in')
+ggsave(filename = 'results/figures/qc_nFeature_violin.png', width = 12, height = 6, units = 'in')
 ```
 
 ![](./images/curriculum/qc_nFeature_violin.png)
@@ -233,7 +230,7 @@ We observe what look like systematic differences between the days. Day 7 appears
 
 ```{r, eval = FALSE}
 VlnPlot(geo_so, features = 'nCount_RNA', assay = 'RNA', layer = 'counts') + NoLegend()
-ggsave(filename = 'ISC_R/results/figures/qc_nCount_violin.png', width = 12, height = 6, units = 'in')
+ggsave(filename = 'results/figures/qc_nCount_violin.png', width = 12, height = 6, units = 'in')
 ```
 
 ![](./images/curriculum/qc_nCount_violin.png)
@@ -242,7 +239,7 @@ We observe a similar systematic difference between the days in the total UMI cou
 
 ```{r, eval = FALSE}
 VlnPlot(geo_so, features = 'percent.mt', assay = 'RNA', layer = 'counts') + NoLegend()
-ggsave(filename = 'ISC_R/results/figures/qc_mito_violin.png', width = 12, height = 6, units = 'in')
+ggsave(filename = 'results/figures/qc_mito_violin.png', width = 12, height = 6, units = 'in')
 ```
 
 ![](images/curriculum/qc_mito_violin.png)
@@ -311,9 +308,7 @@ subset(geo_so, subset = nFeature_RNA > 500 & percent.mt < 25)@meta.data %>%
 
 ## Using adaptive thresholds
 
-We could choose to remove outlier cells adaptively. This approach assumes that most of the cells are of acceptable quality. For this workshop we will use the above fixed thresholds to match the publication.
-
-<!-- Resources for adaptive outlier detection https://bioconductor.org/books/3.12/OSCA/quality-control.html#identifying-low-quality-cells -->
+For this workshop we will use the above fixed thresholds to match the publication, but another option is to remove low-quality cells adaptively. This approach assumes that most of the cells are of acceptable quality. For more information see the relevant section in Bioconductor's online book: Orchestrating Single-Cell Analysis ([link](https://bioconductor.org/books/3.12/OSCA/quality-control.html#quality-control-outlier)).
 
 # Removing low-quality cells
 
@@ -379,7 +374,7 @@ cell_counts_tbl
 Let's also write this table to a file.
 
 ```{r, eval = FALSE}
-write_csv(cell_counts_tbl, file = 'ISC_R/results/tables/cell_filtering_counts.csv')
+write_csv(cell_counts_tbl, file = 'results/tables/cell_filtering_counts.csv')
 ```
 
 <!--What thresholds would we start with based on the plots alone? How does that compare to the thresholds reported in paper?-->
@@ -387,6 +382,14 @@ write_csv(cell_counts_tbl, file = 'ISC_R/results/tables/cell_filtering_counts.cs
 <!--Other “advanced” methods: out of scope for this workshop but there are packages  specifically developed to detect "doublets", e.g. droplets that contained more than one cell, such as DoubleFinder-->
 
 <!--Additional aside - For single-nuclei experiments removing background/ambient RNA with CellBlender OR DecontX is an important additional step since nuclei are both sticky and porous-->
+
+# Save the Seurat object
+
+Let's save this filtered form of our Seurat object. It will also include our changes to the `meta.data`:
+
+```{r, eval = FALSE}
+saveRDS(object = geo_so, file = 'results/rdata/geo_so_filtered.rda')
+```
 
 # Summary
 
