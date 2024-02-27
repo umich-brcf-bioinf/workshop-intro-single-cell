@@ -552,7 +552,7 @@ measuring the expression of four genes measured in just two cells, we
 could plot the expression of those four genes, with data from one cell
 plotted on the x-axis and the second cell plotted on the y-axis.</p>
 <p><img
-src="./images/curriculum/04-PCAandIntegration/HBC-PCA_2sample_genes.png"
+src="images/curriculum/04-PCAandIntegration/HBC-PCA_2sample_genes.png"
 alt="A simple PCA example (from HBC)" />
 <!--- Update plot to replace "Sample" with cell in figure and table ---></p>
 <p>If we wanted to represent the most variation across the data, we
@@ -566,7 +566,7 @@ represent the second principal component (PC).</p>
 each line are those with the greatest influence on the direction and
 length of the PC.</p>
 <p><img
-src="./images/curriculum/04-PCAandIntegration/HBC-PCA_2sample_variation3.png"
+src="images/curriculum/04-PCAandIntegration/HBC-PCA_2sample_variation3.png"
 alt="PCA gene loadings (from HBC)" />
 <!--- Update plot to replace "Sample" with cell in figure ---></p>
 <p>We’ll skip the process of calculating the score for each cell per PC,
@@ -657,21 +657,21 @@ visualization:</p>
 <pre class="r"><code>VizDimLoadings(geo_so, dims = 1:2, reduction = &#39;unintegrated.sct.pca&#39;)
 ggsave(filename = &#39;results/figures/qc_pca_loadings.png&#39;, width = 12, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img
-src="./images/curriculum/04-PCAandIntegration/qc_pca_loadings.png" /></p>
+src="images/curriculum/04-PCAandIntegration/qc_pca_loadings.png" /></p>
 <p>We can look at how cells load on the first two principal components,
 similarly to how we often look at samples for bulk RNA-seq, with the
 <code>DimPlot</code> function:</p>
 <pre class="r"><code>DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;day&#39;)
 ggsave(filename = &#39;results/figures/qc_pca_plot_unintegrated_sct_day.png&#39;, width = 7, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img
-src="./images/curriculum/04-PCAandIntegration/qc_pca_plot_unintegrated_sct_day.png" /></p>
+src="images/curriculum/04-PCAandIntegration/qc_pca_plot_unintegrated_sct_day.png" /></p>
 <p>Lastly, a common visualization used in Seurat tutorials is
 <code>DimHeatmap()</code>, which orders both cells and features
 according to their PCA scores and allows us to see some general patterns
 in the data:</p>
 <pre class="r"><code>DimHeatmap(geo_so, dims=1:3, cells=500, balanced=TRUE)</code></pre>
 <p><img
-src="./images/curriculum/04-PCAandIntegration/qc_pca_heatmap.png" /></p>
+src="images/curriculum/04-PCAandIntegration/qc_pca_heatmap.png" /></p>
 <p>Since the heatmap isn’t a ggplot, we need to use a more general
 output function to save it to file</p>
 <pre class="r"><code>png(filename = &#39;results/figures/qc_pca_heatmap.png&#39;, width = 12, height = 4, units = &#39;in&#39;, res = 300)
@@ -724,7 +724,7 @@ PCs.</p>
 <pre class="r"><code>ElbowPlot(geo_so, ndims = 50, reduction = &#39;unintegrated.sct.pca&#39;)
 ggsave(filename = &#39;results/figures/qc_sct_elbow_plot.png&#39;)</code></pre>
 <p><img
-src="./images/curriculum/04-PCAandIntegration/qc_sct_elbow_plot.png" /></p>
+src="images/curriculum/04-PCAandIntegration/qc_sct_elbow_plot.png" /></p>
 <p>In this plot, we could arbitrarily choose a number along the x-axis
 that looks like a sharp change in the variance from one PC to the next,
 that is, an elbow. Of course, the choice is not always obvious, and this
