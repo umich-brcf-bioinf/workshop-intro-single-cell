@@ -57,6 +57,8 @@ Even more so than the previous sections, cell type annotation is ...
 
 # Cell type predictions
 
+<!-- [OSCA](https://bioconductor.org/books/3.15/OSCA.basic/cell-type-annotation.html) "The most challenging task in scRNA-seq data analysis is arguably the interpretation of the results. Obtaining clusters of cells is fairly straightforward, but it is more difficult to determine what biological state is represented by each of those clusters. Doing so requires us to bridge the gap between the current dataset and prior biological knowledge, and the latter is not always available in a consistent and quantitative manner. Indeed, even the concept of a “cell type” is not clearly defined, with most practitioners possessing a “I’ll know it when I see it” intuition that is not amenable to computational analysis. As such, interpretation of scRNA-seq data is often manual and a common bottleneck in the analysis workflow." -->
+
 <!--For mouse, we often use scCATCH-->
 
 <!--More options for human samples than mouse-->
@@ -64,6 +66,8 @@ Even more so than the previous sections, cell type annotation is ...
 For human, if a relevant reference is available would recommend using [Azimuth (created by authors of Seurat)](https://azimuth.hubmapconsortium.org/) <!-- and [10x tutorial](https://www.10xgenomics.com/analysis-guides/automated-cell-type-annotation-from-r-to-loupe-using-louper) that includes example of using Azimuth -->
 
 Other tools?
+
+<!-- [sc best practices](https://www.sc-best-practices.org/cellular_structure/annotation.html#automated-annotation) -->
 
 # Using scCATCH
 
