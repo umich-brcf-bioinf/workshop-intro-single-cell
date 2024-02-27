@@ -34,22 +34,22 @@ body, td {
 | Time | Topic : Details |
 | :---  | :---- |
 |  9:00 | [Welcome / Housekeeping](workshop_intro.html) (Chris & Marci)|
-|  9:30 | [Orienting on scRNA-Seq](00A-OrientingOnScRNASeq) (Chris)
-|       | [Cell Ranger in Action](00B-CellRangerInAction.html) (Matt)
+|  9:30 | [Orienting on scRNA-Seq](00A-OrientingOnScRNASeq.html) (Chris)|
+|       | [Cell Ranger in Action](00B-CellRangerInAction.html) (Matt)|
 | 11:00 | Break |
-| 11:15 | [Getting started with Seurat](01-GettingStarted.html) (Raymond)
-|       | [Initial QC & Filtering](02-QCandFiltering.html)
-|       | [Normalization](03-Integration.html)|
+| 11:15 | [Getting started with Seurat](01-GettingStarted.html) (Raymond)|
+|       | [Initial QC & Filtering](02-QCandFiltering.html)|
+|       | [Normalization](03-Normalization.html)|
 |  1:00 | Day 1 concludes |
 
 #### Day 2 (Dana)
 | | |
 | :---  | :---- |
 |  9:00 | Housekeeping, Review and Questions (Chris) |
-|  9:20 | [Principal Component Analysis & Integration](04-PCAandDimReduction.html) (Dana) |
-|       | [Projection & Clustering](05-ProjectionAndClustering.html) |
+|  9:20 | [Principal Component Analysis & Integration](04-PCAandIntegration.html) (Dana) |
+|       | [Clustering & Projection](05-ProjectionAndClustering.html) |
 | 11:00 | Break |
-| 11:15 | [Projection & Clustering (continued)](05-ProjectionAndClustering.html) |
+| 11:15 | [Clustering & Projection (continued)](05-ProjectionAndClustering.html) |
 |       | A review of sequencing approaches (Olivia/Tricia) |
 |  1:00 | Day 2 concludes |
 

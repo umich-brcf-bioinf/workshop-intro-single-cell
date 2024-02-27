@@ -1,5 +1,5 @@
 ---
-title: "Initial Quality Control"
+title: "Initial Quality Control and Filtering"
 author: "UM Bioinformatics Core"
 date: "`r Sys.Date()`"
 output:
@@ -405,7 +405,7 @@ These materials have been adapted and extended from materials listed above. Thes
 <br/>
 <br/>
 <hr/>
-| [Previous lesson](01-GettingStarted.html) | [Top of this lesson](#top) | [Next lesson](03-Integration.html) |
+| [Previous lesson](01-GettingStarted.html) | [Top of this lesson](#top) | [Next lesson](03-Normalization.html) |
 | :--- | :----: | ---: |
 
 

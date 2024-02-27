@@ -1,5 +1,5 @@
 ---
-title: "PCA and dimensionality reduction"
+title: "PCA and Integration"
 author: "UM Bioinformatics Core"
 date: "`r Sys.Date()`"
 output:
@@ -99,14 +99,14 @@ Principal component analysis (PCA) determines axes in high-dimensional space tha
 
 To understand how PCA works, we can consider a smaller dataset measuring the expression of four genes measured in just two cells, we could plot the expression of those four genes, with data from one cell plotted on the x-axis and the second cell plotted on the y-axis.
 
-![A simple PCA example (from HBC)](./images/curriculum/04-PCAandDimReduction/HBC-PCA_2sample_genes.png)
+![A simple PCA example (from HBC)](./images/curriculum/04-PCAandIntegration/HBC-PCA_2sample_genes.png)
 <!--- Update plot to replace "Sample" with cell in figure and table --->
 
 If we wanted to represent the most variation across the data, we would draw a diagonal line between gene B and gene C - this would represent the first principal component. However, this line doesn't capture all the variance in this data as the genes also vary above and below the line, so we could draw another line (at a right angle to the first) representing the second most variation int the data - which would represent the second principal component (PC). 
 
 However, as we can see in the example below, genes near the end of each line are those with the greatest influence on the direction and length of the PC.
 
-![PCA gene loadings (from HBC)](./images/curriculum/04-PCAandDimReduction/HBC-PCA_2sample_variation3.png)
+![PCA gene loadings (from HBC)](./images/curriculum/04-PCAandIntegration/HBC-PCA_2sample_variation3.png)
 <!--- Update plot to replace "Sample" with cell in figure --->
 
 We'll skip the process of calculating the score for each cell per PC, but after running PCA on our data we expect each cell to have a score based on the expression of the genes contributing to each PC and each gene will have a weight or loading. 
@@ -181,7 +181,7 @@ VizDimLoadings(geo_so, dims = 1:2, reduction = 'unintegrated.sct.pca')
 ggsave(filename = 'results/figures/qc_pca_loadings.png', width = 12, height = 6, units = 'in')
 ```
 
-![](./images/curriculum/04-PCAandDimReduction/qc_pca_loadings.png)
+![](./images/curriculum/04-PCAandIntegration/qc_pca_loadings.png)
 
 
 We can look at how cells load on the first two principal components, similarly to how we often look at samples for bulk RNA-seq, with the `DimPlot` function:
@@ -190,14 +190,14 @@ DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'day')
 ggsave(filename = 'results/figures/qc_pca_plot_unintegrated_sct_day.png', width = 7, height = 6, units = 'in')
 ```
 
-![](./images/curriculum/04-PCAandDimReduction/qc_pca_plot_unintegrated_sct_day.png)
+![](./images/curriculum/04-PCAandIntegration/qc_pca_plot_unintegrated_sct_day.png)
 
 Lastly, a common visualization used in Seurat tutorials is `DimHeatmap()`, which orders both cells and features according to their PCA scores and allows us to see some general patterns in the data:
 ```{r, eval=FALSE}
 DimHeatmap(geo_so, dims=1:3, cells=500, balanced=TRUE)
 ```
 
-![](./images/curriculum/04-PCAandDimReduction/qc_pca_heatmap.png)
+![](./images/curriculum/04-PCAandIntegration/qc_pca_heatmap.png)
 
 Since the heatmap isn't a ggplot, we need to use a more general output function to save it to file
 ```{r, eval=FALSE}
@@ -237,7 +237,7 @@ ElbowPlot(geo_so, ndims = 50, reduction = 'unintegrated.sct.pca')
 ggsave(filename = 'results/figures/qc_sct_elbow_plot.png')
 ```
 
-![](./images/curriculum/04-PCAandDimReduction/qc_sct_elbow_plot.png)
+![](./images/curriculum/04-PCAandIntegration/qc_sct_elbow_plot.png)
 
 In this plot, we could arbitrarily choose a number along the x-axis that looks like a sharp change in the variance from one PC to the next, that is, an elbow. Of course, the choice is not always obvious, and this plot is no different. We could also try to quantify our choice.
 
@@ -319,7 +319,7 @@ DimPlot(geo_so, reduction = 'integrated.sct.pca', group.by = 'day')
 ggsave(filename = 'results/figures/qc_pca_plot_integrated_sct_day.png', width = 7, height = 6, units = 'in')
 ```
 
-![](./images/curriculum/04-PCAandDimReduction/qc_pca_plot_integrated_sct_day.png)
+![](./images/curriculum/04-PCAandIntegration/qc_pca_plot_integrated_sct_day.png)
 
 --->
 
@@ -363,7 +363,7 @@ These materials have been adapted and extended from materials listed above. Thes
 <br/>
 <br/>
 <hr/>
-| [Previous lesson](03-Integration.html) | [Top of this lesson](#top) | [Next lesson](05-ProjectionAndClustering.html) |
+| [Previous lesson](03-Normalization.html) | [Top of this lesson](#top) | [Next lesson](05-ProjectionAndClustering.html) |
 | :--- | :----: | ---: |
 
 
