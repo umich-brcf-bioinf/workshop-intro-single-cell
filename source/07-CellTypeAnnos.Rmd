@@ -42,7 +42,7 @@ knitr_fig_path("XX")
 
 # Introduction
 
-General goal: Filtering out the "cells" that either were poorly measured or are either not single-cells or not cells at all
+General goal:
 
 <!-- Point out possible gaps between how single-cell data is presented versus the reality of running an analysis
 E.g. Papers might report final filtering thresholds, but our process for choosing those is likely to be more iterative -->
@@ -69,9 +69,18 @@ Other tools?
 
 <!-- [sc best practices](https://www.sc-best-practices.org/cellular_structure/annotation.html#automated-annotation) -->
 
+<!-- [OSCA](https://bioconductor.org/books/3.15/OSCA.basic/cell-type-annotation.html#assigning-cell-labels-from-reference-data) "A conceptually straightforward annotation approach is to compare the single-cell expression profiles with previously annotated reference datasets. Labels can then be assigned to each cell in our uncharacterized test dataset based on the most similar reference sample(s), for some definition of “similar”. This is a standard classification challenge that can be tackled by standard machine learning techniques such as random forests and support vector machines. Any published and labelled RNA-seq dataset (bulk or single-cell) can be used as a reference, though its reliability depends greatly on the expertise of the original authors who assigned the labels in the first place.
+
+In this section, we will demonstrate the use of the SingleR method (Aran et al. 2019) for cell type annotation. This method assigns labels to cells based on the reference samples with the highest Spearman rank correlations, using only the marker genes between pairs of labels to focus on the relevant differences between cell types. It also performs a fine-tuning step for each cell where the correlations are recomputed with just the marker genes for the top-scoring labels. This aims to resolve any ambiguity between those labels by removing noise from irrelevant markers for other labels. Further details can be found in the SingleR book from which most of the examples here are derived." -->
+
+
+<!-- [Ouyang](https://ouyanglab.com/singlecell/clust.html#annotating-clusters)
+
 # Using scCATCH
 
 <!--- add context about scCATCH--->
+
+[scCATCH documentation](https://github.com/ZJUFanLab/scCATCH/wiki) and [paper by Shao et al](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7031312/)
 
 Load the scCATCH library
 ```{r, eval=FALSE}
