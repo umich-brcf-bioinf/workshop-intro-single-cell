@@ -457,7 +457,7 @@ system requirements. <br/> <br/></li>
 files to gene expression counts. Some of these steps are similar to bulk
 RNA-Seq and some are distinct. 10x Genomics provides a pipeline tool,
 Cell Ranger, to expedite these initial transformations <a
-href="#References">[1]</a>.</p>
+href="#references">[1]</a>.</p>
 <table class="fig">
 <tr>
 <th class="fig">
@@ -500,7 +500,7 @@ the STAR aligner.<br/> C. For each transcript that falls in a gene,
 count the pile-up of sequences aligned to each gene; deduplicate the
 reads based on UMI. Use these deduplicated counts to build a feature
 barcode matrix.<br/> D. Apply a cell-calling algorithm to distinguish
-putative cells from background <a href="#References">[3,4]</a><br/> E.
+putative cells from background <a href="#references">[3,4]</a><br/> E.
 Subset the raw matrix to only putative cells to create the filtered
 matrix.<br/> F. Use information from all previous steps to build a web
 summary QC report as well as basic gene expression clustering
@@ -568,7 +568,7 @@ providers will regularly delete project data following delivery.)</li>
 <div id="how-to-run-cell-ranger" class="section level2">
 <h2>How to run Cell Ranger</h2>
 <p>Cell Ranger is run from a Linux/Unix command shell <a
-href="#References">[2]</a>. You can print the usage statement to see
+href="#references">[2]</a>. You can print the usage statement to see
 what is needed to build the command:
 <code>cellranger count --help</code></p>
 <pre><code>cellranger-count
@@ -686,10 +686,10 @@ represent the feature x barcode count table; includes all detected
 barcodes. (Format details elaborated below.)</li>
 <li><strong>filtered_feature_bc_matrix</strong> : As above, but filtered
 to include only barcodes that passed Cell Ranger’s cell-calling
-algorithm <a href="#References">[3]</a>.</li>
+algorithm <a href="#references">[3]</a>.</li>
 <li><strong>molecule.h5</strong> : An HDF5 (binary) file all containing
 information for all molecules assigned to a feature/barcode. See
-references <a href="#References">[6]</a> for more info on this
+references <a href="#references">[6]</a> for more info on this
 format.</li>
 <li><strong>cloupe file</strong> : Used with the 10x Loupe Browser
 visualization software.</li>
@@ -878,7 +878,7 @@ raw_feature_bc_matrix
 associated with a feature (row) and a barcode (column). Because the
 matrix is very sparse, storing the matrix as three individual,
 compressed files saves siginificant space. <a
-href="#References">[6]</a><br/></li>
+href="#references">[6]</a><br/></li>
 <li>In relation to the Barcode Rank Plot, raw matrices include cells and
 background and the filtered matrix files only contain data for cells.
 Downstream analysis typically uses the <strong>filtered</strong> matrix
