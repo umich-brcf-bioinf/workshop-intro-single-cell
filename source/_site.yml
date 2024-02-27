@@ -21,16 +21,16 @@ navbar:
           href: 00A-OrientingOnScRNASeq.html
         - text: "Cell Ranger in Action"
           href: 00B-CellRangerInAction.html
-        - text: "Seurat"
+        - text: "Getting Started with Seurat"
           href: 01-GettingStarted.html
         - text: "Secondary QC & Filtering"
           href: 02-QCandFiltering.html
+        - text: "Normalization"
+          href: 03-Normalization.html
     - text: "Day 2"
       menu:
-        - text: "Normalization"
-          href: 03-Integration.html
         - text: "PCA & Integration"
-          href: 04-PCAandDimReduction.html
+          href: 04-PCAandIntegration.html
         - text: "Projection & Clustering"
           href: 05-ProjectionAndClustering.html
     - text: "Day 3"
