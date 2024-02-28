@@ -61,6 +61,8 @@ Wilcoxin (default), DESeq2, MAST, etc.
 
 ## Standard comparisons
 
+![](./images/curriculum/experimental_design.jpg)
+
 <!-- add UMAP with facets by groups to show what's being compared? -->
 
 ```{r, eval=FALSE}
