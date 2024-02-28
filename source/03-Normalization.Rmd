@@ -68,7 +68,7 @@ geo_so
 ```
 ~~~
 An object of class Seurat 
-47037 features across 29615 samples within 1 assay
+26489 features across 29615 samples within 1 assay 
 Active assay: RNA (26489 features, 0 variable features)
  12 layers present: counts.HO.Day0.replicate1, counts.HO.Day0.replicate2, counts.HO.Day0.replicate3, counts.HO.Day0.replicate4, counts.HO.Day21.replicate1, counts.HO.Day21.replicate2, counts.HO.Day21.replicate3, counts.HO.Day21.replicate4, counts.HO.Day7.replicate1, counts.HO.Day7.replicate2, counts.HO.Day7.replicate3, counts.HO.Day7.replicate4
 ~~~
@@ -118,8 +118,8 @@ geo_so
 ```
 ~~~
 An object of class Seurat 
-38503 features across 22320 samples within 2 assays 
-Active assay: SCT (17129 features, 3000 variable features)
+47037 features across 29615 samples within 2 assays 
+Active assay: SCT (20548 features, 3000 variable features)
  3 layers present: counts, data, scale.data
  1 other assay present: RNA
 ~~~
@@ -131,7 +131,7 @@ We observe that the active assay is now "SCT", but that the "RNA" assay is still
 Let's save this normalized form of our Seurat object.
 
 ```{r, eval = FALSE}
-saveRDS(object = geo_so, file = 'results/rdata/geo_so_sct_normalized.rda')
+saveRDS(object = geo_so, file = 'results/rdata/geo_so_sct_normalized.rds')
 ```
 
 # Summary

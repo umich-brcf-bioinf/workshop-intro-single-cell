@@ -388,7 +388,7 @@ write_csv(cell_counts_tbl, file = 'results/tables/cell_filtering_counts.csv')
 Let's save this filtered form of our Seurat object. It will also include our changes to the `meta.data`:
 
 ```{r, eval = FALSE}
-saveRDS(object = geo_so, file = 'results/rdata/geo_so_filtered.rda')
+saveRDS(object = geo_so, file = 'results/rdata/geo_so_filtered.rds')
 ```
 
 # Summary
