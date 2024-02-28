@@ -169,7 +169,7 @@ catch_umap_plot = DimPlot(geo_so, group.by = 'cell_type', label = TRUE, reductio
 ggsave(filename = 'ISC_R/results/figures/umap_integrated_catch.png', plot = catch_umap_plot, width = 8, height = 7, units = 'in')
 ```
 
-![Image: UMAP with cell-type labels](./images/curriculum/07-)
+![Image: UMAP with cell-type labels](./images/curriculum/07-CellTypeAnnotation/umap_integrated_catch.png)
 
 
 # Summary
