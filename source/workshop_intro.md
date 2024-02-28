@@ -181,7 +181,9 @@ In your scRNA-Seq experiment, what do/did you hope to find?
 
 To start, we will access our shared RStudio server by opening a web browser to the following URL:
 
-[https://bfx-workshop02.med.umich.edu/](https://bfx-workshop02.med.umich.edu/){target="_blank"}
+<!--[https://bfx-workshop02.med.umich.edu/](https://bfx-workshop02.med.umich.edu/){target="_blank"}-->
+
+**(The correct URL will be supplied by the instructor via Slack.)**
 
 You should now be looking at a page that will allow you to login to the RStudio server:
 
@@ -212,9 +214,6 @@ It is important that you can see:
 <br/>
 
 
-
-### Workshop topics at a glance
-![](images/wayfinder/wayfinder_workshop_intro.png)
 
 # Any questions?
  -
