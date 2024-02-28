@@ -80,7 +80,7 @@ So how do we determine what and how many genes to use before classifying cells i
 
 <details>
     <summary>*More detail on dimensionality reduction *</summary>
-    The [Ouyang Lab has a "gentle introduction" section of their materials](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr) that goes into greater details on dimensionality reduction including how similar strategies are used in deep learning models. Additionaly, the OSCA book has a [chapter on Dimensionality reduction(https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html) that has useful context. 
+    The [Ouyang Lab has a "gentle introduction" section of their materials](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr) that goes into greater details on dimensionality reduction including how similar strategies are used in deep learning models. Additionaly, the OSCA book has a [chapter on Dimensionality reduction](https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html) that has useful context. 
 </details>
 <br>
 
@@ -150,7 +150,7 @@ Active assay: SCT (20548 features, 3000 variable features)
 
 <!--- Should this dim loading section drawn from [Ho Lab](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#standard-pre-processing-workflow) be included in the main content? Note - would need to run command in script & capture output  --->
 
-We can also visualize both the cell and gene features that define each principal components using Seurat provided functions [source](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction).
+We can also visualize both the cell and gene features that define each principal components using Seurat provided functions ([source](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction)).
 
 First, we can print out the top 5 (gene) features per dimension by accessing that part of the Seurat object:
 
