@@ -44,54 +44,49 @@ knitr_fig_path("XX")
 
 A frequent bottleneck in the single-cell RNA-seq analysis workflow is annotating our clustering results, as it requires bridging the gap between the data and prior knowledge [source](https://bioconductor.org/books/3.15/OSCA.basic/cell-type-annotation.html). While generating markers for each cluster and evaluating the expression of known marker genes is important, it may or may not be sufficient to assign cell-type or sub-type labels. 
 
-In this section, our goal is to an automated annotation approach to generate cell type predictions for our clusters. 
+In this section, our goal is to use an automated annotation tool to generate cell type predictions for our clusters. 
 
-Even more so than the previous sections, the process to assign cell-types to clusters can be very iterative. In addition, the steps to reach a "Figure 1" level of labeled clusters may not be presented in detail, can be very dataset dependent, and often is more challenging for less characterized tissues. 
+Like the previous sections, the process to assign cell-types to clusters can be very iterative. In addition, the steps to reach a "Figure 1" level of labeled clusters may not be presented in detail, can be very dataset dependent, and often is more challenging for less characterized tissues. 
 
 ## Objectives
 
-<!--Add specific goals for section-->
+-  Understand the complexities of cell-type annotation    
+-  Use `scCATCH` cell-type predictions to annotate our clusters    
 
--  
--  
 
 ----
 
+
 # Cell type predictions
 
-<!-- [OSCA](https://bioconductor.org/books/3.15/OSCA.basic/cell-type-annotation.html) "The most challenging task in scRNA-seq data analysis is arguably the interpretation of the results. Obtaining clusters of cells is fairly straightforward, but it is more difficult to determine what biological state is represented by each of those clusters. Doing so requires us to bridge the gap between the current dataset and prior biological knowledge, and the latter is not always available in a consistent and quantitative manner. Indeed, even the concept of a “cell type” is not clearly defined, with most practitioners possessing a “I’ll know it when I see it” intuition that is not amenable to computational analysis. As such, interpretation of scRNA-seq data is often manual and a common bottleneck in the analysis workflow." -->
+<!-- [OSCA](https://bioconductor.org/books/3.15/OSCA.basic/cell-type-annotation.html#assigning-cell-labels-from-reference-data) "A conceptually straightforward annotation approach is to compare the single-cell expression profiles with previously annotated reference datasets. Labels can then be assigned to each cell in our uncharacterized test dataset based on the most similar reference sample(s), for some definition of “similar”. This is a standard classification challenge that can be tackled by standard machine learning techniques such as random forests and support vector machines. Any published and labelled RNA-seq dataset (bulk or single-cell) can be used as a reference, though its reliability depends greatly on the expertise of the original authors who assigned the labels in the first place. -->
 
-<!-- [sc best practices](https://www.sc-best-practices.org/cellular_structure/annotation.html#automated-annotation) -->
+While the concept of identifying 
 
-<!-- [OSCA](https://bioconductor.org/books/3.15/OSCA.basic/cell-type-annotation.html#assigning-cell-labels-from-reference-data) "A conceptually straightforward annotation approach is to compare the single-cell expression profiles with previously annotated reference datasets. Labels can then be assigned to each cell in our uncharacterized test dataset based on the most similar reference sample(s), for some definition of “similar”. This is a standard classification challenge that can be tackled by standard machine learning techniques such as random forests and support vector machines. Any published and labelled RNA-seq dataset (bulk or single-cell) can be used as a reference, though its reliability depends greatly on the expertise of the original authors who assigned the labels in the first place.
+As described [in more detail by the Ouyang Lab](https://ouyanglab.com/singlecell/clust.html#annotating-clusters) and summarized in the figure below, there are many computational tools that aim to assign cell type labels for single-cell data. These methods generally fall into three categories: 1. marker based approaches that use gene sets drawn from the literature, including previous single-cell studies, 2. correlation based approaches that estimate the similarity between the cells or clusters in the input data and some reference data and 3. machine learning approaches that include training on a single-cell reference atlas. 
 
-In this section, we will demonstrate the use of the SingleR method (Aran et al. 2019) for cell type annotation. This method assigns labels to cells based on the reference samples with the highest Spearman rank correlations, using only the marker genes between pairs of labels to focus on the relevant differences between cell types. It also performs a fine-tuning step for each cell where the correlations are recomputed with just the marker genes for the top-scoring labels. This aims to resolve any ambiguity between those labels by removing noise from irrelevant markers for other labels. Further details can be found in the SingleR book from which most of the examples here are derived." -->
+![Image: Diagram of types of cell annotation approaches (from Oyang materials)]() <!-- add figure from Ouyang about types of cell annotation approaches -->
 
-
-<!-- [Ouyang](https://ouyanglab.com/singlecell/clust.html#annotating-clusters)
-"There exist many computational tools that can assign cell type labels to single cells as described by this benchmarking study (Abdelaal et al. 2019) and this review (Pasquini et al. 2021). Briefly, there are three main computational approaches to annotate cell types (Figure @ref{clust-celltype}). First, marker gene approaches leverage on lists of marker gene sets that can distinguish different cell types from existing literature and previous single-cell studies. Single cells or clusters are then scored using these marker gene sets e.g. using AddModuleScore to estimate the overall expression levels of these genes. Some heuristics / scoring criteria is then applied to assign the cell type. Second, correlation approaches apply multiple correlation measures to estimate the similarity between the single cells / clusters in the input dataset against some reference data e.g. single-cell atlases or bulk RNA-seq databases such as GTeX / FANTOM. Third, supervised classification approaches uses machine learning or deep learning to predict cell type labels. The learning model is first trained on some single-cell reference atlas before being applied onto the input dataset to compute the probability that a single cell / cluster belong to a particular cell type."
-
-![] <!-- add figure from Ouyang about types of cell annotation approaches -->
-
-<!-- [Ouyang](https://ouyanglab.com/singlecell/clust.html#annotating-clusters) "In all three approaches, the choice of the reference data is crucial for the success of the cell type annotation. Ideally, the reference data should be encompass the tissue / cell types that are profiled in the input dataset. Otherwise, spurious results may occur e.g. when one tries to annotate the bone marrow dataset using a brain atlas reference. Furthermore, the cell type labels in the reference data will determine the “resolution” of the predicted cell type annotation. For example, using a reference that only has coarse cell type labels (e.g. having a general T-cell label as opposed to CD4+ Naive, CD8+ Naive etc finer labels) can only result in coarse-level annotations and vice versa.
-
-Also, it is important to have the option of having unassigned cells. This happens when a single cell / cluster has a very low score across all the cell types present in the reference. Biologically, this can be a novel rare cell population that is not annotated in the reference data or represent stressed / dying cells that has “lost” their cell fate identity. Furthermore, cell fate is highly plastic and there is a possibility that cells are trans-differentiating between two cell fates. In this scenario, it is possible that a single cell / cluster has high scores in two different cell types."
--->
+Across any of these approaches, the quality of the reference data (and reliability of the authors labels) and relevancy to your specific tissue/experiment (and the resolution of your biological question) is crucial. Additionally, it's important to consider that rare or novel cell populations may not present or well characterized in available references and that even after filtering some clusters correspond to stressed or dying cells and not a particular cell-type or subtype.
 
 
+Some tools and references are available primarily for human tissues (and not mouse or rat), particular for tissues other than PBMCs and the brain. For human data, if a relevant reference is available for your experiment, we would recommend trying [Azimuth (created by authors of Seurat)](https://azimuth.hubmapconsortium.org/). [10x has a tutorial](https://www.10xgenomics.com/analysis-guides/automated-cell-type-annotation-from-r-to-loupe-using-louper) that includes example of using Azimuth, including a feature of the tool that allows for first pass of cell-type assignment of more common cell-types followed by identifying rarer populations that may not be identified in the first pass. 
 
-<!--More options for human samples than mouse-->
+<details>
+    <summary>*Additional automated annotation resources*</summary>
+    Automated cell-type annotation is a active area of research and development and many other tools and resources are available, including [OSCA's demonstration of the SingleR method](https://bioconductor.org/books/3.15/OSCA.basic/cell-type-annotation.html), a [Tutorial by Clarke et al. for cell-type annotations](https://pubmed.ncbi.nlm.nih.gov/34031612/), and an [entire chapter of the SC best practices book](https://www.sc-best-practices.org/cellular_structure/annotation.html#automated-annotation).
+</details>
+<br>
 
-For human, if a relevant reference is available for your experiment, we would recommend trying[Azimuth (created by authors of Seurat)](https://azimuth.hubmapconsortium.org/). [10x has a tutorial](https://www.10xgenomics.com/analysis-guides/automated-cell-type-annotation-from-r-to-loupe-using-louper) that includes example of using Azimuth including a feature of the tool that allows for first pass of cell-type assignment of more common cell-types followed by identifying rarer populations that may not be identified in the first pass. <!--- or OSCA option? --> <!-- and [scType](https://cran.r-project.org/web/packages/scCATCH/vignettes/tutorial.html) which like scCATCH seems to draw on databases of human and mouse cell-specific markers -->
-
-Additionally... [Tutorial by Clarke et al. for cell-type annotations](https://pubmed.ncbi.nlm.nih.gov/34031612/)
 
 
 # Using scCATCH
 
-A tool we often use for cell-type predictions is called [scCATCH](https://github.com/ZJUFanLab/scCATCH/wiki) which, per the author's description in [Shao et al (2020)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7031312/), scCATCH annotates cell-types using a "tissue-specific cellular taxonomy reference database (CellMatch) and [a] evidence-based scoring (ES) protocol". The CellMatch reference is compiled from CellMarker ([Zhang et al., 2019b](https://www.cell.com/servlet/linkout?suffix=e_1_5_1_2_33_2&dbid=8&doi=10.1016/j.isci.2020.100882&key=30289549&cf=)), MCA ([Han et al., 2018](https://www.cell.com/servlet/linkout?suffix=e_1_5_1_2_10_2&dbid=8&doi=10.1016/j.isci.2020.100882&key=29775597&cf=)), CancerSEA ([Yuan et al., 2019](https://www.cell.com/servlet/linkout?suffix=e_1_5_1_2_29_2&dbid=8&doi=10.1016/j.isci.2020.100882&key=30329142&cf=)), and the [CD Marker Handbook](https://www.abcam.com/primary-antibodies/human-cd-antigen-guide) and PMIDs for relevant literature are reported in the prediction results.
+A tool we often use for both mouse and human data cell-type predictions is called [scCATCH](https://github.com/ZJUFanLab/scCATCH/wiki) which, per the author's description in [Shao et al (2020)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7031312/), annotates cell-types using a "tissue-specific cellular taxonomy reference database (CellMatch) and [a] evidence-based scoring (ES) protocol". The CellMatch reference is compiled from CellMarker ([Zhang et al., 2019b](https://www.cell.com/servlet/linkout?suffix=e_1_5_1_2_33_2&dbid=8&doi=10.1016/j.isci.2020.100882&key=30289549&cf=)), MCA ([Han et al., 2018](https://www.cell.com/servlet/linkout?suffix=e_1_5_1_2_10_2&dbid=8&doi=10.1016/j.isci.2020.100882&key=29775597&cf=)), CancerSEA ([Yuan et al., 2019](https://www.cell.com/servlet/linkout?suffix=e_1_5_1_2_29_2&dbid=8&doi=10.1016/j.isci.2020.100882&key=30329142&cf=)), and the [CD Marker Handbook](https://www.abcam.com/primary-antibodies/human-cd-antigen-guide) and PMIDs for relevant literature are reported in the prediction results. 
 
-![scCATCH summary from Shao et al (2020)](./images/curriculum/07-) <!-- add figure from paper -->
+<!-- consider adding [scType](https://cran.r-project.org/web/packages/scCATCH/vignettes/tutorial.html) as an alternative -->
+
+![Image: scCATCH summary from Shao et al (2020)](./images/curriculum/07-) <!-- add figure from paper -->
 
 First, we need to load the scCATCH library:
 ```{r, eval=FALSE}
@@ -123,7 +118,7 @@ geo_catch = findcelltype(geo_catch)
 ```
 
 
-Look at our results, including cell type score
+Now we can look at our results including the cell type score, which gives us an idea of the confidence of that prediction. Not shown here but the `celltype` table also includes marker genes and PMIDs for relevant literature for each prediction.
 ```{r, eval=FALSE}
 geo_catch@celltype %>% select(cluster, cell_type, celltype_score)
 ```
@@ -151,35 +146,35 @@ geo_catch@celltype %>% select(cluster, cell_type, celltype_score)
 20      19             Muscle Cell           0.69
 ~~~
 
-As these cell-types correspond to the cell-types and subtypes we'd expect to be present in these data and most of the prediction scores are quite high 
+As these cell-types correspond to the cell-types and subtypes we'd expect to be present in these data and most of the prediction scores are quite high, we can reasonably use these results to annotate our clusters. In our experience, the scCATCH results often help guide cluster annotation but scores can vary and the predictions may need to be revised based on researcher's knowledge of the biological system.
 
 # Annotate clusters
 
-Add celltype predictions to our Seurat object. Note that we will create a new metadata object where we join cell types, this destroys rownames which will cause a problem in Seurat, so we have to add them back. We are implicitly relying on the same row order!
+Next, we'll add celltype the predictions to our Seurat object to replace our clusters' numerical identities. Note: we will create a new metadata object where we join cell types. However, this will destroy the row names - which will cause a problem in Seurat - so we have to add them back.
 ```{r, eval=FALSE}
 catch_celltypes = geo_catch@celltype %>% select(cluster, cell_type)
 
-
 new_metadata = geo_so@meta.data %>% left_join(catch_celltypes, by = c('SCT_snn_res.0.4' = 'cluster'))
-rownames(new_metadata) = rownames(geo_so@meta.data)
+rownames(new_metadata) = rownames(geo_so@meta.data) #  We are implicitly relying on the same row order!
 
 geo_so@meta.data = new_metadata 
 ```
 
 ## Visualise annotated clusters
 
-Create a UMAP plot with our new labels
+Lastly, we can generated a revised UMAP plot with our descriptive cluster labels by using our updated Seurat object and providing the new `cell_type` label for the `group.by` argument:
 ```{r, eval=FALSE}
 catch_umap_plot = DimPlot(geo_so, group.by = 'cell_type', label = TRUE, reduction = 'umap.sct.integrated.rpca')
 
 ggsave(filename = 'ISC_R/results/figures/umap_integrated_catch.png', plot = catch_umap_plot, width = 8, height = 7, units = 'in')
 ```
 
+![Image: UMAP with cell-type labels](./images/curriculum/07-)
 
 
 # Summary
 
-Now that we have ... 
+Now that we have generated reasonable annotations for our clusters, we can proceed with the step of differential expression which is essential to addressing our biological question for this experiment.
 
 Next steps: Differential Expression
 
