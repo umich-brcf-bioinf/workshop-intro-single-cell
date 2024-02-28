@@ -157,7 +157,7 @@ G) The resulting transcript sequences can be partitioned into (putative) cells c
 
 It's useful to elaborate how transcripts are labeled with their cell of origin
 because this will help us understand how downstream QC and analysis works. The
-specifics of the steps depend on the platform and the specific libary prep 
+specifics of the steps depend on the platform and the specific library prep 
 protocol. We will focus on the **10x Genomics 3' gene expression** approach[[2]](#references).
 
 <table class='fig'><tr><th class='fig'>A 10x Genomics single cell protocol (from 10k feet)</th></tr>
@@ -265,23 +265,6 @@ droplet with extremely low expression.
 <br/>
 <br/>
 
-To reliably interpret the sequence output we need to solve three problems:
-
-<table class='fig'><tr><th class='fig'>Interpreting 10x sequence output </th></tr>
-<tr><td class='fig'>![](images/00A-OrientingOnScRNASeq/primary-analysis-qc.png)</td></tr>
-<tr><td class='fig'>
-A) How do we associate each sequence with an individual cell?
-B) How do we align and quantify the sequences to create an expression matrix?
-C) How do we distinguish good cells from problem edge cases?
-</td></tr>
-</table>
-
-To expedite the primary analysis and QC tasks above, 10x Genomics provides the
-tool Cell Ranger, which we will discuss in the next lesson.
-
-<br/>
-<br/>
-
 ## Contrasting bulk RNA-seq with scRNA-Seq
 
 Bulk and single-cell approaches are fundamentally complementary approaches where
@@ -306,7 +289,7 @@ But it isn't without challenges or downsides.
 <br/>
 
 
-# Conclusion
+# Summary
 
 - scRNA-seq offers a powerful and nuanced approach to studying gene expression at
 the cellular level. This technique can illuminate biological mechanisms of 
@@ -314,9 +297,25 @@ healthy tissue or disease as well as extend our understanding of cellular
 heterogeneity, responses to interventions, and the cell state dynamics.
 - scRNA-Seq experiments are typically more complex and often more expensive than
 bulk RNA-Seq.
-- scRNA-Seq experiments leverage existing NGS approaches by adding a molecular 
-label to each mRNA, enabling us to connect all the mRNAs from a cell to a 
-distinct cell of origin computationally following sequencing.
+
+<table class='fig'><tr><th class='fig'>scRNA-Seq steps in summary</th></tr>
+  <tr><td class='fig'>![](images/00A-OrientingOnScRNASeq/summary.png)</td></tr>
+<tr><td class='fig'>
+
+A) A sample of tissue is extracted
+B) Tissue is dissociated into a clean suspension of healthy cells
+C) A reaction creates a cDNA molecule which combines a barcode label with mRNA sequence. 
+D) cDNAs are pooled together, library prep'ed and sequenced
+E) Computationally connect all the mRNAs back to a distinct cell of origin
+F) Align the mRNA sequences to create a count matrix across all the features and all the cells
+G) Bioinformatically separate the healthy cells from the experimental artifacts
+
+The last three steps are complex and also computationally demanding. In 10x 
+Genomics experiments, they are typically expedited by the tool **Cell Ranger** which
+we cover in detail in the next lesson.
+
+</td></tr>
+</table>
 
 <br/>
 <br/>

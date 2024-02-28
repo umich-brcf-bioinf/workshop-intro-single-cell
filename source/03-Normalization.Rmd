@@ -68,12 +68,12 @@ geo_so
 ```
 ~~~
 An object of class Seurat 
-47037 features across 29615 samples within 1 assay
+26489 features across 29615 samples within 1 assay 
 Active assay: RNA (26489 features, 0 variable features)
  12 layers present: counts.HO.Day0.replicate1, counts.HO.Day0.replicate2, counts.HO.Day0.replicate3, counts.HO.Day0.replicate4, counts.HO.Day21.replicate1, counts.HO.Day21.replicate2, counts.HO.Day21.replicate3, counts.HO.Day21.replicate4, counts.HO.Day7.replicate1, counts.HO.Day7.replicate2, counts.HO.Day7.replicate3, counts.HO.Day7.replicate4
 ~~~
 
-Then, run `SCTransform()`:
+We see the 12 layers containing the count data for each of the samples. Next, run `SCTransform()`:
 
 ```{r, eval = FALSE}
 geo_so = SCTransform(geo_so)
@@ -89,11 +89,11 @@ The full description and justification of the `SCTransform()` function are provi
 
 Contained in the title of the first paper is the kernel of the approach: "regularized negative binomial regression". Let's explain the parts of that phrase at a high-level.
 
-- "Regression": For each gene in the scRNA-seq data, a generalized linear model is fit whereby the vector of UMI counts for the gene is estimated by a linear equation containing an intercept and the vector of sequencing depth of the cells. As a term in the model, the cell sequencing depth can be accounted for.
+- "Regression" means that for each gene in the scRNA-seq data, a generalized linear model is fit whereby the vector of UMI counts for the gene is estimated by a linear equation containing an intercept and the vector of sequencing depth of the cells. As a term in the model, the cell sequencing depth can be accounted for.
 
-- "Negative binomial": The counts are modeled with a negative binomial distribution because it has been observed in both bulk and single-cell RNA-seq that the mean and variance of the count data are related to one another. Put another way, the variance is non-constant. The negative binomial distribution allows for the variance of the counts to be a function of the mean of the counts.
+- "Negative binomial" refers to the counts being modeled with a negative binomial distribution. It has been observed in both bulk and single-cell RNA-seq that the mean and variance of the count data are related to one another. Put another way, the variance is non-constant. The negative binomial distribution allows for the variance of the counts to be a function of the mean of the counts.
 
-- "Regularized": When computing the parameters of the model, the authors observed that genes with low to moderate expression levels had widely ranging model parameter estimates, even when the genes were similar to one another. They concluded this was a result of model overfitting--not of biological origin--and decided to constrain the model parameters by combining information across similar genes. That is, regularization. In this way, the variance of the gene counts is stabilized.
+- "Regularized" refers to a method to constrain parameter estimation. When computing the parameters of the model, the authors observed that genes with low to moderate expression levels had widely ranging model parameter estimates, even when the genes were similar to one another. They concluded this was a result of model overfitting--not of biological origin--and decided to constrain the model parameters by combining information across similar genes. That is, regularization. In this way, the variance of the gene counts is stabilized.
 
 Finally, the Choudhary & Satija paper introduced a modified version of the regularized negative binomial regression (`sctransform` v2). The modifications include:
 
@@ -103,11 +103,11 @@ Finally, the Choudhary & Satija paper introduced a modified version of the regul
 
 - A lower bound on the minimum variance is used to prevent genes with very low UMI counts from being given very high normalized expression values.
 
-Additionally, the benefit of this framework for normalization and variance stabilization is that the GLM can include other terms which can account for unwanted technical variation. One example of this is the percent mitochondrial reads (`percent.mt`). This can accomplished using the `vars.to.regress` parameter of `SCTransform()`. See the documentation for details.
+Additionally, the benefit of the GLM framework for normalization and variance stabilization is that the GLM can include other terms which can account for unwanted technical variation. One example of this is the percent mitochondrial reads (`percent.mt`). The `vars.to.regress` parameter of `SCTransform()` is used for this purpose. See the [documentation](https://satijalab.org/seurat/reference/sctransform) for details.
 
 ## Other normalizations
 
-From the Seurat documentation, the `SCTransform()` function "replaces `NormalizeData()` (this is a log-normalization), `ScaleData()`, and `FindVariableFeatures()`". You may see these three commands in other vignettes, indeed even in other Seurat vignettes ([source](https://satijalab.org/seurat/articles/sctransform_vignette)). In the two papers referenced above, the authors show how the log-normalization procedure does not always fully account for cell sequencing depth and overdispersion. Consequently, we urge you to use this alternative pipeline with caution.
+From the Seurat documentation, the `SCTransform()` function "replaces `NormalizeData()`, `ScaleData()`, and `FindVariableFeatures()`". This chain of functions is referred to as the "log-normalization procedure". You may see these three commands in other vignettes, and even in other Seurat vignettes ([source](https://satijalab.org/seurat/articles/sctransform_vignette)). In the two papers referenced above, the authors show how the log-normalization procedure does not always fully account for cell sequencing depth and overdispersion. Therefore, we urge you to use this alternative pipeline with caution.
 
 # Normalization, continued
 
@@ -118,15 +118,25 @@ geo_so
 ```
 ~~~
 An object of class Seurat 
-38503 features across 22320 samples within 2 assays 
-Active assay: SCT (17129 features, 3000 variable features)
+47037 features across 29615 samples within 2 assays 
+Active assay: SCT (20548 features, 3000 variable features)
  3 layers present: counts, data, scale.data
  1 other assay present: RNA
 ~~~
 
 We observe that the active assay is now "SCT", but that the "RNA" assay is still present. `SCTransform()` has also determined the common variable features across the cells to be used in our downstream analysis.
 
+# Save the Seurat object
+
+Let's save this normalized form of our Seurat object.
+
+```{r, eval = FALSE}
+saveRDS(object = geo_so, file = 'results/rdata/geo_so_sct_normalized.rds')
+```
+
 # Summary
+
+In this section we have run the `SCTransform()` function to account for variation in cell sequencing depth and to stabilize the variance of the counts. 
 
 Next steps: PCA and integration
 
@@ -137,7 +147,7 @@ These materials have been adapted and extended from materials listed above. Thes
 <br/>
 <br/>
 <hr/>
-| [Previous lesson](02-QCandFiltering.html) | [Top of this lesson](#top) | [Next lesson](PCAandDimReduction.html) |
+| [Previous lesson](02-QCandFiltering.html) | [Top of this lesson](#top) | [Next lesson](04-PCAandIntegration.html) |
 | :--- | :----: | ---: |
 
 

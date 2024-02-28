@@ -1,5 +1,5 @@
 ---
-title: "PCA and dimensionality reduction"
+title: "PCA and Integration"
 author: "UM Bioinformatics Core"
 date: "`r Sys.Date()`"
 output:
@@ -99,14 +99,14 @@ Principal component analysis (PCA) determines axes in high-dimensional space tha
 
 To understand how PCA works, we can consider a smaller dataset measuring the expression of four genes measured in just two cells, we could plot the expression of those four genes, with data from one cell plotted on the x-axis and the second cell plotted on the y-axis.
 
-![A simple PCA example (from HBC)](./images/curriculum/04-PCAandDimReduction/HBC-PCA_2sample_genes.png)
+![A simple PCA example (from HBC)](./images/curriculum/04-PCAandIntegration/HBC-PCA_2sample_genes.png)
 <!--- Update plot to replace "Sample" with cell in figure and table --->
 
 If we wanted to represent the most variation across the data, we would draw a diagonal line between gene B and gene C - this would represent the first principal component. However, this line doesn't capture all the variance in this data as the genes also vary above and below the line, so we could draw another line (at a right angle to the first) representing the second most variation int the data - which would represent the second principal component (PC). 
 
 However, as we can see in the example below, genes near the end of each line are those with the greatest influence on the direction and length of the PC.
 
-![PCA gene loadings (from HBC)](./images/curriculum/04-PCAandDimReduction/HBC-PCA_2sample_variation3.png)
+![PCA gene loadings (from HBC)](./images/curriculum/04-PCAandIntegration/HBC-PCA_2sample_variation3.png)
 <!--- Update plot to replace "Sample" with cell in figure --->
 
 We'll skip the process of calculating the score for each cell per PC, but after running PCA on our data we expect each cell to have a score based on the expression of the genes contributing to each PC and each gene will have a weight or loading. 
@@ -134,16 +134,17 @@ geo_so = RunPCA(geo_so, reduction.name = 'unintegrated.sct.pca')
 ```
 
 In the console, the first 5 PCs are listed along with the associated genes. If we look at the `geo_so` object, we'll see our dimension reduction:
+
 ```{r, eval = FALSE}
 geo_so
 ```
 ~~~
 An object of class Seurat 
-38503 features across 22320 samples within 2 assays 
-Active assay: SCT (17129 features, 3000 variable features)
+47037 features across 29615 samples within 2 assays 
+Active assay: SCT (20548 features, 3000 variable features)
  3 layers present: counts, data, scale.data
  1 other assay present: RNA
- 1 dimensional reductions calculated: unintegrated.sct.pca
+ 1 dimensional reduction calculated: unintegrated.sct.pca
 ~~~
 
 
@@ -152,10 +153,10 @@ Active assay: SCT (17129 features, 3000 variable features)
 We can also visualize both the cell and gene features that define each principal components using Seurat provided functions [source](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction).
 
 First, we can print out the top 5 (gene) features per dimension by accessing that part of the Seurat object:
+
 ```{r, eval=FALSE}
 print(geo_so[['unintegrated.sct.pca']], dims = 1:5, nfeatures = 5)
 ```
-
 ~~~
 PC_ 1 
 Positive:  Col1a1, Col3a1, Col1a2, Sparc, Dcn 
@@ -176,30 +177,34 @@ Negative:  Cd74, H2-Ab1, H2-Aa, H2-Eb1, Il1b
 
 
 We can also highlight genes loaded for each dimension using a visualization:
+
 ```{r, eval=FALSE}
 VizDimLoadings(geo_so, dims = 1:2, reduction = 'unintegrated.sct.pca')
 ggsave(filename = 'results/figures/qc_pca_loadings.png', width = 12, height = 6, units = 'in')
 ```
 
-![](./images/curriculum/04-PCAandDimReduction/qc_pca_loadings.png)
+![](./images/curriculum/04-PCAandIntegration/qc_pca_loadings.png)
 
 
 We can look at how cells load on the first two principal components, similarly to how we often look at samples for bulk RNA-seq, with the `DimPlot` function:
+
 ```{r, eval=FALSE}
 DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'day')
 ggsave(filename = 'results/figures/qc_pca_plot_unintegrated_sct_day.png', width = 7, height = 6, units = 'in')
 ```
 
-![](./images/curriculum/04-PCAandDimReduction/qc_pca_plot_unintegrated_sct_day.png)
+![](./images/curriculum/04-PCAandIntegration/qc_pca_plot_unintegrated_sct_day.png)
 
 Lastly, a common visualization used in Seurat tutorials is `DimHeatmap()`, which orders both cells and features according to their PCA scores and allows us to see some general patterns in the data:
+
 ```{r, eval=FALSE}
 DimHeatmap(geo_so, dims=1:3, cells=500, balanced=TRUE)
 ```
 
-![](./images/curriculum/04-PCAandDimReduction/qc_pca_heatmap.png)
+![](./images/curriculum/04-PCAandIntegration/qc_pca_heatmap.png)
 
 Since the heatmap isn't a ggplot, we need to use a more general output function to save it to file
+
 ```{r, eval=FALSE}
 png(filename = 'results/figures/qc_pca_heatmap.png', width = 12, height = 4, units = 'in', res = 300)
 DimHeatmap(geo_so, dims=1:3, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca')
@@ -237,7 +242,7 @@ ElbowPlot(geo_so, ndims = 50, reduction = 'unintegrated.sct.pca')
 ggsave(filename = 'results/figures/qc_sct_elbow_plot.png')
 ```
 
-![](./images/curriculum/04-PCAandDimReduction/qc_sct_elbow_plot.png)
+![](./images/curriculum/04-PCAandIntegration/qc_sct_elbow_plot.png)
 
 In this plot, we could arbitrarily choose a number along the x-axis that looks like a sharp change in the variance from one PC to the next, that is, an elbow. Of course, the choice is not always obvious, and this plot is no different. We could also try to quantify our choice.
 
@@ -280,10 +285,11 @@ While outside the scope of this workshop, there are community efforts to develop
 
 Having normalized the data with `SCTransform()` and performed the dimension reduction with `RunPCA()`, we are now ready to integrate our data.
 
-New to Seurat v5 is the improved `IntegrateLayers()` function which makes selecting different integration methods much easier. The results of each alternative integration method are stored within the same `Seurat` object, which makes comparing downstream effects much easier.  So, if we wanted to run the slightly faster `RPCAIntegration` method, we would run:
+New to Seurat v5 is the improved `IntegrateLayers()` function which makes selecting different integration methods much easier. The results of each alternative integration method are stored within the same `Seurat` object, which makes comparing downstream effects much easier.  So, if we wanted to run the slightly faster `RPCAIntegration` method, we would run (**but we won't here**):
 
 ```{r, eval = FALSE}
-geo_so = IntegrateLayers(
+### DO NOT RUN ###
+geo_so = Integrate Layers(
   object = geo_so, 
   method = RPCAIntegration, 
   orig.reduction = 'unintegrated.sct.pca',
@@ -291,14 +297,22 @@ geo_so = IntegrateLayers(
   new.reduction = 'integrated.sct.rpca')
 ```
 
-[This Seurat vignette on integrative analysis in v5](https://satijalab.org/seurat/articles/seurat5_integration#perform-streamlined-one-line-integrative-analysis) provides examples of each integration method. Note, that the code in this vignette assumes the `NormalizeData() > ScaleData() > FindVariableFeatures()` pipeline was used and our `normalization.method = 'SCT'` also differs.
+The Seurat v5 vignette on integrative analysis ([link](https://satijalab.org/seurat/articles/seurat5_integration#perform-streamlined-one-line-integrative-analysis)) provides examples of each integration method. Note, that the vignette code uses the `NormalizeData() > ScaleData() > FindVariableFeatures()` pipeline, so their `IntegrateLayers()` call does not include `normalization.method = 'SCT'`, as ours must.
 
 Note we have specified the unintegrated reduction `unintegrated.sct.pca`, which is what `IntegrateLayers()` operates on, along with the `SCT` assay. Let's take a look to see what's different about the `Seurat` object:
+
+> **Load integrated data**
+> 
+> Because the `IntegrateLayers()` function takes a while to run, we will simply load the integrated `geo_so` object from a file we have previously generated.
+> 
+> ```{r, eval = FALSE}
+> geo_so = readRDS('/home/workshop/rcavalca/ISC_R/results/rdata/geo_so_sct_integrated.rds')
+> ```
+> 
 
 ```{r, eval = FALSE}
 geo_so
 ```
-
 ~~~
 # An object of class Seurat 
 # 47037 features across 29615 samples within 2 assays 
@@ -308,10 +322,9 @@ geo_so
 #  2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca
 ~~~
 
-Observe that we now have a new reduction, `integrated.sct.cca`, which we will use downstream.
+Observe that we now have a new reduction, `integrated.sct.rpca`, which we will use downstream.
 
-
-<!--- Note: output plot below appears to not reflect integrated data
+<!--- PCA plot after integration
 We can also confirm that our integration method has helped to correct the `Day` effects we saw in the initial PCA plots
 
 ```{r, eval=FALSE}
@@ -319,39 +332,38 @@ DimPlot(geo_so, reduction = 'integrated.sct.pca', group.by = 'day')
 ggsave(filename = 'results/figures/qc_pca_plot_integrated_sct_day.png', width = 7, height = 6, units = 'in')
 ```
 
-![](./images/curriculum/04-PCAandDimReduction/qc_pca_plot_integrated_sct_day.png)
-
+![](./images/curriculum/04-PCAandIntegration/qc_pca_plot_integrated_sct_day.png)
 --->
 
 Before we move on, let's save our updated Seurat object to file:
 
 ```{r, eval=FALSE}
-saveRDS(object = geo_so, file = 'results/rdata/geo_so_sct_integrated.rda')
+saveRDS(object = geo_so, file = 'results/rdata/geo_so_sct_integrated.rds')
 ```
 
-
-## Alternate integration methods
-
-
-
-After normalized the data with `SCTransform()` and performed the dimension reduction with `RunPCA()`, alternatively we could also use the `CCA` integration method with the :
-
-```{r, eval = FALSE}
-geo_so = IntegrateLayers(
-    object = geo_so, 
-    method = CCAIntegration, 
-    orig.reduction = 'unintegrated.sct.pca',
-    normalization.method = 'SCT',
-    new.reduction = 'integrated.sct.cca')
-```
-
+> **Other integration methods**
+> 
+> After normalizing the data with `SCTransform()` and performed the dimension reduction with `RunPCA()`, alternatively we could also use the `CCA` integration method with:
+> 
+> ```{r, eval = FALSE}
+> ### DO NOT RUN ###
+> geo_so = Integrate Layers(
+>     object = geo_so, 
+>     method = CCAIntegration, 
+>     orig.reduction = 'unintegrated.sct.pca',
+>     normalization.method = 'SCT',
+>     new.reduction = 'integrated.sct.cca')
+> ```
+>
 
 # Summary
 
 In this section, we:
 
--
-- 
+- Discussed how PCA is used in scRNA-seq analysis.
+- Demonstrated some visualizations after computing PCA.
+- Discussed how to decide how many PCs to use in downstream analysis.
+- Integrated the data.
 
 Next steps: Clustering and projection
 
@@ -363,7 +375,7 @@ These materials have been adapted and extended from materials listed above. Thes
 <br/>
 <br/>
 <hr/>
-| [Previous lesson](03-Integration.html) | [Top of this lesson](#top) | [Next lesson](05-ProjectionAndClustering.html) |
+| [Previous lesson](03-Normalization.html) | [Top of this lesson](#top) | [Next lesson](05-ProjectionAndClustering.html) |
 | :--- | :----: | ---: |
 
 

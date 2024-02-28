@@ -46,25 +46,28 @@ To interpret our initial clustering results for all cells in our experiment, we'
 
 In this section, we will demonstrate how to generate analytical marker genes for each cluster and how to visualize the expression of genes of interest to aid in cluster identification and labeling in subsequent steps. 
 
-This process can be a highly variable process, from seeing well-characterized marker genes as top markers to needing to dig through the literature and plot the expression for multiple sets of genes of interest. Like the previous sections (and like other areas of research), when this process is more involved or iterative the final results then often only the final results are reported.
+This process can be a highly variable process, from seeing well-characterized marker genes as top markers to needing to dig through the literature and plot the expression for multiple sets of genes of interest. Like the previous sections (and like other areas of research), when this process is more involved or iterative, often only the final results are reported.
 
 ## Objectives
 <!--Add specific goals for section-->
-- Determine gene markers for each of the clusters using `FindAllMarkers`
-- Visualize expression across clusters for genes of interest using `DotPlot`
+- Determine gene markers for each of the clusters using `FindAllMarkers()`
+- Visualize expression across clusters for genes of interest using `DotPlot()`
 
 ---
 
 # Cluster markers and characterization
 
-After generating clusters, we need to perform differential expression analysis to identify the genes that distinguish those clusters [source](https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes).  This should allow us to get visibility on some key questions for our clusters, as [highlighted by the HBC materials](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html), namely if there are biologically meaningful gene expression differences between the clusters, if the gene expression of the generated clusters corresponds to expected cell-types or sub-types, if there are clusters with similar expression that should be combined and/or clusters that might need to be sub-clustered into smaller populations.
+After generating clusters, we need to perform differential expression analysis to identify the genes that distinguish those clusters ([source](https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes)).  This should allow us to get visibility on some key questions for our clusters, as [highlighted by the HBC materials](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html), namely:
 
-Many of the differential expression (DE) tools designed for bulk RNA-seq samples have been benchmarked for performance on scRNA-seq in [Soneson and Robinson (2018)](https://pubmed.ncbi.nlm.nih.gov/29481549/) and there are also dedicated DE tools for scRNA-seq like [MAST](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0844-5) that use models that account for the expected sparse structure of scRNA-seq data. However in our and others' experience, the default Wilcoxon test is often sufficient for simple pairwise DE comparisons, while edgeR ([Robinson, McCarthy, and Smyth 2010](https://pubmed.ncbi.nlm.nih.gov/19910308/)) is recommended by the [Ouyang Lab]([Ouyang](https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes)) for more complex comparison designs, such as those that include covariates.
+- Are there are biologically meaningful gene expression differences between the clusters? 
+- Does the gene expression of the generated clusters correspond to expected cell-types or sub-types? 
+- Are there clusters with similar expression that should be combined and/or clusters that might need to be sub-clustered into smaller populations?
+
+Many of the differential expression (DE) tools designed for bulk RNA-seq samples have been benchmarked for performance on scRNA-seq in [Soneson and Robinson (2018)](https://pubmed.ncbi.nlm.nih.gov/29481549/) and there are also dedicated DE tools for scRNA-seq, like [MAST](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0844-5), that use models that account for the expected sparse structure of scRNA-seq data. However in our and others' experience, the default Wilcoxon test is often sufficient for simple pairwise DE comparisons, while edgeR ([Robinson, McCarthy, and Smyth 2010](https://pubmed.ncbi.nlm.nih.gov/19910308/)) is recommended by the [Ouyang Lab]([Ouyang](https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes)) for more complex comparison designs, such as those that include covariates.
 
 <!-- Additional context from [Ouyang](https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes) regarding tool options and [HBC materials](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html) regarding FindMarkers vs FindConservedMarkers, etc. -->
 
-![Comparison of the performance of DE methods applied to scRNA-seq datasets. Methods are ranked by their average performance across all the listed criteria. Image taken from Soneson and Robinson (2018)](./images/curriculum/06-MarkerIdentAndViz/Ouyang_clust-deCompare.png)
-
+![Image: Comparison of the performance of DE methods applied to scRNA-seq datasets. Methods are ranked by their average performance across all the listed criteria. Image taken from Soneson and Robinson (2018).](./images/curriculum/06-MarkerIdentAndViz/Ouyang_clust-deCompare.png)
 
 
 <details>
@@ -75,13 +78,15 @@ Many of the differential expression (DE) tools designed for bulk RNA-seq samples
 
 ## Marker identification
 
-First, we'll ensure that the correct resolution is selected from our Seurat object and then we'll use `PrepSCTFindMarkers` in preparation for DE comaprisons to "reverse the individual SCT regression model using minimum of median UMI as the sequencing depth covariate" according to the [Seurat documentation](https://satijalab.org/seurat/reference/prepsctfindmarkers) <!-- if we want to use the normalized RNA data (not the integrated data) `DefaultAssay(geo_so) <- "RNA"`, although need to check if that still makes sense for Seurat v5 --> 
+First, we'll ensure that the correct resolution is selected from our Seurat object and then we'll use the `PrepSCTFindMarkers()` [function](https://satijalab.org/seurat/reference/prepsctfindmarkers) in preparation for DE comaprisons to "reverse the individual SCT regression model using minimum of median UMI as the sequencing depth covariate" according to the [Seurat documentation](https://satijalab.org/seurat/reference/prepsctfindmarkers) <!-- if we want to use the normalized RNA data (not the integrated data) `DefaultAssay(geo_so) <- "RNA"`, although need to check if that still makes sense for Seurat v5 --> 
+
 ```{r, eval = FALSE}
-geo_so = SetIdent(geo_so, value = 'SCT_snn_res.0.4')
+geo_so = SetIdent(geo_so, value = 'integrated.sct.rpca.clusters')
 geo_so = PrepSCTFindMarkers(geo_so)
 ```
 
-Next we'll run the`FindAllMarkers` [function](https://satijalab.org/seurat/reference/findallmarkers) to generate comparisons between each cluster and all other cells, regardless of the experimental group. The statistical test to perform can be specified in this function, but defaults to a Wilcoxon test:
+Next we'll run the`FindAllMarkers()` [function](https://satijalab.org/seurat/reference/findallmarkers) to generate comparisons between each cluster and all other cells, regardless of the experimental group. The statistical test to perform can be specified in this function, but defaults to a Wilcoxon test:
+
 ```{r, eval=FALSE}
 geo_markers = FindAllMarkers(geo_so, only.pos = TRUE)
 ```
@@ -90,31 +95,45 @@ geo_markers = FindAllMarkers(geo_so, only.pos = TRUE)
 
 <details>
     <summary>*Seurat v5 improvements*</summary>
-    For marker generation, Seurat v5 uses the [presto package](https://www.biorxiv.org/content/10.1101/653253v1) to reduce the time required to run DE comparisons, particularly for large datasets. For users who are not using presto, Seurat recommends increasing the min.pct and logfc.threshold parameterscto increase the speed of DE testing. [source](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#finding-differentially-expressed-features-cluster-biomarkers)
+    For marker generation, Seurat v5 uses the [presto package](https://www.biorxiv.org/content/10.1101/653253v1) to reduce the time required to run DE comparisons, particularly for large datasets. For users who are not using presto, Seurat recommends increasing the min.pct and logfc.threshold parameterscto increase the speed of DE testing ([source](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#finding-differentially-expressed-features-cluster-biomarkers)).
 </details>
 <br>
 
 Then we can write out the full results to file: 
+
 ```{r, eval=FALSE}
-write_csv(geo_markers, file = 'ISC_R/results/tables/marker_genes_0.4.csv')
+write_csv(geo_markers, file = 'results/tables/marker_genes_0.4.csv')
 ```
-Note that over-interpretation of these results should be avoided, since each cell is used as a replicate in these comparisons which can lead to inflated (e.g. very low) p-values, the top markers are more likely to be trustworthy [source](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html). 
+
+Note that over-interpretation of these results should be avoided, since each cell is used as a replicate in these comparisons which can lead to inflated (e.g. very low) p-values, the top markers are more likely to be trustworthy ([source](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html)). 
 
 Therefore, it's useful to filter the results to highlight the top positive markers (since a positive fold-change would mean that gene is more highly expressed in the cluster compared to all other cells):
+
 ```{r, eval=FALSE}
 # add code to create table of top 5 markers per cluster
 top_5_by_log2FC = geo_markers %>% group_by(cluster) %>% arrange(p_val_adj, desc(avg_log2FC)) %>% slice_head(n = 5)
 ```
 
 We can look at the marker table to see our results:
+
 ```{r, eval=FALSE}
 head(top_5_by_log2FC)
 ```
-<!--- ~~~~
-# add expected output?
-~~~~ --->
+~~~
+# A tibble: 6 × 7
+# Groups:   cluster [2]
+  p_val avg_log2FC pct.1 pct.2 p_val_adj cluster gene 
+  <dbl>      <dbl> <dbl> <dbl>     <dbl> <fct>   <chr>
+1     0       5.79 0.086 0.004         0 0       Ucma 
+2     0       5.62 0.132 0.005         0 0       Cilp2
+3     0       5.56 0.437 0.016         0 0       Scx  
+4     0       5.45 0.084 0.003         0 0       Matn3
+5     0       5.30 0.137 0.007         0 0       Kera 
+6     0       5.15 0.238 0.01          0 1       C7 
+~~~
 
 We expect to see several columns:
+
 - `gene`: gene symbol
 - `p_val`: p-value not adjusted for multiple test correction
 - `avg_logFC`: average log fold change. Positive values indicate that the gene is more highly expressed in the cluster.
@@ -124,13 +143,14 @@ We expect to see several columns:
 - `cluster`: cluster represented by `pct.1` and for which the statistics in the row are reported
 
 
-When looking at the output, it is important to prioritize marker genes with both larger fold-change differences and larger difference between pct.1 and pct.2, particularly if pct.1 is high (e.g. if 80% of cells in the cluster evaluated express the gene that more reliable than if only 20% of cells express that gene) [source](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html).
+When looking at the output, it is important to prioritize marker genes with both larger fold-change differences and larger difference between pct.1 and pct.2, particularly if pct.1 is high (e.g. if 80% of cells in the cluster evaluated express the gene that more reliable than if only 20% of cells express that gene) ([source](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html)).
 
 ## Marker visualization
 
-Now that we have generated a set of marker genes for our clusters, it is useful to visualize the expression of those markers to aid in evaluating our clusters. While the expression of individual genes per cell can be overlaid on our UMAPs as a "[FeaturePlot](https://satijalab.org/seurat/reference/featureplot)", it's often more useful to visualize the expression of multiple genes simultaneously. While there are [multiple methods supported by Seurat](https://satijalab.org/seurat/articles/visualization_vignette) for  visualizing marker gene expression, a heatmap or a related plot called a dotplot are commonly used. 
+Now that we have generated a set of marker genes for our clusters, it is useful to visualize the expression of those markers to aid in evaluating them. While the expression of individual genes per cell can be overlaid on our UMAPs (as with the `FeaturePlot()` [function](https://satijalab.org/seurat/reference/featureplot)), it's often more useful to visualize the expression of multiple genes simultaneously. While there are [multiple methods supported by Seurat](https://satijalab.org/seurat/articles/visualization_vignette) for  visualizing marker gene expression, a heatmap or a related plot called a dotplot are commonly used. 
 
-We'll use the `DotPlot` function with the SCT values to visualize the top 5 marker genes per cluster:
+We'll use the `DotPlot()` [function](https://satijalab.org/seurat/reference/dotplot) with the SCT values to visualize the top 5 marker genes per cluster:
+
 ```{r, eval=FALSE}
 top_5_sct_dot_plot = DotPlot(geo_so, features = unique(top_5_by_log2FC$gene)) + 
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
@@ -138,13 +158,14 @@ top_5_sct_dot_plot = DotPlot(geo_so, features = unique(top_5_by_log2FC$gene)) +
 top_5_sct_dot_plot
 ```
 
-In the dotplot we can see that the color indicates the expression of the gene while the size of the dot indicates the proportion of cells expressing that gene in each cluster [source](https://ouyanglab.com/singlecell/clust.html#visualising-marker-genes). 
+In the dotplot we can see that the color indicates the expression of the gene while the size of the dot indicates the proportion of cells expressing that gene in each cluster ([source](https://ouyanglab.com/singlecell/clust.html#visualising-marker-genes)). 
 
 ![](./images/curriculum/06-MarkerIdentAndViz/markers_top_5_sct_dot_plot.png) <!-- file: markers_top_5_sct_dot_plot.png -->
 
-And then we can save the figure to file
+And then we can save the figure to file:
+
 ```{r, eval=FALSE}
-ggsave(filename = 'ISC_R/results/figures/markers_top_5_sct_dot_plot.png', plot = top_5_sct_dot_plot, width = 12, height = 6, units = 'in') 
+ggsave(filename = 'results/figures/markers_top_5_sct_dot_plot.png', plot = top_5_sct_dot_plot, width = 12, height = 6, units = 'in') 
 ```
 
 <details>
@@ -156,7 +177,7 @@ top_5_rna_dot_plot = DotPlot(geo_so, features = unique(top_5_by_log2FC$gene), as
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
     labs(title = 'Top 5 Cluster Genes by FDR and avg_log2FC')
 
-ggsave(filename = 'ISC_R/results/figures/markers_top_5_sct_dot_plot.png', plot = top_5_rna_dot_plot, width = 12, height = 6, units = 'in') 
+ggsave(filename = 'results/figures/markers_top_5_sct_dot_plot.png', plot = top_5_rna_dot_plot, width = 12, height = 6, units = 'in') 
 ```
     
 </details>
@@ -177,7 +198,8 @@ fig1g_markers = c('Cxcl1', 'Cxcl2', 'Ccl2', 'Ccl3', 'Ccl4', 'Il1b', 'Il6b', 'Tnf
 fig1h_markers = c('Cxcr2', 'Csf1r', 'Csf3r', 'Tgfbr1', 'Tgfbr3', 'Il1r1', 'Il6ra', 'Lifr', 'Tgfbr2')
 ```
 
-Then we can use the same `DotPlot` function to visualize the expression level and frequency of these genes in our current clusters:
+Then we can use the same `DotPlot()` function to visualize the expression level and frequency of these genes in our current clusters:
+
 ```{r, eval=FALSE}
 fig1g_sct_dot_plot = DotPlot(geo_so, features = fig1g_markers, assay = 'SCT')
 fig1h_sct_dot_plot = DotPlot(geo_so, features = fig1h_markers, assay = 'SCT')
@@ -189,6 +211,7 @@ View(fig1g_sct_dot_plot)
 
 
 And save the figures to file:
+
 ```{r, eval=FALSE}
 ggsave(filename = 'results/figures/markers_fig1g_sct_dot_plot.png', plot = fig1g_sct_dot_plot, width = 8, height = 6, units = 'in')
 ggsave(filename = 'results/figures/markers_fig1h_sct_dot_plot.png', plot = fig1h_sct_dot_plot, width = 8, height = 6, units = 'in')
@@ -197,6 +220,7 @@ ggsave(filename = 'results/figures/markers_fig1h_sct_dot_plot.png', plot = fig1h
 <details>
     <summary>*Using raw RNA values for genes of interest*</summary>
     We can also generate the same plots, but using the unintegrated data by specifying the `RNA` assay:
+
 ```{r, eval=FALSE}
 rna_dot_plot = DotPlot(geo_so, features = fig1g_markers, assay = 'RNA')
 fig1h_rna_dot_plot = DotPlot(geo_so, features = fig1h_markers, assay = 'RNA')
@@ -207,20 +231,21 @@ ggsave(filename = 'results/figures/markers_fig1h_rna_dot_plot.png', plot = fig1h
 </details>
 <br>
 
-
-For known marker genes, it's important to note that since scRNA-seq is only measuring transcriptional signals that markers at the protein level (e.g used for approaches like FACS) may be less effective. The book ["Best practices for single-cell analysis across modalities" by Heumos, Schaar, Lance, et al. ](https://www.sc-best-practices.org/cellular_structure/annotation.html) points out that ideally marker genes are validated across multiple datasets but "it is often useful to work together with experts ... [like a] biologist who has more extensive knowledge of the tissue, the biology, the expected cell types and markers etc.". In our experience, we find that experience and knowledge of the the researchers we work with is invaluable. 
+For known marker genes, it's important to note that since scRNA-seq is only measuring transcriptional signals that markers at the protein level (e.g used for approaches like FACS) may be less effective. The book ["Best practices for single-cell analysis across modalities" by Heumos, Schaar, Lance, et al. ](https://www.sc-best-practices.org/cellular_structure/annotation.html) points out that, ideally, marker genes are validated across multiple datasets but "it is often useful to work together with experts ... [like a] biologist who has more extensive knowledge of the tissue, the biology, the expected cell types and markers etc.". In our experience, we find that experience and knowledge of the researchers we work with is invaluable. 
 
 # Save our progress
 
 Finally, we can create an output file for our updated Seurat object
-```{r, eval=FALSE}
-saveRDS(object = geo_so, file = 'ISC_R/results/rdata/geo_so_sct_integrated_with_markers.rda')
-```
 
+```{r, eval=FALSE}
+saveRDS(object = geo_so, file = 'results/rdata/geo_so_sct_integrated_with_markers.rds')
+saveRDS(object = geo_markers, file = 'results/rdata/geo_markers.rds')
+
+```
 
 # Summary
 
-Now that we have characterized the expression of both analytical marker genes and literature or knowledge based marker genes, we may have a better sense of what cell-types or subtypes our clusters might correspond to.   
+Now that we have characterized the expression of both analytical marker genes and literature / knowledge-based marker genes, we may have a better sense of what cell-types or subtypes our clusters might correspond to.   
 
 However, marker genes alone might not be sufficient to determine cell-type or sub-type labels for our clusters so we will discuss other more automated approaches to complement these results.
 
