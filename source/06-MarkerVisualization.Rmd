@@ -80,16 +80,20 @@ Many of the differential expression (DE) tools designed for bulk RNA-seq samples
 
 First, we'll ensure that the correct resolution is selected from our Seurat object and then we'll use the `PrepSCTFindMarkers()` [function](https://satijalab.org/seurat/reference/prepsctfindmarkers) in preparation for DE comaprisons to "reverse the individual SCT regression model using minimum of median UMI as the sequencing depth covariate" according to the [Seurat documentation](https://satijalab.org/seurat/reference/prepsctfindmarkers) <!-- if we want to use the normalized RNA data (not the integrated data) `DefaultAssay(geo_so) <- "RNA"`, although need to check if that still makes sense for Seurat v5 --> 
 
+Then we'll run the`FindAllMarkers()` [function](https://satijalab.org/seurat/reference/findallmarkers) to generate comparisons between each cluster and all other cells, regardless of the experimental group. Note - the statistical test to perform can be specified in `FindAllMarkers()`, but the default is a Wilcoxon test. 
+
 ```{r, eval = FALSE}
+# prep for cluster comparisons
 geo_so = SetIdent(geo_so, value = 'integrated.sct.rpca.clusters')
 geo_so = PrepSCTFindMarkers(geo_so)
-```
 
-Next we'll run the`FindAllMarkers()` [function](https://satijalab.org/seurat/reference/findallmarkers) to generate comparisons between each cluster and all other cells, regardless of the experimental group. The statistical test to perform can be specified in this function, but defaults to a Wilcoxon test:
-
-```{r, eval=FALSE}
+# run comparisons for each cluster to generate markers
 geo_markers = FindAllMarkers(geo_so, only.pos = TRUE)
+
+# write out full cluster marker results to file
+write_csv(geo_markers, file = 'results/tables/marker_genes_0.4.csv')
 ```
+
 
 <!--- Consider adding figure showing example of what's being compared (circle cluster 1 and then circle all other cells for example) -->
 
@@ -99,26 +103,19 @@ geo_markers = FindAllMarkers(geo_so, only.pos = TRUE)
 </details>
 <br>
 
-Then we can write out the full results to file: 
-
-```{r, eval=FALSE}
-write_csv(geo_markers, file = 'results/tables/marker_genes_0.4.csv')
-```
 
 Note that over-interpretation of these results should be avoided, since each cell is used as a replicate in these comparisons which can lead to inflated (e.g. very low) p-values, the top markers are more likely to be trustworthy ([source](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html)). 
 
-Therefore, it's useful to filter the results to highlight the top positive markers (since a positive fold-change would mean that gene is more highly expressed in the cluster compared to all other cells):
+Therefore, it's useful to filter the results to highlight the top positive markers (since a positive fold-change would mean that gene is more highly expressed in the cluster compared to all other cells), before looking at our results
 
 ```{r, eval=FALSE}
-# add code to create table of top 5 markers per cluster
+# create table of top 5 markers per cluster
 top_5_by_log2FC = geo_markers %>% group_by(cluster) %>% arrange(p_val_adj, desc(avg_log2FC)) %>% slice_head(n = 5)
-```
 
-We can look at the marker table to see our results:
-
-```{r, eval=FALSE}
+# look at results
 head(top_5_by_log2FC)
 ```
+
 ~~~
 # A tibble: 6 × 7
 # Groups:   cluster [2]
@@ -152,21 +149,20 @@ Now that we have generated a set of marker genes for our clusters, it is useful 
 We'll use the `DotPlot()` [function](https://satijalab.org/seurat/reference/dotplot) with the SCT values to visualize the top 5 marker genes per cluster:
 
 ```{r, eval=FALSE}
+# generate plot
 top_5_sct_dot_plot = DotPlot(geo_so, features = unique(top_5_by_log2FC$gene)) + 
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
     labs(title = 'Top 5 Cluster Genes by FDR and avg_log2FC')
 top_5_sct_dot_plot
+
+# save Dotplot to file
+ggsave(filename = 'results/figures/markers_top_5_sct_dot_plot.png', plot = top_5_sct_dot_plot, width = 12, height = 6, units = 'in') 
 ```
 
 In the dotplot we can see that the color indicates the expression of the gene while the size of the dot indicates the proportion of cells expressing that gene in each cluster ([source](https://ouyanglab.com/singlecell/clust.html#visualising-marker-genes)). 
 
-![](./images/curriculum/06-MarkerIdentAndViz/markers_top_5_sct_dot_plot.png) <!-- file: markers_top_5_sct_dot_plot.png -->
+![Figure: Dotplot of top 5 markers per cluster](./images/curriculum/06-MarkerIdentAndViz/markers_top_5_sct_dot_plot.png) 
 
-And then we can save the figure to file:
-
-```{r, eval=FALSE}
-ggsave(filename = 'results/figures/markers_top_5_sct_dot_plot.png', plot = top_5_sct_dot_plot, width = 12, height = 6, units = 'in') 
-```
 
 <details>
     <summary>*Using raw RNA values in Dotplots*</summary>
@@ -190,32 +186,27 @@ ggsave(filename = 'results/figures/markers_top_5_sct_dot_plot.png', plot = top_5
 
 Often we have prior information about what cell types are expected in our samples and key marker genes for those populations. This can be an important part of evaluating our clusters, since if genes that are known markers for a specific cell type are found in too many or too few clusters as that can suggest that re-clustering is needed or that some of the clusters should be manually combined before annotating.
 
-We can create lists of markers used in figures from the [original paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7002453/): 
+We can create lists of markers used in figures from the [original paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7002453/) before using the same `DotPlot()` function to visualize the expression level and frequency of these genes in our current clusters:
 
 ```{r, eval=FALSE}
-
+# manually create lists of genes from paper
 fig1g_markers = c('Cxcl1', 'Cxcl2', 'Ccl2', 'Ccl3', 'Ccl4', 'Il1b', 'Il6b', 'Tnf', 'Tgfb1', 'Tgfb2', 'Tgfb3', 'Cxcl5')
 fig1h_markers = c('Cxcr2', 'Csf1r', 'Csf3r', 'Tgfbr1', 'Tgfbr3', 'Il1r1', 'Il6ra', 'Lifr', 'Tgfbr2')
-```
 
-Then we can use the same `DotPlot()` function to visualize the expression level and frequency of these genes in our current clusters:
-
-```{r, eval=FALSE}
+# create DotPlots for genes from paper
 fig1g_sct_dot_plot = DotPlot(geo_so, features = fig1g_markers, assay = 'SCT')
 fig1h_sct_dot_plot = DotPlot(geo_so, features = fig1h_markers, assay = 'SCT')
 
 View(fig1g_sct_dot_plot)
+
+# save plots to file
+ggsave(filename = 'results/figures/markers_fig1g_sct_dot_plot.png', plot = fig1g_sct_dot_plot, width = 8, height = 6, units = 'in')
+ggsave(filename = 'results/figures/markers_fig1h_sct_dot_plot.png', plot = fig1h_sct_dot_plot, width = 8, height = 6, units = 'in')
 ```
 
 ![](./images/curriculum/06-MarkerIdentAndViz/markers_fig1g_sct_dot_plot.png)
 
 
-And save the figures to file:
-
-```{r, eval=FALSE}
-ggsave(filename = 'results/figures/markers_fig1g_sct_dot_plot.png', plot = fig1g_sct_dot_plot, width = 8, height = 6, units = 'in')
-ggsave(filename = 'results/figures/markers_fig1h_sct_dot_plot.png', plot = fig1h_sct_dot_plot, width = 8, height = 6, units = 'in')
-```
 
 <details>
     <summary>*Using raw RNA values for genes of interest*</summary>
@@ -235,7 +226,7 @@ For known marker genes, it's important to note that since scRNA-seq is only meas
 
 # Save our progress
 
-Finally, we can create an output file for our updated Seurat object
+Finally, we'll create an output file for our updated Seurat object and for the cluster marker results:
 
 ```{r, eval=FALSE}
 saveRDS(object = geo_so, file = 'results/rdata/geo_so_sct_integrated_with_markers.rds')

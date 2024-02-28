@@ -86,40 +86,34 @@ A tool we often use for both mouse and human data cell-type predictions is calle
 
 ![Image: scCATCH summary from Shao et al (2020)](./images/curriculum/07-CellTypeAnnotation/scCATCH-paper-VizAbstract.jpeg) 
 
-First, we need to load the scCATCH library:
-```{r, eval=FALSE}
-library(scCATCH)
-```
-
-Then, we'll double check that we are using the expected resolution cluster results; this is particularly important if we generated multiple resolutions in our clustering steps:
-```{r, eval=FALSE}
-all(Idents(geo_so) == geo_so$SCT_snn_res.0.4)
-```
-
-Then, we'll create a scCATCH object with the `count` data from our Seurat object:
-```{r, eval=FALSE}
-geo_catch = createscCATCH(data = geo_so@assays$SCT@counts, cluster = as.character(Idents(geo_so)))
-```
-
-Then we'll revise our marker genes to a scCATCH compatible format and add those markers to the scCATCH object:
-```{r, eval=FALSE}
-catch_markers = geo_markers %>% rename('logfc' = 'avg_log2FC')
-
-geo_catch@markergene = geo_markers
-```
+First, we need to load the scCATCH library. Then, we'll double check that we are using the expected resolution cluster results (this is particularly important if we generated multiple resolutions in our clustering steps), before creating a new object from our `counts` data with `createscCATCH()` and adding our marker genes to the scCATCCH object.
 
 To increase the speed and accuracy of our predictions, we'll create query of relevant tissues (which requires some prior knowledge of the experiment and using the [scCATCH wiki](https://github.com/ZJUFanLab/scCATCH/wiki) to select tissues from the species) before we run the tool:
+
 ```{r, eval=FALSE}
+library(scCATCH)
+
+# check that cell identities are set to expected resolution 
+all(Idents(geo_so) == geo_so$SCT_snn_res.0.4)
+
+# create scCATCH object, using count data
+geo_catch = createscCATCH(data = geo_so@assays$SCT@counts, cluster = as.character(Idents(geo_so)))
+
+# add marker genes to use for predictions
+catch_markers = geo_markers %>% rename('logfc' = 'avg_log2FC')
+geo_catch@markergene = geo_markers
+
+# specify tissues/cell-types from the scCATCH reference
 geo_catch@marker = cellmatch[cellmatch$species == 'Mouse' & cellmatch$tissue %in% c('Blood', 'Peripheral Blood', 'Muscle', 'Skeletal muscle', 'Epidermis', 'Skin'), ]
 
+# run scCATCH to generate predictions
 geo_catch = findcelltype(geo_catch)
-```
 
-
-Now we can look at our results including the cell type score, which gives us an idea of the confidence of that prediction. Not shown here but the `celltype` table also includes marker genes and PMIDs for relevant literature for each prediction.
-```{r, eval=FALSE}
+# look at the predictions
 geo_catch@celltype %>% select(cluster, cell_type, celltype_score)
 ```
+
+
 ~~~
 #    cluster               cell_type celltype_score
 1        0               Stem Cell           0.83
@@ -144,6 +138,8 @@ geo_catch@celltype %>% select(cluster, cell_type, celltype_score)
 20      19             Muscle Cell           0.69
 ~~~
 
+When we look at our results we can see the cell type score, which gives us an idea of the confidence of that prediction. Not shown here but the full `celltype` table also includes marker genes and PMIDs for relevant literature for each prediction.
+
 As these cell-types correspond to the cell-types and subtypes we'd expect to be present in these data and most of the prediction scores are quite high, we can reasonably use these results to annotate our clusters. In our experience, the scCATCH results often help guide cluster annotation but scores can vary and the predictions may need to be revised based on researcher's knowledge of the biological system.
 
 
@@ -158,7 +154,11 @@ new_metadata = geo_so@meta.data %>% left_join(catch_celltypes, by = c('SCT_snn_r
 rownames(new_metadata) = rownames(geo_so@meta.data) #  We are implicitly relying on the same row order!
 
 geo_so@meta.data = new_metadata 
+
+head(geo_so@meta.data)
 ```
+
+**Checkpoint** : Has the metadata for your `geo_so` object been updated?
 
 ## Visualise annotated clusters
 
@@ -177,8 +177,6 @@ ggsave(filename = 'ISC_R/results/figures/umap_integrated_catch.png', plot = catc
 Now that we have generated reasonable annotations for our clusters, we can proceed with the step of differential expression which is essential to addressing our biological question for this experiment.
 
 Next steps: Differential Expression
-
-
 
 ----
 
