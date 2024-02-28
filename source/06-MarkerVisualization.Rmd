@@ -70,7 +70,6 @@ Many of the differential expression (DE) tools designed for bulk RNA-seq samples
 ![Image: Comparison of the performance of DE methods applied to scRNA-seq datasets. Methods are ranked by their average performance across all the listed criteria. Image taken from Soneson and Robinson (2018).](./images/curriculum/06-MarkerIdentAndViz/Ouyang_clust-deCompare.png)
 
 
-
 <details>
     <summary>*Additional considerations for differential expression*</summary>
     The Ouyang Lab has a [section of their tutorial](https://ouyanglab.com/singlecell/clust.html#sec:diffexpr) that discusses the methods available for differential expression including some highlighted in the figure below, as well as a more extensive section on [threshold considerations](https://ouyanglab.com/singlecell/clust.html#sec:diffexpr), while the [HBC section on marker genes identification](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html) highlights the different types of marker identification options available via Seurat.
@@ -82,7 +81,7 @@ Many of the differential expression (DE) tools designed for bulk RNA-seq samples
 First, we'll ensure that the correct resolution is selected from our Seurat object and then we'll use the `PrepSCTFindMarkers()` [function](https://satijalab.org/seurat/reference/prepsctfindmarkers) in preparation for DE comaprisons to "reverse the individual SCT regression model using minimum of median UMI as the sequencing depth covariate" according to the [Seurat documentation](https://satijalab.org/seurat/reference/prepsctfindmarkers) <!-- if we want to use the normalized RNA data (not the integrated data) `DefaultAssay(geo_so) <- "RNA"`, although need to check if that still makes sense for Seurat v5 --> 
 
 ```{r, eval = FALSE}
-geo_so = SetIdent(geo_so, value = 'SCT_snn_res.0.4')
+geo_so = SetIdent(geo_so, value = 'integrated.sct.rpca.clusters')
 geo_so = PrepSCTFindMarkers(geo_so)
 ```
 
@@ -103,10 +102,10 @@ geo_markers = FindAllMarkers(geo_so, only.pos = TRUE)
 Then we can write out the full results to file: 
 
 ```{r, eval=FALSE}
-write_csv(geo_markers, file = 'ISC_R/results/tables/marker_genes_0.4.csv')
+write_csv(geo_markers, file = 'results/tables/marker_genes_0.4.csv')
 ```
 
-Note that over-interpretation of these results should be avoided, since each cell is used as a replicate in these comparisons which can lead to inflated (e.g. very low) p-values, the top markers are more likely to be trustworthy [source](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html). 
+Note that over-interpretation of these results should be avoided, since each cell is used as a replicate in these comparisons which can lead to inflated (e.g. very low) p-values, the top markers are more likely to be trustworthy ([source](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html)). 
 
 Therefore, it's useful to filter the results to highlight the top positive markers (since a positive fold-change would mean that gene is more highly expressed in the cluster compared to all other cells):
 
@@ -120,11 +119,18 @@ We can look at the marker table to see our results:
 ```{r, eval=FALSE}
 head(top_5_by_log2FC)
 ```
-<!--- 
 ~~~
-# add expected output?
-~~~ 
---->
+# A tibble: 6 × 7
+# Groups:   cluster [2]
+  p_val avg_log2FC pct.1 pct.2 p_val_adj cluster gene 
+  <dbl>      <dbl> <dbl> <dbl>     <dbl> <fct>   <chr>
+1     0       5.79 0.086 0.004         0 0       Ucma 
+2     0       5.62 0.132 0.005         0 0       Cilp2
+3     0       5.56 0.437 0.016         0 0       Scx  
+4     0       5.45 0.084 0.003         0 0       Matn3
+5     0       5.30 0.137 0.007         0 0       Kera 
+6     0       5.15 0.238 0.01          0 1       C7 
+~~~
 
 We expect to see several columns:
 
@@ -137,7 +143,7 @@ We expect to see several columns:
 - `cluster`: cluster represented by `pct.1` and for which the statistics in the row are reported
 
 
-When looking at the output, it is important to prioritize marker genes with both larger fold-change differences and larger difference between pct.1 and pct.2, particularly if pct.1 is high (e.g. if 80% of cells in the cluster evaluated express the gene that more reliable than if only 20% of cells express that gene)( [source](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html)).
+When looking at the output, it is important to prioritize marker genes with both larger fold-change differences and larger difference between pct.1 and pct.2, particularly if pct.1 is high (e.g. if 80% of cells in the cluster evaluated express the gene that more reliable than if only 20% of cells express that gene) ([source](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html)).
 
 ## Marker visualization
 
@@ -159,7 +165,7 @@ In the dotplot we can see that the color indicates the expression of the gene wh
 And then we can save the figure to file:
 
 ```{r, eval=FALSE}
-ggsave(filename = 'ISC_R/results/figures/markers_top_5_sct_dot_plot.png', plot = top_5_sct_dot_plot, width = 12, height = 6, units = 'in') 
+ggsave(filename = 'results/figures/markers_top_5_sct_dot_plot.png', plot = top_5_sct_dot_plot, width = 12, height = 6, units = 'in') 
 ```
 
 <details>
@@ -171,7 +177,7 @@ top_5_rna_dot_plot = DotPlot(geo_so, features = unique(top_5_by_log2FC$gene), as
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
     labs(title = 'Top 5 Cluster Genes by FDR and avg_log2FC')
 
-ggsave(filename = 'ISC_R/results/figures/markers_top_5_sct_dot_plot.png', plot = top_5_rna_dot_plot, width = 12, height = 6, units = 'in') 
+ggsave(filename = 'results/figures/markers_top_5_sct_dot_plot.png', plot = top_5_rna_dot_plot, width = 12, height = 6, units = 'in') 
 ```
     
 </details>
@@ -232,7 +238,9 @@ For known marker genes, it's important to note that since scRNA-seq is only meas
 Finally, we can create an output file for our updated Seurat object
 
 ```{r, eval=FALSE}
-saveRDS(object = geo_so, file = 'ISC_R/results/rdata/geo_so_sct_integrated_with_markers.rda')
+saveRDS(object = geo_so, file = 'results/rdata/geo_so_sct_integrated_with_markers.rds')
+saveRDS(object = geo_markers, file = 'results/rdata/geo_markers.rds')
+
 ```
 
 # Summary
