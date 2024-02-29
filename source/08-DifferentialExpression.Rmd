@@ -42,135 +42,142 @@ knitr_fig_path("XX")
 
 # Introduction
 
-Differential expression comparison is a key step to understanding what genes in what cell-types might be contributing to the misregulation in wound healing that lead to bone formation in this experiment.
+Differential expression comparison is a key step to addressing the biological question at hand for the experiment, namely what genes might be contributing to the aberrant bone formation during healing that was observed in this experiment.
 
 As a reminder, our data includes cells isolated from issue from day 0 (prior to injury) as controls, and days 7 and 21 post-injury as experimental conditions.
 
 ![](./images/curriculum/experimental_design.jpg)
 
-Point out possible gaps between how single-cell data is presented versus the reality of running an analysis
-E.g. Papers might report final filtering thresholds, but our process for choosing those is likely to be more iterative
+We already introduced DE comparisons in the [marker identification section of this workshop](06-MarkerVisualization.html), but here we will show how to run comparisons between experimental conditions for each annotated cluster.
 
 ## Objectives
 
 <!--Add specific goals for section-->
+- Run cell-level differential expression comparisons
+- Run sample level differential expression comparisons
 
 ----
 
 # Differential Expression
 
+For single-cell data there are generally two types approaches for running differential expression - either a cell-level or sample-level approach. 
+
+For cell-level comparisons, simpler statistical methods like a t-test or the Wilcoxon rank-sum test or single-cell specific methods that models cells individually like [MAST](https://doi.org/10.1186/s13059-015-0844-5) can be used. 
+
+As mentioned earlier, many of the tools developed for bulk RNA-seq have been shown to have good performance for single-cell data, such as EdgeR or DESeq2, particularly when the count data is aggregated into sample-level "pseudobulk" values for each cluster [source](https://www.sc-best-practices.org/conditions/differential_gene_expression.html). 
+
+As discussed in the [single-cell best practices book][https://www.sc-best-practices.org/conditions/differential_gene_expression.html] and in the [Ouyang Lab's marker gene identification materials](https://ouyanglab.com/singlecell/clust.html#sec:diffexpr), there are active benchmarking efforts and threshold considerations for single-cell data.
+
+<!-- add more in depth model comparisons options later?
 ## Model options
 
 Wilcoxin (default), DESeq2, MAST, etc.
+-->
 
 ## Standard comparisons
 
-![](./images/curriculum/experimental_design.jpg)
+First we'll run cell-level comparisons for our data for the monocyte cluster, starting with cells from the D21 vs D0 conditions. We'll need to ensure our cells are labeled to reflect both the cluster and condition identities before running our comparison using `FindMarker()` and summarizing the results:
 
 <!-- add UMAP with facets by groups to show what's being compared? -->
 
 ```{r, eval=FALSE}
-### Comparison 1, D21 vs D0 not pseudo-bulk
-
+# set up combined label of day + celltype & assign as identities
 geo_so$day.celltype = paste(geo_so$day, geo_so$cell_type, sep = '_')
-
 Idents(geo_so) = 'day.celltype'
-```
 
-
-```{r, eval=FALSE}
+# run comparison for D21 vs D0, using wilcoxon test
 de_cell_monocytes_D21_vs_D0 = FindMarkers(
     object = geo_so,
     slot = 'data', test = 'wilcox',
     ident.1 = 'Day21_Monocyte', ident.2 = 'Day0_Monocyte')
-```
 
-```{r, eval=FALSE}
+# summarize our results
 table(de_cell_monocytes_D21_vs_D0$p_val_adj < 0.05 & abs(de_cell_monocytes_D21_vs_D0$avg_log2FC) > 1.5)
+
+write_csv(de_cell_monocytes_D21_vs_D0, file = 'ISC_R/results/tables/de_standard_monocytes_D21_vs_D0.csv')
 ```
 ~~~
 FALSE  TRUE 
 10375    15 
 ~~~
 
-Run additional comparison - Day 7 versus Day 0
-```{r, eval=FALSE}
-### Comparison 2, D7 vs D0 not pseudo-bulk
+Note - the `avg_log2FC` threshold of 1.5 we use here are quite stringent as the default log2FC threshold for the function is 0.25. However the default threshold corresponds to only a 19% difference in RNA levels, which is quite permissive. 
 
+If there is enough time - we can also compare between cells from the D7 and D0 conditions.
+```{r, eval=FALSE}
+# run comparison for D7 vs D0, using wilcoxon test
 de_cell_monocytes_D7_vs_D0 = FindMarkers(
     object = geo_so,
     slot = 'data', test = 'wilcox',
     ident.1 = 'Day7_Monocyte', ident.2 = 'Day0_Monocyte')
-```
 
-Look at results - note that thresholds here are more stringent than Seurat defaults
-```{r, eval=FALSE}
+# summarize results
 table(de_cell_monocytes_D7_vs_D0$p_val_adj < 0.05 & abs(de_cell_monocytes_D7_vs_D0$avg_log2FC) > 1.5)
 ```
-
 ~~~
 FALSE  TRUE 
 10360   313 
 ~~~
 
+This same approach can be extended to run pairwise comparisons between conditions for each annotated cluster.
+
+<!-- add code to loop through all clusters and generate comparisons -->
+
 ## Pseudobulk comparisons
-
-Standard approach versus pseudobulk
-
-<!-- add UMAP with facets by sample to show what's being compared? -->
 
 <!-- [10x analysis guide for differential expression with biological replicates](https://www.10xgenomics.com/analysis-guides/differential-gene-expression-analysis-in-scrna-seq-data-between-conditions-with-biological-replicates) -->
 
 <!-- [Ouyang](https://ouyanglab.com/singlecell/clust.html#sec:diffexpr) For (ii), single-cell studies are now more complex, often including samples from multiple donors. It is possible that there are more cells being profiled from a specific donor than others and this can skew the DE results. For example, consider a study where there are three diseased samples (D1,D2,D3) and three healthy samples (H1,H2,H3_ and there are a lot more cells from sample D1. In this scenario, a gene that is specifically expressed in D1 may be identified as differentially expressed when comparing diseased and healthy single-cells. In fact, Squair et al. have shown that ignoring biological replicates can often result in false discoveries in single-cell DE (Squair et al. 2021). To circumvent this, Squair et al. suggested the use of pseudo-bulk profiles where the single-cell profiles from each individual is being collected and then subjected to bulk RNA-seq based DE methods. Another possible approach is to downsample the number of single cells such that each individual have roughly a similar number of cells. -->
 
+With advances in the technology as well as decreased sequencing costs allowing for larger scale single-cell experiments (that include replicates), along with a study by [Squair et al (2021)](https://www.nature.com/articles/s41467-021-25960-2) that highlighted the possibility of inflated false discovery rates for the cell-level approaches since cells isolated from the same sample are unlikely to be statistically independent [source](https://www.sc-best-practices.org/conditions/differential_gene_expression.html) the use of sample-level or "psuedobulk" can be advantageous. 
+
+<!-- add UMAP with facets by sample to show what's being compared? -->
+
+We'll run psuedobulk comparisons for our data for the monocyte cluster, starting with the D21 vs D0 conditions. We'll need to generate the aggregated counts first (ensuring that we are grouping cells by replicate labels), before labeling the cells to reflect the cluster and condition. Then we will run our comparison using `FindMarker()` but specifying DESeq2 as our method before summarizing the results:
 ```{r, eval=FALSE}
+# Create pseudobulk 
 pseudo_catch_so = AggregateExpression(geo_so, assays = 'RNA', return.seurat = TRUE, group.by = c('cell_type', 'day', 'replicate'))
-```
 
-Set up labels to use for comparisons
-```{r, eval=FALSE}
+# Set up labels to use for comparisons & assign as cell identities
 pseudo_catch_so$day.celltype = paste(pseudo_catch_so$day, pseudo_catch_so$cell_type, sep = '_')
-
 Idents(pseudo_catch_so) = 'day.celltype'
-```
 
-Run comparison between Day 21 and Day 0:
-```{r, eval=FALSE}
+# Run pseudobulk comparison between Day 21 and Day 0, using DESeq2
 de_pseudo_monocytes_D21_vs_D0 = FindMarkers(
     object = pseudo_catch_so, 
     ident.1 = 'Day21_Monocyte', ident.2 = 'Day0_Monocyte', 
     test.use = 'DESeq2')
-```
 
-Look at results,  using thresholds of adjusted p-value < 0.05 and logFC > 1.5. Note - this fold-change threshold is more stringent so may need to tailor to specific dataset
-```{r, eval=FALSE}
+# look at results, using the same thresholds
 table(de_pseudo_monocytes_D21_vs_D0$p_val_adj < 0.05 & abs(de_pseudo_monocytes_D21_vs_D0$avg_log2FC) > 1.5)
+
+# output results
+write_csv(de_pseudo_monocytes_D21_vs_D0, file = 'ISC_R/results/tables/de_pseudo_monocytes_D21_vs_D0.csv')
 ```
 ~~~
 FALSE  TRUE 
 14209    32
 ~~~
 
-Output results
-```{r, eval=FALSE}
-write_csv(de_pseudo_monocytes_D21_vs_D0, file = 'ISC_R/results/tables/de_pseudo_monocytes_D21_vs_D0.csv')
-```
 
-Since we're working with pseudobulk data (so no percentag =e of )
+Since we're working with pseudobulk data, unlike in the marker identification section, there is no percentage of cells expressing to need to represent so we can summarize our DE results with a volcano plot:
 ```{r, eval=FALSE}
 pseudo_monocytes_D21_vs_D0_volcano = ggplot(de_pseudo_monocytes_D21_vs_D0, aes(x = avg_log2FC, y = -log10(p_val))) + geom_point()
 ggsave(filename = 'ISC_R/results/figures/volcano_de_pseudo_monocytes_D21_vs_D0.png', plot = pseudo_monocytes_D21_vs_D0_volcano, width = 7, height = 7, units = 'in')
 ```
 
+![Figure: D21 vs D0 pseudobulk volcano plot](./images/curriculum/08-DifferentialExpression/volcano_de_pseudo_monocytes_D21_vs_D0.png)   
 
+<!--- 
+# Downstream approaches
 
-
-# Downstream applications
-
+[Ouyang Lab's trajectory analysis](https://ouyanglab.com/singlecell/dimrd.html) or [Broad Institute's materials on trajectory analysis](https://broadinstitute.github.io/2020_scWorkshop/trajectory-analysis.html)--->
 
 # Summary
 
-Now that we have ... 
+Reviewing these results should allow us to identify genes of interest that are impacted by injury and in the context of the cell-types in which they are differentially expressed, formalize some hypotheses for what cell-types or biological processes might be contributing to aberrant bone formation. 
+
+
 
 
 

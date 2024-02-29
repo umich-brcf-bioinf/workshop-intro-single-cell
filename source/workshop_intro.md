@@ -266,10 +266,10 @@ It is important that you can see:
 * Sections of the workshop were extended/adapted from or inspired by sources
 below. These and other specific references are cited throughout the text and/or
 in the __References__ section of each lesson.
-  * [Harvard Chan Bioinformatics Core Single-cell RNA-seq data analysis workshop](https://hbctraining.github.io/scRNA-seq_online/)
-  * [Orchestrating Single-Cell Analysis with Bioconductor](https://bioconductor.org/books/3.15/OSCA/)
-  * [Satija lab @ New York Genome Center](https://satijalab.org/)
-  * [10x Genomics](https://www.10xgenomics.com/support/single-cell-gene-expression/documentation)
+  * [Harvard Chan Bioinformatics Core Single-cell RNA-seq data analysis workshop](https://hbctraining.github.io/scRNA-seq_online/){target="_blank"}
+  * [Orchestrating Single-Cell Analysis with Bioconductor](https://bioconductor.org/books/3.15/OSCA/){target="_blank"}
+  * [Satija lab @ New York Genome Center](https://satijalab.org/){target="_blank"}
+  * [10x Genomics](https://www.10xgenomics.com/support/single-cell-gene-expression/documentation){target="_blank"}
 
 * The workshop Code of Conduct has been adapted the NumFocus Code of Conduct (https://numfocus.org/code-of-conduct) which itself draws from from numerous sources, including the Geek Feminism wiki, created by the Ada Initiative and other volunteers, which is under a Creative Commons Zero license, the Contributor Covenant version 1.2.0, the Bokeh Code of Conduct, the SciPy Code of Conduct, the Carpentries Code of Conduct, and the NeurIPS Code of Conduct.
 
