@@ -236,13 +236,6 @@ It is important that you can see:
 - We provide letters of support for grant proposals.
 - We are creating a series of bioinformatics-focused workshops.
 
-## [University of Michigan Library](https://www.lib.umich.edu/){target="_blank"}
-
-  Our mission is to support, enhance, and collaborate in the instructional, research, and
-  service activities of faculty, students, and staff, and contribute to the common good by
-  collecting, organizing, preserving, communicating, sharing, and creating the record of human
-  knowledge.
-
 ## [Biomedical Research Core Facilities](https://brcf.medicine.umich.edu/){target="_blank"}
 
   Biomedical Research Core Facilities (BRCF) helps researchers economically take advantage of
@@ -251,6 +244,12 @@ It is important that you can see:
 <br/>
 <br/>
 
+## [University of Michigan Library](https://www.lib.umich.edu/){target="_blank"}
+
+  Our mission is to support, enhance, and collaborate in the instructional, research, and
+  service activities of faculty, students, and staff, and contribute to the common good by
+  collecting, organizing, preserving, communicating, sharing, and creating the record of human
+  knowledge.
 
 ## [Single Cell Spatial Analysis Program](https://singlecellspatialanalysis.umich.edu/){target="_blank"}
 
@@ -266,7 +265,7 @@ It is important that you can see:
 
 * Sections of the workshop were extended/adapted from or inspired by sources
 below. These and other specific references are cited throughout the text and/or
-inthe __References__ section of each lesson.
+in the __References__ section of each lesson.
   * [Harvard Chan Bioinformatics Core Single-cell RNA-seq data analysis workshop](https://hbctraining.github.io/scRNA-seq_online/)
   * [Orchestrating Single-Cell Analysis with Bioconductor](https://bioconductor.org/books/3.15/OSCA/)
   * [Satija lab @ New York Genome Center](https://satijalab.org/)

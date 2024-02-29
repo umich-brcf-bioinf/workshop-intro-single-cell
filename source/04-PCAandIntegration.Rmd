@@ -80,7 +80,7 @@ So how do we determine what and how many genes to use before classifying cells i
 
 <details>
     <summary>*More detail on dimensionality reduction *</summary>
-    The [Ouyang Lab has a "gentle introduction" section of their materials](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr) that goes into greater details on dimensionality reduction including how similar strategies are used in deep learning models. Additionaly, the OSCA book has a [chapter on Dimensionality reduction(https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html) that has useful context. 
+    The [Ouyang Lab has a "gentle introduction" section of their materials](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr) that goes into greater details on dimensionality reduction including how similar strategies are used in deep learning models. Additionaly, the OSCA book has a [chapter on Dimensionality reduction](https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html) that has useful context. 
 </details>
 <br>
 
@@ -129,32 +129,12 @@ This reduction in dimensionality, from 10,000 cells x 19,000 genes, for example,
 
 Since PCA is sensitive to scale, we will run it on the SCT normalized assay ([reference](https://ouyanglab.com/singlecell/basic.html#pca-principal-component-analysis)). We will name the reduction in an informative way to keep them clear for us in the future. In this case, our data has not yet been integrated, but it has been SCT normalized. So we will name the reduction `unintegrated.sct.pca`. Note that `SCTTransform()` returned a set of highly variable genes, and the `RunPCA()` function will use this subset to determine the PCs and genes associated with those PCs.
 
-```{r, eval=FALSE}
-geo_so = RunPCA(geo_so, reduction.name = 'unintegrated.sct.pca')
-```
 
-In the console, the first 5 PCs are listed along with the associated genes. If we look at the `geo_so` object, we'll see our dimension reduction:
+In the console, the first 5 PCs are listed along with the associated genes. We can print out the top 5 (gene) features per dimension by accessing that part of the Seurat object::
 
 ```{r, eval = FALSE}
-geo_so
-```
-~~~
-An object of class Seurat 
-47037 features across 29615 samples within 2 assays 
-Active assay: SCT (20548 features, 3000 variable features)
- 3 layers present: counts, data, scale.data
- 1 other assay present: RNA
- 1 dimensional reduction calculated: unintegrated.sct.pca
-~~~
+geo_so = RunPCA(geo_so, reduction.name = 'unintegrated.sct.pca')
 
-
-<!--- Should this dim loading section drawn from [Ho Lab](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#standard-pre-processing-workflow) be included in the main content? Note - would need to run command in script & capture output  --->
-
-We can also visualize both the cell and gene features that define each principal components using Seurat provided functions [source](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction).
-
-First, we can print out the top 5 (gene) features per dimension by accessing that part of the Seurat object:
-
-```{r, eval=FALSE}
 print(geo_so[['unintegrated.sct.pca']], dims = 1:5, nfeatures = 5)
 ```
 ~~~
@@ -176,40 +156,41 @@ Negative:  Cd74, H2-Ab1, H2-Aa, H2-Eb1, Il1b
 ~~~
 
 
-We can also highlight genes loaded for each dimension using a visualization:
+<!--- Should this dim loading section drawn from [Ho Lab](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#standard-pre-processing-workflow) be included in the main content? Note - would need to run command in script & capture output  --->
+
+We can also visualize both the cell and gene features that define each principal components using Seurat provided functions [source](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction).
+
+
+We can highlight genes loaded for each dimension using using `VizDimLoadings()` or look at how cells load on the first two principal components, similarly to how we often look at samples for bulk RNA-seq, with the `DimPlot()` function, or use `DimHeatmap()`, which orders both cells and features according to their PCA scores and allows us to see some general patterns in the data:
 
 ```{r, eval=FALSE}
+# gene loadings
 VizDimLoadings(geo_so, dims = 1:2, reduction = 'unintegrated.sct.pca')
 ggsave(filename = 'results/figures/qc_pca_loadings.png', width = 12, height = 6, units = 'in')
-```
 
-![](./images/curriculum/04-PCAandIntegration/qc_pca_loadings.png)
-
-
-We can look at how cells load on the first two principal components, similarly to how we often look at samples for bulk RNA-seq, with the `DimPlot` function:
-
-```{r, eval=FALSE}
+# PCA style plot for PC1 and PC2
 DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'day')
 ggsave(filename = 'results/figures/qc_pca_plot_unintegrated_sct_day.png', width = 7, height = 6, units = 'in')
-```
 
-![](./images/curriculum/04-PCAandIntegration/qc_pca_plot_unintegrated_sct_day.png)
-
-Lastly, a common visualization used in Seurat tutorials is `DimHeatmap()`, which orders both cells and features according to their PCA scores and allows us to see some general patterns in the data:
-
-```{r, eval=FALSE}
+# Heatmaps 
 DimHeatmap(geo_so, dims=1:3, cells=500, balanced=TRUE)
-```
 
-![](./images/curriculum/04-PCAandIntegration/qc_pca_heatmap.png)
-
-Since the heatmap isn't a ggplot, we need to use a more general output function to save it to file
-
-```{r, eval=FALSE}
+# note - need to use a more general output function to save the heatmap to file since function above doesn't return a `ggplot` object
 png(filename = 'results/figures/qc_pca_heatmap.png', width = 12, height = 4, units = 'in', res = 300)
 DimHeatmap(geo_so, dims=1:3, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca')
 dev.off()
 ```
+
+![Figure: PCA loadings](./images/curriculum/04-PCAandIntegration/qc_pca_loadings.png)
+<br>
+
+![Figure: PCA plot](./images/curriculum/04-PCAandIntegration/qc_pca_plot_unintegrated_sct_day.png)
+<br>
+
+![Figure: Heatmap](./images/curriculum/04-PCAandIntegration/qc_pca_heatmap.png)
+<br>
+
+
 
 > #### How does Seurat use PCA scores? {.unlisted .unnumbered}
 > 
@@ -221,11 +202,9 @@ dev.off()
 <!-- Section still needs to be edited more & consider adding a figure --> 
 Why not use every principal component generated for this dataset? Using too many PCs risks including uninteresting technical variation and a single cell itself is not a reasonable functional unit for most biology. 
 
-
 A good starting point for determining how many PCs to select for your single-cell analysis is to understand the "resolution" of your biological question. Is answering your biological question dependent on identifying rarer cell types or specific subtypes? Or are broader cell-types more relevant?
 
 For this dataset, we are expecting a diversity of cell types and the cell populations that mediate wound healing, or that are part of the aberrant transition to bone, might be more rare in the population so after evaluating the relative contributions across the first set of PCs, we might want to consider selecting too many rather than too few PCs to start.
-
 
 <!-- Section still needs to be edited
 Related - how important is that decision to the downstream impact (e.g. how much does changing the number of PCs change the clustering)?
@@ -242,14 +221,14 @@ ElbowPlot(geo_so, ndims = 50, reduction = 'unintegrated.sct.pca')
 ggsave(filename = 'results/figures/qc_sct_elbow_plot.png')
 ```
 
-![](./images/curriculum/04-PCAandIntegration/qc_sct_elbow_plot.png)
+![Image: Elbow plot](./images/curriculum/04-PCAandIntegration/qc_sct_elbow_plot.png){height=250px} <!-- update plot to have better dimensions-->
 
 In this plot, we could arbitrarily choose a number along the x-axis that looks like a sharp change in the variance from one PC to the next, that is, an elbow. Of course, the choice is not always obvious, and this plot is no different. We could also try to quantify our choice.
 
 
 ### Using a (crude) optimization to select a starting point
 
-Function to return minimum PCs based on two possible metrics:
+Instead of choosing based on the elbow plot, we can create a function to return minimum PCs based on two possible metrics (cumulative variation or above a minium step size) and then apply that function to our data:
 
 ```{r, eval=FALSE}
 # Function to determine optimal PCs after RunPCA()
@@ -263,17 +242,15 @@ optimal_pcs = function(so, reduction) {
     
     return(pcs)
 }
-```
 
-If we apply this function to our data, then we expect a number of PCs somewhere within the bend of the elbow plot to be returned:
-
-```{r, eval=FALSE}
+# Apply function to our data
 pcs = optimal_pcs(geo_so, 'unintegrated.sct.pca')
 pcs
 ```
 ~~~~
 15
 ~~~~
+
 
 Again, this number is likely a starting point and may need to revise depending on the outcome of the downstream steps. 
 
@@ -307,12 +284,12 @@ Note we have specified the unintegrated reduction `unintegrated.sct.pca`, which 
 > 
 > ```{r, eval = FALSE}
 > geo_so = readRDS('/home/workshop/rcavalca/ISC_R/results/rdata/geo_so_sct_integrated.rds')
+
+# check our updated object that we've read in from file
+geo_so
 > ```
 > 
 
-```{r, eval = FALSE}
-geo_so
-```
 ~~~
 # An object of class Seurat 
 # 47037 features across 29615 samples within 2 assays 
@@ -324,7 +301,7 @@ geo_so
 
 Observe that we now have a new reduction, `integrated.sct.rpca`, which we will use downstream.
 
-<!--- PCA plot after integration
+<!--- PCA plot after integration?
 We can also confirm that our integration method has helped to correct the `Day` effects we saw in the initial PCA plots
 
 ```{r, eval=FALSE}

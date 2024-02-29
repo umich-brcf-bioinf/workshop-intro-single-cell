@@ -101,8 +101,16 @@ The second step is to iteratively partition the kNN graph into "cliques" or clus
 
 We'll use the `FindClusters()` [function](https://satijalab.org/seurat/reference/findclusters), selecting a resolution of `0.4` to start, although we could also add other resolutions at this stage to look at in later steps. See [Waltman and Jan van Eck (2013)](https://link.springer.com/article/10.1140/epjb/e2013-40829-0) for the underlying algorithms.
 
+Again, how a “cell type” or “subtype” should be defined for your data is helpful to consider in selecting a resolution - we'd start with a higher resolution for smaller/more rare clusters and a lower resolution for larger/more general clusters.  
+
+And then iff we look at the meta data we can see that cluster labels have now been added for each cell:
+
 ```{r, eval=FALSE}
+# generate clusters
 geo_so = FindClusters(geo_so, resolution = 0.4, cluster.name = 'integrated.sct.rpca.clusters')
+
+# look at meta.data to see cluster labels
+head(geo_so@meta.data)
 ```
 
 Generally it's preferable to err on the side of too many clusters, as they can be combined manually in later steps. In our experience, this is another parameter that may need to be iteratively revised and reviewed. 
@@ -113,27 +121,7 @@ Generally it's preferable to err on the side of too many clusters, as they can b
 </details>
 <br>
 
-Again, how a “cell type” or “subtype” should be defined for your data is helpful to consider in selecting a resolution - we'd start with a higher resolution for smaller/more rare clusters and a lower resolution for larger/more general clusters.  
 
-If we look at our object after running these commands, we don't see a change compared to the last time.
-
-```{r, eval=FALSE}
-geo_so
-```
-~~~
-An object of class Seurat 
-47037 features across 29615 samples within 2 assays 
-Active assay: SCT (20548 features, 3000 variable features)
- 3 layers present: counts, data, scale.data
- 1 other assay present: RNA
- 2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca
-~~~
-
-However, if we look at the meta data we can see that cluster labels have now been added for each cell:
-
-```{r, eval = FALSE}
-head(geo_so@meta.data)
-```
 ~~~~
                                             orig.ident nCount_RNA nFeature_RNA  day  replicate percent.mt nCount_SCT nFeature_SCT integrated.sct.rpca.clusters seurat_clusters
 HODay0replicate1_AAACCTGAGAGAACAG-1 HO.Day0.replicate1      10234         3226 Day0 replicate1   1.240962       6061         2865                            1               1
@@ -144,7 +132,7 @@ HODay0replicate1_AAACGGGCAACTGGCC-1 HO.Day0.replicate1       7726         2602 D
 HODay0replicate1_AAACGGGGTCCGAATT-1 HO.Day0.replicate1       5165         2362 Day0 replicate1   9.196515       5162         2348                            8               8
 ~~~~
 
-N
+
 
 # Cluster plots 
 
@@ -167,7 +155,7 @@ Active assay: SCT (20548 features, 3000 variable features)
  3 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca, umap.integrated.sct.rpca
 ~~~
 
-Observe that we now have a third reduction: `umap.integrated.sct.rpca`.
+Notice that we now have a third reduction: `umap.integrated.sct.rpca`.
 
 # Visualizing and evaluating clustering
 
@@ -175,34 +163,45 @@ Observe that we now have a third reduction: `umap.integrated.sct.rpca`.
 
 <!--- Add example of changing resolution?--->
 
-After we generate the UMAP reduction, we can then visualize the results using the `DimPlot()` [function](https://satijalab.org/seurat/reference/dimplot), labeling our plot by the auto generated `seurat_clusters` that correspond to the most recent clustering results generated:
-
-```{r, eval = FALSE}
-post_integration_umap_plot_clusters = DimPlot(geo_so, group.by = 'seurat_clusters', label = FALSE, reduction = 'umap.integrated.sct.rpca')
-
-ggsave(filename = 'results/figures/umap_integrated_sct_clusters.png', plot = post_integration_umap_plot_clusters, width = 8, height = 6, units = 'in')
-```
-
-![](./images/curriculum/05-ProjectionAndClustering/umap_integrated_sct_clusters.png) 
+After we generate the UMAP reduction, we can then visualize the results using the `DimPlot()` [function](https://satijalab.org/seurat/reference/dimplot), labeling our plot by the auto generated `seurat_clusters` that correspond to the most recent clustering results generated.
 
 At this stage, we want to determine if the clusters look fairly well separated, if they seem to correspond to how cells are grouped in the UMAP, and if the number of clusters are aligned with the resolution of our biological question. 
 
-We can also look at the same UMAP labeled by `day` to visually inspect if the UMAP structure corresponds to the `day`s:
+We can also look at the same UMAP labeled by `day` to visually inspect if the UMAP structure corresponds to the `day`.
+
+
 
 ```{r, eval = FALSE}
+# UMAP with cluster ID labels
+post_integration_umap_plot_clusters = DimPlot(geo_so, group.by = 'seurat_clusters', label = FALSE, reduction = 'umap.integrated.sct.rpca')
+
+ggsave(filename = 'results/figures/umap_integrated_sct_clusters.png', plot = post_integration_umap_plot_clusters, width = 8, height = 6, units = 'in')
+
+# UMAP with day labels (note - we added this column to the meta-data yesterday)
 post_integration_umap_plot_day = DimPlot(geo_so, group.by = 'day', label = FALSE, reduction = 'umap.integrated.sct.rpca')
 
 ggsave(filename = 'results/figures/umap_integrated_sct_day.png', plot = post_integration_umap_plot_day)
 ```
 
-A plot like this can tell us if technical sources of variation might be driving or stratifying the clusters, or if we see good correction after the normalization and integration steps.
+![](./images/curriculum/05-ProjectionAndClustering/umap_integrated_sct_clusters.png) 
+<br>
 
 ![](./images/curriculum/05-ProjectionAndClustering/umap_integrated_sct_day.png)
+<br>
 
-Another approach to see this is to evaluate the number of cells per cluster using the `table()` function, split by `day`:
+
+A plot like this can tell us if technical sources of variation might be driving or stratifying the clusters, or if we see good correction after the normalization and integration steps.
+
+
+
+Another approach is to evaluate the number of cells per cluster using the `table()` function, split by `day` or split by `orig.ident` to see if the individual samples are driving any of the UMAP structure:
 
 ```{r, eval=FALSE}
+# table of number of cells per cluster, split by condition
 table(geo_so@meta.data$day, geo_so@meta.data$integrated.sct.rpca.clusters)
+
+# table of number of cells per cluster per sample
+table(geo_so@meta.data$orig.ident, geo_so@meta.data$integrated.sct.rpca.clusters)
 ```
 ~~~
            0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18
@@ -211,11 +210,6 @@ table(geo_so@meta.data$day, geo_so@meta.data$integrated.sct.rpca.clusters)
   Day21 1438 1138  368  463  141  482   81  430  402  500  375  201  108   69   42  256  117  195   12
 ~~~
 
-... or split by `orig.ident` to see if the individual samples are driving any of the UMAP structure:
-
-```{r, eval=FALSE}
-table(geo_so@meta.data$orig.ident, geo_so@meta.data$integrated.sct.rpca.clusters)
-```
 
 ~~~
                        0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18
@@ -234,9 +228,10 @@ HO.Day21.replicate4  677  370  122  145   57  186   31  138   58  186  151   71 
 ~~~
 
 <!-- consider adding later 
-# Other approaches for visualizing scRNA-sq data
+Add DimPlot for % mitochondria to see if high % are across dataset or limited to one/few clusters (related to what Olivia talked about during Day 1)
 
-code for tSNE visualization 
+# Other approaches for visualizing scRNA-sq data
+e.g. code for tSNE visualization 
 -->
 
 # Comparing to unintegrated data
@@ -256,7 +251,7 @@ In this plot, we see that while there are distinct clusters, those clusters seem
 <!-- Edit section to incorporate --->
 
 <details>
-<summary>**Rewind: Pre-integration evaluation clustering and visualization**</summary>
+<summary>**Rewind: Pre-integration evaluation clustering and visualization (code)**</summary>
 Prior to integration, could follow the same steps we've just run for the integrated to see if the resulting clusters tend to be determined by sample or condition (in this case, the day):
 
 ```{r, eval=FALSE}
