@@ -222,7 +222,9 @@ ggsave(filename = 'results/figures/markers_fig1h_rna_dot_plot.png', plot = fig1h
 </details>
 <br>
 
-For known marker genes, it's important to note that since scRNA-seq is only measuring transcriptional signals that markers at the protein level (e.g used for approaches like FACS) may be less effective. The book ["Best practices for single-cell analysis across modalities" by Heumos, Schaar, Lance, et al. ](https://www.sc-best-practices.org/cellular_structure/annotation.html) points out that, ideally, marker genes are validated across multiple datasets but "it is often useful to work together with experts ... [like a] biologist who has more extensive knowledge of the tissue, the biology, the expected cell types and markers etc.". In our experience, we find that experience and knowledge of the researchers we work with is invaluable. 
+For known marker genes, it's important to note that since scRNA-seq is only measuring transcriptional signals that markers at the protein level (e.g used for approaches like FACS) may be less effective. An alternative or complement to using marker genes could be methods like using gene set enrichment (GSEA) [as demonstrated in the OSCA book](https://bioconductor.org/books/3.15/OSCA.basic/cell-type-annotation.html#computing-gene-set-activities) to aid in annotations. However, the book ["Best practices for single-cell analysis across modalities" by Heumos, Schaar, Lance, et al. ](https://www.sc-best-practices.org/cellular_structure/annotation.html) points out that "it is often useful to work together with experts ... [like a] biologist who has more extensive knowledge of the tissue, the biology, the expected cell types and markers etc.". In our experience, we find that experience and knowledge of the researchers we work with is invaluable. 
+
+
 
 # Save our progress
 
@@ -240,7 +242,6 @@ Now that we have characterized the expression of both analytical marker genes an
 
 However, marker genes alone might not be sufficient to determine cell-type or sub-type labels for our clusters so we will discuss other more automated approaches to complement these results.
 
-<!-- While there are some automated cluster annotation tools, one of which we'll discuss in the next section, often manual cluster annotation is part of characterizing clusters in single cell data.  -->
 
 Next steps: Cell type prediction tools
 
