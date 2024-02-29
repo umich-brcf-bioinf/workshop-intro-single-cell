@@ -240,13 +240,15 @@ If we had proceeded with our filtered data and only normalized our data without 
 
 <!--Add example of UMAP / sample labels for unintegrated data from analysis folder to images-->
 
-![](./images/curriculum/05-ProjectionAndClustering/umap_unintegrated_sct_orig.ident.png)
+![](./images/curriculum/05-ProjectionAndClustering/umap_comparison_sct.png)
+
+
 
 If we instead labeled our plot by `day`, then we would see:
 
 ![](./images/curriculum/05-ProjectionAndClustering/umap_unintegrated_sct_day.png)
 
-In this plot, we see that while there are distinct clusters, those clusters seem to stratified by day. This suggests that without integration, these batch effects could skew the biological variability in our data. 
+In this plot, we see that while there are distinct clusters, those clusters seem to stratified by day. This suggests that without integration, these batch effects could skew the biological variability in our data. We can also directly compare between integrated and unintegrated 
 
 <!-- Edit section to incorporate --->
 
