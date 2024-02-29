@@ -165,8 +165,9 @@ ggsave(filename = 'ISC_R/results/figures/volcano_de_pseudo_monocytes_D21_vs_D0.p
 
 
 
-# Downstream applications
+# Downstream approaches
 
+<!--- [Ouyang Lab's Trajectory analysis](https://ouyanglab.com/singlecell/dimrd.html) --->
 
 # Summary
 
