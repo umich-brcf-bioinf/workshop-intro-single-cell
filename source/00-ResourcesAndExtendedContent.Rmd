@@ -74,7 +74,7 @@ General goal: Filtering out the "cells" that either were poorly measured or are 
 - [scRNA-seq workshop - HBC training](https://hbctraining.github.io/scRNA-seq_online/schedule/links-to-lessons.html) - lastest release of materials is from March 2023
 	- To cite materials from the HBC course, please use: `Mary Piper, Meeta Mistry, Jihe Liu, William Gammerdinger, & Radhika Khetani. (2022, January 6). hbctraining/scRNA-seq_online: scRNA-seq Lessons from HCBC (first release). Zenodo. [https://doi.org/10.5281/zenodo.5826256](https://doi.org/10.5281/zenodo.5826256)`
 - [Analysis using Seurat - Ho Lab](https://holab-hku.github.io/Fundamental-scRNA/downstream.html) - materials last updated in 2021
-[Single-cell complete workflow exercise, RNA-seq Bioinformatics - Griffith Lab](https://rnabio.org/module-08-scrna/0008/08/01/scRNA/)
+[Single-cell complete workflow exercise, RNA-seq Bioinformatics - Griffith Lab](https://rnabio.org/module-08-scrna/0008/08/01/scRNA/) - exercise from workshop
 
 
 ## Resources and documentation for Seurat and related tools: 

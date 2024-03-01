@@ -168,6 +168,8 @@ ggsave(filename = 'ISC_R/results/figures/volcano_de_pseudo_monocytes_D21_vs_D0.p
 
 ![Figure: D21 vs D0 pseudobulk volcano plot](./images/curriculum/08-DifferentialExpression/volcano_de_pseudo_monocytes_D21_vs_D0.png)   
 
+### Iterating over 
+
 <!--- 
 # Downstream approaches
 

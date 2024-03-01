@@ -98,7 +98,7 @@ To increase the speed and accuracy of our predictions, we'll create query of rel
 library(scCATCH)
 
 # check that cell identities are set to expected resolution 
-all(Idents(geo_so) == geo_so$SCT_snn_res.0.4)
+all(Idents(geo_so) == geo_so$SCT_snn_res)
 
 # create scCATCH object, using count data
 geo_catch = createscCATCH(data = geo_so@assays$SCT@counts, cluster = as.character(Idents(geo_so)))
@@ -155,7 +155,7 @@ Next, we'll add celltype the predictions to our Seurat object to replace our clu
 catch_celltypes = geo_catch@celltype %>% select(cluster, cell_type)
 
 # Merge cell types in but as a new table to slide into @meta.data
-new_metadata = geo_so@meta.data %>% left_join(catch_celltypes, by = c('integrated.sct.rpca.clusters0.4' = 'cluster'))
+new_metadata = geo_so@meta.data %>% left_join(catch_celltypes, by = c('integrated.sct.rpca.clusters' = 'cluster'))
 rownames(new_metadata) = rownames(geo_so@meta.data) #  We are implicitly relying on the same row order!
 
 # Replace the meta.data
