@@ -168,12 +168,25 @@ ggsave(filename = 'ISC_R/results/figures/volcano_de_pseudo_monocytes_D21_vs_D0.p
 
 ![Figure: D21 vs D0 pseudobulk volcano plot](./images/curriculum/08-DifferentialExpression/volcano_de_pseudo_monocytes_D21_vs_D0.png)   
 
-### Iterating over 
 
 <!--- 
+### Iterating over all clusters
+
+Add code to 
+--->
+
 # Downstream approaches
 
-[Ouyang Lab's trajectory analysis](https://ouyanglab.com/singlecell/dimrd.html) or [Broad Institute's materials on trajectory analysis](https://broadinstitute.github.io/2020_scWorkshop/trajectory-analysis.html)--->
+Beyond differential expression within clusters, there are many other possible avenues of exploration and analysis for scRNA-seq data. Including, but not limited to:
+
+- Integration with other modalities (e.g. ATAC-seq, VDJ, etc.)
+- Subclustering clusters of interest, see [HBC's summary on subclustering](https://hbctraining.github.io/scRNA-seq_online/lessons/seurat_subclustering.html), [Seurat's findSubcCluster documentation](https://satijalab.org/seurat/reference/findsubcluster) and [this related issue thread](https://github.com/satijalab/seurat/issues/1883)  
+- Trajectory or Pseudotime analysis, see[Ouyang Lab's trajectory analysis](https://ouyanglab.com/singlecell/dimrd.html) or [Broad Institute's materials on trajectory analysis](https://broadinstitute.github.io/2020_scWorkshop/trajectory-analysis.html), among other resources    
+- Cell - Cell communication network inference, see [review by Wilk et al (2023)](https://www.nature.com/articles/s41587-023-01782-z)
+- Velocity analysis (note: not compatible with the flex probe based kits), see [the chapter from the single-cells best practices book](https://www.sc-best-practices.org/trajectories/rna_velocity.html) for detailed theory/modeling or the [10x data vignette for velocyto](https://pklab.med.harvard.edu/velocyto/notebooks/R/SCG71.nb.html) for a practical example in R
+
+
+We would recommend looking for studies in similar tissues or experimental questions and see what kind of approaches and tools were used to answer questions related to your biological question
 
 # Summary
 
