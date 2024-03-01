@@ -143,7 +143,7 @@ While we unfortunately don't have time to compare and contrast tSNE, and UMAP, w
 To start this process, we'll use the `RunUMAP()` [function](https://satijalab.org/seurat/reference/runumap) to calculate the UMAP reduction for our data. Notice how the previous dimensionality choices carry through the downstream analysis and that the number of PCs selected in the previous steps are included as an argument.
 
 ```{r, eval=FALSE}
-geo_so = RunUMAP(geo_so, dims = 1:pcs, reduction = 'integrated.sct.pca', reduction.name = 'umap.integrated.sct.pca')
+geo_so = RunUMAP(geo_so, dims = 1:pcs, reduction = 'integrated.sct.rpca', reduction.name = 'umap.integrated.sct.rpca')
 geo_so
 ```
 ~~~
@@ -173,14 +173,16 @@ We can also look at the same UMAP labeled by `day` to visually inspect if the UM
 
 ```{r, eval = FALSE}
 # UMAP with cluster ID labels
-post_integration_umap_plot_clusters = DimPlot(geo_so, group.by = 'seurat_clusters', label = FALSE, reduction = 'umap.integrated.sct.rpca')
+post_integration_umap_plot_clusters = DimPlot(geo_so, group.by = 'seurat_clusters', label = TRUE, reduction = 'umap.integrated.sct.rpca') + NoLegend()
+post_integration_umap_plot_clusters
 
-ggsave(filename = 'results/figures/umap_integrated_sct_clusters.png', plot = post_integration_umap_plot_clusters, width = 8, height = 6, units = 'in')
+ggsave(filename = 'results/figures/umap_integrated_sct_clusters.png', plot = post_integration_umap_plot_clusters, width = 6, height = 6, units = 'in')
 
 # UMAP with day labels (note - we added this column to the meta-data yesterday)
 post_integration_umap_plot_day = DimPlot(geo_so, group.by = 'day', label = FALSE, reduction = 'umap.integrated.sct.rpca')
+post_integration_umap_plot_day
 
-ggsave(filename = 'results/figures/umap_integrated_sct_day.png', plot = post_integration_umap_plot_day)
+ggsave(filename = 'results/figures/umap_integrated_sct_day.png', plot = post_integration_umap_plot_day, width = 8, height = 6, units = 'in')
 ```
 
 ![](./images/curriculum/05-ProjectionAndClustering/umap_integrated_sct_clusters.png) 
@@ -294,9 +296,9 @@ for(res in resolutions) {
 
     geo_so = FindClusters(geo_so, resolution = res)
 
-    DimPlot(geo_so, group.by = cluster_column, label = FALSE, reduction = 'umap.integrated.sct.rpca')
+    DimPlot(geo_so, group.by = cluster_column, label = TRUE, reduction = 'umap.integrated.sct.rpca') + NoLegend()
     ggsave(filename = umap_file, width = 8, height = 7, units = 'in')
-    }
+}
 ```
 
 If we look at the results:

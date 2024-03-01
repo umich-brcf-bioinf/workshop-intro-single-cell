@@ -98,13 +98,12 @@ To increase the speed and accuracy of our predictions, we'll create query of rel
 library(scCATCH)
 
 # check that cell identities are set to expected resolution 
-all(Idents(geo_so) == geo_so$SCT_snn_res)
+all(Idents(geo_so) == geo_so$integrated.sct.rpca.clusters)
 
 # create scCATCH object, using count data
 geo_catch = createscCATCH(data = geo_so@assays$SCT@counts, cluster = as.character(Idents(geo_so)))
 
 # add marker genes to use for predictions
-catch_markers = geo_markers %>% rename('logfc' = 'avg_log2FC')
 geo_catch@markergene = geo_markers
 
 # specify tissues/cell-types from the scCATCH reference
@@ -117,13 +116,13 @@ geo_catch = findcelltype(geo_catch)
 geo_catch@celltype %>% select(cluster, cell_type, celltype_score)
 ```
 ~~~
-#    cluster               cell_type celltype_score
+   cluster               cell_type celltype_score
 1        0               Stem Cell           0.83
-2        1              Macrophage           0.82
-3        2 Hematopoietic Stem Cell           0.87
-4        3               Stem Cell           0.88
-5        4          Dendritic Cell           0.86
-6        5                Monocyte           0.82
+2        1 Hematopoietic Stem Cell           0.87
+3        2              Macrophage           0.82
+4        3          Dendritic Cell           0.86
+5        4                Monocyte           0.82
+6        5               Stem Cell           0.88
 7        6              Neutrophil           0.81
 8        7               Stem Cell           0.85
 9        8 Hematopoietic Stem Cell           0.90
@@ -136,8 +135,7 @@ geo_catch@celltype %>% select(cluster, cell_type, celltype_score)
 16      15     Embryonic Stem Cell           0.87
 17      16 Hematopoietic Stem Cell           0.87
 18      17 Hematopoietic Stem Cell           0.88
-19      18  Muscle Progenitor Cell           0.76
-20      19             Muscle Cell           0.69
+19      18             Muscle Cell           0.69
 ~~~
 
 When we look at our results we can see the cell type score, which gives us an idea of the confidence of that prediction. Not shown here but the full `celltype` table also includes marker genes and PMIDs for relevant literature for each prediction.
@@ -171,13 +169,21 @@ head(geo_so@meta.data)
 Lastly, we can generate a revised UMAP plot with our descriptive cluster labels by using our updated Seurat object and providing the new `cell_type` label for the `group.by` argument:
 
 ```{r, eval=FALSE}
-catch_umap_plot = DimPlot(geo_so, group.by = 'cell_type', label = TRUE, reduction = 'umap.sct.integrated.rpca')
+catch_umap_plot = DimPlot(geo_so, group.by = 'cell_type', label = TRUE, reduction = 'umap.integrated.sct.rpca')
+catch_umap_plot
 
-ggsave(filename = 'ISC_R/results/figures/umap_integrated_catch.png', plot = catch_umap_plot, width = 8, height = 7, units = 'in')
+ggsave(filename = 'results/figures/umap_integrated_catch.png', plot = catch_umap_plot, width = 8, height = 7, units = 'in')
 ```
 
 ![Image: UMAP with cell-type labels.](./images/curriculum/07-CellTypeAnnotation/umap_integrated_catch.png)
 
+# Save our progress
+
+We'll save the scCATCH object. The Seurat object has not been changed in this module.
+
+```{r, eval = FALSE}
+saveRDS(object = geo_catch, file = 'results/rdata/geo_catch.rds')
+```
 
 # Summary
 
