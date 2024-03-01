@@ -173,7 +173,7 @@ DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'day')
 ggsave(filename = 'results/figures/qc_pca_plot_unintegrated_sct_day.png', width = 7, height = 6, units = 'in')
 
 # Heatmaps 
-DimHeatmap(geo_so, dims=1:3, cells=500, balanced=TRUE)
+DimHeatmap(geo_so, dims=1:3, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca')
 
 # note - need to use a more general output function to save the heatmap to file since function above doesn't return a `ggplot` object
 png(filename = 'results/figures/qc_pca_heatmap.png', width = 12, height = 4, units = 'in', res = 300)
@@ -218,10 +218,10 @@ One way to determine how many PCs to include is by looking at an elbow plot, whi
 
 ```{r, eval=FALSE}
 ElbowPlot(geo_so, ndims = 50, reduction = 'unintegrated.sct.pca')
-ggsave(filename = 'results/figures/qc_sct_elbow_plot.png')
+ggsave(filename = 'results/figures/qc_sct_elbow_plot.png', width = 8, height = 8, units = 'in')
 ```
 
-![Image: Elbow plot](./images/curriculum/04-PCAandIntegration/qc_sct_elbow_plot.png){height=250px} <!-- update plot to have better dimensions-->
+![Image: Elbow plot](./images/curriculum/04-PCAandIntegration/qc_sct_elbow_plot.png)
 
 In this plot, we could arbitrarily choose a number along the x-axis that looks like a sharp change in the variance from one PC to the next, that is, an elbow. Of course, the choice is not always obvious, and this plot is no different. We could also try to quantify our choice.
 
@@ -266,7 +266,7 @@ New to Seurat v5 is the improved `IntegrateLayers()` function which makes select
 
 ```{r, eval = FALSE}
 ### DO NOT RUN ###
-geo_so = Integrate Layers(
+geo_so = IntegrateLayers(
   object = geo_so, 
   method = RPCAIntegration, 
   orig.reduction = 'unintegrated.sct.pca',
@@ -274,7 +274,7 @@ geo_so = Integrate Layers(
   new.reduction = 'integrated.sct.rpca')
 ```
 
-The Seurat v5 vignette on integrative analysis ([link](https://satijalab.org/seurat/articles/seurat5_integration#perform-streamlined-one-line-integrative-analysis)) provides examples of each integration method. Note, that the vignette code uses the `NormalizeData() > ScaleData() > FindVariableFeatures()` pipeline, so their `IntegrateLayers()` call does not include `normalization.method = 'SCT'`, as ours must.
+The Seurat v5 vignette on integrative analysis ([link](https://satijalab.org/seurat/articles/seurat5_integration#perform-streamlined-one-line-integrative-analysis)) provides examples of each integration method. Note, that the vignette code uses the `NormalizeData()`, `ScaleData()`, `FindVariableFeatures()` pipeline, so their `IntegrateLayers()` call does not include `normalization.method = 'SCT'`, as ours must.
 
 Note we have specified the unintegrated reduction `unintegrated.sct.pca`, which is what `IntegrateLayers()` operates on, along with the `SCT` assay. Let's take a look to see what's different about the `Seurat` object:
 
@@ -288,16 +288,15 @@ Note we have specified the unintegrated reduction `unintegrated.sct.pca`, which 
 # check our updated object that we've read in from file
 geo_so
 > ```
-> 
-
-~~~
-# An object of class Seurat 
-# 47037 features across 29615 samples within 2 assays 
-# Active assay: SCT (20548 features, 3000 variable features)
-#  3 layers present: counts, data, scale.data
-#  1 other assay present: RNA
-#  2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca
-~~~
+> ~~~
+> An object of class Seurat 
+> 47037 features across 29615 samples within 2 assays 
+> Active assay: SCT (20548 features, 3000 variable features)
+>   3 layers present: counts, data, scale.data
+>   1 other assay present: RNA
+>   2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca
+> ~~~
+>
 
 Observe that we now have a new reduction, `integrated.sct.rpca`, which we will use downstream.
 
@@ -305,7 +304,7 @@ Observe that we now have a new reduction, `integrated.sct.rpca`, which we will u
 We can also confirm that our integration method has helped to correct the `Day` effects we saw in the initial PCA plots
 
 ```{r, eval=FALSE}
-DimPlot(geo_so, reduction = 'integrated.sct.pca', group.by = 'day')
+DimPlot(geo_so, reduction = 'integrated.sct.rpca', group.by = 'day')
 ggsave(filename = 'results/figures/qc_pca_plot_integrated_sct_day.png', width = 7, height = 6, units = 'in')
 ```
 
@@ -324,7 +323,7 @@ saveRDS(object = geo_so, file = 'results/rdata/geo_so_sct_integrated.rds')
 > 
 > ```{r, eval = FALSE}
 > ### DO NOT RUN ###
-> geo_so = Integrate Layers(
+> geo_so = IntegrateLayers(
 >     object = geo_so, 
 >     method = CCAIntegration, 
 >     orig.reduction = 'unintegrated.sct.pca',

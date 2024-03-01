@@ -66,7 +66,7 @@ For cell-level comparisons, simpler statistical methods like a t-test or the Wil
 
 As mentioned earlier, many of the tools developed for bulk RNA-seq have been shown to have good performance for single-cell data, such as EdgeR or DESeq2, particularly when the count data is aggregated into sample-level "pseudobulk" values for each cluster [source](https://www.sc-best-practices.org/conditions/differential_gene_expression.html). 
 
-As discussed in the [single-cell best practices book][https://www.sc-best-practices.org/conditions/differential_gene_expression.html] and in the [Ouyang Lab's marker gene identification materials](https://ouyanglab.com/singlecell/clust.html#sec:diffexpr), there are active benchmarking efforts and threshold considerations for single-cell data.
+As discussed in the [single-cell best practices book](https://www.sc-best-practices.org/conditions/differential_gene_expression.html) and in the [Ouyang Lab's marker gene identification materials](https://ouyanglab.com/singlecell/clust.html#sec:diffexpr), there are active benchmarking efforts and threshold considerations for single-cell data.
 
 <!-- add more in depth model comparisons options later?
 ## Model options
@@ -94,11 +94,11 @@ de_cell_monocytes_D21_vs_D0 = FindMarkers(
 # summarize our results
 table(de_cell_monocytes_D21_vs_D0$p_val_adj < 0.05 & abs(de_cell_monocytes_D21_vs_D0$avg_log2FC) > 1.5)
 
-write_csv(de_cell_monocytes_D21_vs_D0, file = 'ISC_R/results/tables/de_standard_monocytes_D21_vs_D0.csv')
+write_csv(de_cell_monocytes_D21_vs_D0, file = 'results/tables/de_standard_monocytes_D21_vs_D0.csv')
 ```
 ~~~
 FALSE  TRUE 
-10375    15 
+10890    10
 ~~~
 
 Note - the `avg_log2FC` threshold of 1.5 we use here are quite stringent as the default log2FC threshold for the function is 0.25. However the default threshold corresponds to only a 19% difference in RNA levels, which is quite permissive. 
@@ -116,7 +116,7 @@ table(de_cell_monocytes_D7_vs_D0$p_val_adj < 0.05 & abs(de_cell_monocytes_D7_vs_
 ```
 ~~~
 FALSE  TRUE 
-10360   313 
+10571   333
 ~~~
 
 This same approach can be extended to run pairwise comparisons between conditions for each annotated cluster.
@@ -152,18 +152,20 @@ de_pseudo_monocytes_D21_vs_D0 = FindMarkers(
 table(de_pseudo_monocytes_D21_vs_D0$p_val_adj < 0.05 & abs(de_pseudo_monocytes_D21_vs_D0$avg_log2FC) > 1.5)
 
 # output results
-write_csv(de_pseudo_monocytes_D21_vs_D0, file = 'ISC_R/results/tables/de_pseudo_monocytes_D21_vs_D0.csv')
+write_csv(de_pseudo_monocytes_D21_vs_D0, file = 'results/tables/de_pseudo_monocytes_D21_vs_D0.csv')
 ```
 ~~~
 FALSE  TRUE 
-14209    32
+14467    19 
 ~~~
 
 
 Since we're working with pseudobulk data, unlike in the marker identification section, there is no percentage of cells expressing to need to represent so we can summarize our DE results with a volcano plot:
 ```{r, eval=FALSE}
 pseudo_monocytes_D21_vs_D0_volcano = ggplot(de_pseudo_monocytes_D21_vs_D0, aes(x = avg_log2FC, y = -log10(p_val))) + geom_point()
-ggsave(filename = 'ISC_R/results/figures/volcano_de_pseudo_monocytes_D21_vs_D0.png', plot = pseudo_monocytes_D21_vs_D0_volcano, width = 7, height = 7, units = 'in')
+pseudo_monocytes_D21_vs_D0_volcano
+
+ggsave(filename = 'results/figures/volcano_de_pseudo_monocytes_D21_vs_D0.png', plot = pseudo_monocytes_D21_vs_D0_volcano, width = 7, height = 7, units = 'in')
 ```
 
 ![Figure: D21 vs D0 pseudobulk volcano plot](./images/curriculum/08-DifferentialExpression/volcano_de_pseudo_monocytes_D21_vs_D0.png)   
