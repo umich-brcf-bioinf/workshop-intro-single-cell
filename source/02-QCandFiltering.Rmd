@@ -138,6 +138,9 @@ Now that we're satisfied that we have what we want, let's slide this table into 
 ```{r, eval = FALSE}
 geo_so@meta.data = tmp_meta
 head(geo_so@meta.data)
+
+# Set the Idents(geo_so) to the new orig.ident
+Idents(geo_so) = 'orig.ident'
 ```
 ~~~
                                             orig.ident nCount_RNA nFeature_RNA  day  replicate

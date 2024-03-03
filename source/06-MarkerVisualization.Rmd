@@ -90,10 +90,21 @@ geo_so = PrepSCTFindMarkers(geo_so)
 # run comparisons for each cluster to generate markers
 geo_markers = FindAllMarkers(geo_so, only.pos = TRUE)
 
+# Take a look at the first few rows of the result
+head(geo_markers)
+
 # write out full cluster marker results to file
 write_csv(geo_markers, file = 'results/tables/marker_genes_0.4.csv')
 ```
-
+~~~
+        p_val avg_log2FC pct.1 pct.2 p_val_adj cluster    gene
+Col12a1     0   3.941779 0.927 0.141         0       0 Col12a1
+Tnc         0   3.702778 0.848 0.112         0       0     Tnc
+Thbs2       0   3.639909 0.901 0.169         0       0   Thbs2
+Lox         0   2.897164 0.915 0.185         0       0     Lox
+Aebp1       0   2.179345 0.978 0.281         0       0   Aebp1
+Cthrc1      0   3.583623 0.954 0.264         0       0  Cthrc1
+~~~
 
 <!--- Consider adding figure showing example of what's being compared (circle cluster 1 and then circle all other cells for example) -->
 
@@ -115,7 +126,6 @@ top_5_by_log2FC = geo_markers %>% group_by(cluster) %>% arrange(p_val_adj, desc(
 # look at results
 head(top_5_by_log2FC)
 ```
-
 ~~~
 # A tibble: 6 × 7
 # Groups:   cluster [2]
@@ -152,11 +162,11 @@ We'll use the `DotPlot()` [function](https://satijalab.org/seurat/reference/dotp
 # generate plot
 top_5_sct_dot_plot = DotPlot(geo_so, features = unique(top_5_by_log2FC$gene)) + 
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
-    labs(title = 'Top 5 Cluster Genes by FDR and avg_log2FC')
+    labs(title = 'Top 5 Cluster Genes by FDR and avg_log2FC') + coord_flip()
 top_5_sct_dot_plot
 
 # save Dotplot to file
-ggsave(filename = 'results/figures/markers_top_5_sct_dot_plot.png', plot = top_5_sct_dot_plot, width = 12, height = 6, units = 'in') 
+ggsave(filename = 'results/figures/markers_top_5_sct_dot_plot.png', plot = top_5_sct_dot_plot, width = 8, height = 18, units = 'in') 
 ```
 
 In the dotplot we can see that the color indicates the expression of the gene while the size of the dot indicates the proportion of cells expressing that gene in each cluster ([source](https://ouyanglab.com/singlecell/clust.html#visualising-marker-genes)). 
@@ -171,9 +181,9 @@ In the dotplot we can see that the color indicates the expression of the gene wh
 ```{r, eval=FALSE}
 top_5_rna_dot_plot = DotPlot(geo_so, features = unique(top_5_by_log2FC$gene), assay = 'RNA') + 
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
-    labs(title = 'Top 5 Cluster Genes by FDR and avg_log2FC')
+    labs(title = 'Top 5 Cluster Genes by FDR and avg_log2FC') + coord_flip()
 
-ggsave(filename = 'results/figures/markers_top_5_sct_dot_plot.png', plot = top_5_rna_dot_plot, width = 12, height = 6, units = 'in') 
+ggsave(filename = 'results/figures/markers_top_5_rna_dot_plot.png', plot = top_5_rna_dot_plot, width = 8, height = 18, units = 'in') 
 ```
     
 </details>
@@ -197,7 +207,7 @@ fig1h_markers = c('Cxcr2', 'Csf1r', 'Csf3r', 'Tgfbr1', 'Tgfbr3', 'Il1r1', 'Il6ra
 fig1g_sct_dot_plot = DotPlot(geo_so, features = fig1g_markers, assay = 'SCT')
 fig1h_sct_dot_plot = DotPlot(geo_so, features = fig1h_markers, assay = 'SCT')
 
-View(fig1g_sct_dot_plot)
+fig1g_sct_dot_plot
 
 # save plots to file
 ggsave(filename = 'results/figures/markers_fig1g_sct_dot_plot.png', plot = fig1g_sct_dot_plot, width = 8, height = 6, units = 'in')
@@ -205,8 +215,6 @@ ggsave(filename = 'results/figures/markers_fig1h_sct_dot_plot.png', plot = fig1h
 ```
 
 ![](./images/curriculum/06-MarkerIdentAndViz/markers_fig1g_sct_dot_plot.png)
-
-
 
 <details>
     <summary>*Using raw RNA values for genes of interest*</summary>
@@ -233,7 +241,6 @@ Finally, we'll create an output file for our updated Seurat object and for the c
 ```{r, eval=FALSE}
 saveRDS(object = geo_so, file = 'results/rdata/geo_so_sct_integrated_with_markers.rds')
 saveRDS(object = geo_markers, file = 'results/rdata/geo_markers.rds')
-
 ```
 
 # Summary

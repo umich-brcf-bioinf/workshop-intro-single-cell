@@ -157,7 +157,7 @@ The most recent release of `Seurat`, version 5, includes changes which take adva
 
 ```{r, eval = FALSE}
 # This puts the data "on disk" rather than in memory"
-geo_mat = open_matrix_dir(dir = 'inputs/10x_mat_subset')
+geo_mat = open_matrix_dir(dir = 'inputs/10x_mat_filtered')
 ```
 
 This reads in the expression matrix which has genes as rows and cells as columns. The expression matrix is the precursor to creating the `Seurat` object upon which all our analysis will be done. To create the `Seurat` object:
