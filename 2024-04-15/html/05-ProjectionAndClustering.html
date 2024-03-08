@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core" />
+
+<meta name="date" content="2024-03-01" />
+
+<title>Clustering and Projection</title>
+
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<!--
+Favicon dervied from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+    </li>
+    <li>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+    </li>
+    <li>
+      <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
+    </li>
+    <li>
+      <a href="03-Normalization.html">Normalization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
+    </li>
+    <li>
+      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="06-MarkerVisualization.html">Marker identification and visualization</a>
+    </li>
+    <li>
+      <a href="07-CellTypeAnnos.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="08-DifferentialExpression.html">Differential expression analysis</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Clustering and Projection</h1>
+<h4 class="author">UM Bioinformatics Core</h4>
+<h4 class="date">2024-03-01</h4>
+
+</div>
+
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+</style>
+<div id="workflow-overview" class="section level1 unlisted unnumbered">
+<h1 class="unlisted unnumbered">Workflow Overview</h1>
+<p><br/>
+<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<br/> <br/></p>
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<!--- General goal: to generate clusters that reasonably approximate cell-types or sub-types of interest --->
+<p>One of our goals in a single-cell analysis is to generate clusters
+that reasonably approximate cell-types or sub-types of interest in our
+samples before determining if there are differences in the proportions
+of these populations or differences in gene expression within these
+populations between experimental conditions.</p>
+<p>In this section, we will demonstrate how to generate clusters using
+Seurat’s graph based clustering approach and visualize those clustering
+assignments via a lower-dimensional projection of the full dataset.</p>
+<p>Like other steps in our analysis, multiple parameters may need to be
+tested and evaluated while we would expect that only the final would be
+reported. Clustering is considered part of data exploration so an
+iterative approach is reasonable, and often expected (<a
+href="https://bioconductor.org/books/3.15/OSCA.basic/clustering.html">source</a>).</p>
+<div id="objectives" class="section level2">
+<h2>Objectives</h2>
+<ul>
+<li>Understand the clustering process and input parameters</li>
+<li>Generate initial clusters and visualize the results</li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="clustering-and-projection" class="section level1">
+<h1>Clustering and projection</h1>
+<p>An important aspect of parameter selection for clustering is to
+understand the “resolution” of the underlying biology and your
+experimental design. Is answering your biological question dependent on
+identifying rarer cell types or specific subtypes? Or are broader
+cell-types more relevant to address your biological question?</p>
+<p>The OSCA book has a <a
+href="https://bioconductor.org/books/3.15/OSCA.basic/clustering.html#overview-1">helpful
+analogy comparing clustering to microscopy</a> and points out that
+“asking for an unqualified ‘best’ clustering is akin to asking for the
+best magnification on a microscope without any context”.</p>
+<p>We’ve already selected a number of PCs that we think are likely to
+represent biological variation in our data while excluding technical
+variability. Next, we’ll need to determine the “community” of cells
+based on the selected PCs before selecting a resolution to divide those
+communities into discrete clusters.</p>
+<!--- Contrast the previous dimensionality reduction versus nearest neighbors clustering and plotting the cells in lower dimensionality with the cluster labels? --->
+<div id="clustering" class="section level2">
+<h2>Clustering</h2>
+<p>Seurat uses a graph-based clustering approach to assign cells to
+clusters using a distance metric based on the previously generated PCs,
+with improvements based on work by (<a
+href="https://academic.oup.com/bioinformatics/article/31/12/1974/214505">Xu
+and Su 2015</a>) and CyTOF data (<a
+href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4508757/">Levine et
+al. 2015</a>) implemented in Seurat v3 and v5 and building on the
+initial strategies for droplet-based single-cell technology (<a
+href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4481139/">Macosko et
+al. 2015</a>) (<a
+href="https://satijalab.org/seurat/articles/pbmc3k_tutorial.html">source</a>).
+A key aspect of this process is that while the clusters are based on
+similarity of expression between the cells, the clustering is based on
+the selected PCs and therefore limited to the genes contributing to
+those PCs.</p>
+<div class="float">
+<img
+src="images/curriculum/05-ProjectionAndClustering/BioCellGene-NearestNeighborNetworks.png"
+alt="Image: kNN example - section on graph based clustering (from Cambridge Bioinformatics course)" />
+<div class="figcaption">Image: kNN example - section on graph based
+clustering (from Cambridge Bioinformatics course)</div>
+</div>
+<p>To briefly summarize, cells are embedded in a k-nearest neighbors
+(kNN) graph (illustrated above) based on “the euclidean distance in PCA
+space” between the cells and the edge weights between any two cells
+(e.g. their “closeness”) is refined based on Jaccard similarity (<a
+href="https://hbctraining.github.io/scRNA-seq_online/lessons/07_SC_clustering_cells_SCT.html">source</a>).</p>
+<details>
+<summary>
+<em>Additional context and sources for graph-based clustering</em>
+</summary>
+<a
+href="https://biocellgen-public.svi.edu.au/mig_2019_scrnaseq-workshop/clustering-and-cell-annotation.html">Cambridge
+Bioinformatics’ Analysis of single cell RNA-seq data course
+materials</a>, the source of the image above, delves into kNN and other
+graph based clustering methods in much greater detail, including
+outlining possible downsides for these methods. To described kNN, we
+have also drawn from the <a
+href="https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction">Ho
+Lab’s description of this process for Seurat v3</a> as well as the <a
+href="https://hbctraining.github.io/scRNA-seq_online/lessons/07_SC_clustering_cells_SCT.html">HBC
+materials on clustering</a> and the <a
+href="https://bioconductor.org/books/3.15/OSCA.basic/clustering.html#clustering-graph">OSCA
+book’s more general overview of graph based clustering</a>, which also
+describes the drawbacks for these methods.
+</details>
+<p><br></p>
+<p>This process is performed with the <code>FindNeighbors()</code> <a
+href="https://satijalab.org/seurat/reference/findneighbors">command</a>,
+using the number of principal components we selected in the previous
+section.</p>
+<pre class="r"><code>geo_so = FindNeighbors(geo_so, dims = 1:pcs, reduction = &#39;integrated.sct.rpca&#39;)</code></pre>
+<p>The second step is to iteratively partition the kNN graph into
+“cliques” or clusters using the Louvain modularity optimization
+algorithm (for the default parameters), with the “granularity” of the
+clusters set by a <code>resolution</code> parameter (<a
+href="https://satijalab.org/seurat/articles/pbmc3k_tutorial.html">source</a>).</p>
+<div class="float">
+<img
+src="images/curriculum/05-ProjectionAndClustering/HBC-07-k-meansFigure.png"
+alt="Image: K-means clustering example (from Cambridge Bioinformatics course)" />
+<div class="figcaption">Image: K-means clustering example (from
+Cambridge Bioinformatics course)</div>
+</div>
+<p>We’ll use the <code>FindClusters()</code> <a
+href="https://satijalab.org/seurat/reference/findclusters">function</a>,
+selecting a resolution of <code>0.4</code> to start, although we could
+also add other resolutions at this stage to look at in later steps. See
+<a
+href="https://link.springer.com/article/10.1140/epjb/e2013-40829-0">Waltman
+and Jan van Eck (2013)</a> for the underlying algorithms.</p>
+<p>Again, how a “cell type” or “subtype” should be defined for your data
+is helpful to consider in selecting a resolution - we’d start with a
+higher resolution for smaller/more rare clusters and a lower resolution
+for larger/more general clusters.</p>
+<p>And then iff we look at the meta data we can see that cluster labels
+have now been added for each cell:</p>
+<pre class="r"><code># generate clusters
+geo_so = FindClusters(geo_so, resolution = 0.4, cluster.name = &#39;integrated.sct.rpca.clusters&#39;)
+
+# look at meta.data to see cluster labels
+head(geo_so@meta.data)</code></pre>
+<p>Generally it’s preferable to err on the side of too many clusters, as
+they can be combined manually in later steps. In our experience, this is
+another parameter that may need to be iteratively revised and
+reviewed.</p>
+<details>
+<summary>
+<em>Resolution parameter recommendations</em>
+</summary>
+The <a
+href="https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction">Seurat
+clustering tutorial</a> recommends selecting a resolution between 0.4 -
+1.2 for datasets of approximately 3k cells, while the <a
+href="https://hbctraining.github.io/scRNA-seq_online/lessons/07_SC_clustering_cells_SCT.html">HBC
+course</a> recommends 0.4-1.4 for 3k-5k cells. However, in our
+experience reasonable starting resolutions can be very dataset
+dependent.
+</details>
+<p><br></p>
+<pre><code>                                            orig.ident nCount_RNA nFeature_RNA  day  replicate percent.mt nCount_SCT nFeature_SCT integrated.sct.rpca.clusters seurat_clusters
+HODay0replicate1_AAACCTGAGAGAACAG-1 HO.Day0.replicate1      10234         3226 Day0 replicate1   1.240962       6061         2865                            1               1
+HODay0replicate1_AAACCTGGTCATGCAT-1 HO.Day0.replicate1       3158         1499 Day0 replicate1   7.536415       4625         1510                            1               1
+HODay0replicate1_AAACCTGTCAGAGCTT-1 HO.Day0.replicate1      13464         4102 Day0 replicate1   3.112002       5426         2485                            5               5
+HODay0replicate1_AAACGGGAGGCCCGTT-1 HO.Day0.replicate1       1189          629 Day0 replicate1   3.700589       4165          919                            1               1
+HODay0replicate1_AAACGGGCAACTGGCC-1 HO.Day0.replicate1       7726         2602 Day0 replicate1   2.938131       5858         2585                            1               1
+HODay0replicate1_AAACGGGGTCCGAATT-1 HO.Day0.replicate1       5165         2362 Day0 replicate1   9.196515       5162         2348                            8               8</code></pre>
+</div>
+</div>
+<div id="cluster-plots" class="section level1">
+<h1>Cluster plots</h1>
+<p>To visualize the cell clusters, we can use dimensionality reduction
+techniques to visualize and explore our large, high-dimensional dataset.
+Two popular methods that are supported by Seurat are t-distributed
+stochastic neighbor embedding (t-SNE) and Uniform Manifold Approximation
+and Projection (UMAP) techniques. These techniques allow us to visualize
+our high-dimensional single-cell data in 2D space and see if cells
+grouped together within graph-based clusters co-localize in these
+representations (<a
+href="https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#run-non-linear-dimensional-reduction-umaptsne">source</a>).</p>
+<p>While we unfortunately don’t have time to compare and contrast tSNE,
+and UMAP, we would highly recommend <a
+href="https://pair-code.github.io/understanding-umap/">this blog post
+contrasting tSNE and UMAP</a> for illustrative examples. The Seurat
+authors additionally caution that while these methods are useful for
+data exploration, to avoid drawing biological conclusions solely based
+on these visualizations (<a
+href="https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#run-non-linear-dimensional-reduction-umaptsne">source</a>).</p>
+<p>To start this process, we’ll use the <code>RunUMAP()</code> <a
+href="https://satijalab.org/seurat/reference/runumap">function</a> to
+calculate the UMAP reduction for our data. Notice how the previous
+dimensionality choices carry through the downstream analysis and that
+the number of PCs selected in the previous steps are included as an
+argument.</p>
+<pre class="r"><code>geo_so = RunUMAP(geo_so, dims = 1:pcs, reduction = &#39;integrated.sct.rpca&#39;, reduction.name = &#39;umap.integrated.sct.rpca&#39;)
+geo_so</code></pre>
+<pre><code>An object of class Seurat 
+47037 features across 29615 samples within 2 assays 
+Active assay: SCT (20548 features, 3000 variable features)
+ 3 layers present: counts, data, scale.data
+ 1 other assay present: RNA
+ 3 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca, umap.integrated.sct.rpca</code></pre>
+<p>Notice that we now have a third reduction:
+<code>umap.integrated.sct.rpca</code>.</p>
+</div>
+<div id="visualizing-and-evaluating-clustering" class="section level1">
+<h1>Visualizing and evaluating clustering</h1>
+<!--- How many clusters should I get and how do I adjust the number? --->
+<!--- Add example of changing resolution?--->
+<p>After we generate the UMAP reduction, we can then visualize the
+results using the <code>DimPlot()</code> <a
+href="https://satijalab.org/seurat/reference/dimplot">function</a>,
+labeling our plot by the auto generated <code>seurat_clusters</code>
+that correspond to the most recent clustering results generated.</p>
+<p>At this stage, we want to determine if the clusters look fairly well
+separated, if they seem to correspond to how cells are grouped in the
+UMAP, and if the number of clusters are aligned with the resolution of
+our biological question.</p>
+<p>We can also look at the same UMAP labeled by <code>day</code> to
+visually inspect if the UMAP structure corresponds to the
+<code>day</code>.</p>
+<pre class="r"><code># UMAP with cluster ID labels
+post_integration_umap_plot_clusters = DimPlot(geo_so, group.by = &#39;seurat_clusters&#39;, label = TRUE, reduction = &#39;umap.integrated.sct.rpca&#39;) + NoLegend()
+post_integration_umap_plot_clusters
+
+ggsave(filename = &#39;results/figures/umap_integrated_sct_clusters.png&#39;, plot = post_integration_umap_plot_clusters, width = 6, height = 6, units = &#39;in&#39;)
+
+# UMAP with day labels (note - we added this column to the meta-data yesterday)
+post_integration_umap_plot_day = DimPlot(geo_so, group.by = &#39;day&#39;, label = FALSE, reduction = &#39;umap.integrated.sct.rpca&#39;)
+post_integration_umap_plot_day
+
+ggsave(filename = &#39;results/figures/umap_integrated_sct_day.png&#39;, plot = post_integration_umap_plot_day, width = 8, height = 6, units = &#39;in&#39;)</code></pre>
+<p><img
+src="images/curriculum/05-ProjectionAndClustering/umap_integrated_sct_clusters.png" />
+<br></p>
+<p><img
+src="images/curriculum/05-ProjectionAndClustering/umap_integrated_sct_day.png" />
+<br></p>
+<p>A plot like this can tell us if technical sources of variation might
+be driving or stratifying the clusters, or if we see good correction
+after the normalization and integration steps.</p>
+<p>Another approach is to evaluate the number of cells per cluster using
+the <code>table()</code> function, split by <code>day</code> or split by
+<code>orig.ident</code> to see if the individual samples are driving any
+of the UMAP structure:</p>
+<pre class="r"><code># table of number of cells per cluster, split by condition
+table(geo_so@meta.data$day, geo_so@meta.data$integrated.sct.rpca.clusters)
+
+# table of number of cells per cluster per sample
+table(geo_so@meta.data$orig.ident, geo_so@meta.data$integrated.sct.rpca.clusters)</code></pre>
+<pre><code>           0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18
+  Day0    88  938  239  167   38  242   36   94  814  132  119  298   55   29  159  133   57  141   19
+  Day7  3434 1138 2507 2022 2409 1330 1594  935  119  546  562  325  626  659  309   98  262   88   36
+  Day21 1438 1138  368  463  141  482   81  430  402  500  375  201  108   69   42  256  117  195   12</code></pre>
+<pre><code>                       0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18
+HO.Day0.replicate1    20  278   82   52   17   69   15   18  209   33   32   82   17   11   47   20    5   35    7
+HO.Day0.replicate2    13  127   37   33    5   23    6   24  162   27   20   56    8    6   13   25   13   16    1
+HO.Day0.replicate3    34  331   72   46    3   91    5   18  238   40   38   84   16    5   58   40   16   54    2
+HO.Day0.replicate4    21  202   48   36   13   59   10   34  205   32   29   76   14    7   41   48   23   36    9
+HO.Day7.replicate1   472  309  590  501  769  358  755  155   49  113  190   67  167  212   63   41   72   28   17
+HO.Day7.replicate2  1219  219  615  574  486  280  218  378   10  157  132  105  180  150   86   19   88   13    3
+HO.Day7.replicate3   957  457  727  531  407  465   90  243   50  177  145   90  163  152   93   27   72   37   14
+HO.Day7.replicate4   786  153  575  416  747  227  531  159   10   99   95   63  116  145   67   11   30   10    2
+HO.Day21.replicate1  369  363   99  145   38  172   30  134  119  145  110   63   35   14   13   66   26   56    3
+HO.Day21.replicate2  189  218   74   82   21   57   12   97  123   79   46   36   15   14    6   51   28   29    5
+HO.Day21.replicate3  203  187   73   91   25   67    8   61  102   90   68   31   16   20    7   55   20   39    3
+HO.Day21.replicate4  677  370  122  145   57  186   31  138   58  186  151   71   42   21   16   84   43   71    1</code></pre>
+<!-- consider adding later 
+Add DimPlot for % mitochondria to see if high % are across dataset or limited to one/few clusters (related to what Olivia talked about during Day 1)
+
+# Other approaches for visualizing scRNA-sq data
+e.g. code for tSNE visualization 
+-->
+</div>
+<div id="comparing-to-unintegrated-data" class="section level1">
+<h1>Comparing to unintegrated data</h1>
+<p>If we had proceeded with our filtered data and only normalized our
+data without doing any integration, including through the dimensionality
+reduction and clustering steps and then labeled the cells with their
+sample of origin, then we would see the following for our data:</p>
+<!--Add example of UMAP / sample labels for unintegrated data from analysis folder to images-->
+<p><img
+src="images/curriculum/05-ProjectionAndClustering/umap_comparison_sct.png" /></p>
+<p>If we instead labeled our plot by <code>day</code>, then we would
+see:</p>
+<p><img
+src="images/curriculum/05-ProjectionAndClustering/umap_unintegrated_sct_day.png" /></p>
+<p>In this plot, we see that while there are distinct clusters, those
+clusters seem to stratified by day. This suggests that without
+integration, these batch effects could skew the biological variability
+in our data. We can also directly compare between integrated and
+unintegrated</p>
+<!-- Edit section to incorporate --->
+<details>
+<summary>
+<strong>Rewind: Pre-integration evaluation clustering and visualization
+(code)</strong>
+</summary>
+<p>Prior to integration, could follow the same steps we’ve just run for
+the integrated to see if the resulting clusters tend to be determined by
+sample or condition (in this case, the day):</p>
+<pre class="r"><code>geo_so = FindNeighbors(geo_so, dims = 1:pcs, assay = &#39;RNA&#39;, reduction = &#39;unintegrated.sct.pca&#39;, graph.name = c(&#39;RNA_nn&#39;, &#39;RNA_snn&#39;))
+geo_so = FindClusters(geo_so, resolution = 0.4, graph.name = &#39;RNA_snn&#39;, cluster.name = &#39;unintegrated.sct.clusters&#39;)
+geo_so = RunUMAP(geo_so, dims = 1:pcs, reduction = &#39;unintegrated.sct.pca&#39;, reduction.name = &#39;umap.unintegrated.sct.pca&#39;)</code></pre>
+<p>The plots above were generated with:</p>
+<pre class="r"><code>pre_integration_umap_plot_orig.ident = DimPlot(geo_so, group.by = &#39;orig.ident&#39;, label = FALSE, reduction = &#39;umap.unintegrated.sct.pca&#39;)
+ggsave(filename = &#39;results/figures/umap_unintegrated_sct_orig.ident.png&#39;, plot = pre_integration_umap_plot_orig.ident, width = 8, height = 6, units = &#39;in&#39;)</code></pre>
+<pre class="r"><code>pre_integration_umap_plot_day = DimPlot(geo_so, group.by = &#39;day&#39;, label = FALSE, reduction = &#39;umap.unintegrated.sct.pca&#39;)
+ggsave(filename = &#39;results/figures/umap_unintegrated_sct_day.png&#39;, plot = pre_integration_umap_plot_day, width = 8, height = 6, units = &#39;in&#39;)</code></pre>
+</details>
+<p><br> <br></p>
+<details>
+<summary>
+<strong>Alternative clustering resolutions</strong>
+</summary>
+<p>While we show a single resolution, we can generate and plot multiple
+resolutions iteratively and compare between them before selecting a
+clustering result for the next steps:</p>
+<pre class="r"><code>resolutions = c(0.4, 0.8)
+
+for(res in resolutions) {
+    message(res)
+
+    cluster_column = sprintf(&#39;SCT_snn_res.%s&#39;, res)
+    umap_file = sprintf(&#39;results/figures/umap_integrated_sct_%s.png&#39;, res)
+
+    geo_so = FindClusters(geo_so, resolution = res)
+
+    DimPlot(geo_so, group.by = cluster_column, label = TRUE, reduction = &#39;umap.integrated.sct.rpca&#39;) + NoLegend()
+    ggsave(filename = umap_file, width = 8, height = 7, units = &#39;in&#39;)
+}</code></pre>
+<p>If we look at the results:</p>
+<pre class="r"><code>head(geo_so@meta.data)</code></pre>
+… multiple resolutions should now be added to the metadata slot.
+</details>
+<p><br> <br></p>
+</div>
+<div id="save-our-progress" class="section level1">
+<h1>Save our progress</h1>
+<p>Before moving on to our next section, we will output our updated
+Seurat object to file:</p>
+<pre class="r"><code>saveRDS(object = geo_so, file = &#39;results/rdata/geo_so_sct_clustered.rds&#39;)</code></pre>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>In this section we:</p>
+<ul>
+<li>Generated cluster assignments for our cells using
+<code>FindNeighbors()</code> and <code>FindClusters()</code></li>
+<li>Evaluated our initial clusters using <code>RunUMAP</code>
+dimensional reduction and visualization</li>
+</ul>
+<p>Next steps: Marker genes</p>
+<hr />
+<p>These materials have been adapted and extended from materials listed
+above. These are open access materials distributed under the terms of
+the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
+Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
+use, distribution, and reproduction in any medium, provided the original
+author and source are credited.</p>
+<br/> <br/>
+<hr/>
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="04-PCAandIntegration.html">Previous
+lesson</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="06-MarkerVisualization.html">Next
+lesson</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiQ2x1c3RlcmluZyBhbmQgUHJvamVjdGlvbiIKYXV0aG9yOiAiVU0gQmlvaW5mb3JtYXRpY3MgQ29yZSIKZGF0ZTogImByIFN5cy5EYXRlKClgIgpvdXRwdXQ6CiAgICAgICAgaHRtbF9kb2N1bWVudDoKICAgICAgICAgICAgaW5jbHVkZXM6CiAgICAgICAgICAgICAgICBpbl9oZWFkZXI6IGhlYWRlci5odG1sCiAgICAgICAgICAgIHRoZW1lOiBwYXBlcgogICAgICAgICAgICB0b2M6IHRydWUKICAgICAgICAgICAgdG9jX2RlcHRoOiA0CiAgICAgICAgICAgIHRvY19mbG9hdDogdHJ1ZQogICAgICAgICAgICBudW1iZXJfc2VjdGlvbnM6IGZhbHNlCiAgICAgICAgICAgIGZpZ19jYXB0aW9uOiB0cnVlCiAgICAgICAgICAgIG1hcmtkb3duOiBHRk0KICAgICAgICAgICAgY29kZV9kb3dubG9hZDogdHJ1ZQotLS0KCjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+CmJvZHksIHRkIHsKICAgZm9udC1zaXplOiAxOHB4Owp9CmNvZGUucnsKICBmb250LXNpemU6IDEycHg7Cn0KcHJlIHsKICBmb250LXNpemU6IDEycHgKfQo8L3N0eWxlPgoKYGBge3IsIGluY2x1ZGUgPSBGQUxTRX0Kc291cmNlKCIuLi9iaW4vY2h1bmstb3B0aW9ucy5SIikKa25pdHJfZmlnX3BhdGgoIlhYIikKYGBgCgojIFdvcmtmbG93IE92ZXJ2aWV3IHsudW5saXN0ZWQgLnVubnVtYmVyZWR9Cgo8YnIvPgo8aW1nIHNyYz0iaW1hZ2VzL3dheWZpbmRlci93YXlmaW5kZXIucG5nIiBhbHQ9IndheWZpbmRlciIgc3R5bGU9ImhlaWdodDogNDAwcHg7Ii8+Cjxici8+Cjxici8+CgojIEludHJvZHVjdGlvbgoKPCEtLS0gR2VuZXJhbCBnb2FsOiB0byBnZW5lcmF0ZSBjbHVzdGVycyB0aGF0IHJlYXNvbmFibHkgYXBwcm94aW1hdGUgY2VsbC10eXBlcyBvciBzdWItdHlwZXMgb2YgaW50ZXJlc3QgLS0tPgpPbmUgb2Ygb3VyIGdvYWxzIGluIGEgc2luZ2xlLWNlbGwgYW5hbHlzaXMgaXMgdG8gZ2VuZXJhdGUgY2x1c3RlcnMgdGhhdCByZWFzb25hYmx5IGFwcHJveGltYXRlIGNlbGwtdHlwZXMgb3Igc3ViLXR5cGVzIG9mIGludGVyZXN0IGluIG91ciBzYW1wbGVzIGJlZm9yZSBkZXRlcm1pbmluZyBpZiB0aGVyZSBhcmUgZGlmZmVyZW5jZXMgaW4gdGhlIHByb3BvcnRpb25zIG9mIHRoZXNlIHBvcHVsYXRpb25zIG9yIGRpZmZlcmVuY2VzIGluIGdlbmUgZXhwcmVzc2lvbiB3aXRoaW4gdGhlc2UgcG9wdWxhdGlvbnMgYmV0d2VlbiBleHBlcmltZW50YWwgY29uZGl0aW9ucy4KCgpJbiB0aGlzIHNlY3Rpb24sIHdlIHdpbGwgZGVtb25zdHJhdGUgaG93IHRvIGdlbmVyYXRlIGNsdXN0ZXJzIHVzaW5nIFNldXJhdCdzIGdyYXBoIGJhc2VkIGNsdXN0ZXJpbmcgYXBwcm9hY2ggYW5kIHZpc3VhbGl6ZSB0aG9zZSBjbHVzdGVyaW5nIGFzc2lnbm1lbnRzIHZpYSBhIGxvd2VyLWRpbWVuc2lvbmFsIHByb2plY3Rpb24gb2YgdGhlIGZ1bGwgZGF0YXNldC4KCkxpa2Ugb3RoZXIgc3RlcHMgaW4gb3VyIGFuYWx5c2lzLCBtdWx0aXBsZSBwYXJhbWV0ZXJzIG1heSBuZWVkIHRvIGJlIHRlc3RlZCBhbmQgZXZhbHVhdGVkIHdoaWxlIHdlIHdvdWxkIGV4cGVjdCB0aGF0IG9ubHkgdGhlIGZpbmFsIHdvdWxkIGJlIHJlcG9ydGVkLiBDbHVzdGVyaW5nIGlzIGNvbnNpZGVyZWQgcGFydCBvZiBkYXRhIGV4cGxvcmF0aW9uIHNvIGFuIGl0ZXJhdGl2ZSBhcHByb2FjaCBpcyByZWFzb25hYmxlLCBhbmQgb2Z0ZW4gZXhwZWN0ZWQgKFtzb3VyY2VdKGh0dHBzOi8vYmlvY29uZHVjdG9yLm9yZy9ib29rcy8zLjE1L09TQ0EuYmFzaWMvY2x1c3RlcmluZy5odG1sKSkuIAoKCiMjIE9iamVjdGl2ZXMKCi0gVW5kZXJzdGFuZCB0aGUgY2x1c3RlcmluZyBwcm9jZXNzIGFuZCBpbnB1dCBwYXJhbWV0ZXJzCi0gR2VuZXJhdGUgaW5pdGlhbCBjbHVzdGVycyBhbmQgdmlzdWFsaXplIHRoZSByZXN1bHRzCgotLS0KCgojIENsdXN0ZXJpbmcgYW5kIHByb2plY3Rpb24KCgpBbiBpbXBvcnRhbnQgYXNwZWN0IG9mIHBhcmFtZXRlciBzZWxlY3Rpb24gZm9yIGNsdXN0ZXJpbmcgaXMgdG8gdW5kZXJzdGFuZCB0aGUgInJlc29sdXRpb24iIG9mIHRoZSB1bmRlcmx5aW5nIGJpb2xvZ3kgYW5kIHlvdXIgZXhwZXJpbWVudGFsIGRlc2lnbi4gSXMgYW5zd2VyaW5nIHlvdXIgYmlvbG9naWNhbCBxdWVzdGlvbiBkZXBlbmRlbnQgb24gaWRlbnRpZnlpbmcgcmFyZXIgY2VsbCB0eXBlcyBvciBzcGVjaWZpYyBzdWJ0eXBlcz8gT3IgYXJlIGJyb2FkZXIgY2VsbC10eXBlcyBtb3JlIHJlbGV2YW50IHRvIGFkZHJlc3MgeW91ciBiaW9sb2dpY2FsIHF1ZXN0aW9uPwoKVGhlIE9TQ0EgYm9vayBoYXMgYSBbaGVscGZ1bCBhbmFsb2d5IGNvbXBhcmluZyBjbHVzdGVyaW5nIHRvIG1pY3Jvc2NvcHldKGh0dHBzOi8vYmlvY29uZHVjdG9yLm9yZy9ib29rcy8zLjE1L09TQ0EuYmFzaWMvY2x1c3RlcmluZy5odG1sI292ZXJ2aWV3LTEpIGFuZCBwb2ludHMgb3V0IHRoYXQgImFza2luZyBmb3IgYW4gdW5xdWFsaWZpZWQgJ2Jlc3QnIGNsdXN0ZXJpbmcgaXMgYWtpbiB0byBhc2tpbmcgZm9yIHRoZSBiZXN0IG1hZ25pZmljYXRpb24gb24gYSBtaWNyb3Njb3BlIHdpdGhvdXQgYW55IGNvbnRleHQiLiAKCldlJ3ZlIGFscmVhZHkgc2VsZWN0ZWQgYSBudW1iZXIgb2YgUENzIHRoYXQgd2UgdGhpbmsgYXJlIGxpa2VseSB0byByZXByZXNlbnQgYmlvbG9naWNhbCB2YXJpYXRpb24gaW4gb3VyIGRhdGEgd2hpbGUgZXhjbHVkaW5nIHRlY2huaWNhbCB2YXJpYWJpbGl0eS4gTmV4dCwgd2UnbGwgbmVlZCB0byBkZXRlcm1pbmUgdGhlICJjb21tdW5pdHkiIG9mIGNlbGxzIGJhc2VkIG9uIHRoZSBzZWxlY3RlZCBQQ3MgYmVmb3JlIHNlbGVjdGluZyBhIHJlc29sdXRpb24gdG8gZGl2aWRlIHRob3NlIGNvbW11bml0aWVzIGludG8gZGlzY3JldGUgY2x1c3RlcnMuCgo8IS0tLSBDb250cmFzdCB0aGUgcHJldmlvdXMgZGltZW5zaW9uYWxpdHkgcmVkdWN0aW9uIHZlcnN1cyBuZWFyZXN0IG5laWdoYm9ycyBjbHVzdGVyaW5nIGFuZCBwbG90dGluZyB0aGUgY2VsbHMgaW4gbG93ZXIgZGltZW5zaW9uYWxpdHkgd2l0aCB0aGUgY2x1c3RlciBsYWJlbHM/IC0tLT4KCgojIyBDbHVzdGVyaW5nCgpTZXVyYXQgdXNlcyBhIGdyYXBoLWJhc2VkIGNsdXN0ZXJpbmcgYXBwcm9hY2ggdG8gYXNzaWduIGNlbGxzIHRvIGNsdXN0ZXJzIHVzaW5nIGEgZGlzdGFuY2UgbWV0cmljIGJhc2VkIG9uIHRoZSBwcmV2aW91c2x5IGdlbmVyYXRlZCBQQ3MsIHdpdGggaW1wcm92ZW1lbnRzIGJhc2VkIG9uIHdvcmsgYnkgKFtYdSBhbmQgU3UgMjAxNV0oaHR0cHM6Ly9hY2FkZW1pYy5vdXAuY29tL2Jpb2luZm9ybWF0aWNzL2FydGljbGUvMzEvMTIvMTk3NC8yMTQ1MDUpKSBhbmQgQ3lUT0YgZGF0YSAoW0xldmluZSBldCBhbC4gMjAxNV0oaHR0cHM6Ly93d3cubmNiaS5ubG0ubmloLmdvdi9wbWMvYXJ0aWNsZXMvUE1DNDUwODc1Ny8pKSBpbXBsZW1lbnRlZCBpbiBTZXVyYXQgdjMgYW5kIHY1IGFuZCBidWlsZGluZyBvbiB0aGUgaW5pdGlhbCBzdHJhdGVnaWVzIGZvciBkcm9wbGV0LWJhc2VkIHNpbmdsZS1jZWxsIHRlY2hub2xvZ3kgKFtNYWNvc2tvIGV0IGFsLiAyMDE1XShodHRwczovL3d3dy5uY2JpLm5sbS5uaWguZ292L3BtYy9hcnRpY2xlcy9QTUM0NDgxMTM5LykpICAoW3NvdXJjZV0oaHR0cHM6Ly9zYXRpamFsYWIub3JnL3NldXJhdC9hcnRpY2xlcy9wYm1jM2tfdHV0b3JpYWwuaHRtbCkpLiBBIGtleSBhc3BlY3Qgb2YgdGhpcyBwcm9jZXNzIGlzIHRoYXQgd2hpbGUgdGhlIGNsdXN0ZXJzIGFyZSBiYXNlZCBvbiBzaW1pbGFyaXR5IG9mIGV4cHJlc3Npb24gYmV0d2VlbiB0aGUgY2VsbHMsIHRoZSBjbHVzdGVyaW5nIGlzIGJhc2VkIG9uIHRoZSBzZWxlY3RlZCBQQ3MgYW5kIHRoZXJlZm9yZSBsaW1pdGVkIHRvIHRoZSBnZW5lcyBjb250cmlidXRpbmcgdG8gdGhvc2UgUENzLiAKCgohW0ltYWdlOiBrTk4gZXhhbXBsZSAtIHNlY3Rpb24gb24gZ3JhcGggYmFzZWQgY2x1c3RlcmluZyAoZnJvbSBDYW1icmlkZ2UgQmlvaW5mb3JtYXRpY3MgY291cnNlKV0oLi9pbWFnZXMvY3VycmljdWx1bS8wNS1Qcm9qZWN0aW9uQW5kQ2x1c3RlcmluZy9CaW9DZWxsR2VuZS1OZWFyZXN0TmVpZ2hib3JOZXR3b3Jrcy5wbmcpCgpUbyBicmllZmx5IHN1bW1hcml6ZSwgY2VsbHMgYXJlIGVtYmVkZGVkIGluIGEgay1uZWFyZXN0IG5laWdoYm9ycyAoa05OKSBncmFwaCAoaWxsdXN0cmF0ZWQgYWJvdmUpIGJhc2VkIG9uICJ0aGUgZXVjbGlkZWFuIGRpc3RhbmNlIGluIFBDQSBzcGFjZSIgYmV0d2VlbiB0aGUgY2VsbHMgYW5kIHRoZSBlZGdlIHdlaWdodHMgYmV0d2VlbiBhbnkgdHdvIGNlbGxzIChlLmcuIHRoZWlyICJjbG9zZW5lc3MiKSBpcyByZWZpbmVkIGJhc2VkIG9uIEphY2NhcmQgc2ltaWxhcml0eSAoW3NvdXJjZV0oaHR0cHM6Ly9oYmN0cmFpbmluZy5naXRodWIuaW8vc2NSTkEtc2VxX29ubGluZS9sZXNzb25zLzA3X1NDX2NsdXN0ZXJpbmdfY2VsbHNfU0NULmh0bWwpKS4KCjxkZXRhaWxzPgogICAgPHN1bW1hcnk+KkFkZGl0aW9uYWwgY29udGV4dCBhbmQgc291cmNlcyBmb3IgZ3JhcGgtYmFzZWQgY2x1c3RlcmluZyo8L3N1bW1hcnk+CiAgICBbQ2FtYnJpZGdlIEJpb2luZm9ybWF0aWNzJyBBbmFseXNpcyBvZiBzaW5nbGUgY2VsbCBSTkEtc2VxIGRhdGEgY291cnNlIG1hdGVyaWFsc10oaHR0cHM6Ly9iaW9jZWxsZ2VuLXB1YmxpYy5zdmkuZWR1LmF1L21pZ18yMDE5X3Njcm5hc2VxLXdvcmtzaG9wL2NsdXN0ZXJpbmctYW5kLWNlbGwtYW5ub3RhdGlvbi5odG1sKSwgdGhlIHNvdXJjZSBvZiB0aGUgaW1hZ2UgYWJvdmUsIGRlbHZlcyBpbnRvIGtOTiBhbmQgb3RoZXIgZ3JhcGggYmFzZWQgY2x1c3RlcmluZyBtZXRob2RzIGluIG11Y2ggZ3JlYXRlciBkZXRhaWwsIGluY2x1ZGluZyBvdXRsaW5pbmcgcG9zc2libGUgZG93bnNpZGVzIGZvciB0aGVzZSBtZXRob2RzLiAKICAgICBUbyBkZXNjcmliZWQga05OLCB3ZSBoYXZlIGFsc28gZHJhd24gZnJvbSB0aGUgW0hvIExhYidzIGRlc2NyaXB0aW9uIG9mIHRoaXMgcHJvY2VzcyBmb3IgU2V1cmF0IHYzXShodHRwczovL2hvbGFiLWhrdS5naXRodWIuaW8vRnVuZGFtZW50YWwtc2NSTkEvZG93bnN0cmVhbS5odG1sI3BlcmZvcm0tbGluZWFyLWRpbWVuc2lvbmFsLXJlZHVjdGlvbikgYXMgd2VsbCBhcyB0aGUgW0hCQyBtYXRlcmlhbHMgb24gY2x1c3RlcmluZ10oaHR0cHM6Ly9oYmN0cmFpbmluZy5naXRodWIuaW8vc2NSTkEtc2VxX29ubGluZS9sZXNzb25zLzA3X1NDX2NsdXN0ZXJpbmdfY2VsbHNfU0NULmh0bWwpIGFuZCB0aGUgW09TQ0EgYm9vaydzIG1vcmUgZ2VuZXJhbCBvdmVydmlldyBvZiBncmFwaCBiYXNlZCBjbHVzdGVyaW5nXShodHRwczovL2Jpb2NvbmR1Y3Rvci5vcmcvYm9va3MvMy4xNS9PU0NBLmJhc2ljL2NsdXN0ZXJpbmcuaHRtbCNjbHVzdGVyaW5nLWdyYXBoKSwgd2hpY2ggYWxzbyBkZXNjcmliZXMgdGhlIGRyYXdiYWNrcyBmb3IgdGhlc2UgbWV0aG9kcy4KPC9kZXRhaWxzPgo8YnI+CgoKVGhpcyBwcm9jZXNzIGlzIHBlcmZvcm1lZCB3aXRoIHRoZSBgRmluZE5laWdoYm9ycygpYCBbY29tbWFuZF0oaHR0cHM6Ly9zYXRpamFsYWIub3JnL3NldXJhdC9yZWZlcmVuY2UvZmluZG5laWdoYm9ycyksIHVzaW5nIHRoZSBudW1iZXIgb2YgcHJpbmNpcGFsIGNvbXBvbmVudHMgd2Ugc2VsZWN0ZWQgaW4gdGhlIHByZXZpb3VzIHNlY3Rpb24uCgpgYGB7ciwgZXZhbCA9IEZBTFNFfQpnZW9fc28gPSBGaW5kTmVpZ2hib3JzKGdlb19zbywgZGltcyA9IDE6cGNzLCByZWR1Y3Rpb24gPSAnaW50ZWdyYXRlZC5zY3QucnBjYScpCmBgYAoKVGhlIHNlY29uZCBzdGVwIGlzIHRvIGl0ZXJhdGl2ZWx5IHBhcnRpdGlvbiB0aGUga05OIGdyYXBoIGludG8gImNsaXF1ZXMiIG9yIGNsdXN0ZXJzIHVzaW5nIHRoZSBMb3V2YWluIG1vZHVsYXJpdHkgb3B0aW1pemF0aW9uIGFsZ29yaXRobSAoZm9yIHRoZSBkZWZhdWx0IHBhcmFtZXRlcnMpLCB3aXRoIHRoZSAiZ3JhbnVsYXJpdHkiIG9mIHRoZSBjbHVzdGVycyBzZXQgYnkgYSBgcmVzb2x1dGlvbmAgcGFyYW1ldGVyIChbc291cmNlXShodHRwczovL3NhdGlqYWxhYi5vcmcvc2V1cmF0L2FydGljbGVzL3BibWMza190dXRvcmlhbC5odG1sKSkuCgohW0ltYWdlOiBLLW1lYW5zIGNsdXN0ZXJpbmcgZXhhbXBsZSAoZnJvbSBDYW1icmlkZ2UgQmlvaW5mb3JtYXRpY3MgY291cnNlKV0oLi9pbWFnZXMvY3VycmljdWx1bS8wNS1Qcm9qZWN0aW9uQW5kQ2x1c3RlcmluZy9IQkMtMDctay1tZWFuc0ZpZ3VyZS5wbmcpCgoKV2UnbGwgdXNlIHRoZSBgRmluZENsdXN0ZXJzKClgIFtmdW5jdGlvbl0oaHR0cHM6Ly9zYXRpamFsYWIub3JnL3NldXJhdC9yZWZlcmVuY2UvZmluZGNsdXN0ZXJzKSwgc2VsZWN0aW5nIGEgcmVzb2x1dGlvbiBvZiBgMC40YCB0byBzdGFydCwgYWx0aG91Z2ggd2UgY291bGQgYWxzbyBhZGQgb3RoZXIgcmVzb2x1dGlvbnMgYXQgdGhpcyBzdGFnZSB0byBsb29rIGF0IGluIGxhdGVyIHN0ZXBzLiBTZWUgW1dhbHRtYW4gYW5kIEphbiB2YW4gRWNrICgyMDEzKV0oaHR0cHM6Ly9saW5rLnNwcmluZ2VyLmNvbS9hcnRpY2xlLzEwLjExNDAvZXBqYi9lMjAxMy00MDgyOS0wKSBmb3IgdGhlIHVuZGVybHlpbmcgYWxnb3JpdGhtcy4KCkFnYWluLCBob3cgYSDigJxjZWxsIHR5cGXigJ0gb3Ig4oCcc3VidHlwZeKAnSBzaG91bGQgYmUgZGVmaW5lZCBmb3IgeW91ciBkYXRhIGlzIGhlbHBmdWwgdG8gY29uc2lkZXIgaW4gc2VsZWN0aW5nIGEgcmVzb2x1dGlvbiAtIHdlJ2Qgc3RhcnQgd2l0aCBhIGhpZ2hlciByZXNvbHV0aW9uIGZvciBzbWFsbGVyL21vcmUgcmFyZSBjbHVzdGVycyBhbmQgYSBsb3dlciByZXNvbHV0aW9uIGZvciBsYXJnZXIvbW9yZSBnZW5lcmFsIGNsdXN0ZXJzLiAgCgpBbmQgdGhlbiBpZmYgd2UgbG9vayBhdCB0aGUgbWV0YSBkYXRhIHdlIGNhbiBzZWUgdGhhdCBjbHVzdGVyIGxhYmVscyBoYXZlIG5vdyBiZWVuIGFkZGVkIGZvciBlYWNoIGNlbGw6CgpgYGB7ciwgZXZhbD1GQUxTRX0KIyBnZW5lcmF0ZSBjbHVzdGVycwpnZW9fc28gPSBGaW5kQ2x1c3RlcnMoZ2VvX3NvLCByZXNvbHV0aW9uID0gMC40LCBjbHVzdGVyLm5hbWUgPSAnaW50ZWdyYXRlZC5zY3QucnBjYS5jbHVzdGVycycpCgojIGxvb2sgYXQgbWV0YS5kYXRhIHRvIHNlZSBjbHVzdGVyIGxhYmVscwpoZWFkKGdlb19zb0BtZXRhLmRhdGEpCmBgYAoKR2VuZXJhbGx5IGl0J3MgcHJlZmVyYWJsZSB0byBlcnIgb24gdGhlIHNpZGUgb2YgdG9vIG1hbnkgY2x1c3RlcnMsIGFzIHRoZXkgY2FuIGJlIGNvbWJpbmVkIG1hbnVhbGx5IGluIGxhdGVyIHN0ZXBzLiBJbiBvdXIgZXhwZXJpZW5jZSwgdGhpcyBpcyBhbm90aGVyIHBhcmFtZXRlciB0aGF0IG1heSBuZWVkIHRvIGJlIGl0ZXJhdGl2ZWx5IHJldmlzZWQgYW5kIHJldmlld2VkLiAKCjxkZXRhaWxzPgogICAgPHN1bW1hcnk+KlJlc29sdXRpb24gcGFyYW1ldGVyIHJlY29tbWVuZGF0aW9ucyo8L3N1bW1hcnk+CiAgICBUaGUgW1NldXJhdCBjbHVzdGVyaW5nIHR1dG9yaWFsXShodHRwczovL2hvbGFiLWhrdS5naXRodWIuaW8vRnVuZGFtZW50YWwtc2NSTkEvZG93bnN0cmVhbS5odG1sI3BlcmZvcm0tbGluZWFyLWRpbWVuc2lvbmFsLXJlZHVjdGlvbikgcmVjb21tZW5kcyBzZWxlY3RpbmcgYSByZXNvbHV0aW9uIGJldHdlZW4gMC40IC0gMS4yIGZvciBkYXRhc2V0cyBvZiBhcHByb3hpbWF0ZWx5IDNrIGNlbGxzLCB3aGlsZSB0aGUgW0hCQyBjb3Vyc2VdKGh0dHBzOi8vaGJjdHJhaW5pbmcuZ2l0aHViLmlvL3NjUk5BLXNlcV9vbmxpbmUvbGVzc29ucy8wN19TQ19jbHVzdGVyaW5nX2NlbGxzX1NDVC5odG1sKSByZWNvbW1lbmRzIDAuNC0xLjQgZm9yIDNrLTVrIGNlbGxzLiBIb3dldmVyLCBpbiBvdXIgZXhwZXJpZW5jZSByZWFzb25hYmxlIHN0YXJ0aW5nIHJlc29sdXRpb25zIGNhbiBiZSB2ZXJ5IGRhdGFzZXQgZGVwZW5kZW50Lgo8L2RldGFpbHM+Cjxicj4KCgp+fn5+CiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgb3JpZy5pZGVudCBuQ291bnRfUk5BIG5GZWF0dXJlX1JOQSAgZGF5ICByZXBsaWNhdGUgcGVyY2VudC5tdCBuQ291bnRfU0NUIG5GZWF0dXJlX1NDVCBpbnRlZ3JhdGVkLnNjdC5ycGNhLmNsdXN0ZXJzIHNldXJhdF9jbHVzdGVycwpIT0RheTByZXBsaWNhdGUxX0FBQUNDVEdBR0FHQUFDQUctMSBITy5EYXkwLnJlcGxpY2F0ZTEgICAgICAxMDIzNCAgICAgICAgIDMyMjYgRGF5MCByZXBsaWNhdGUxICAgMS4yNDA5NjIgICAgICAgNjA2MSAgICAgICAgIDI4NjUgICAgICAgICAgICAgICAgICAgICAgICAgICAgMSAgICAgICAgICAgICAgIDEKSE9EYXkwcmVwbGljYXRlMV9BQUFDQ1RHR1RDQVRHQ0FULTEgSE8uRGF5MC5yZXBsaWNhdGUxICAgICAgIDMxNTggICAgICAgICAxNDk5IERheTAgcmVwbGljYXRlMSAgIDcuNTM2NDE1ICAgICAgIDQ2MjUgICAgICAgICAxNTEwICAgICAgICAgICAgICAgICAgICAgICAgICAgIDEgICAgICAgICAgICAgICAxCkhPRGF5MHJlcGxpY2F0ZTFfQUFBQ0NUR1RDQUdBR0NUVC0xIEhPLkRheTAucmVwbGljYXRlMSAgICAgIDEzNDY0ICAgICAgICAgNDEwMiBEYXkwIHJlcGxpY2F0ZTEgICAzLjExMjAwMiAgICAgICA1NDI2ICAgICAgICAgMjQ4NSAgICAgICAgICAgICAgICAgICAgICAgICAgICA1ICAgICAgICAgICAgICAgNQpIT0RheTByZXBsaWNhdGUxX0FBQUNHR0dBR0dDQ0NHVFQtMSBITy5EYXkwLnJlcGxpY2F0ZTEgICAgICAgMTE4OSAgICAgICAgICA2MjkgRGF5MCByZXBsaWNhdGUxICAgMy43MDA1ODkgICAgICAgNDE2NSAgICAgICAgICA5MTkgICAgICAgICAgICAgICAgICAgICAgICAgICAgMSAgICAgICAgICAgICAgIDEKSE9EYXkwcmVwbGljYXRlMV9BQUFDR0dHQ0FBQ1RHR0NDLTEgSE8uRGF5MC5yZXBsaWNhdGUxICAgICAgIDc3MjYgICAgICAgICAyNjAyIERheTAgcmVwbGljYXRlMSAgIDIuOTM4MTMxICAgICAgIDU4NTggICAgICAgICAyNTg1ICAgICAgICAgICAgICAgICAgICAgICAgICAgIDEgICAgICAgICAgICAgICAxCkhPRGF5MHJlcGxpY2F0ZTFfQUFBQ0dHR0dUQ0NHQUFUVC0xIEhPLkRheTAucmVwbGljYXRlMSAgICAgICA1MTY1ICAgICAgICAgMjM2MiBEYXkwIHJlcGxpY2F0ZTEgICA5LjE5NjUxNSAgICAgICA1MTYyICAgICAgICAgMjM0OCAgICAgICAgICAgICAgICAgICAgICAgICAgICA4ICAgICAgICAgICAgICAgOAp+fn5+CgoKCiMgQ2x1c3RlciBwbG90cyAKClRvIHZpc3VhbGl6ZSB0aGUgY2VsbCBjbHVzdGVycywgd2UgY2FuIHVzZSBkaW1lbnNpb25hbGl0eSByZWR1Y3Rpb24gdGVjaG5pcXVlcyB0byB2aXN1YWxpemUgYW5kIGV4cGxvcmUgb3VyIGxhcmdlLCBoaWdoLWRpbWVuc2lvbmFsIGRhdGFzZXQuIFR3byBwb3B1bGFyIG1ldGhvZHMgdGhhdCBhcmUgc3VwcG9ydGVkIGJ5IFNldXJhdCBhcmUgdC1kaXN0cmlidXRlZCBzdG9jaGFzdGljIG5laWdoYm9yIGVtYmVkZGluZyAodC1TTkUpIGFuZCBVbmlmb3JtIE1hbmlmb2xkIEFwcHJveGltYXRpb24gYW5kIFByb2plY3Rpb24gKFVNQVApIHRlY2huaXF1ZXMuIFRoZXNlIHRlY2huaXF1ZXMgYWxsb3cgdXMgdG8gdmlzdWFsaXplIG91ciBoaWdoLWRpbWVuc2lvbmFsIHNpbmdsZS1jZWxsIGRhdGEgaW4gMkQgc3BhY2UgYW5kIHNlZSBpZiBjZWxscyBncm91cGVkIHRvZ2V0aGVyIHdpdGhpbiBncmFwaC1iYXNlZCBjbHVzdGVycyBjby1sb2NhbGl6ZSBpbiB0aGVzZSByZXByZXNlbnRhdGlvbnMgKFtzb3VyY2VdKGh0dHBzOi8vc2F0aWphbGFiLm9yZy9zZXVyYXQvYXJ0aWNsZXMvcGJtYzNrX3R1dG9yaWFsLmh0bWwjcnVuLW5vbi1saW5lYXItZGltZW5zaW9uYWwtcmVkdWN0aW9uLXVtYXB0c25lKSkuCgpXaGlsZSB3ZSB1bmZvcnR1bmF0ZWx5IGRvbid0IGhhdmUgdGltZSB0byBjb21wYXJlIGFuZCBjb250cmFzdCB0U05FLCBhbmQgVU1BUCwgd2Ugd291bGQgaGlnaGx5IHJlY29tbWVuZCBbdGhpcyBibG9nIHBvc3QgY29udHJhc3RpbmcgdFNORSBhbmQgVU1BUF0oaHR0cHM6Ly9wYWlyLWNvZGUuZ2l0aHViLmlvL3VuZGVyc3RhbmRpbmctdW1hcC8pIGZvciBpbGx1c3RyYXRpdmUgZXhhbXBsZXMuIFRoZSBTZXVyYXQgYXV0aG9ycyBhZGRpdGlvbmFsbHkgY2F1dGlvbiB0aGF0IHdoaWxlIHRoZXNlIG1ldGhvZHMgYXJlIHVzZWZ1bCBmb3IgZGF0YSBleHBsb3JhdGlvbiwgdG8gYXZvaWQgZHJhd2luZyBiaW9sb2dpY2FsIGNvbmNsdXNpb25zIHNvbGVseSBiYXNlZCBvbiB0aGVzZSB2aXN1YWxpemF0aW9ucyAoW3NvdXJjZV0oaHR0cHM6Ly9zYXRpamFsYWIub3JnL3NldXJhdC9hcnRpY2xlcy9wYm1jM2tfdHV0b3JpYWwuaHRtbCNydW4tbm9uLWxpbmVhci1kaW1lbnNpb25hbC1yZWR1Y3Rpb24tdW1hcHRzbmUpKS4KClRvIHN0YXJ0IHRoaXMgcHJvY2Vzcywgd2UnbGwgdXNlIHRoZSBgUnVuVU1BUCgpYCBbZnVuY3Rpb25dKGh0dHBzOi8vc2F0aWphbGFiLm9yZy9zZXVyYXQvcmVmZXJlbmNlL3J1bnVtYXApIHRvIGNhbGN1bGF0ZSB0aGUgVU1BUCByZWR1Y3Rpb24gZm9yIG91ciBkYXRhLiBOb3RpY2UgaG93IHRoZSBwcmV2aW91cyBkaW1lbnNpb25hbGl0eSBjaG9pY2VzIGNhcnJ5IHRocm91Z2ggdGhlIGRvd25zdHJlYW0gYW5hbHlzaXMgYW5kIHRoYXQgdGhlIG51bWJlciBvZiBQQ3Mgc2VsZWN0ZWQgaW4gdGhlIHByZXZpb3VzIHN0ZXBzIGFyZSBpbmNsdWRlZCBhcyBhbiBhcmd1bWVudC4KCmBgYHtyLCBldmFsPUZBTFNFfQpnZW9fc28gPSBSdW5VTUFQKGdlb19zbywgZGltcyA9IDE6cGNzLCByZWR1Y3Rpb24gPSAnaW50ZWdyYXRlZC5zY3QucnBjYScsIHJlZHVjdGlvbi5uYW1lID0gJ3VtYXAuaW50ZWdyYXRlZC5zY3QucnBjYScpCmdlb19zbwpgYGAKfn5+CkFuIG9iamVjdCBvZiBjbGFzcyBTZXVyYXQgCjQ3MDM3IGZlYXR1cmVzIGFjcm9zcyAyOTYxNSBzYW1wbGVzIHdpdGhpbiAyIGFzc2F5cyAKQWN0aXZlIGFzc2F5OiBTQ1QgKDIwNTQ4IGZlYXR1cmVzLCAzMDAwIHZhcmlhYmxlIGZlYXR1cmVzKQogMyBsYXllcnMgcHJlc2VudDogY291bnRzLCBkYXRhLCBzY2FsZS5kYXRhCiAxIG90aGVyIGFzc2F5IHByZXNlbnQ6IFJOQQogMyBkaW1lbnNpb25hbCByZWR1Y3Rpb25zIGNhbGN1bGF0ZWQ6IHVuaW50ZWdyYXRlZC5zY3QucGNhLCBpbnRlZ3JhdGVkLnNjdC5ycGNhLCB1bWFwLmludGVncmF0ZWQuc2N0LnJwY2EKfn5+CgpOb3RpY2UgdGhhdCB3ZSBub3cgaGF2ZSBhIHRoaXJkIHJlZHVjdGlvbjogYHVtYXAuaW50ZWdyYXRlZC5zY3QucnBjYWAuCgojIFZpc3VhbGl6aW5nIGFuZCBldmFsdWF0aW5nIGNsdXN0ZXJpbmcKCjwhLS0tIEhvdyBtYW55IGNsdXN0ZXJzIHNob3VsZCBJIGdldCBhbmQgaG93IGRvIEkgYWRqdXN0IHRoZSBudW1iZXI/IC0tLT4KCjwhLS0tIEFkZCBleGFtcGxlIG9mIGNoYW5naW5nIHJlc29sdXRpb24/LS0tPgoKQWZ0ZXIgd2UgZ2VuZXJhdGUgdGhlIFVNQVAgcmVkdWN0aW9uLCB3ZSBjYW4gdGhlbiB2aXN1YWxpemUgdGhlIHJlc3VsdHMgdXNpbmcgdGhlIGBEaW1QbG90KClgIFtmdW5jdGlvbl0oaHR0cHM6Ly9zYXRpamFsYWIub3JnL3NldXJhdC9yZWZlcmVuY2UvZGltcGxvdCksIGxhYmVsaW5nIG91ciBwbG90IGJ5IHRoZSBhdXRvIGdlbmVyYXRlZCBgc2V1cmF0X2NsdXN0ZXJzYCB0aGF0IGNvcnJlc3BvbmQgdG8gdGhlIG1vc3QgcmVjZW50IGNsdXN0ZXJpbmcgcmVzdWx0cyBnZW5lcmF0ZWQuCgpBdCB0aGlzIHN0YWdlLCB3ZSB3YW50IHRvIGRldGVybWluZSBpZiB0aGUgY2x1c3RlcnMgbG9vayBmYWlybHkgd2VsbCBzZXBhcmF0ZWQsIGlmIHRoZXkgc2VlbSB0byBjb3JyZXNwb25kIHRvIGhvdyBjZWxscyBhcmUgZ3JvdXBlZCBpbiB0aGUgVU1BUCwgYW5kIGlmIHRoZSBudW1iZXIgb2YgY2x1c3RlcnMgYXJlIGFsaWduZWQgd2l0aCB0aGUgcmVzb2x1dGlvbiBvZiBvdXIgYmlvbG9naWNhbCBxdWVzdGlvbi4gCgpXZSBjYW4gYWxzbyBsb29rIGF0IHRoZSBzYW1lIFVNQVAgbGFiZWxlZCBieSBgZGF5YCB0byB2aXN1YWxseSBpbnNwZWN0IGlmIHRoZSBVTUFQIHN0cnVjdHVyZSBjb3JyZXNwb25kcyB0byB0aGUgYGRheWAuCgoKCmBgYHtyLCBldmFsID0gRkFMU0V9CiMgVU1BUCB3aXRoIGNsdXN0ZXIgSUQgbGFiZWxzCnBvc3RfaW50ZWdyYXRpb25fdW1hcF9wbG90X2NsdXN0ZXJzID0gRGltUGxvdChnZW9fc28sIGdyb3VwLmJ5ID0gJ3NldXJhdF9jbHVzdGVycycsIGxhYmVsID0gVFJVRSwgcmVkdWN0aW9uID0gJ3VtYXAuaW50ZWdyYXRlZC5zY3QucnBjYScpICsgTm9MZWdlbmQoKQpwb3N0X2ludGVncmF0aW9uX3VtYXBfcGxvdF9jbHVzdGVycwoKZ2dzYXZlKGZpbGVuYW1lID0gJ3Jlc3VsdHMvZmlndXJlcy91bWFwX2ludGVncmF0ZWRfc2N0X2NsdXN0ZXJzLnBuZycsIHBsb3QgPSBwb3N0X2ludGVncmF0aW9uX3VtYXBfcGxvdF9jbHVzdGVycywgd2lkdGggPSA2LCBoZWlnaHQgPSA2LCB1bml0cyA9ICdpbicpCgojIFVNQVAgd2l0aCBkYXkgbGFiZWxzIChub3RlIC0gd2UgYWRkZWQgdGhpcyBjb2x1bW4gdG8gdGhlIG1ldGEtZGF0YSB5ZXN0ZXJkYXkpCnBvc3RfaW50ZWdyYXRpb25fdW1hcF9wbG90X2RheSA9IERpbVBsb3QoZ2VvX3NvLCBncm91cC5ieSA9ICdkYXknLCBsYWJlbCA9IEZBTFNFLCByZWR1Y3Rpb24gPSAndW1hcC5pbnRlZ3JhdGVkLnNjdC5ycGNhJykKcG9zdF9pbnRlZ3JhdGlvbl91bWFwX3Bsb3RfZGF5CgpnZ3NhdmUoZmlsZW5hbWUgPSAncmVzdWx0cy9maWd1cmVzL3VtYXBfaW50ZWdyYXRlZF9zY3RfZGF5LnBuZycsIHBsb3QgPSBwb3N0X2ludGVncmF0aW9uX3VtYXBfcGxvdF9kYXksIHdpZHRoID0gOCwgaGVpZ2h0ID0gNiwgdW5pdHMgPSAnaW4nKQpgYGAKCiFbXSguL2ltYWdlcy9jdXJyaWN1bHVtLzA1LVByb2plY3Rpb25BbmRDbHVzdGVyaW5nL3VtYXBfaW50ZWdyYXRlZF9zY3RfY2x1c3RlcnMucG5nKSAKPGJyPgoKIVtdKC4vaW1hZ2VzL2N1cnJpY3VsdW0vMDUtUHJvamVjdGlvbkFuZENsdXN0ZXJpbmcvdW1hcF9pbnRlZ3JhdGVkX3NjdF9kYXkucG5nKQo8YnI+CgoKQSBwbG90IGxpa2UgdGhpcyBjYW4gdGVsbCB1cyBpZiB0ZWNobmljYWwgc291cmNlcyBvZiB2YXJpYXRpb24gbWlnaHQgYmUgZHJpdmluZyBvciBzdHJhdGlmeWluZyB0aGUgY2x1c3RlcnMsIG9yIGlmIHdlIHNlZSBnb29kIGNvcnJlY3Rpb24gYWZ0ZXIgdGhlIG5vcm1hbGl6YXRpb24gYW5kIGludGVncmF0aW9uIHN0ZXBzLgoKCgpBbm90aGVyIGFwcHJvYWNoIGlzIHRvIGV2YWx1YXRlIHRoZSBudW1iZXIgb2YgY2VsbHMgcGVyIGNsdXN0ZXIgdXNpbmcgdGhlIGB0YWJsZSgpYCBmdW5jdGlvbiwgc3BsaXQgYnkgYGRheWAgb3Igc3BsaXQgYnkgYG9yaWcuaWRlbnRgIHRvIHNlZSBpZiB0aGUgaW5kaXZpZHVhbCBzYW1wbGVzIGFyZSBkcml2aW5nIGFueSBvZiB0aGUgVU1BUCBzdHJ1Y3R1cmU6CgpgYGB7ciwgZXZhbD1GQUxTRX0KIyB0YWJsZSBvZiBudW1iZXIgb2YgY2VsbHMgcGVyIGNsdXN0ZXIsIHNwbGl0IGJ5IGNvbmRpdGlvbgp0YWJsZShnZW9fc29AbWV0YS5kYXRhJGRheSwgZ2VvX3NvQG1ldGEuZGF0YSRpbnRlZ3JhdGVkLnNjdC5ycGNhLmNsdXN0ZXJzKQoKIyB0YWJsZSBvZiBudW1iZXIgb2YgY2VsbHMgcGVyIGNsdXN0ZXIgcGVyIHNhbXBsZQp0YWJsZShnZW9fc29AbWV0YS5kYXRhJG9yaWcuaWRlbnQsIGdlb19zb0BtZXRhLmRhdGEkaW50ZWdyYXRlZC5zY3QucnBjYS5jbHVzdGVycykKYGBgCn5+fgogICAgICAgICAgIDAgICAgMSAgICAyICAgIDMgICAgNCAgICA1ICAgIDYgICAgNyAgICA4ICAgIDkgICAxMCAgIDExICAgMTIgICAxMyAgIDE0ICAgMTUgICAxNiAgIDE3ICAgMTgKICBEYXkwICAgIDg4ICA5MzggIDIzOSAgMTY3ICAgMzggIDI0MiAgIDM2ICAgOTQgIDgxNCAgMTMyICAxMTkgIDI5OCAgIDU1ICAgMjkgIDE1OSAgMTMzICAgNTcgIDE0MSAgIDE5CiAgRGF5NyAgMzQzNCAxMTM4IDI1MDcgMjAyMiAyNDA5IDEzMzAgMTU5NCAgOTM1ICAxMTkgIDU0NiAgNTYyICAzMjUgIDYyNiAgNjU5ICAzMDkgICA5OCAgMjYyICAgODggICAzNgogIERheTIxIDE0MzggMTEzOCAgMzY4ICA0NjMgIDE0MSAgNDgyICAgODEgIDQzMCAgNDAyICA1MDAgIDM3NSAgMjAxICAxMDggICA2OSAgIDQyICAyNTYgIDExNyAgMTk1ICAgMTIKfn5+CgoKfn5+CiAgICAgICAgICAgICAgICAgICAgICAgMCAgICAxICAgIDIgICAgMyAgICA0ICAgIDUgICAgNiAgICA3ICAgIDggICAgOSAgIDEwICAgMTEgICAxMiAgIDEzICAgMTQgICAxNSAgIDE2ICAgMTcgICAxOApITy5EYXkwLnJlcGxpY2F0ZTEgICAgMjAgIDI3OCAgIDgyICAgNTIgICAxNyAgIDY5ICAgMTUgICAxOCAgMjA5ICAgMzMgICAzMiAgIDgyICAgMTcgICAxMSAgIDQ3ICAgMjAgICAgNSAgIDM1ICAgIDcKSE8uRGF5MC5yZXBsaWNhdGUyICAgIDEzICAxMjcgICAzNyAgIDMzICAgIDUgICAyMyAgICA2ICAgMjQgIDE2MiAgIDI3ICAgMjAgICA1NiAgICA4ICAgIDYgICAxMyAgIDI1ICAgMTMgICAxNiAgICAxCkhPLkRheTAucmVwbGljYXRlMyAgICAzNCAgMzMxICAgNzIgICA0NiAgICAzICAgOTEgICAgNSAgIDE4ICAyMzggICA0MCAgIDM4ICAgODQgICAxNiAgICA1ICAgNTggICA0MCAgIDE2ICAgNTQgICAgMgpITy5EYXkwLnJlcGxpY2F0ZTQgICAgMjEgIDIwMiAgIDQ4ICAgMzYgICAxMyAgIDU5ICAgMTAgICAzNCAgMjA1ICAgMzIgICAyOSAgIDc2ICAgMTQgICAgNyAgIDQxICAgNDggICAyMyAgIDM2ICAgIDkKSE8uRGF5Ny5yZXBsaWNhdGUxICAgNDcyICAzMDkgIDU5MCAgNTAxICA3NjkgIDM1OCAgNzU1ICAxNTUgICA0OSAgMTEzICAxOTAgICA2NyAgMTY3ICAyMTIgICA2MyAgIDQxICAgNzIgICAyOCAgIDE3CkhPLkRheTcucmVwbGljYXRlMiAgMTIxOSAgMjE5ICA2MTUgIDU3NCAgNDg2ICAyODAgIDIxOCAgMzc4ICAgMTAgIDE1NyAgMTMyICAxMDUgIDE4MCAgMTUwICAgODYgICAxOSAgIDg4ICAgMTMgICAgMwpITy5EYXk3LnJlcGxpY2F0ZTMgICA5NTcgIDQ1NyAgNzI3ICA1MzEgIDQwNyAgNDY1ICAgOTAgIDI0MyAgIDUwICAxNzcgIDE0NSAgIDkwICAxNjMgIDE1MiAgIDkzICAgMjcgICA3MiAgIDM3ICAgMTQKSE8uRGF5Ny5yZXBsaWNhdGU0ICAgNzg2ICAxNTMgIDU3NSAgNDE2ICA3NDcgIDIyNyAgNTMxICAxNTkgICAxMCAgIDk5ICAgOTUgICA2MyAgMTE2ICAxNDUgICA2NyAgIDExICAgMzAgICAxMCAgICAyCkhPLkRheTIxLnJlcGxpY2F0ZTEgIDM2OSAgMzYzICAgOTkgIDE0NSAgIDM4ICAxNzIgICAzMCAgMTM0ICAxMTkgIDE0NSAgMTEwICAgNjMgICAzNSAgIDE0ICAgMTMgICA2NiAgIDI2ICAgNTYgICAgMwpITy5EYXkyMS5yZXBsaWNhdGUyICAxODkgIDIxOCAgIDc0ICAgODIgICAyMSAgIDU3ICAgMTIgICA5NyAgMTIzICAgNzkgICA0NiAgIDM2ICAgMTUgICAxNCAgICA2ICAgNTEgICAyOCAgIDI5ICAgIDUKSE8uRGF5MjEucmVwbGljYXRlMyAgMjAzICAxODcgICA3MyAgIDkxICAgMjUgICA2NyAgICA4ICAgNjEgIDEwMiAgIDkwICAgNjggICAzMSAgIDE2ICAgMjAgICAgNyAgIDU1ICAgMjAgICAzOSAgICAzCkhPLkRheTIxLnJlcGxpY2F0ZTQgIDY3NyAgMzcwICAxMjIgIDE0NSAgIDU3ICAxODYgICAzMSAgMTM4ICAgNTggIDE4NiAgMTUxICAgNzEgICA0MiAgIDIxICAgMTYgICA4NCAgIDQzICAgNzEgICAgMQp+fn4KCjwhLS0gY29uc2lkZXIgYWRkaW5nIGxhdGVyIApBZGQgRGltUGxvdCBmb3IgJSBtaXRvY2hvbmRyaWEgdG8gc2VlIGlmIGhpZ2ggJSBhcmUgYWNyb3NzIGRhdGFzZXQgb3IgbGltaXRlZCB0byBvbmUvZmV3IGNsdXN0ZXJzIChyZWxhdGVkIHRvIHdoYXQgT2xpdmlhIHRhbGtlZCBhYm91dCBkdXJpbmcgRGF5IDEpCgojIE90aGVyIGFwcHJvYWNoZXMgZm9yIHZpc3VhbGl6aW5nIHNjUk5BLXNxIGRhdGEKZS5nLiBjb2RlIGZvciB0U05FIHZpc3VhbGl6YXRpb24gCi0tPgoKIyBDb21wYXJpbmcgdG8gdW5pbnRlZ3JhdGVkIGRhdGEKCklmIHdlIGhhZCBwcm9jZWVkZWQgd2l0aCBvdXIgZmlsdGVyZWQgZGF0YSBhbmQgb25seSBub3JtYWxpemVkIG91ciBkYXRhIHdpdGhvdXQgZG9pbmcgYW55IGludGVncmF0aW9uLCBpbmNsdWRpbmcgdGhyb3VnaCB0aGUgZGltZW5zaW9uYWxpdHkgcmVkdWN0aW9uIGFuZCBjbHVzdGVyaW5nIHN0ZXBzIGFuZCB0aGVuIGxhYmVsZWQgdGhlIGNlbGxzIHdpdGggdGhlaXIgc2FtcGxlIG9mIG9yaWdpbiwgdGhlbiB3ZSB3b3VsZCBzZWUgdGhlIGZvbGxvd2luZyBmb3Igb3VyIGRhdGE6Cgo8IS0tQWRkIGV4YW1wbGUgb2YgVU1BUCAvIHNhbXBsZSBsYWJlbHMgZm9yIHVuaW50ZWdyYXRlZCBkYXRhIGZyb20gYW5hbHlzaXMgZm9sZGVyIHRvIGltYWdlcy0tPgoKIVtdKC4vaW1hZ2VzL2N1cnJpY3VsdW0vMDUtUHJvamVjdGlvbkFuZENsdXN0ZXJpbmcvdW1hcF9jb21wYXJpc29uX3NjdC5wbmcpCgoKCklmIHdlIGluc3RlYWQgbGFiZWxlZCBvdXIgcGxvdCBieSBgZGF5YCwgdGhlbiB3ZSB3b3VsZCBzZWU6CgohW10oLi9pbWFnZXMvY3VycmljdWx1bS8wNS1Qcm9qZWN0aW9uQW5kQ2x1c3RlcmluZy91bWFwX3VuaW50ZWdyYXRlZF9zY3RfZGF5LnBuZykKCkluIHRoaXMgcGxvdCwgd2Ugc2VlIHRoYXQgd2hpbGUgdGhlcmUgYXJlIGRpc3RpbmN0IGNsdXN0ZXJzLCB0aG9zZSBjbHVzdGVycyBzZWVtIHRvIHN0cmF0aWZpZWQgYnkgZGF5LiBUaGlzIHN1Z2dlc3RzIHRoYXQgd2l0aG91dCBpbnRlZ3JhdGlvbiwgdGhlc2UgYmF0Y2ggZWZmZWN0cyBjb3VsZCBza2V3IHRoZSBiaW9sb2dpY2FsIHZhcmlhYmlsaXR5IGluIG91ciBkYXRhLiBXZSBjYW4gYWxzbyBkaXJlY3RseSBjb21wYXJlIGJldHdlZW4gaW50ZWdyYXRlZCBhbmQgdW5pbnRlZ3JhdGVkIAoKPCEtLSBFZGl0IHNlY3Rpb24gdG8gaW5jb3Jwb3JhdGUgLS0tPgoKPGRldGFpbHM+CjxzdW1tYXJ5PioqUmV3aW5kOiBQcmUtaW50ZWdyYXRpb24gZXZhbHVhdGlvbiBjbHVzdGVyaW5nIGFuZCB2aXN1YWxpemF0aW9uIChjb2RlKSoqPC9zdW1tYXJ5PgpQcmlvciB0byBpbnRlZ3JhdGlvbiwgY291bGQgZm9sbG93IHRoZSBzYW1lIHN0ZXBzIHdlJ3ZlIGp1c3QgcnVuIGZvciB0aGUgaW50ZWdyYXRlZCB0byBzZWUgaWYgdGhlIHJlc3VsdGluZyBjbHVzdGVycyB0ZW5kIHRvIGJlIGRldGVybWluZWQgYnkgc2FtcGxlIG9yIGNvbmRpdGlvbiAoaW4gdGhpcyBjYXNlLCB0aGUgZGF5KToKCmBgYHtyLCBldmFsPUZBTFNFfQpnZW9fc28gPSBGaW5kTmVpZ2hib3JzKGdlb19zbywgZGltcyA9IDE6cGNzLCBhc3NheSA9ICdSTkEnLCByZWR1Y3Rpb24gPSAndW5pbnRlZ3JhdGVkLnNjdC5wY2EnLCBncmFwaC5uYW1lID0gYygnUk5BX25uJywgJ1JOQV9zbm4nKSkKZ2VvX3NvID0gRmluZENsdXN0ZXJzKGdlb19zbywgcmVzb2x1dGlvbiA9IDAuNCwgZ3JhcGgubmFtZSA9ICdSTkFfc25uJywgY2x1c3Rlci5uYW1lID0gJ3VuaW50ZWdyYXRlZC5zY3QuY2x1c3RlcnMnKQpnZW9fc28gPSBSdW5VTUFQKGdlb19zbywgZGltcyA9IDE6cGNzLCByZWR1Y3Rpb24gPSAndW5pbnRlZ3JhdGVkLnNjdC5wY2EnLCByZWR1Y3Rpb24ubmFtZSA9ICd1bWFwLnVuaW50ZWdyYXRlZC5zY3QucGNhJykKYGBgCgkKVGhlIHBsb3RzIGFib3ZlIHdlcmUgZ2VuZXJhdGVkIHdpdGg6CgpgYGB7ciwgZXZhbD1GQUxTRX0KcHJlX2ludGVncmF0aW9uX3VtYXBfcGxvdF9vcmlnLmlkZW50ID0gRGltUGxvdChnZW9fc28sIGdyb3VwLmJ5ID0gJ29yaWcuaWRlbnQnLCBsYWJlbCA9IEZBTFNFLCByZWR1Y3Rpb24gPSAndW1hcC51bmludGVncmF0ZWQuc2N0LnBjYScpCmdnc2F2ZShmaWxlbmFtZSA9ICdyZXN1bHRzL2ZpZ3VyZXMvdW1hcF91bmludGVncmF0ZWRfc2N0X29yaWcuaWRlbnQucG5nJywgcGxvdCA9IHByZV9pbnRlZ3JhdGlvbl91bWFwX3Bsb3Rfb3JpZy5pZGVudCwgd2lkdGggPSA4LCBoZWlnaHQgPSA2LCB1bml0cyA9ICdpbicpCmBgYAoKYGBge3IsIGV2YWw9RkFMU0V9CnByZV9pbnRlZ3JhdGlvbl91bWFwX3Bsb3RfZGF5ID0gRGltUGxvdChnZW9fc28sIGdyb3VwLmJ5ID0gJ2RheScsIGxhYmVsID0gRkFMU0UsIHJlZHVjdGlvbiA9ICd1bWFwLnVuaW50ZWdyYXRlZC5zY3QucGNhJykKZ2dzYXZlKGZpbGVuYW1lID0gJ3Jlc3VsdHMvZmlndXJlcy91bWFwX3VuaW50ZWdyYXRlZF9zY3RfZGF5LnBuZycsIHBsb3QgPSBwcmVfaW50ZWdyYXRpb25fdW1hcF9wbG90X2RheSwgd2lkdGggPSA4LCBoZWlnaHQgPSA2LCB1bml0cyA9ICdpbicpCmBgYAoKPC9kZXRhaWxzPgo8YnI+Cjxicj4KCgo8ZGV0YWlscz4KPHN1bW1hcnk+KipBbHRlcm5hdGl2ZSBjbHVzdGVyaW5nIHJlc29sdXRpb25zKio8L3N1bW1hcnk+CldoaWxlIHdlIHNob3cgYSBzaW5nbGUgcmVzb2x1dGlvbiwgd2UgY2FuIGdlbmVyYXRlIGFuZCBwbG90IG11bHRpcGxlIHJlc29sdXRpb25zIGl0ZXJhdGl2ZWx5IGFuZCBjb21wYXJlIGJldHdlZW4gdGhlbSBiZWZvcmUgc2VsZWN0aW5nIGEgY2x1c3RlcmluZyByZXN1bHQgZm9yIHRoZSBuZXh0IHN0ZXBzOgoKYGBge3IsIGV2YWw9RkFMU0V9CnJlc29sdXRpb25zID0gYygwLjQsIDAuOCkKCmZvcihyZXMgaW4gcmVzb2x1dGlvbnMpIHsKICAgIG1lc3NhZ2UocmVzKQoKICAgIGNsdXN0ZXJfY29sdW1uID0gc3ByaW50ZignU0NUX3Nubl9yZXMuJXMnLCByZXMpCiAgICB1bWFwX2ZpbGUgPSBzcHJpbnRmKCdyZXN1bHRzL2ZpZ3VyZXMvdW1hcF9pbnRlZ3JhdGVkX3NjdF8lcy5wbmcnLCByZXMpCgogICAgZ2VvX3NvID0gRmluZENsdXN0ZXJzKGdlb19zbywgcmVzb2x1dGlvbiA9IHJlcykKCiAgICBEaW1QbG90KGdlb19zbywgZ3JvdXAuYnkgPSBjbHVzdGVyX2NvbHVtbiwgbGFiZWwgPSBUUlVFLCByZWR1Y3Rpb24gPSAndW1hcC5pbnRlZ3JhdGVkLnNjdC5ycGNhJykgKyBOb0xlZ2VuZCgpCiAgICBnZ3NhdmUoZmlsZW5hbWUgPSB1bWFwX2ZpbGUsIHdpZHRoID0gOCwgaGVpZ2h0ID0gNywgdW5pdHMgPSAnaW4nKQp9CmBgYAoKSWYgd2UgbG9vayBhdCB0aGUgcmVzdWx0czoKCmBgYHtyLCBldmFsPUZBTFNFfQpoZWFkKGdlb19zb0BtZXRhLmRhdGEpCmBgYAoKLi4uIG11bHRpcGxlIHJlc29sdXRpb25zIHNob3VsZCBub3cgYmUgYWRkZWQgdG8gdGhlIG1ldGFkYXRhIHNsb3QuCjwvZGV0YWlscz4KPGJyPgo8YnI+CgoKIyBTYXZlIG91ciBwcm9ncmVzcwoKQmVmb3JlIG1vdmluZyBvbiB0byBvdXIgbmV4dCBzZWN0aW9uLCB3ZSB3aWxsIG91dHB1dCBvdXIgdXBkYXRlZCBTZXVyYXQgb2JqZWN0IHRvIGZpbGU6CgpgYGB7ciwgZXZhbD1GQUxTRX0Kc2F2ZVJEUyhvYmplY3QgPSBnZW9fc28sIGZpbGUgPSAncmVzdWx0cy9yZGF0YS9nZW9fc29fc2N0X2NsdXN0ZXJlZC5yZHMnKQpgYGAKCiMgU3VtbWFyeQoKSW4gdGhpcyBzZWN0aW9uIHdlOgoKLSBHZW5lcmF0ZWQgY2x1c3RlciBhc3NpZ25tZW50cyBmb3Igb3VyIGNlbGxzIHVzaW5nIGBGaW5kTmVpZ2hib3JzKClgIGFuZCBgRmluZENsdXN0ZXJzKClgCi0gRXZhbHVhdGVkIG91ciBpbml0aWFsIGNsdXN0ZXJzIHVzaW5nIGBSdW5VTUFQYCBkaW1lbnNpb25hbCByZWR1Y3Rpb24gYW5kIHZpc3VhbGl6YXRpb24KCgpOZXh0IHN0ZXBzOiBNYXJrZXIgZ2VuZXMKCgotLS0tCgpUaGVzZSBtYXRlcmlhbHMgaGF2ZSBiZWVuIGFkYXB0ZWQgYW5kIGV4dGVuZGVkIGZyb20gbWF0ZXJpYWxzIGxpc3RlZCBhYm92ZS4gVGhlc2UgYXJlIG9wZW4gYWNjZXNzIG1hdGVyaWFscyBkaXN0cmlidXRlZCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIFtDcmVhdGl2ZSBDb21tb25zIEF0dHJpYnV0aW9uIGxpY2Vuc2UgKENDIEJZIDQuMCldKGh0dHA6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC8pLCB3aGljaCBwZXJtaXRzIHVucmVzdHJpY3RlZCB1c2UsIGRpc3RyaWJ1dGlvbiwgYW5kIHJlcHJvZHVjdGlvbiBpbiBhbnkgbWVkaXVtLCBwcm92aWRlZCB0aGUgb3JpZ2luYWwgYXV0aG9yIGFuZCBzb3VyY2UgYXJlIGNyZWRpdGVkLgoKPGJyLz4KPGJyLz4KPGhyLz4KfCBbUHJldmlvdXMgbGVzc29uXSgwNC1QQ0FhbmRJbnRlZ3JhdGlvbi5odG1sKSB8IFtUb3Agb2YgdGhpcyBsZXNzb25dKCN0b3ApIHwgW05leHQgbGVzc29uXSgwNi1NYXJrZXJWaXN1YWxpemF0aW9uLmh0bWwpIHwKfCA6LS0tIHwgOi0tLS06IHwgLS0tOiB8Cgo=</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("05-ProjectionAndClustering.Rmd");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

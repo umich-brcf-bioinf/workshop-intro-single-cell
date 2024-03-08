@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core" />
+
+<meta name="date" content="2024-03-01" />
+
+<title>Marker identification and visualization</title>
+
+<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<!--
+Favicon dervied from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+    </li>
+    <li>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+    </li>
+    <li>
+      <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
+    </li>
+    <li>
+      <a href="03-Normalization.html">Normalization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
+    </li>
+    <li>
+      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="06-MarkerVisualization.html">Marker identification and visualization</a>
+    </li>
+    <li>
+      <a href="07-CellTypeAnnos.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="08-DifferentialExpression.html">Differential expression analysis</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Marker identification and
+visualization</h1>
+<h4 class="author">UM Bioinformatics Core</h4>
+<h4 class="date">2024-03-01</h4>
+
+</div>
+
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+</style>
+<div id="workflow-overview" class="section level1 unlisted unnumbered">
+<h1 class="unlisted unnumbered">Workflow Overview</h1>
+<p><br/>
+<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<br/> <br/></p>
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>To interpret our initial clustering results for all cells in our
+experiment, we’ll need to characterized the gene expression driving
+separation between the clusters.</p>
+<p>In this section, we will demonstrate how to generate analytical
+marker genes for each cluster and how to visualize the expression of
+genes of interest to aid in cluster identification and labeling in
+subsequent steps.</p>
+<p>This process can be a highly variable process, from seeing
+well-characterized marker genes as top markers to needing to dig through
+the literature and plot the expression for multiple sets of genes of
+interest. Like the previous sections (and like other areas of research),
+when this process is more involved or iterative, often only the final
+results are reported.</p>
+<div id="objectives" class="section level2">
+<h2>Objectives</h2>
+<!--Add specific goals for section-->
+<ul>
+<li>Determine gene markers for each of the clusters using
+<code>FindAllMarkers()</code></li>
+<li>Visualize expression across clusters for genes of interest using
+<code>DotPlot()</code></li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="cluster-markers-and-characterization" class="section level1">
+<h1>Cluster markers and characterization</h1>
+<p>After generating clusters, we need to perform differential expression
+analysis to identify the genes that distinguish those clusters (<a
+href="https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes">source</a>).
+This should allow us to get visibility on some key questions for our
+clusters, as <a
+href="https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html">highlighted
+by the HBC materials</a>, namely:</p>
+<ul>
+<li>Are there are biologically meaningful gene expression differences
+between the clusters?</li>
+<li>Does the gene expression of the generated clusters correspond to
+expected cell-types or sub-types?</li>
+<li>Are there clusters with similar expression that should be combined
+and/or clusters that might need to be sub-clustered into smaller
+populations?</li>
+</ul>
+<p>Many of the differential expression (DE) tools designed for bulk
+RNA-seq samples have been benchmarked for performance on scRNA-seq in <a
+href="https://pubmed.ncbi.nlm.nih.gov/29481549/">Soneson and Robinson
+(2018)</a> and there are also dedicated DE tools for scRNA-seq, like <a
+href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0844-5">MAST</a>,
+that use models that account for the expected sparse structure of
+scRNA-seq data. However in our and others’ experience, the default
+Wilcoxon test is often sufficient for simple pairwise DE comparisons,
+while edgeR (<a
+href="https://pubmed.ncbi.nlm.nih.gov/19910308/">Robinson, McCarthy, and
+Smyth 2010</a>) is recommended by the <a
+href="%5BOuyang%5D(https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes)">Ouyang
+Lab</a> for more complex comparison designs, such as those that include
+covariates.</p>
+<!-- Additional context from [Ouyang](https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes) regarding tool options and [HBC materials](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html) regarding FindMarkers vs FindConservedMarkers, etc. -->
+<div class="float">
+<img
+src="images/curriculum/06-MarkerIdentAndViz/Ouyang_clust-deCompare.png"
+alt="Image: Comparison of the performance of DE methods applied to scRNA-seq datasets. Methods are ranked by their average performance across all the listed criteria. Image taken from Soneson and Robinson (2018)." />
+<div class="figcaption">Image: Comparison of the performance of DE
+methods applied to scRNA-seq datasets. Methods are ranked by their
+average performance across all the listed criteria. Image taken from
+Soneson and Robinson (2018).</div>
+</div>
+<details>
+<summary>
+<em>Additional considerations for differential expression</em>
+</summary>
+The Ouyang Lab has a <a
+href="https://ouyanglab.com/singlecell/clust.html#sec:diffexpr">section
+of their tutorial</a> that discusses the methods available for
+differential expression including some highlighted in the figure below,
+as well as a more extensive section on <a
+href="https://ouyanglab.com/singlecell/clust.html#sec:diffexpr">threshold
+considerations</a>, while the <a
+href="https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html">HBC
+section on marker genes identification</a> highlights the different
+types of marker identification options available via Seurat.
+</details>
+<p><br></p>
+<div id="marker-identification" class="section level2">
+<h2>Marker identification</h2>
+<p>First, we’ll ensure that the correct resolution is selected from our
+Seurat object and then we’ll use the <code>PrepSCTFindMarkers()</code>
+<a
+href="https://satijalab.org/seurat/reference/prepsctfindmarkers">function</a>
+in preparation for DE comaprisons to “reverse the individual SCT
+regression model using minimum of median UMI as the sequencing depth
+covariate” according to the <a
+href="https://satijalab.org/seurat/reference/prepsctfindmarkers">Seurat
+documentation</a>
+<!-- if we want to use the normalized RNA data (not the integrated data) `DefaultAssay(geo_so) <- "RNA"`, although need to check if that still makes sense for Seurat v5 --></p>
+<p>Then we’ll run the<code>FindAllMarkers()</code> <a
+href="https://satijalab.org/seurat/reference/findallmarkers">function</a>
+to generate comparisons between each cluster and all other cells,
+regardless of the experimental group. Note - the statistical test to
+perform can be specified in <code>FindAllMarkers()</code>, but the
+default is a Wilcoxon test.</p>
+<pre class="r"><code># prep for cluster comparisons
+geo_so = SetIdent(geo_so, value = &#39;integrated.sct.rpca.clusters&#39;)
+geo_so = PrepSCTFindMarkers(geo_so)
+
+# run comparisons for each cluster to generate markers
+geo_markers = FindAllMarkers(geo_so, only.pos = TRUE)
+
+# Take a look at the first few rows of the result
+head(geo_markers)
+
+# write out full cluster marker results to file
+write_csv(geo_markers, file = &#39;results/tables/marker_genes_0.4.csv&#39;)</code></pre>
+<pre><code>        p_val avg_log2FC pct.1 pct.2 p_val_adj cluster    gene
+Col12a1     0   3.941779 0.927 0.141         0       0 Col12a1
+Tnc         0   3.702778 0.848 0.112         0       0     Tnc
+Thbs2       0   3.639909 0.901 0.169         0       0   Thbs2
+Lox         0   2.897164 0.915 0.185         0       0     Lox
+Aebp1       0   2.179345 0.978 0.281         0       0   Aebp1
+Cthrc1      0   3.583623 0.954 0.264         0       0  Cthrc1</code></pre>
+<!--- Consider adding figure showing example of what's being compared (circle cluster 1 and then circle all other cells for example) -->
+<details>
+<summary>
+<em>Seurat v5 improvements</em>
+</summary>
+For marker generation, Seurat v5 uses the <a
+href="https://www.biorxiv.org/content/10.1101/653253v1">presto
+package</a> to reduce the time required to run DE comparisons,
+particularly for large datasets. For users who are not using presto,
+Seurat recommends increasing the min.pct and logfc.threshold
+parameterscto increase the speed of DE testing (<a
+href="https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#finding-differentially-expressed-features-cluster-biomarkers">source</a>).
+</details>
+<p><br></p>
+<p>Note that over-interpretation of these results should be avoided,
+since each cell is used as a replicate in these comparisons which can
+lead to inflated (e.g. very low) p-values, the top markers are more
+likely to be trustworthy (<a
+href="https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html">source</a>).</p>
+<p>Therefore, it’s useful to filter the results to highlight the top
+positive markers (since a positive fold-change would mean that gene is
+more highly expressed in the cluster compared to all other cells),
+before looking at our results</p>
+<pre class="r"><code># create table of top 5 markers per cluster
+top_5_by_log2FC = geo_markers %&gt;% group_by(cluster) %&gt;% arrange(p_val_adj, desc(avg_log2FC)) %&gt;% slice_head(n = 5)
+
+# look at results
+head(top_5_by_log2FC)</code></pre>
+<pre><code># A tibble: 6 × 7
+# Groups:   cluster [2]
+  p_val avg_log2FC pct.1 pct.2 p_val_adj cluster gene 
+  &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;
+1     0       5.79 0.086 0.004         0 0       Ucma 
+2     0       5.62 0.132 0.005         0 0       Cilp2
+3     0       5.56 0.437 0.016         0 0       Scx  
+4     0       5.45 0.084 0.003         0 0       Matn3
+5     0       5.30 0.137 0.007         0 0       Kera 
+6     0       5.15 0.238 0.01          0 1       C7 </code></pre>
+<p>We expect to see several columns:</p>
+<ul>
+<li><code>gene</code>: gene symbol</li>
+<li><code>p_val</code>: p-value not adjusted for multiple test
+correction</li>
+<li><code>avg_logFC</code>: average log fold change. Positive values
+indicate that the gene is more highly expressed in the cluster.</li>
+<li><code>pct.1</code>: percentage of cells where the gene is detected
+in the cluster</li>
+<li><code>pct.2</code>: percentage of cells where the gene is detected
+on average across all other clusters</li>
+<li><code>p_val_adj</code>: adjusted p-value based on bonferroni
+correction using all genes in the dataset, used to determine
+significance</li>
+<li><code>cluster</code>: cluster represented by <code>pct.1</code> and
+for which the statistics in the row are reported</li>
+</ul>
+<p>When looking at the output, it is important to prioritize marker
+genes with both larger fold-change differences and larger difference
+between pct.1 and pct.2, particularly if pct.1 is high (e.g. if 80% of
+cells in the cluster evaluated express the gene that more reliable than
+if only 20% of cells express that gene) (<a
+href="https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html">source</a>).</p>
+</div>
+<div id="marker-visualization" class="section level2">
+<h2>Marker visualization</h2>
+<p>Now that we have generated a set of marker genes for our clusters, it
+is useful to visualize the expression of those markers to aid in
+evaluating them. While the expression of individual genes per cell can
+be overlaid on our UMAPs (as with the <code>FeaturePlot()</code> <a
+href="https://satijalab.org/seurat/reference/featureplot">function</a>),
+it’s often more useful to visualize the expression of multiple genes
+simultaneously. While there are <a
+href="https://satijalab.org/seurat/articles/visualization_vignette">multiple
+methods supported by Seurat</a> for visualizing marker gene expression,
+a heatmap or a related plot called a dotplot are commonly used.</p>
+<p>We’ll use the <code>DotPlot()</code> <a
+href="https://satijalab.org/seurat/reference/dotplot">function</a> with
+the SCT values to visualize the top 5 marker genes per cluster:</p>
+<pre class="r"><code># generate plot
+top_5_sct_dot_plot = DotPlot(geo_so, features = unique(top_5_by_log2FC$gene)) + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    labs(title = &#39;Top 5 Cluster Genes by FDR and avg_log2FC&#39;) + coord_flip()
+top_5_sct_dot_plot
+
+# save Dotplot to file
+ggsave(filename = &#39;results/figures/markers_top_5_sct_dot_plot.png&#39;, plot = top_5_sct_dot_plot, width = 8, height = 18, units = &#39;in&#39;) </code></pre>
+<p>In the dotplot we can see that the color indicates the expression of
+the gene while the size of the dot indicates the proportion of cells
+expressing that gene in each cluster (<a
+href="https://ouyanglab.com/singlecell/clust.html#visualising-marker-genes">source</a>).</p>
+<div class="float">
+<img
+src="images/curriculum/06-MarkerIdentAndViz/markers_top_5_sct_dot_plot.png"
+alt="Figure: Dotplot of top 5 markers per cluster" />
+<div class="figcaption">Figure: Dotplot of top 5 markers per
+cluster</div>
+</div>
+<details>
+<summary>
+<em>Using raw RNA values in Dotplots</em>
+</summary>
+<p>In addition to plotting the SCT values, the raw or normalized RNA
+values can be plotted as well:</p>
+<pre class="r"><code>top_5_rna_dot_plot = DotPlot(geo_so, features = unique(top_5_by_log2FC$gene), assay = &#39;RNA&#39;) + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    labs(title = &#39;Top 5 Cluster Genes by FDR and avg_log2FC&#39;) + coord_flip()
+
+ggsave(filename = &#39;results/figures/markers_top_5_rna_dot_plot.png&#39;, plot = top_5_rna_dot_plot, width = 8, height = 18, units = &#39;in&#39;) </code></pre>
+</details>
+<p><br></p>
+<p><br></p>
+</div>
+</div>
+<div id="utilizing-genes-of-interest" class="section level1">
+<h1>Utilizing genes of interest</h1>
+<p>Often we have prior information about what cell types are expected in
+our samples and key marker genes for those populations. This can be an
+important part of evaluating our clusters, since if genes that are known
+markers for a specific cell type are found in too many or too few
+clusters as that can suggest that re-clustering is needed or that some
+of the clusters should be manually combined before annotating.</p>
+<p>We can create lists of markers used in figures from the <a
+href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7002453/">original
+paper</a> before using the same <code>DotPlot()</code> function to
+visualize the expression level and frequency of these genes in our
+current clusters:</p>
+<pre class="r"><code># manually create lists of genes from paper
+fig1g_markers = c(&#39;Cxcl1&#39;, &#39;Cxcl2&#39;, &#39;Ccl2&#39;, &#39;Ccl3&#39;, &#39;Ccl4&#39;, &#39;Il1b&#39;, &#39;Il6b&#39;, &#39;Tnf&#39;, &#39;Tgfb1&#39;, &#39;Tgfb2&#39;, &#39;Tgfb3&#39;, &#39;Cxcl5&#39;)
+fig1h_markers = c(&#39;Cxcr2&#39;, &#39;Csf1r&#39;, &#39;Csf3r&#39;, &#39;Tgfbr1&#39;, &#39;Tgfbr3&#39;, &#39;Il1r1&#39;, &#39;Il6ra&#39;, &#39;Lifr&#39;, &#39;Tgfbr2&#39;)
+
+# create DotPlots for genes from paper
+fig1g_sct_dot_plot = DotPlot(geo_so, features = fig1g_markers, assay = &#39;SCT&#39;)
+fig1h_sct_dot_plot = DotPlot(geo_so, features = fig1h_markers, assay = &#39;SCT&#39;)
+
+fig1g_sct_dot_plot
+
+# save plots to file
+ggsave(filename = &#39;results/figures/markers_fig1g_sct_dot_plot.png&#39;, plot = fig1g_sct_dot_plot, width = 8, height = 6, units = &#39;in&#39;)
+ggsave(filename = &#39;results/figures/markers_fig1h_sct_dot_plot.png&#39;, plot = fig1h_sct_dot_plot, width = 8, height = 6, units = &#39;in&#39;)</code></pre>
+<p><img
+src="images/curriculum/06-MarkerIdentAndViz/markers_fig1g_sct_dot_plot.png" /></p>
+<details>
+<summary>
+<em>Using raw RNA values for genes of interest</em>
+</summary>
+<p>We can also generate the same plots, but using the unintegrated data
+by specifying the <code>RNA</code> assay:</p>
+<pre class="r"><code>rna_dot_plot = DotPlot(geo_so, features = fig1g_markers, assay = &#39;RNA&#39;)
+fig1h_rna_dot_plot = DotPlot(geo_so, features = fig1h_markers, assay = &#39;RNA&#39;)
+
+ggsave(filename = &#39;results/figures/markers_fig1g_rna_dot_plot.png&#39;, plot = fig1g_rna_dot_plot, width = 8, height = 6, units = &#39;in&#39;)
+ggsave(filename = &#39;results/figures/markers_fig1h_rna_dot_plot.png&#39;, plot = fig1h_rna_dot_plot, width = 8, height = 6, units = &#39;in&#39;)</code></pre>
+</details>
+<p><br></p>
+<p>For known marker genes, it’s important to note that since scRNA-seq
+is only measuring transcriptional signals that markers at the protein
+level (e.g used for approaches like FACS) may be less effective. An
+alternative or complement to using marker genes could be methods like
+using gene set enrichment (GSEA) <a
+href="https://bioconductor.org/books/3.15/OSCA.basic/cell-type-annotation.html#computing-gene-set-activities">as
+demonstrated in the OSCA book</a> to aid in annotations. However, the
+book <a
+href="https://www.sc-best-practices.org/cellular_structure/annotation.html">“Best
+practices for single-cell analysis across modalities” by Heumos, Schaar,
+Lance, et al. </a> points out that “it is often useful to work together
+with experts … [like a] biologist who has more extensive knowledge of
+the tissue, the biology, the expected cell types and markers etc.”. In
+our experience, we find that experience and knowledge of the researchers
+we work with is invaluable.</p>
+</div>
+<div id="save-our-progress" class="section level1">
+<h1>Save our progress</h1>
+<p>Finally, we’ll create an output file for our updated Seurat object
+and for the cluster marker results:</p>
+<pre class="r"><code>saveRDS(object = geo_so, file = &#39;results/rdata/geo_so_sct_integrated_with_markers.rds&#39;)
+saveRDS(object = geo_markers, file = &#39;results/rdata/geo_markers.rds&#39;)</code></pre>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>Now that we have characterized the expression of both analytical
+marker genes and literature / knowledge-based marker genes, we may have
+a better sense of what cell-types or subtypes our clusters might
+correspond to.</p>
+<p>However, marker genes alone might not be sufficient to determine
+cell-type or sub-type labels for our clusters so we will discuss other
+more automated approaches to complement these results.</p>
+<p>Next steps: Cell type prediction tools</p>
+<hr />
+<p>These materials have been adapted and extended from materials listed
+above. These are open access materials distributed under the terms of
+the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
+Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
+use, distribution, and reproduction in any medium, provided the original
+author and source are credited.</p>
+<br/> <br/>
+<hr/>
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="05-ProjectionAndClustering.html">Previous
+lesson</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="07-CellTypeAnnos.html">Next lesson</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiTWFya2VyIGlkZW50aWZpY2F0aW9uIGFuZCB2aXN1YWxpemF0aW9uIgphdXRob3I6ICJVTSBCaW9pbmZvcm1hdGljcyBDb3JlIgpkYXRlOiAiYHIgU3lzLkRhdGUoKWAiCm91dHB1dDoKICAgICAgICBodG1sX2RvY3VtZW50OgogICAgICAgICAgICBpbmNsdWRlczoKICAgICAgICAgICAgICAgIGluX2hlYWRlcjogaGVhZGVyLmh0bWwKICAgICAgICAgICAgdGhlbWU6IHBhcGVyCiAgICAgICAgICAgIHRvYzogdHJ1ZQogICAgICAgICAgICB0b2NfZGVwdGg6IDQKICAgICAgICAgICAgdG9jX2Zsb2F0OiB0cnVlCiAgICAgICAgICAgIG51bWJlcl9zZWN0aW9uczogZmFsc2UKICAgICAgICAgICAgZmlnX2NhcHRpb246IHRydWUKICAgICAgICAgICAgbWFya2Rvd246IEdGTQogICAgICAgICAgICBjb2RlX2Rvd25sb2FkOiB0cnVlCi0tLQoKPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KYm9keSwgdGQgewogICBmb250LXNpemU6IDE4cHg7Cn0KY29kZS5yewogIGZvbnQtc2l6ZTogMTJweDsKfQpwcmUgewogIGZvbnQtc2l6ZTogMTJweAp9Cjwvc3R5bGU+CgpgYGB7ciwgaW5jbHVkZSA9IEZBTFNFfQpzb3VyY2UoIi4uL2Jpbi9jaHVuay1vcHRpb25zLlIiKQprbml0cl9maWdfcGF0aCgiWFgiKQpgYGAKCiMgV29ya2Zsb3cgT3ZlcnZpZXcgey51bmxpc3RlZCAudW5udW1iZXJlZH0KCjxici8+CjxpbWcgc3JjPSJpbWFnZXMvd2F5ZmluZGVyL3dheWZpbmRlci5wbmciIGFsdD0id2F5ZmluZGVyIiBzdHlsZT0iaGVpZ2h0OiA0MDBweDsiLz4KPGJyLz4KPGJyLz4KCiMgSW50cm9kdWN0aW9uCgpUbyBpbnRlcnByZXQgb3VyIGluaXRpYWwgY2x1c3RlcmluZyByZXN1bHRzIGZvciBhbGwgY2VsbHMgaW4gb3VyIGV4cGVyaW1lbnQsIHdlJ2xsIG5lZWQgdG8gY2hhcmFjdGVyaXplZCB0aGUgZ2VuZSBleHByZXNzaW9uIGRyaXZpbmcgc2VwYXJhdGlvbiBiZXR3ZWVuIHRoZSBjbHVzdGVycy4gCgpJbiB0aGlzIHNlY3Rpb24sIHdlIHdpbGwgZGVtb25zdHJhdGUgaG93IHRvIGdlbmVyYXRlIGFuYWx5dGljYWwgbWFya2VyIGdlbmVzIGZvciBlYWNoIGNsdXN0ZXIgYW5kIGhvdyB0byB2aXN1YWxpemUgdGhlIGV4cHJlc3Npb24gb2YgZ2VuZXMgb2YgaW50ZXJlc3QgdG8gYWlkIGluIGNsdXN0ZXIgaWRlbnRpZmljYXRpb24gYW5kIGxhYmVsaW5nIGluIHN1YnNlcXVlbnQgc3RlcHMuIAoKVGhpcyBwcm9jZXNzIGNhbiBiZSBhIGhpZ2hseSB2YXJpYWJsZSBwcm9jZXNzLCBmcm9tIHNlZWluZyB3ZWxsLWNoYXJhY3Rlcml6ZWQgbWFya2VyIGdlbmVzIGFzIHRvcCBtYXJrZXJzIHRvIG5lZWRpbmcgdG8gZGlnIHRocm91Z2ggdGhlIGxpdGVyYXR1cmUgYW5kIHBsb3QgdGhlIGV4cHJlc3Npb24gZm9yIG11bHRpcGxlIHNldHMgb2YgZ2VuZXMgb2YgaW50ZXJlc3QuIExpa2UgdGhlIHByZXZpb3VzIHNlY3Rpb25zIChhbmQgbGlrZSBvdGhlciBhcmVhcyBvZiByZXNlYXJjaCksIHdoZW4gdGhpcyBwcm9jZXNzIGlzIG1vcmUgaW52b2x2ZWQgb3IgaXRlcmF0aXZlLCBvZnRlbiBvbmx5IHRoZSBmaW5hbCByZXN1bHRzIGFyZSByZXBvcnRlZC4KCiMjIE9iamVjdGl2ZXMKPCEtLUFkZCBzcGVjaWZpYyBnb2FscyBmb3Igc2VjdGlvbi0tPgotIERldGVybWluZSBnZW5lIG1hcmtlcnMgZm9yIGVhY2ggb2YgdGhlIGNsdXN0ZXJzIHVzaW5nIGBGaW5kQWxsTWFya2VycygpYAotIFZpc3VhbGl6ZSBleHByZXNzaW9uIGFjcm9zcyBjbHVzdGVycyBmb3IgZ2VuZXMgb2YgaW50ZXJlc3QgdXNpbmcgYERvdFBsb3QoKWAKCi0tLQoKIyBDbHVzdGVyIG1hcmtlcnMgYW5kIGNoYXJhY3Rlcml6YXRpb24KCkFmdGVyIGdlbmVyYXRpbmcgY2x1c3RlcnMsIHdlIG5lZWQgdG8gcGVyZm9ybSBkaWZmZXJlbnRpYWwgZXhwcmVzc2lvbiBhbmFseXNpcyB0byBpZGVudGlmeSB0aGUgZ2VuZXMgdGhhdCBkaXN0aW5ndWlzaCB0aG9zZSBjbHVzdGVycyAoW3NvdXJjZV0oaHR0cHM6Ly9vdXlhbmdsYWIuY29tL3NpbmdsZWNlbGwvY2x1c3QuaHRtbCNpZGVudGlmeWluZy1tYXJrZXItZ2VuZXMpKS4gIFRoaXMgc2hvdWxkIGFsbG93IHVzIHRvIGdldCB2aXNpYmlsaXR5IG9uIHNvbWUga2V5IHF1ZXN0aW9ucyBmb3Igb3VyIGNsdXN0ZXJzLCBhcyBbaGlnaGxpZ2h0ZWQgYnkgdGhlIEhCQyBtYXRlcmlhbHNdKGh0dHBzOi8vaGJjdHJhaW5pbmcuZ2l0aHViLmlvL3NjUk5BLXNlcV9vbmxpbmUvbGVzc29ucy8wOV9tZXJnZWRfU0NfbWFya2VyX2lkZW50aWZpY2F0aW9uLmh0bWwpLCBuYW1lbHk6CgotIEFyZSB0aGVyZSBhcmUgYmlvbG9naWNhbGx5IG1lYW5pbmdmdWwgZ2VuZSBleHByZXNzaW9uIGRpZmZlcmVuY2VzIGJldHdlZW4gdGhlIGNsdXN0ZXJzPyAKLSBEb2VzIHRoZSBnZW5lIGV4cHJlc3Npb24gb2YgdGhlIGdlbmVyYXRlZCBjbHVzdGVycyBjb3JyZXNwb25kIHRvIGV4cGVjdGVkIGNlbGwtdHlwZXMgb3Igc3ViLXR5cGVzPyAKLSBBcmUgdGhlcmUgY2x1c3RlcnMgd2l0aCBzaW1pbGFyIGV4cHJlc3Npb24gdGhhdCBzaG91bGQgYmUgY29tYmluZWQgYW5kL29yIGNsdXN0ZXJzIHRoYXQgbWlnaHQgbmVlZCB0byBiZSBzdWItY2x1c3RlcmVkIGludG8gc21hbGxlciBwb3B1bGF0aW9ucz8KCk1hbnkgb2YgdGhlIGRpZmZlcmVudGlhbCBleHByZXNzaW9uIChERSkgdG9vbHMgZGVzaWduZWQgZm9yIGJ1bGsgUk5BLXNlcSBzYW1wbGVzIGhhdmUgYmVlbiBiZW5jaG1hcmtlZCBmb3IgcGVyZm9ybWFuY2Ugb24gc2NSTkEtc2VxIGluIFtTb25lc29uIGFuZCBSb2JpbnNvbiAoMjAxOCldKGh0dHBzOi8vcHVibWVkLm5jYmkubmxtLm5paC5nb3YvMjk0ODE1NDkvKSBhbmQgdGhlcmUgYXJlIGFsc28gZGVkaWNhdGVkIERFIHRvb2xzIGZvciBzY1JOQS1zZXEsIGxpa2UgW01BU1RdKGh0dHBzOi8vZ2Vub21lYmlvbG9neS5iaW9tZWRjZW50cmFsLmNvbS9hcnRpY2xlcy8xMC4xMTg2L3MxMzA1OS0wMTUtMDg0NC01KSwgdGhhdCB1c2UgbW9kZWxzIHRoYXQgYWNjb3VudCBmb3IgdGhlIGV4cGVjdGVkIHNwYXJzZSBzdHJ1Y3R1cmUgb2Ygc2NSTkEtc2VxIGRhdGEuIEhvd2V2ZXIgaW4gb3VyIGFuZCBvdGhlcnMnIGV4cGVyaWVuY2UsIHRoZSBkZWZhdWx0IFdpbGNveG9uIHRlc3QgaXMgb2Z0ZW4gc3VmZmljaWVudCBmb3Igc2ltcGxlIHBhaXJ3aXNlIERFIGNvbXBhcmlzb25zLCB3aGlsZSBlZGdlUiAoW1JvYmluc29uLCBNY0NhcnRoeSwgYW5kIFNteXRoIDIwMTBdKGh0dHBzOi8vcHVibWVkLm5jYmkubmxtLm5paC5nb3YvMTk5MTAzMDgvKSkgaXMgcmVjb21tZW5kZWQgYnkgdGhlIFtPdXlhbmcgTGFiXShbT3V5YW5nXShodHRwczovL291eWFuZ2xhYi5jb20vc2luZ2xlY2VsbC9jbHVzdC5odG1sI2lkZW50aWZ5aW5nLW1hcmtlci1nZW5lcykpIGZvciBtb3JlIGNvbXBsZXggY29tcGFyaXNvbiBkZXNpZ25zLCBzdWNoIGFzIHRob3NlIHRoYXQgaW5jbHVkZSBjb3ZhcmlhdGVzLgoKPCEtLSBBZGRpdGlvbmFsIGNvbnRleHQgZnJvbSBbT3V5YW5nXShodHRwczovL291eWFuZ2xhYi5jb20vc2luZ2xlY2VsbC9jbHVzdC5odG1sI2lkZW50aWZ5aW5nLW1hcmtlci1nZW5lcykgcmVnYXJkaW5nIHRvb2wgb3B0aW9ucyBhbmQgW0hCQyBtYXRlcmlhbHNdKGh0dHBzOi8vaGJjdHJhaW5pbmcuZ2l0aHViLmlvL3NjUk5BLXNlcV9vbmxpbmUvbGVzc29ucy8wOV9tZXJnZWRfU0NfbWFya2VyX2lkZW50aWZpY2F0aW9uLmh0bWwpIHJlZ2FyZGluZyBGaW5kTWFya2VycyB2cyBGaW5kQ29uc2VydmVkTWFya2VycywgZXRjLiAtLT4KCiFbSW1hZ2U6IENvbXBhcmlzb24gb2YgdGhlIHBlcmZvcm1hbmNlIG9mIERFIG1ldGhvZHMgYXBwbGllZCB0byBzY1JOQS1zZXEgZGF0YXNldHMuIE1ldGhvZHMgYXJlIHJhbmtlZCBieSB0aGVpciBhdmVyYWdlIHBlcmZvcm1hbmNlIGFjcm9zcyBhbGwgdGhlIGxpc3RlZCBjcml0ZXJpYS4gSW1hZ2UgdGFrZW4gZnJvbSBTb25lc29uIGFuZCBSb2JpbnNvbiAoMjAxOCkuXSguL2ltYWdlcy9jdXJyaWN1bHVtLzA2LU1hcmtlcklkZW50QW5kVml6L091eWFuZ19jbHVzdC1kZUNvbXBhcmUucG5nKQoKCjxkZXRhaWxzPgogICAgPHN1bW1hcnk+KkFkZGl0aW9uYWwgY29uc2lkZXJhdGlvbnMgZm9yIGRpZmZlcmVudGlhbCBleHByZXNzaW9uKjwvc3VtbWFyeT4KICAgIFRoZSBPdXlhbmcgTGFiIGhhcyBhIFtzZWN0aW9uIG9mIHRoZWlyIHR1dG9yaWFsXShodHRwczovL291eWFuZ2xhYi5jb20vc2luZ2xlY2VsbC9jbHVzdC5odG1sI3NlYzpkaWZmZXhwcikgdGhhdCBkaXNjdXNzZXMgdGhlIG1ldGhvZHMgYXZhaWxhYmxlIGZvciBkaWZmZXJlbnRpYWwgZXhwcmVzc2lvbiBpbmNsdWRpbmcgc29tZSBoaWdobGlnaHRlZCBpbiB0aGUgZmlndXJlIGJlbG93LCBhcyB3ZWxsIGFzIGEgbW9yZSBleHRlbnNpdmUgc2VjdGlvbiBvbiBbdGhyZXNob2xkIGNvbnNpZGVyYXRpb25zXShodHRwczovL291eWFuZ2xhYi5jb20vc2luZ2xlY2VsbC9jbHVzdC5odG1sI3NlYzpkaWZmZXhwciksIHdoaWxlIHRoZSBbSEJDIHNlY3Rpb24gb24gbWFya2VyIGdlbmVzIGlkZW50aWZpY2F0aW9uXShodHRwczovL2hiY3RyYWluaW5nLmdpdGh1Yi5pby9zY1JOQS1zZXFfb25saW5lL2xlc3NvbnMvMDlfbWVyZ2VkX1NDX21hcmtlcl9pZGVudGlmaWNhdGlvbi5odG1sKSBoaWdobGlnaHRzIHRoZSBkaWZmZXJlbnQgdHlwZXMgb2YgbWFya2VyIGlkZW50aWZpY2F0aW9uIG9wdGlvbnMgYXZhaWxhYmxlIHZpYSBTZXVyYXQuCjwvZGV0YWlscz4KPGJyPgoKIyMgTWFya2VyIGlkZW50aWZpY2F0aW9uCgpGaXJzdCwgd2UnbGwgZW5zdXJlIHRoYXQgdGhlIGNvcnJlY3QgcmVzb2x1dGlvbiBpcyBzZWxlY3RlZCBmcm9tIG91ciBTZXVyYXQgb2JqZWN0IGFuZCB0aGVuIHdlJ2xsIHVzZSB0aGUgYFByZXBTQ1RGaW5kTWFya2VycygpYCBbZnVuY3Rpb25dKGh0dHBzOi8vc2F0aWphbGFiLm9yZy9zZXVyYXQvcmVmZXJlbmNlL3ByZXBzY3RmaW5kbWFya2VycykgaW4gcHJlcGFyYXRpb24gZm9yIERFIGNvbWFwcmlzb25zIHRvICJyZXZlcnNlIHRoZSBpbmRpdmlkdWFsIFNDVCByZWdyZXNzaW9uIG1vZGVsIHVzaW5nIG1pbmltdW0gb2YgbWVkaWFuIFVNSSBhcyB0aGUgc2VxdWVuY2luZyBkZXB0aCBjb3ZhcmlhdGUiIGFjY29yZGluZyB0byB0aGUgW1NldXJhdCBkb2N1bWVudGF0aW9uXShodHRwczovL3NhdGlqYWxhYi5vcmcvc2V1cmF0L3JlZmVyZW5jZS9wcmVwc2N0ZmluZG1hcmtlcnMpIDwhLS0gaWYgd2Ugd2FudCB0byB1c2UgdGhlIG5vcm1hbGl6ZWQgUk5BIGRhdGEgKG5vdCB0aGUgaW50ZWdyYXRlZCBkYXRhKSBgRGVmYXVsdEFzc2F5KGdlb19zbykgPC0gIlJOQSJgLCBhbHRob3VnaCBuZWVkIHRvIGNoZWNrIGlmIHRoYXQgc3RpbGwgbWFrZXMgc2Vuc2UgZm9yIFNldXJhdCB2NSAtLT4gCgpUaGVuIHdlJ2xsIHJ1biB0aGVgRmluZEFsbE1hcmtlcnMoKWAgW2Z1bmN0aW9uXShodHRwczovL3NhdGlqYWxhYi5vcmcvc2V1cmF0L3JlZmVyZW5jZS9maW5kYWxsbWFya2VycykgdG8gZ2VuZXJhdGUgY29tcGFyaXNvbnMgYmV0d2VlbiBlYWNoIGNsdXN0ZXIgYW5kIGFsbCBvdGhlciBjZWxscywgcmVnYXJkbGVzcyBvZiB0aGUgZXhwZXJpbWVudGFsIGdyb3VwLiBOb3RlIC0gdGhlIHN0YXRpc3RpY2FsIHRlc3QgdG8gcGVyZm9ybSBjYW4gYmUgc3BlY2lmaWVkIGluIGBGaW5kQWxsTWFya2VycygpYCwgYnV0IHRoZSBkZWZhdWx0IGlzIGEgV2lsY294b24gdGVzdC4gCgpgYGB7ciwgZXZhbCA9IEZBTFNFfQojIHByZXAgZm9yIGNsdXN0ZXIgY29tcGFyaXNvbnMKZ2VvX3NvID0gU2V0SWRlbnQoZ2VvX3NvLCB2YWx1ZSA9ICdpbnRlZ3JhdGVkLnNjdC5ycGNhLmNsdXN0ZXJzJykKZ2VvX3NvID0gUHJlcFNDVEZpbmRNYXJrZXJzKGdlb19zbykKCiMgcnVuIGNvbXBhcmlzb25zIGZvciBlYWNoIGNsdXN0ZXIgdG8gZ2VuZXJhdGUgbWFya2VycwpnZW9fbWFya2VycyA9IEZpbmRBbGxNYXJrZXJzKGdlb19zbywgb25seS5wb3MgPSBUUlVFKQoKIyBUYWtlIGEgbG9vayBhdCB0aGUgZmlyc3QgZmV3IHJvd3Mgb2YgdGhlIHJlc3VsdApoZWFkKGdlb19tYXJrZXJzKQoKIyB3cml0ZSBvdXQgZnVsbCBjbHVzdGVyIG1hcmtlciByZXN1bHRzIHRvIGZpbGUKd3JpdGVfY3N2KGdlb19tYXJrZXJzLCBmaWxlID0gJ3Jlc3VsdHMvdGFibGVzL21hcmtlcl9nZW5lc18wLjQuY3N2JykKYGBgCn5+fgogICAgICAgIHBfdmFsIGF2Z19sb2cyRkMgcGN0LjEgcGN0LjIgcF92YWxfYWRqIGNsdXN0ZXIgICAgZ2VuZQpDb2wxMmExICAgICAwICAgMy45NDE3NzkgMC45MjcgMC4xNDEgICAgICAgICAwICAgICAgIDAgQ29sMTJhMQpUbmMgICAgICAgICAwICAgMy43MDI3NzggMC44NDggMC4xMTIgICAgICAgICAwICAgICAgIDAgICAgIFRuYwpUaGJzMiAgICAgICAwICAgMy42Mzk5MDkgMC45MDEgMC4xNjkgICAgICAgICAwICAgICAgIDAgICBUaGJzMgpMb3ggICAgICAgICAwICAgMi44OTcxNjQgMC45MTUgMC4xODUgICAgICAgICAwICAgICAgIDAgICAgIExveApBZWJwMSAgICAgICAwICAgMi4xNzkzNDUgMC45NzggMC4yODEgICAgICAgICAwICAgICAgIDAgICBBZWJwMQpDdGhyYzEgICAgICAwICAgMy41ODM2MjMgMC45NTQgMC4yNjQgICAgICAgICAwICAgICAgIDAgIEN0aHJjMQp+fn4KCjwhLS0tIENvbnNpZGVyIGFkZGluZyBmaWd1cmUgc2hvd2luZyBleGFtcGxlIG9mIHdoYXQncyBiZWluZyBjb21wYXJlZCAoY2lyY2xlIGNsdXN0ZXIgMSBhbmQgdGhlbiBjaXJjbGUgYWxsIG90aGVyIGNlbGxzIGZvciBleGFtcGxlKSAtLT4KCjxkZXRhaWxzPgogICAgPHN1bW1hcnk+KlNldXJhdCB2NSBpbXByb3ZlbWVudHMqPC9zdW1tYXJ5PgogICAgRm9yIG1hcmtlciBnZW5lcmF0aW9uLCBTZXVyYXQgdjUgdXNlcyB0aGUgW3ByZXN0byBwYWNrYWdlXShodHRwczovL3d3dy5iaW9yeGl2Lm9yZy9jb250ZW50LzEwLjExMDEvNjUzMjUzdjEpIHRvIHJlZHVjZSB0aGUgdGltZSByZXF1aXJlZCB0byBydW4gREUgY29tcGFyaXNvbnMsIHBhcnRpY3VsYXJseSBmb3IgbGFyZ2UgZGF0YXNldHMuIEZvciB1c2VycyB3aG8gYXJlIG5vdCB1c2luZyBwcmVzdG8sIFNldXJhdCByZWNvbW1lbmRzIGluY3JlYXNpbmcgdGhlIG1pbi5wY3QgYW5kIGxvZ2ZjLnRocmVzaG9sZCBwYXJhbWV0ZXJzY3RvIGluY3JlYXNlIHRoZSBzcGVlZCBvZiBERSB0ZXN0aW5nIChbc291cmNlXShodHRwczovL3NhdGlqYWxhYi5vcmcvc2V1cmF0L2FydGljbGVzL3BibWMza190dXRvcmlhbC5odG1sI2ZpbmRpbmctZGlmZmVyZW50aWFsbHktZXhwcmVzc2VkLWZlYXR1cmVzLWNsdXN0ZXItYmlvbWFya2VycykpLgo8L2RldGFpbHM+Cjxicj4KCgpOb3RlIHRoYXQgb3Zlci1pbnRlcnByZXRhdGlvbiBvZiB0aGVzZSByZXN1bHRzIHNob3VsZCBiZSBhdm9pZGVkLCBzaW5jZSBlYWNoIGNlbGwgaXMgdXNlZCBhcyBhIHJlcGxpY2F0ZSBpbiB0aGVzZSBjb21wYXJpc29ucyB3aGljaCBjYW4gbGVhZCB0byBpbmZsYXRlZCAoZS5nLiB2ZXJ5IGxvdykgcC12YWx1ZXMsIHRoZSB0b3AgbWFya2VycyBhcmUgbW9yZSBsaWtlbHkgdG8gYmUgdHJ1c3R3b3J0aHkgKFtzb3VyY2VdKGh0dHBzOi8vaGJjdHJhaW5pbmcuZ2l0aHViLmlvL3NjUk5BLXNlcV9vbmxpbmUvbGVzc29ucy8wOV9tZXJnZWRfU0NfbWFya2VyX2lkZW50aWZpY2F0aW9uLmh0bWwpKS4gCgpUaGVyZWZvcmUsIGl0J3MgdXNlZnVsIHRvIGZpbHRlciB0aGUgcmVzdWx0cyB0byBoaWdobGlnaHQgdGhlIHRvcCBwb3NpdGl2ZSBtYXJrZXJzIChzaW5jZSBhIHBvc2l0aXZlIGZvbGQtY2hhbmdlIHdvdWxkIG1lYW4gdGhhdCBnZW5lIGlzIG1vcmUgaGlnaGx5IGV4cHJlc3NlZCBpbiB0aGUgY2x1c3RlciBjb21wYXJlZCB0byBhbGwgb3RoZXIgY2VsbHMpLCBiZWZvcmUgbG9va2luZyBhdCBvdXIgcmVzdWx0cwoKYGBge3IsIGV2YWw9RkFMU0V9CiMgY3JlYXRlIHRhYmxlIG9mIHRvcCA1IG1hcmtlcnMgcGVyIGNsdXN0ZXIKdG9wXzVfYnlfbG9nMkZDID0gZ2VvX21hcmtlcnMgJT4lIGdyb3VwX2J5KGNsdXN0ZXIpICU+JSBhcnJhbmdlKHBfdmFsX2FkaiwgZGVzYyhhdmdfbG9nMkZDKSkgJT4lIHNsaWNlX2hlYWQobiA9IDUpCgojIGxvb2sgYXQgcmVzdWx0cwpoZWFkKHRvcF81X2J5X2xvZzJGQykKYGBgCn5+fgojIEEgdGliYmxlOiA2IMOXIDcKIyBHcm91cHM6ICAgY2x1c3RlciBbMl0KICBwX3ZhbCBhdmdfbG9nMkZDIHBjdC4xIHBjdC4yIHBfdmFsX2FkaiBjbHVzdGVyIGdlbmUgCiAgPGRibD4gICAgICA8ZGJsPiA8ZGJsPiA8ZGJsPiAgICAgPGRibD4gPGZjdD4gICA8Y2hyPgoxICAgICAwICAgICAgIDUuNzkgMC4wODYgMC4wMDQgICAgICAgICAwIDAgICAgICAgVWNtYSAKMiAgICAgMCAgICAgICA1LjYyIDAuMTMyIDAuMDA1ICAgICAgICAgMCAwICAgICAgIENpbHAyCjMgICAgIDAgICAgICAgNS41NiAwLjQzNyAwLjAxNiAgICAgICAgIDAgMCAgICAgICBTY3ggIAo0ICAgICAwICAgICAgIDUuNDUgMC4wODQgMC4wMDMgICAgICAgICAwIDAgICAgICAgTWF0bjMKNSAgICAgMCAgICAgICA1LjMwIDAuMTM3IDAuMDA3ICAgICAgICAgMCAwICAgICAgIEtlcmEgCjYgICAgIDAgICAgICAgNS4xNSAwLjIzOCAwLjAxICAgICAgICAgIDAgMSAgICAgICBDNyAKfn5+CgpXZSBleHBlY3QgdG8gc2VlIHNldmVyYWwgY29sdW1uczoKCi0gYGdlbmVgOiBnZW5lIHN5bWJvbAotIGBwX3ZhbGA6IHAtdmFsdWUgbm90IGFkanVzdGVkIGZvciBtdWx0aXBsZSB0ZXN0IGNvcnJlY3Rpb24KLSBgYXZnX2xvZ0ZDYDogYXZlcmFnZSBsb2cgZm9sZCBjaGFuZ2UuIFBvc2l0aXZlIHZhbHVlcyBpbmRpY2F0ZSB0aGF0IHRoZSBnZW5lIGlzIG1vcmUgaGlnaGx5IGV4cHJlc3NlZCBpbiB0aGUgY2x1c3Rlci4KLSBgcGN0LjFgOiBwZXJjZW50YWdlIG9mIGNlbGxzIHdoZXJlIHRoZSBnZW5lIGlzIGRldGVjdGVkIGluIHRoZSBjbHVzdGVyIAotIGBwY3QuMmA6IHBlcmNlbnRhZ2Ugb2YgY2VsbHMgd2hlcmUgdGhlIGdlbmUgaXMgZGV0ZWN0ZWQgb24gYXZlcmFnZSBhY3Jvc3MgYWxsIG90aGVyIGNsdXN0ZXJzIAotIGBwX3ZhbF9hZGpgOiBhZGp1c3RlZCBwLXZhbHVlIGJhc2VkIG9uIGJvbmZlcnJvbmkgY29ycmVjdGlvbiB1c2luZyBhbGwgZ2VuZXMgaW4gdGhlIGRhdGFzZXQsIHVzZWQgdG8gZGV0ZXJtaW5lIHNpZ25pZmljYW5jZQotIGBjbHVzdGVyYDogY2x1c3RlciByZXByZXNlbnRlZCBieSBgcGN0LjFgIGFuZCBmb3Igd2hpY2ggdGhlIHN0YXRpc3RpY3MgaW4gdGhlIHJvdyBhcmUgcmVwb3J0ZWQKCgpXaGVuIGxvb2tpbmcgYXQgdGhlIG91dHB1dCwgaXQgaXMgaW1wb3J0YW50IHRvIHByaW9yaXRpemUgbWFya2VyIGdlbmVzIHdpdGggYm90aCBsYXJnZXIgZm9sZC1jaGFuZ2UgZGlmZmVyZW5jZXMgYW5kIGxhcmdlciBkaWZmZXJlbmNlIGJldHdlZW4gcGN0LjEgYW5kIHBjdC4yLCBwYXJ0aWN1bGFybHkgaWYgcGN0LjEgaXMgaGlnaCAoZS5nLiBpZiA4MCUgb2YgY2VsbHMgaW4gdGhlIGNsdXN0ZXIgZXZhbHVhdGVkIGV4cHJlc3MgdGhlIGdlbmUgdGhhdCBtb3JlIHJlbGlhYmxlIHRoYW4gaWYgb25seSAyMCUgb2YgY2VsbHMgZXhwcmVzcyB0aGF0IGdlbmUpIChbc291cmNlXShodHRwczovL2hiY3RyYWluaW5nLmdpdGh1Yi5pby9zY1JOQS1zZXFfb25saW5lL2xlc3NvbnMvMDlfbWVyZ2VkX1NDX21hcmtlcl9pZGVudGlmaWNhdGlvbi5odG1sKSkuCgojIyBNYXJrZXIgdmlzdWFsaXphdGlvbgoKTm93IHRoYXQgd2UgaGF2ZSBnZW5lcmF0ZWQgYSBzZXQgb2YgbWFya2VyIGdlbmVzIGZvciBvdXIgY2x1c3RlcnMsIGl0IGlzIHVzZWZ1bCB0byB2aXN1YWxpemUgdGhlIGV4cHJlc3Npb24gb2YgdGhvc2UgbWFya2VycyB0byBhaWQgaW4gZXZhbHVhdGluZyB0aGVtLiBXaGlsZSB0aGUgZXhwcmVzc2lvbiBvZiBpbmRpdmlkdWFsIGdlbmVzIHBlciBjZWxsIGNhbiBiZSBvdmVybGFpZCBvbiBvdXIgVU1BUHMgKGFzIHdpdGggdGhlIGBGZWF0dXJlUGxvdCgpYCBbZnVuY3Rpb25dKGh0dHBzOi8vc2F0aWphbGFiLm9yZy9zZXVyYXQvcmVmZXJlbmNlL2ZlYXR1cmVwbG90KSksIGl0J3Mgb2Z0ZW4gbW9yZSB1c2VmdWwgdG8gdmlzdWFsaXplIHRoZSBleHByZXNzaW9uIG9mIG11bHRpcGxlIGdlbmVzIHNpbXVsdGFuZW91c2x5LiBXaGlsZSB0aGVyZSBhcmUgW211bHRpcGxlIG1ldGhvZHMgc3VwcG9ydGVkIGJ5IFNldXJhdF0oaHR0cHM6Ly9zYXRpamFsYWIub3JnL3NldXJhdC9hcnRpY2xlcy92aXN1YWxpemF0aW9uX3ZpZ25ldHRlKSBmb3IgIHZpc3VhbGl6aW5nIG1hcmtlciBnZW5lIGV4cHJlc3Npb24sIGEgaGVhdG1hcCBvciBhIHJlbGF0ZWQgcGxvdCBjYWxsZWQgYSBkb3RwbG90IGFyZSBjb21tb25seSB1c2VkLiAKCldlJ2xsIHVzZSB0aGUgYERvdFBsb3QoKWAgW2Z1bmN0aW9uXShodHRwczovL3NhdGlqYWxhYi5vcmcvc2V1cmF0L3JlZmVyZW5jZS9kb3RwbG90KSB3aXRoIHRoZSBTQ1QgdmFsdWVzIHRvIHZpc3VhbGl6ZSB0aGUgdG9wIDUgbWFya2VyIGdlbmVzIHBlciBjbHVzdGVyOgoKYGBge3IsIGV2YWw9RkFMU0V9CiMgZ2VuZXJhdGUgcGxvdAp0b3BfNV9zY3RfZG90X3Bsb3QgPSBEb3RQbG90KGdlb19zbywgZmVhdHVyZXMgPSB1bmlxdWUodG9wXzVfYnlfbG9nMkZDJGdlbmUpKSArIAogICAgdGhlbWUoYXhpcy50ZXh0LnggPSBlbGVtZW50X3RleHQoYW5nbGUgPSA5MCwgaGp1c3QgPSAxLCB2anVzdCA9IDAuNSkpICsKICAgIGxhYnModGl0bGUgPSAnVG9wIDUgQ2x1c3RlciBHZW5lcyBieSBGRFIgYW5kIGF2Z19sb2cyRkMnKSArIGNvb3JkX2ZsaXAoKQp0b3BfNV9zY3RfZG90X3Bsb3QKCiMgc2F2ZSBEb3RwbG90IHRvIGZpbGUKZ2dzYXZlKGZpbGVuYW1lID0gJ3Jlc3VsdHMvZmlndXJlcy9tYXJrZXJzX3RvcF81X3NjdF9kb3RfcGxvdC5wbmcnLCBwbG90ID0gdG9wXzVfc2N0X2RvdF9wbG90LCB3aWR0aCA9IDgsIGhlaWdodCA9IDE4LCB1bml0cyA9ICdpbicpIApgYGAKCkluIHRoZSBkb3RwbG90IHdlIGNhbiBzZWUgdGhhdCB0aGUgY29sb3IgaW5kaWNhdGVzIHRoZSBleHByZXNzaW9uIG9mIHRoZSBnZW5lIHdoaWxlIHRoZSBzaXplIG9mIHRoZSBkb3QgaW5kaWNhdGVzIHRoZSBwcm9wb3J0aW9uIG9mIGNlbGxzIGV4cHJlc3NpbmcgdGhhdCBnZW5lIGluIGVhY2ggY2x1c3RlciAoW3NvdXJjZV0oaHR0cHM6Ly9vdXlhbmdsYWIuY29tL3NpbmdsZWNlbGwvY2x1c3QuaHRtbCN2aXN1YWxpc2luZy1tYXJrZXItZ2VuZXMpKS4gCgohW0ZpZ3VyZTogRG90cGxvdCBvZiB0b3AgNSBtYXJrZXJzIHBlciBjbHVzdGVyXSguL2ltYWdlcy9jdXJyaWN1bHVtLzA2LU1hcmtlcklkZW50QW5kVml6L21hcmtlcnNfdG9wXzVfc2N0X2RvdF9wbG90LnBuZykgCgoKPGRldGFpbHM+CiAgICA8c3VtbWFyeT4qVXNpbmcgcmF3IFJOQSB2YWx1ZXMgaW4gRG90cGxvdHMqPC9zdW1tYXJ5PgogICAgSW4gYWRkaXRpb24gdG8gcGxvdHRpbmcgdGhlIFNDVCB2YWx1ZXMsIHRoZSByYXcgb3Igbm9ybWFsaXplZCBSTkEgdmFsdWVzIGNhbiBiZSBwbG90dGVkIGFzIHdlbGw6CgpgYGB7ciwgZXZhbD1GQUxTRX0KdG9wXzVfcm5hX2RvdF9wbG90ID0gRG90UGxvdChnZW9fc28sIGZlYXR1cmVzID0gdW5pcXVlKHRvcF81X2J5X2xvZzJGQyRnZW5lKSwgYXNzYXkgPSAnUk5BJykgKyAKICAgIHRoZW1lKGF4aXMudGV4dC54ID0gZWxlbWVudF90ZXh0KGFuZ2xlID0gOTAsIGhqdXN0ID0gMSwgdmp1c3QgPSAwLjUpKSArCiAgICBsYWJzKHRpdGxlID0gJ1RvcCA1IENsdXN0ZXIgR2VuZXMgYnkgRkRSIGFuZCBhdmdfbG9nMkZDJykgKyBjb29yZF9mbGlwKCkKCmdnc2F2ZShmaWxlbmFtZSA9ICdyZXN1bHRzL2ZpZ3VyZXMvbWFya2Vyc190b3BfNV9ybmFfZG90X3Bsb3QucG5nJywgcGxvdCA9IHRvcF81X3JuYV9kb3RfcGxvdCwgd2lkdGggPSA4LCBoZWlnaHQgPSAxOCwgdW5pdHMgPSAnaW4nKSAKYGBgCiAgICAKPC9kZXRhaWxzPgo8YnI+Cgo8YnI+CgoKIyBVdGlsaXppbmcgZ2VuZXMgb2YgaW50ZXJlc3QKCk9mdGVuIHdlIGhhdmUgcHJpb3IgaW5mb3JtYXRpb24gYWJvdXQgd2hhdCBjZWxsIHR5cGVzIGFyZSBleHBlY3RlZCBpbiBvdXIgc2FtcGxlcyBhbmQga2V5IG1hcmtlciBnZW5lcyBmb3IgdGhvc2UgcG9wdWxhdGlvbnMuIFRoaXMgY2FuIGJlIGFuIGltcG9ydGFudCBwYXJ0IG9mIGV2YWx1YXRpbmcgb3VyIGNsdXN0ZXJzLCBzaW5jZSBpZiBnZW5lcyB0aGF0IGFyZSBrbm93biBtYXJrZXJzIGZvciBhIHNwZWNpZmljIGNlbGwgdHlwZSBhcmUgZm91bmQgaW4gdG9vIG1hbnkgb3IgdG9vIGZldyBjbHVzdGVycyBhcyB0aGF0IGNhbiBzdWdnZXN0IHRoYXQgcmUtY2x1c3RlcmluZyBpcyBuZWVkZWQgb3IgdGhhdCBzb21lIG9mIHRoZSBjbHVzdGVycyBzaG91bGQgYmUgbWFudWFsbHkgY29tYmluZWQgYmVmb3JlIGFubm90YXRpbmcuCgpXZSBjYW4gY3JlYXRlIGxpc3RzIG9mIG1hcmtlcnMgdXNlZCBpbiBmaWd1cmVzIGZyb20gdGhlIFtvcmlnaW5hbCBwYXBlcl0oaHR0cHM6Ly93d3cubmNiaS5ubG0ubmloLmdvdi9wbWMvYXJ0aWNsZXMvUE1DNzAwMjQ1My8pIGJlZm9yZSB1c2luZyB0aGUgc2FtZSBgRG90UGxvdCgpYCBmdW5jdGlvbiB0byB2aXN1YWxpemUgdGhlIGV4cHJlc3Npb24gbGV2ZWwgYW5kIGZyZXF1ZW5jeSBvZiB0aGVzZSBnZW5lcyBpbiBvdXIgY3VycmVudCBjbHVzdGVyczoKCmBgYHtyLCBldmFsPUZBTFNFfQojIG1hbnVhbGx5IGNyZWF0ZSBsaXN0cyBvZiBnZW5lcyBmcm9tIHBhcGVyCmZpZzFnX21hcmtlcnMgPSBjKCdDeGNsMScsICdDeGNsMicsICdDY2wyJywgJ0NjbDMnLCAnQ2NsNCcsICdJbDFiJywgJ0lsNmInLCAnVG5mJywgJ1RnZmIxJywgJ1RnZmIyJywgJ1RnZmIzJywgJ0N4Y2w1JykKZmlnMWhfbWFya2VycyA9IGMoJ0N4Y3IyJywgJ0NzZjFyJywgJ0NzZjNyJywgJ1RnZmJyMScsICdUZ2ZicjMnLCAnSWwxcjEnLCAnSWw2cmEnLCAnTGlmcicsICdUZ2ZicjInKQoKIyBjcmVhdGUgRG90UGxvdHMgZm9yIGdlbmVzIGZyb20gcGFwZXIKZmlnMWdfc2N0X2RvdF9wbG90ID0gRG90UGxvdChnZW9fc28sIGZlYXR1cmVzID0gZmlnMWdfbWFya2VycywgYXNzYXkgPSAnU0NUJykKZmlnMWhfc2N0X2RvdF9wbG90ID0gRG90UGxvdChnZW9fc28sIGZlYXR1cmVzID0gZmlnMWhfbWFya2VycywgYXNzYXkgPSAnU0NUJykKCmZpZzFnX3NjdF9kb3RfcGxvdAoKIyBzYXZlIHBsb3RzIHRvIGZpbGUKZ2dzYXZlKGZpbGVuYW1lID0gJ3Jlc3VsdHMvZmlndXJlcy9tYXJrZXJzX2ZpZzFnX3NjdF9kb3RfcGxvdC5wbmcnLCBwbG90ID0gZmlnMWdfc2N0X2RvdF9wbG90LCB3aWR0aCA9IDgsIGhlaWdodCA9IDYsIHVuaXRzID0gJ2luJykKZ2dzYXZlKGZpbGVuYW1lID0gJ3Jlc3VsdHMvZmlndXJlcy9tYXJrZXJzX2ZpZzFoX3NjdF9kb3RfcGxvdC5wbmcnLCBwbG90ID0gZmlnMWhfc2N0X2RvdF9wbG90LCB3aWR0aCA9IDgsIGhlaWdodCA9IDYsIHVuaXRzID0gJ2luJykKYGBgCgohW10oLi9pbWFnZXMvY3VycmljdWx1bS8wNi1NYXJrZXJJZGVudEFuZFZpei9tYXJrZXJzX2ZpZzFnX3NjdF9kb3RfcGxvdC5wbmcpCgo8ZGV0YWlscz4KICAgIDxzdW1tYXJ5PipVc2luZyByYXcgUk5BIHZhbHVlcyBmb3IgZ2VuZXMgb2YgaW50ZXJlc3QqPC9zdW1tYXJ5PgogICAgV2UgY2FuIGFsc28gZ2VuZXJhdGUgdGhlIHNhbWUgcGxvdHMsIGJ1dCB1c2luZyB0aGUgdW5pbnRlZ3JhdGVkIGRhdGEgYnkgc3BlY2lmeWluZyB0aGUgYFJOQWAgYXNzYXk6CgpgYGB7ciwgZXZhbD1GQUxTRX0Kcm5hX2RvdF9wbG90ID0gRG90UGxvdChnZW9fc28sIGZlYXR1cmVzID0gZmlnMWdfbWFya2VycywgYXNzYXkgPSAnUk5BJykKZmlnMWhfcm5hX2RvdF9wbG90ID0gRG90UGxvdChnZW9fc28sIGZlYXR1cmVzID0gZmlnMWhfbWFya2VycywgYXNzYXkgPSAnUk5BJykKCmdnc2F2ZShmaWxlbmFtZSA9ICdyZXN1bHRzL2ZpZ3VyZXMvbWFya2Vyc19maWcxZ19ybmFfZG90X3Bsb3QucG5nJywgcGxvdCA9IGZpZzFnX3JuYV9kb3RfcGxvdCwgd2lkdGggPSA4LCBoZWlnaHQgPSA2LCB1bml0cyA9ICdpbicpCmdnc2F2ZShmaWxlbmFtZSA9ICdyZXN1bHRzL2ZpZ3VyZXMvbWFya2Vyc19maWcxaF9ybmFfZG90X3Bsb3QucG5nJywgcGxvdCA9IGZpZzFoX3JuYV9kb3RfcGxvdCwgd2lkdGggPSA4LCBoZWlnaHQgPSA2LCB1bml0cyA9ICdpbicpCmBgYAo8L2RldGFpbHM+Cjxicj4KCkZvciBrbm93biBtYXJrZXIgZ2VuZXMsIGl0J3MgaW1wb3J0YW50IHRvIG5vdGUgdGhhdCBzaW5jZSBzY1JOQS1zZXEgaXMgb25seSBtZWFzdXJpbmcgdHJhbnNjcmlwdGlvbmFsIHNpZ25hbHMgdGhhdCBtYXJrZXJzIGF0IHRoZSBwcm90ZWluIGxldmVsIChlLmcgdXNlZCBmb3IgYXBwcm9hY2hlcyBsaWtlIEZBQ1MpIG1heSBiZSBsZXNzIGVmZmVjdGl2ZS4gQW4gYWx0ZXJuYXRpdmUgb3IgY29tcGxlbWVudCB0byB1c2luZyBtYXJrZXIgZ2VuZXMgY291bGQgYmUgbWV0aG9kcyBsaWtlIHVzaW5nIGdlbmUgc2V0IGVucmljaG1lbnQgKEdTRUEpIFthcyBkZW1vbnN0cmF0ZWQgaW4gdGhlIE9TQ0EgYm9va10oaHR0cHM6Ly9iaW9jb25kdWN0b3Iub3JnL2Jvb2tzLzMuMTUvT1NDQS5iYXNpYy9jZWxsLXR5cGUtYW5ub3RhdGlvbi5odG1sI2NvbXB1dGluZy1nZW5lLXNldC1hY3Rpdml0aWVzKSB0byBhaWQgaW4gYW5ub3RhdGlvbnMuIEhvd2V2ZXIsIHRoZSBib29rIFsiQmVzdCBwcmFjdGljZXMgZm9yIHNpbmdsZS1jZWxsIGFuYWx5c2lzIGFjcm9zcyBtb2RhbGl0aWVzIiBieSBIZXVtb3MsIFNjaGFhciwgTGFuY2UsIGV0IGFsLiBdKGh0dHBzOi8vd3d3LnNjLWJlc3QtcHJhY3RpY2VzLm9yZy9jZWxsdWxhcl9zdHJ1Y3R1cmUvYW5ub3RhdGlvbi5odG1sKSBwb2ludHMgb3V0IHRoYXQgIml0IGlzIG9mdGVuIHVzZWZ1bCB0byB3b3JrIHRvZ2V0aGVyIHdpdGggZXhwZXJ0cyAuLi4gW2xpa2UgYV0gYmlvbG9naXN0IHdobyBoYXMgbW9yZSBleHRlbnNpdmUga25vd2xlZGdlIG9mIHRoZSB0aXNzdWUsIHRoZSBiaW9sb2d5LCB0aGUgZXhwZWN0ZWQgY2VsbCB0eXBlcyBhbmQgbWFya2VycyBldGMuIi4gSW4gb3VyIGV4cGVyaWVuY2UsIHdlIGZpbmQgdGhhdCBleHBlcmllbmNlIGFuZCBrbm93bGVkZ2Ugb2YgdGhlIHJlc2VhcmNoZXJzIHdlIHdvcmsgd2l0aCBpcyBpbnZhbHVhYmxlLiAKCgoKIyBTYXZlIG91ciBwcm9ncmVzcwoKRmluYWxseSwgd2UnbGwgY3JlYXRlIGFuIG91dHB1dCBmaWxlIGZvciBvdXIgdXBkYXRlZCBTZXVyYXQgb2JqZWN0IGFuZCBmb3IgdGhlIGNsdXN0ZXIgbWFya2VyIHJlc3VsdHM6CgpgYGB7ciwgZXZhbD1GQUxTRX0Kc2F2ZVJEUyhvYmplY3QgPSBnZW9fc28sIGZpbGUgPSAncmVzdWx0cy9yZGF0YS9nZW9fc29fc2N0X2ludGVncmF0ZWRfd2l0aF9tYXJrZXJzLnJkcycpCnNhdmVSRFMob2JqZWN0ID0gZ2VvX21hcmtlcnMsIGZpbGUgPSAncmVzdWx0cy9yZGF0YS9nZW9fbWFya2Vycy5yZHMnKQpgYGAKCiMgU3VtbWFyeQoKTm93IHRoYXQgd2UgaGF2ZSBjaGFyYWN0ZXJpemVkIHRoZSBleHByZXNzaW9uIG9mIGJvdGggYW5hbHl0aWNhbCBtYXJrZXIgZ2VuZXMgYW5kIGxpdGVyYXR1cmUgLyBrbm93bGVkZ2UtYmFzZWQgbWFya2VyIGdlbmVzLCB3ZSBtYXkgaGF2ZSBhIGJldHRlciBzZW5zZSBvZiB3aGF0IGNlbGwtdHlwZXMgb3Igc3VidHlwZXMgb3VyIGNsdXN0ZXJzIG1pZ2h0IGNvcnJlc3BvbmQgdG8uICAgCgpIb3dldmVyLCBtYXJrZXIgZ2VuZXMgYWxvbmUgbWlnaHQgbm90IGJlIHN1ZmZpY2llbnQgdG8gZGV0ZXJtaW5lIGNlbGwtdHlwZSBvciBzdWItdHlwZSBsYWJlbHMgZm9yIG91ciBjbHVzdGVycyBzbyB3ZSB3aWxsIGRpc2N1c3Mgb3RoZXIgbW9yZSBhdXRvbWF0ZWQgYXBwcm9hY2hlcyB0byBjb21wbGVtZW50IHRoZXNlIHJlc3VsdHMuCgoKTmV4dCBzdGVwczogQ2VsbCB0eXBlIHByZWRpY3Rpb24gdG9vbHMKCgoKLS0tLQoKVGhlc2UgbWF0ZXJpYWxzIGhhdmUgYmVlbiBhZGFwdGVkIGFuZCBleHRlbmRlZCBmcm9tIG1hdGVyaWFscyBsaXN0ZWQgYWJvdmUuIFRoZXNlIGFyZSBvcGVuIGFjY2VzcyBtYXRlcmlhbHMgZGlzdHJpYnV0ZWQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBbQ3JlYXRpdmUgQ29tbW9ucyBBdHRyaWJ1dGlvbiBsaWNlbnNlIChDQyBCWSA0LjApXShodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9saWNlbnNlcy9ieS80LjAvKSwgd2hpY2ggcGVybWl0cyB1bnJlc3RyaWN0ZWQgdXNlLCBkaXN0cmlidXRpb24sIGFuZCByZXByb2R1Y3Rpb24gaW4gYW55IG1lZGl1bSwgcHJvdmlkZWQgdGhlIG9yaWdpbmFsIGF1dGhvciBhbmQgc291cmNlIGFyZSBjcmVkaXRlZC4KCjxici8+Cjxici8+Cjxoci8+CnwgW1ByZXZpb3VzIGxlc3Nvbl0oMDUtUHJvamVjdGlvbkFuZENsdXN0ZXJpbmcuaHRtbCkgfCBbVG9wIG9mIHRoaXMgbGVzc29uXSgjdG9wKSB8IFtOZXh0IGxlc3Nvbl0oMDctQ2VsbFR5cGVBbm5vcy5odG1sKSB8CnwgOi0tLSB8IDotLS0tOiB8IC0tLTogfAoK</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("06-MarkerVisualization.Rmd");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
