@@ -30,7 +30,7 @@ pre {
 
 ```{r, include = FALSE}
 source("../bin/chunk-options.R")
-knitr_fig_path("08-")
+knitr_fig_path("08-DifferentialExpression/08-")
 ```
 
 # Workflow Overview {.unlisted .unnumbered}
@@ -58,6 +58,18 @@ We already introduced DE comparisons in the [marker identification section of th
 
 ----
 
+```{r, read_rds_hidden, echo = FALSE, warning = FALSE, message = FALSE}
+if(!exists('geo_so')) {
+  library(Seurat)
+  library(BPCells)
+  library(tidyverse)
+
+  options(future.globals.maxSize = 1e9)
+
+  geo_so = readRDS('results/rdata/geo_so_sct_integrated_with_catch.rds')
+}
+```
+
 # Differential Expression
 
 For single-cell data there are generally two types approaches for running differential expression - either a cell-level or sample-level approach. 
@@ -71,7 +83,7 @@ As discussed in the [single-cell best practices book](https://www.sc-best-practi
 <!-- add more in depth model comparisons options later?
 ## Model options
 
-Wilcoxin (default), DESeq2, MAST, etc.
+Wilcoxon (default), DESeq2, MAST, etc.
 -->
 
 ## Standard comparisons
@@ -80,7 +92,7 @@ First we'll run cell-level comparisons for our data for the monocyte cluster, st
 
 <!-- add UMAP with facets by groups to show what's being compared? -->
 
-```{r, eval=FALSE}
+```{r, de_wilcox1, message = FALSE, warning = FALSE}
 # set up combined label of day + celltype & assign as identities
 geo_so$day.celltype = paste(geo_so$day, geo_so$cell_type, sep = '_')
 Idents(geo_so) = 'day.celltype'
@@ -91,33 +103,34 @@ de_cell_monocytes_D21_vs_D0 = FindMarkers(
     slot = 'data', test = 'wilcox',
     ident.1 = 'Day21_Monocyte', ident.2 = 'Day0_Monocyte')
 
+head(de_cell_monocytes_D21_vs_D0)
+
+# Add rownames as a column for output
+de_cell_monocytes_D21_vs_D0$gene = rownames(de_cell_monocytes_D21_vs_D0)
+
 # summarize our results
 table(de_cell_monocytes_D21_vs_D0$p_val_adj < 0.05 & abs(de_cell_monocytes_D21_vs_D0$avg_log2FC) > 1.5)
 
 write_csv(de_cell_monocytes_D21_vs_D0, file = 'results/tables/de_standard_monocytes_D21_vs_D0.csv')
 ```
-~~~
-FALSE  TRUE 
-10890    10
-~~~
 
 Note - the `avg_log2FC` threshold of 1.5 we use here are quite stringent as the default log2FC threshold for the function is 0.25. However the default threshold corresponds to only a 19% difference in RNA levels, which is quite permissive. 
 
 If there is enough time - we can also compare between cells from the D7 and D0 conditions.
-```{r, eval=FALSE}
+
+```{r, de_wilcox2, message = FALSE, warning = FALSE}
 # run comparison for D7 vs D0, using wilcoxon test
 de_cell_monocytes_D7_vs_D0 = FindMarkers(
     object = geo_so,
     slot = 'data', test = 'wilcox',
     ident.1 = 'Day7_Monocyte', ident.2 = 'Day0_Monocyte')
 
+# Add rownames as a column for output
+de_cell_monocytes_D7_vs_D0$gene = rownames(de_cell_monocytes_D7_vs_D0)
+
 # summarize results
 table(de_cell_monocytes_D7_vs_D0$p_val_adj < 0.05 & abs(de_cell_monocytes_D7_vs_D0$avg_log2FC) > 1.5)
 ```
-~~~
-FALSE  TRUE 
-10571   333
-~~~
 
 This same approach can be extended to run pairwise comparisons between conditions for each annotated cluster.
 
@@ -134,7 +147,8 @@ With advances in the technology as well as decreased sequencing costs allowing f
 <!-- add UMAP with facets by sample to show what's being compared? -->
 
 We'll run psuedobulk comparisons for our data for the monocyte cluster, starting with the D21 vs D0 conditions. We'll need to generate the aggregated counts first (ensuring that we are grouping cells by replicate labels), before labeling the cells to reflect the cluster and condition. Then we will run our comparison using `FindMarker()` but specifying DESeq2 as our method before summarizing the results:
-```{r, eval=FALSE}
+
+```{r, de_pseudobulk, message = FALSE, warning = FALSE}
 # Create pseudobulk 
 pseudo_catch_so = AggregateExpression(geo_so, assays = 'RNA', return.seurat = TRUE, group.by = c('cell_type', 'day', 'replicate'))
 
@@ -148,28 +162,28 @@ de_pseudo_monocytes_D21_vs_D0 = FindMarkers(
     ident.1 = 'Day21_Monocyte', ident.2 = 'Day0_Monocyte', 
     test.use = 'DESeq2')
 
+# Take a look at the table
+head(de_pseudo_monocytes_D21_vs_D0)
+
+# Add rownames as a column for output
+de_pseudo_monocytes_D21_vs_D0$gene = rownames(de_pseudo_monocytes_D21_vs_D0)
+
 # look at results, using the same thresholds
 table(de_pseudo_monocytes_D21_vs_D0$p_val_adj < 0.05 & abs(de_pseudo_monocytes_D21_vs_D0$avg_log2FC) > 1.5)
 
 # output results
 write_csv(de_pseudo_monocytes_D21_vs_D0, file = 'results/tables/de_pseudo_monocytes_D21_vs_D0.csv')
 ```
-~~~
-FALSE  TRUE 
-14467    19 
-~~~
 
 
 Since we're working with pseudobulk data, unlike in the marker identification section, there is no percentage of cells expressing to need to represent so we can summarize our DE results with a volcano plot:
-```{r, eval=FALSE}
+
+```{r, de_pseudobulk_volcano, warning = FALSE, message = FALSE}
 pseudo_monocytes_D21_vs_D0_volcano = ggplot(de_pseudo_monocytes_D21_vs_D0, aes(x = avg_log2FC, y = -log10(p_val))) + geom_point()
 pseudo_monocytes_D21_vs_D0_volcano
 
 ggsave(filename = 'results/figures/volcano_de_pseudo_monocytes_D21_vs_D0.png', plot = pseudo_monocytes_D21_vs_D0_volcano, width = 7, height = 7, units = 'in')
 ```
-
-![Figure: D21 vs D0 pseudobulk volcano plot](./images/curriculum/08-DifferentialExpression/volcano_de_pseudo_monocytes_D21_vs_D0.png)   
-
 
 <!--- 
 ### Iterating over all clusters
@@ -187,16 +201,11 @@ Beyond differential expression within clusters, there are many other possible av
 - Cell - Cell communication network inference, see [review by Wilk et al (2023)](https://www.nature.com/articles/s41587-023-01782-z)
 - Velocity analysis (note: not compatible with the flex probe based kits), see [the chapter from the single-cells best practices book](https://www.sc-best-practices.org/trajectories/rna_velocity.html) for detailed theory/modeling or the [10x data vignette for velocyto](https://pklab.med.harvard.edu/velocyto/notebooks/R/SCG71.nb.html) for a practical example in R
 
-
 We would recommend looking for studies in similar tissues or experimental questions and see what kind of approaches and tools were used to answer questions related to your biological question
 
 # Summary
 
 Reviewing these results should allow us to identify genes of interest that are impacted by injury and in the context of the cell-types in which they are differentially expressed, formalize some hypotheses for what cell-types or biological processes might be contributing to aberrant bone formation. 
-
-
-
-
 
 ----
 
@@ -207,4 +216,3 @@ These materials have been adapted and extended from materials listed above. Thes
 <hr/>
 | [Previous lesson](07-CellTypeAnnos.html) | [Top of this lesson](#top) | [Workshop Wrap Up](workshop_wrap_up.html) |
 | :--- | :----: | ---: |
-

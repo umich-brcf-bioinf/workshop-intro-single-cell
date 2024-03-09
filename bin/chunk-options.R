@@ -15,7 +15,7 @@ fix_fig_path <- function(pth) file.path(pth)
 ## first episode of the lesson, it will generate the figures in
 ## `fig/rmd-01-`
 knitr_fig_path <- function(prefix) {
-    new_path <- paste0('fig/',
+    new_path <- paste0('images/curriculum/',
                       prefix)
     opts_chunk$set(fig.path = new_path)
 }
@@ -28,7 +28,7 @@ knitr_fig_path <- function(prefix) {
 ## `fig.process` option.
 
 opts_chunk$set(tidy = FALSE, results = "markup", comment = NA,
-               fig.align = "center", fig.path = "fig/rmd-",
+               fig.align = "center", fig.path = "images/curriculum/rmd-",
                fig.process = fix_fig_path,
                fig.width = 8.5, fig.height = 8.5,
                fig.retina = 2)

@@ -30,7 +30,7 @@ pre {
 
 ```{r, include = FALSE}
 source("../bin/chunk-options.R")
-knitr_fig_path("03-")
+knitr_fig_path("03-Normalization/03-")
 ```
 
 # Workflow Overview {.unlisted .unnumbered}
@@ -56,26 +56,32 @@ A key driver of technical variation is cellular sequencing depth (that is, the n
 
 ---
 
+```{r, read_rds_hidden, echo = FALSE, warning = FALSE, message = FALSE}
+if(!exists('geo_so')) {
+  library(Seurat)
+  library(BPCells)
+  library(tidyverse)
+
+  options(future.globals.maxSize = 1e9)
+
+  geo_so = readRDS('results/rdata/geo_so_filtered.rds')
+}
+```
+
 # Normalization
 
 We will use the `SCTransform()` function, which uses a generalized linear model (GLM) framework to account for cell-level sequencing depth while also stabilizing the variance of the counts. Let's get the normalization started, as it takes a little time, and then we can explain what it's doing and why it is an improvement on alternate methods.
 
 First, we'll run the following command to separate the data from each sample into layers, a requirement of Seurat v5:
 
-```{r, eval = FALSE}
+```{r, convert_to_layers}
 geo_so[['RNA']] = split(geo_so[['RNA']], f = geo_so$orig.ident)
 geo_so
 ```
-~~~
-An object of class Seurat 
-26489 features across 29615 samples within 1 assay 
-Active assay: RNA (26489 features, 0 variable features)
- 12 layers present: counts.HO.Day0.replicate1, counts.HO.Day0.replicate2, counts.HO.Day0.replicate3, counts.HO.Day0.replicate4, counts.HO.Day21.replicate1, counts.HO.Day21.replicate2, counts.HO.Day21.replicate3, counts.HO.Day21.replicate4, counts.HO.Day7.replicate1, counts.HO.Day7.replicate2, counts.HO.Day7.replicate3, counts.HO.Day7.replicate4
-~~~
 
 We see the 12 layers containing the count data for each of the samples. Next, run `SCTransform()`:
 
-```{r, eval = FALSE}
+```{r, normalize, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
 geo_so = SCTransform(geo_so)
 ```
 
@@ -113,25 +119,24 @@ From the Seurat documentation, the `SCTransform()` function "replaces `Normalize
 
 By now, `SCTransform()` should have finished running, so let's take a look at the result:
 
-```{r, eval = FALSE}
+```{r, preview_seurat}
 geo_so
 ```
-~~~
-An object of class Seurat 
-47037 features across 29615 samples within 2 assays 
-Active assay: SCT (20548 features, 3000 variable features)
- 3 layers present: counts, data, scale.data
- 1 other assay present: RNA
-~~~
 
 We observe that the active assay is now "SCT", but that the "RNA" assay is still present. `SCTransform()` has also determined the common variable features across the cells to be used in our downstream analysis.
 
-# Save the Seurat object
+# Save our progress
 
 Let's save this normalized form of our Seurat object.
 
-```{r, eval = FALSE}
-saveRDS(object = geo_so, file = 'results/rdata/geo_so_sct_normalized.rds')
+```{r, save_rds_hidden, echo = FALSE}
+if(!file.exists('results/rdata/geo_so_sct_normalized.rds')) {
+  saveRDS(geo_so, file = 'results/rdata/geo_so_sct_normalized.rds')
+}
+```
+
+```{r, save_rds, eval = FALSE}
+saveRDS(geo_so, file = 'results/rdata/geo_so_sct_normalized.rds')
 ```
 
 # Summary
@@ -149,7 +154,3 @@ These materials have been adapted and extended from materials listed above. Thes
 <hr/>
 | [Previous lesson](02-QCandFiltering.html) | [Top of this lesson](#top) | [Next lesson](04-PCAandIntegration.html) |
 | :--- | :----: | ---: |
-
-
-
-

@@ -30,7 +30,7 @@ pre {
 
 ```{r, include = FALSE}
 source("../bin/chunk-options.R")
-knitr_fig_path("07-")
+knitr_fig_path("07-CellTypeAnnotation/07-")
 ```
 
 # Workflow Overview {.unlisted .unnumbered}
@@ -53,12 +53,31 @@ Like the previous sections, the process to assign cell-types to clusters can be 
 -  Understand the complexities of cell-type annotation    
 -  Use `scCATCH` cell-type predictions to annotate our clusters    
 
-
 ----
 
+```{r, read_rds_hidden, echo = FALSE, warning = FALSE, message = FALSE}
+if(!exists('geo_so')) {
+  library(Seurat)
+  library(BPCells)
+  library(tidyverse)
+
+  options(future.globals.maxSize = 1e9)
+
+  geo_so = readRDS('results/rdata/geo_so_sct_integrated_with_markers.rds')
+}
+
+if(!exists('geo_markers')) {
+  library(Seurat)
+  library(BPCells)
+  library(tidyverse)
+
+  options(future.globals.maxSize = 1e9)
+
+  geo_markers = readRDS('results/rdata/geo_markers.rds')
+}
+```
 
 # Cell type predictions
-
 
 Automated tools have the advantage of being able to compare between the expression patterns in our dataset and large numbers of reference datasets or databases at a scale that is not feasible to do manually.
 
@@ -72,7 +91,6 @@ As described [in more detail by the Ouyang Lab](https://ouyanglab.com/singlecell
 
 However, across any of these approaches the quality of the reference data (and reliability of the authors labels) and relevancy to your specific tissue/experiment (and the resolution of your biological question) is crucial. Additionally, it's important to consider that rare or novel cell populations may not be present or well-characterized in available references and that even after filtering some clusters correspond to stressed or dying cells and not a particular cell-type or subtype. Therefore, any prediction should be reviewed and considered in the context both marker gene expression for the dataset and knowledge of the biological system and broader literature. 
 
-
 Some tools and references are available primarily for human tissues (and not mouse or rat), particular for tissues other than PBMCs and the brain. For human data, if a relevant reference is available for your experiment, we would recommend trying [Azimuth (created by authors of Seurat)](https://azimuth.hubmapconsortium.org/). [10x has a tutorial](https://www.10xgenomics.com/analysis-guides/automated-cell-type-annotation-from-r-to-loupe-using-louper) that includes example of using Azimuth, including a feature of the tool that allows for first pass of cell-type assignment of more common cell-types followed by identifying rarer populations that may not be identified in the first pass. 
 
 <details>
@@ -80,7 +98,6 @@ Some tools and references are available primarily for human tissues (and not mou
     Automated cell-type annotation is an active area of research and development and many other tools and resources are available, including [OSCA's demonstration of the SingleR method](https://bioconductor.org/books/3.15/OSCA.basic/cell-type-annotation.html), a [Tutorial by Clarke et al. for cell-type annotations](https://pubmed.ncbi.nlm.nih.gov/34031612/), and an [entire chapter of the SC best practices book](https://www.sc-best-practices.org/cellular_structure/annotation.html#automated-annotation).
 </details>
 <br>
-
 
 # Using scCATCH
 
@@ -94,7 +111,7 @@ First, we need to load the scCATCH library. Then, we'll double check that we are
 
 To increase the speed and accuracy of our predictions, we'll create query of relevant tissues (which requires some prior knowledge of the experiment and using the [scCATCH wiki](https://github.com/ZJUFanLab/scCATCH/wiki) to select tissues from the species) before we run the tool:
 
-```{r, eval=FALSE}
+```{r, sccatch, message = FALSE, warning = FALSE}
 library(scCATCH)
 
 # check that cell identities are set to expected resolution 
@@ -115,40 +132,16 @@ geo_catch = findcelltype(geo_catch)
 # look at the predictions
 geo_catch@celltype %>% select(cluster, cell_type, celltype_score)
 ```
-~~~
-   cluster               cell_type celltype_score
-1        0               Stem Cell           0.83
-2        1 Hematopoietic Stem Cell           0.87
-3        2              Macrophage           0.82
-4        3          Dendritic Cell           0.86
-5        4                Monocyte           0.82
-6        5               Stem Cell           0.88
-7        6              Neutrophil           0.81
-8        7               Stem Cell           0.85
-9        8 Hematopoietic Stem Cell           0.90
-10       9 Hematopoietic Stem Cell           0.87
-11      10 Hematopoietic Stem Cell           0.91
-12      11   Muscle Satellite Cell           0.94
-13      12             CD8+ T Cell           0.90
-14      13             CD8+ T Cell           0.88
-15      14             CD8+ T Cell           0.89
-16      15     Embryonic Stem Cell           0.87
-17      16 Hematopoietic Stem Cell           0.87
-18      17 Hematopoietic Stem Cell           0.88
-19      18             Muscle Cell           0.69
-~~~
 
 When we look at our results we can see the cell type score, which gives us an idea of the confidence of that prediction. Not shown here but the full `celltype` table also includes marker genes and PMIDs for relevant literature for each prediction.
 
 As these cell-types correspond to the cell-types and subtypes we'd expect to be present in these data and most of the prediction scores are quite high, we can reasonably use these results to annotate our clusters. In our experience, the scCATCH results often help guide cluster annotation but scores can vary and the predictions may need to be revised based on researcher's knowledge of the biological system.
 
-
-
 # Annotate clusters
 
 Next, we'll add celltype the predictions to our Seurat object to replace our clusters' numerical identities. Note: we will create a new metadata object where we join cell types. However, this will destroy the row names - which will cause a problem in Seurat - so we have to add them back.
 
-```{r, eval=FALSE}
+```{r, annotate_clusters}
 # Extract the cell types only to merge into the meta.data
 catch_celltypes = geo_catch@celltype %>% select(cluster, cell_type)
 
@@ -168,21 +161,30 @@ head(geo_so@meta.data)
 
 Lastly, we can generate a revised UMAP plot with our descriptive cluster labels by using our updated Seurat object and providing the new `cell_type` label for the `group.by` argument:
 
-```{r, eval=FALSE}
+```{r, catch_umap_plot, fig.width = 10, fig.height = 8}
 catch_umap_plot = DimPlot(geo_so, group.by = 'cell_type', label = TRUE, reduction = 'umap.integrated.sct.rpca')
 catch_umap_plot
 
-ggsave(filename = 'results/figures/umap_integrated_catch.png', plot = catch_umap_plot, width = 8, height = 7, units = 'in')
+ggsave(filename = 'results/figures/umap_integrated_catch.png', plot = catch_umap_plot, width = 10, height = 8, units = 'in')
 ```
-
-![Image: UMAP with cell-type labels.](./images/curriculum/07-CellTypeAnnotation/umap_integrated_catch.png)
 
 # Save our progress
 
 We'll save the scCATCH object. The Seurat object has not been changed in this module.
 
-```{r, eval = FALSE}
-saveRDS(object = geo_catch, file = 'results/rdata/geo_catch.rds')
+```{r, save_rds_hidden, echo = FALSE}
+if(!file.exists('results/rdata/geo_so_sct_integrated_with_catch.rds')) {
+  saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated_with_catch.rds')
+}
+
+if(!file.exists('results/rdata/geo_catch.rds')) {
+  saveRDS(geo_catch, file = 'results/rdata/geo_catch.rds')
+}
+```
+
+```{r, save_rds, eval=FALSE}
+saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated_with_catch.rds')
+saveRDS(geo_catch, file = 'results/rdata/geo_catch.rds')
 ```
 
 # Summary
@@ -200,4 +202,3 @@ These materials have been adapted and extended from materials listed above. Thes
 <hr/>
 | [Previous lesson](06-MarkerVisualization.html) | [Top of this lesson](#top) | [Next lesson](08-DifferentialExpression.html) |
 | :--- | :----: | ---: |
-
