@@ -30,7 +30,7 @@ pre {
 
 ```{r, include = FALSE}
 source("../bin/chunk-options.R")
-knitr_fig_path("XX")
+knitr_fig_path("04-PCAandIntegration/04-")
 ```
 # Workflow Overview {.unlisted .unnumbered}
 
@@ -38,8 +38,6 @@ knitr_fig_path("XX")
 <img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
 <br/>
 <br/>
-
-
 
 # Introduction 
 
@@ -61,6 +59,17 @@ Similar to the previous sections, the process of selecting informative dimension
 
 ---
 
+```{r, read_rds_hidden, echo = FALSE, warning = FALSE, message = FALSE}
+if(!exists('geo_so')) {
+  library(Seurat)
+  library(BPCells)
+  library(tidyverse)
+
+  options(future.globals.maxSize = 1e9)
+
+  geo_so = readRDS('results/rdata/geo_so_sct_normalized.rds')
+}
+```
 
 # Dimensionality reduction
 
@@ -132,29 +141,11 @@ Since PCA is sensitive to scale, we will run it on the SCT normalized assay ([re
 
 In the console, the first 5 PCs are listed along with the associated genes. We can print out the top 5 (gene) features per dimension by accessing that part of the Seurat object::
 
-```{r, eval = FALSE}
+```{r, run_pca, warning = FALSE, message = FALSE}
 geo_so = RunPCA(geo_so, reduction.name = 'unintegrated.sct.pca')
 
 print(geo_so[['unintegrated.sct.pca']], dims = 1:5, nfeatures = 5)
 ```
-~~~
-PC_ 1 
-Positive:  Col1a1, Col3a1, Col1a2, Sparc, Dcn 
-Negative:  Lyz2, Cd74, Apoe, H2-Aa, C1qb 
-PC_ 2 
-Positive:  Col1a1, Col3a1, Col1a2, Dcn, Lyz2 
-Negative:  Fabp4, Aqp1, Pecam1, Egfl7, Flt1 
-PC_ 3 
-Positive:  Apoe, Fabp4, C1qb, Lyz2, C1qa 
-Negative:  Eef1a1, Rps28, Myl6, Slc25a4, Rpl13 
-PC_ 4 
-Positive:  Apoe, Pf4, C1qa, C1qb, Ccl8 
-Negative:  Cd74, H2-Ab1, H2-Aa, H2-Eb1, Acta2 
-PC_ 5 
-Positive:  Acta2, Rgs5, Tagln, Myl9, Apoe 
-Negative:  Cd74, H2-Ab1, H2-Aa, H2-Eb1, Il1b
-~~~
-
 
 <!--- Should this dim loading section drawn from [Ho Lab](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#standard-pre-processing-workflow) be included in the main content? Note - would need to run command in script & capture output  --->
 
@@ -163,34 +154,29 @@ We can also visualize both the cell and gene features that define each principal
 
 We can highlight genes loaded for each dimension using using `VizDimLoadings()` or look at how cells load on the first two principal components, similarly to how we often look at samples for bulk RNA-seq, with the `DimPlot()` function, or use `DimHeatmap()`, which orders both cells and features according to their PCA scores and allows us to see some general patterns in the data:
 
-```{r, eval=FALSE}
+```{r, pca_loading_plot}
 # gene loadings
 VizDimLoadings(geo_so, dims = 1:2, reduction = 'unintegrated.sct.pca')
 ggsave(filename = 'results/figures/qc_pca_loadings.png', width = 12, height = 6, units = 'in')
+```
 
+```{r, pca_plot}
 # PCA style plot for PC1 and PC2
 DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'day')
 ggsave(filename = 'results/figures/qc_pca_plot_unintegrated_sct_day.png', width = 7, height = 6, units = 'in')
+```
 
+```{r, pca_heatmap_plot}
 # Heatmaps 
 DimHeatmap(geo_so, dims=1:3, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca')
+```
 
-# note - need to use a more general output function to save the heatmap to file since function above doesn't return a `ggplot` object
+```{r, save_pca_heatmap_plot, warning = FALSE, message = FALSE}
+# note - need to use png() because this isn't a ggplot
 png(filename = 'results/figures/qc_pca_heatmap.png', width = 12, height = 4, units = 'in', res = 300)
 DimHeatmap(geo_so, dims=1:3, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca')
 dev.off()
 ```
-
-![Figure: PCA loadings](./images/curriculum/04-PCAandIntegration/qc_pca_loadings.png)
-<br>
-
-![Figure: PCA plot](./images/curriculum/04-PCAandIntegration/qc_pca_plot_unintegrated_sct_day.png)
-<br>
-
-![Figure: Heatmap](./images/curriculum/04-PCAandIntegration/qc_pca_heatmap.png)
-<br>
-
-
 
 > #### How does Seurat use PCA scores? {.unlisted .unnumbered}
 > 
@@ -216,12 +202,10 @@ Related - how important is that decision to the downstream impact (e.g. how much
 
 One way to determine how many PCs to include is by looking at an elbow plot, which shows the percent variance explained by successive PCs.
 
-```{r, eval=FALSE}
+```{r, elbow_plot}
 ElbowPlot(geo_so, ndims = 50, reduction = 'unintegrated.sct.pca')
 ggsave(filename = 'results/figures/qc_sct_elbow_plot.png', width = 8, height = 8, units = 'in')
 ```
-
-![Image: Elbow plot](./images/curriculum/04-PCAandIntegration/qc_sct_elbow_plot.png)
 
 In this plot, we could arbitrarily choose a number along the x-axis that looks like a sharp change in the variance from one PC to the next, that is, an elbow. Of course, the choice is not always obvious, and this plot is no different. We could also try to quantify our choice.
 
@@ -230,7 +214,7 @@ In this plot, we could arbitrarily choose a number along the x-axis that looks l
 
 Instead of choosing based on the elbow plot, we can create a function to return minimum PCs based on two possible metrics (cumulative variation or above a minium step size) and then apply that function to our data:
 
-```{r, eval=FALSE}
+```{r, optimal_pcs}
 # Function to determine optimal PCs after RunPCA()
 optimal_pcs = function(so, reduction) {
     # quantitative check for number of PCs to include
@@ -247,9 +231,6 @@ optimal_pcs = function(so, reduction) {
 pcs = optimal_pcs(geo_so, 'unintegrated.sct.pca')
 pcs
 ```
-~~~~
-15
-~~~~
 
 
 Again, this number is likely a starting point and may need to revise depending on the outcome of the downstream steps. 
@@ -264,7 +245,7 @@ Having normalized the data with `SCTransform()` and performed the dimension redu
 
 New to Seurat v5 is the improved `IntegrateLayers()` function which makes selecting different integration methods much easier. The results of each alternative integration method are stored within the same `Seurat` object, which makes comparing downstream effects much easier.  So, if we wanted to run the slightly faster `RPCAIntegration` method, we would run (**but we won't here**):
 
-```{r, eval = FALSE}
+```{r, integrate_layers, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
 ### DO NOT RUN ###
 geo_so = IntegrateLayers(
   object = geo_so, 
@@ -284,19 +265,13 @@ Note we have specified the unintegrated reduction `unintegrated.sct.pca`, which 
 > 
 > ```{r, eval = FALSE}
 > geo_so = readRDS('/home/workshop/rcavalca/ISC_R/results/rdata/geo_so_sct_integrated.rds')
-
-# check our updated object that we've read in from file
-geo_so
 > ```
-> ~~~
-> An object of class Seurat 
-> 47037 features across 29615 samples within 2 assays 
-> Active assay: SCT (20548 features, 3000 variable features)
->   3 layers present: counts, data, scale.data
->   1 other assay present: RNA
->   2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca
-> ~~~
->
+> 
+
+```{r, preview_seurat}
+# Check our updated object that we've read in from file
+geo_so
+```
 
 Observe that we now have a new reduction, `integrated.sct.rpca`, which we will use downstream.
 
@@ -311,10 +286,18 @@ ggsave(filename = 'results/figures/qc_pca_plot_integrated_sct_day.png', width = 
 ![](./images/curriculum/04-PCAandIntegration/qc_pca_plot_integrated_sct_day.png)
 --->
 
+# Save our progress
+
 Before we move on, let's save our updated Seurat object to file:
 
-```{r, eval=FALSE}
-saveRDS(object = geo_so, file = 'results/rdata/geo_so_sct_integrated.rds')
+```{r, save_rds_hidden, echo = FALSE}
+if(!file.exists('results/rdata/geo_so_sct_integrated.rds')) {
+  saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated.rds')
+}
+```
+
+```{r, save_rds, eval = FALSE}
+saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated.rds')
 ```
 
 > **Other integration methods**
@@ -343,7 +326,6 @@ In this section, we:
 
 Next steps: Clustering and projection
 
-
 ----
 
 These materials have been adapted and extended from materials listed above. These are open access materials distributed under the terms of the [Creative Commons Attribution license (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.
@@ -353,6 +335,3 @@ These materials have been adapted and extended from materials listed above. Thes
 <hr/>
 | [Previous lesson](03-Normalization.html) | [Top of this lesson](#top) | [Next lesson](05-ProjectionAndClustering.html) |
 | :--- | :----: | ---: |
-
-
-

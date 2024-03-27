@@ -30,7 +30,7 @@ pre {
 
 ```{r, include = FALSE}
 source("../bin/chunk-options.R")
-knitr_fig_path("XX")
+knitr_fig_path("02-QCandFiltering/02-")
 ```
 
 # Workflow Overview {.unlisted .unnumbered}
@@ -63,22 +63,25 @@ Similar to many other areas of research, there are often gaps between how single
 
 ---
 
+```{r, read_rds_hidden, echo = FALSE, warning = FALSE, message = FALSE}
+if(!exists('geo_so')) {
+  library(Seurat)
+  library(BPCells)
+  library(tidyverse)
+
+  options(future.globals.maxSize = 1e9)
+
+  geo_so = readRDS('results/rdata/geo_so_unfiltered.rds')
+}
+```
+
 # Adding metadata
 
 We're going to alter and add some columns to `meta.data` to ease some downstream analysis and plotting steps. This will often be necessary, as sample names contain combined information about phenotypes. Let's take a look at the first few rows again, to reacquaint ourselves.
 
-```{r, eval = FALSE}
+```{r, preview_metadata1}
 head(geo_so@meta.data)
 ```
-~~~
-                                          orig.ident nCount_RNA nFeature_RNA
-HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1      10234         3226
-HODay0replicate1_AAACCTGGTCATGCAT-1 HODay0replicate1       3158         1499
-HODay0replicate1_AAACCTGTCAGAGCTT-1 HODay0replicate1      13464         4102
-HODay0replicate1_AAACGGGAGAGACTTA-1 HODay0replicate1        577          346
-HODay0replicate1_AAACGGGAGGCCCGTT-1 HODay0replicate1       1189          629
-HODay0replicate1_AAACGGGCAACTGGCC-1 HODay0replicate1       7726         2602
-~~~
 
 We can add arbitrary per-cell information to this table such as:
 
@@ -88,29 +91,21 @@ We can add arbitrary per-cell information to this table such as:
 - Cell cycle phase for each cell.
 - Other custom annotations for each cell.
 
-The first things we'll do is make `orig.ident` a factor in the correct order of the days so that our plots display in chronological order:
+First, we'll make `orig.ident` a factor in the correct order of the days so that our plots display in chronological order. Next, we'll make a copy of the `meta.data` data frame so we are free to make mistakes, and then extract the day and replicate information.
 
-```{r, eval = FALSE}
+```{r, alter_metadata}
 # Make metadata more granular, this is a quality of life thing
 orig.ident_levels = apply(
     expand.grid(c('HO'), c('replicate1', 'replicate2', 'replicate3', 'replicate4'), c('Day0','Day7','Day21')), 
     MARGIN = 1, FUN = function(row){paste(row[1], row[3], row[2], sep = '.')})
-```
 
-Next, we'll split up the values of `orig.ident` by `.`s so that we can easily extract the day and replicate information. First, we'll make a copy of the `meta.data` data frame so we are free to make mistakes:
-
-```{r, eval = FALSE}
 tmp_meta = geo_so@meta.data
 
 tmp_meta$orig.ident = gsub('HO', 'HO.', tmp_meta$orig.ident)
 tmp_meta$orig.ident = gsub('rep', '.rep', tmp_meta$orig.ident)
 
 tmp_meta$orig.ident = factor(tmp_meta$orig.ident, levels = orig.ident_levels)
-```
 
-Finally, we'll grab the day information and the replicate information. We'll also make the day column adhere to the correct ordering:
-
-```{r, eval = FALSE}
 # Add day information
 tmp_meta$day = factor(str_split(tmp_meta$orig.ident, pattern = '[.]', simplify = TRUE)[,2], levels = c('Day0', 'Day7', 'Day21'))
 
@@ -120,37 +115,23 @@ tmp_meta$replicate = str_split(tmp_meta$orig.ident, pattern = '[.]', simplify = 
 
 Taking a look at our handiwork:
 
-```{r, eval = FALSE}
+```{r, preview_metadata2}
 head(tmp_meta)
 ```
-~~~
-                                            orig.ident nCount_RNA nFeature_RNA  day  replicate
-HODay0replicate1_AAACCTGAGAGAACAG-1 HO.Day0.replicate1      10234         3226 Day0 replicate1
-HODay0replicate1_AAACCTGGTCATGCAT-1 HO.Day0.replicate1       3158         1499 Day0 replicate1
-HODay0replicate1_AAACCTGTCAGAGCTT-1 HO.Day0.replicate1      13464         4102 Day0 replicate1
-HODay0replicate1_AAACGGGAGAGACTTA-1 HO.Day0.replicate1        577          346 Day0 replicate1
-HODay0replicate1_AAACGGGAGGCCCGTT-1 HO.Day0.replicate1       1189          629 Day0 replicate1
-HODay0replicate1_AAACGGGCAACTGGCC-1 HO.Day0.replicate1       7726         2602 Day0 replicate1
-~~~
 
 Now that we're satisfied that we have what we want, let's slide this table into `geo_so@meta.data`:
 
-```{r, eval = FALSE}
+```{r, update_metadata}
+# Assign the updated metadata to that in the Seurat object
 geo_so@meta.data = tmp_meta
-head(geo_so@meta.data)
 
 # Set the Idents(geo_so) to the new orig.ident
 Idents(geo_so) = 'orig.ident'
 ```
-~~~
-                                            orig.ident nCount_RNA nFeature_RNA  day  replicate
-HODay0replicate1_AAACCTGAGAGAACAG-1 HO.Day0.replicate1      10234         3226 Day0 replicate1
-HODay0replicate1_AAACCTGGTCATGCAT-1 HO.Day0.replicate1       3158         1499 Day0 replicate1
-HODay0replicate1_AAACCTGTCAGAGCTT-1 HO.Day0.replicate1      13464         4102 Day0 replicate1
-HODay0replicate1_AAACGGGAGAGACTTA-1 HO.Day0.replicate1        577          346 Day0 replicate1
-HODay0replicate1_AAACGGGAGGCCCGTT-1 HO.Day0.replicate1       1189          629 Day0 replicate1
-HODay0replicate1_AAACGGGCAACTGGCC-1 HO.Day0.replicate1       7726         2602 Day0 replicate1
-~~~
+
+```{r, preview_metadata3}
+head(geo_so@meta.data)
+```
 
 # Quality Metrics
 
@@ -180,23 +161,13 @@ The number of UMIs detected (`nCount`) and number of expressed features (`nFeatu
 
 The `PercentageFeatureSet()` function enables us to quickly determine the counts belonging to a subset of the possible features for each cell. Since mitochondrial transcripts in mouse begin with "mt", we will use that pattern to count the percentage of reads coming from mitochondrial transcripts.
 
-```{r, eval = FALSE}
+```{r, assign_percent_mt}
 # We use "mt" because this is mouse, depending on the organism, this might need to be changed
-geo_so@meta.data$percent.mt = PercentageFeatureSet(geo_so, pattern = '^mt-')
-
-# Alternate way to add this column
 geo_so$percent.mt = PercentageFeatureSet(geo_so, pattern = '^mt-')
-
-# Alternate way to add this column
-geo_so[['percent.mt']] = PercentageFeatureSet(geo_so, pattern = '^mt-')
 
 # Use summary() to quickly check the range of values
 summary(geo_so$percent.mt)
 ```
-~~~
-   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  0.000   1.817   2.582   5.281   3.865  98.244
-~~~
 
 Just looking at the summary, we can see that there are some cells with a high percentage of mitochondrial reads.
 
@@ -212,40 +183,32 @@ A violin plot can help show the distributions of a quantity across multiple samp
 
 Let's begin with a violin plot of `nFeature_RNA` for only one sample, `HO.Day21.replicate1`:
 
-```{r, eval = FALSE}
+```{r, single_violin_plot, echo = FALSE}
 VlnPlot(subset(geo_so, orig.ident == 'HO.Day21.replicate1'), features = 'nFeature_RNA', assay = 'RNA', layer = 'counts') + NoLegend()
 ```
-
-![](./images/curriculum/qc_nFeature_violin_HODay21replicate1.png)
 
 A violin plot is similar to a box plot, but it shows the density of the data at different values. Here the individual points are the cells from `HO.Day21.replicate1` and the y-axis is the value of `nFeature_RNA` for that cell. The violin part of the function is essentially showing the density of the cells at different values of `nFeature_RNA`.
 
 Now let's look at the `nFeature_RNA` violin plot across all the samples.
 
-```{r, eval = FALSE}
+```{r, feature_plot}
 VlnPlot(geo_so, features = 'nFeature_RNA', assay = 'RNA', layer = 'counts') + NoLegend()
 ggsave(filename = 'results/figures/qc_nFeature_violin.png', width = 12, height = 6, units = 'in')
 ```
 
-![](./images/curriculum/qc_nFeature_violin.png)
-
 We observe what look like systematic differences between the days. Day 7 appears to have many cells with a low number of genes measured, but also many cells with a higher number of genes measured. Let's continue with the `nCount_RNA` plot.
 
-```{r, eval = FALSE}
+```{r, count_plot}
 VlnPlot(geo_so, features = 'nCount_RNA', assay = 'RNA', layer = 'counts') + NoLegend()
 ggsave(filename = 'results/figures/qc_nCount_violin.png', width = 12, height = 6, units = 'in')
 ```
 
-![](./images/curriculum/qc_nCount_violin.png)
-
 We observe a similar systematic difference between the days in the total UMI counts per cell, with Day 0 having fewer depth overall. There is an outlier cell in HODay0replicate1, with over 100K unique UMIs detected. This cell is very likely a doublet. Finally, lets plot the `percent.mt`.
 
-```{r, eval = FALSE}
+```{r, mito_plot}
 VlnPlot(geo_so, features = 'percent.mt', assay = 'RNA', layer = 'counts') + NoLegend()
 ggsave(filename = 'results/figures/qc_mito_violin.png', width = 12, height = 6, units = 'in')
 ```
-
-![](images/curriculum/qc_mito_violin.png)
 
 We see that most samples have cells with a majority of mitochondrial reads <25%, but many samples have cells with >25%. We'll want to make sure to filter out these cells.
 
@@ -255,26 +218,10 @@ Generally, many tutorials use a cutoff of 5-10% mitochondrial. However, for some
 
 It's a good idea to record how many cells we started with in our experiment, and how many cells we have after filtering. So before we discuss filtering further, let's record the number of cells per sample.
 
-```{r, eval = FALSE}
+```{r, prefilter_cell_counts}
 cell_counts_pre_tbl = geo_so@meta.data %>% count(orig.ident, name = 'prefilter_cells')
 cell_counts_pre_tbl
 ```
-
-~~~
-            orig.ident prefilter_cells
-1   HO.Day0.replicate1            1183
-2   HO.Day0.replicate2             689
-3   HO.Day0.replicate3            1310
-4   HO.Day0.replicate4            1053
-5   HO.Day7.replicate1            5765
-6   HO.Day7.replicate2            6020
-7   HO.Day7.replicate3            6285
-8   HO.Day7.replicate4            5166
-9  HO.Day21.replicate1            2321
-10 HO.Day21.replicate2            1322
-11 HO.Day21.replicate3            1275
-12 HO.Day21.replicate4            2827
-~~~
 
 It appears that Cell Ranger called many more cells in HODay0replicate1 than the other samples. Based on the QC visualization, probably erroneously so.
 
@@ -288,26 +235,10 @@ After looking at the plots of `nFeature_RNA`, `nCount_RNA`, and `percent.mt`, we
 
 We could preview what the resulting cell counts would be with these thresholds:
 
-```{r, eval = FALSE}
+```{r, preview_postfilter_cell_counts}
 subset(geo_so, subset = nFeature_RNA > 500 & percent.mt < 25)@meta.data %>% 
     count(orig.ident, name = 'postfilter_cells')
 ```
-
-~~~
-            orig.ident postfilter_cells
-1   HO.Day0.replicate1             1049
-2   HO.Day0.replicate2              615
-3   HO.Day0.replicate3             1191
-4   HO.Day0.replicate4              943
-5   HO.Day7.replicate1             4928
-6   HO.Day7.replicate2             4932
-7   HO.Day7.replicate3             4897
-8   HO.Day7.replicate4             4242
-9  HO.Day21.replicate1             2000
-10 HO.Day21.replicate2             1182
-11 HO.Day21.replicate3             1166
-12 HO.Day21.replicate4             2470
-~~~
 
 ## Using adaptive thresholds
 
@@ -317,66 +248,29 @@ For this workshop we will use the above fixed thresholds to match the publicatio
 
 Let's remove the cells with `nFeature_RNA <= 500` and `percent.mt >= 25`.
 
-```{r, eval = FALSE}
+```{r, filter_seurat}
 geo_so = subset(geo_so, subset = nFeature_RNA > 500 & percent.mt < 25)
 geo_so
 ```
-~~~
-An object of class Seurat 
-26489 features across 29615 samples within 1 assay 
-Active assay: RNA (26489 features, 0 variable features)
- 1 layer present: counts
-~~~
 
 Note that the `subset()` command uses an expression in terms of the cells we **want to keep**. Now we'll take a look at the cells per sample post-filtering:
 
-```{r, eval = FALSE}
+```{r, postfilter_cell_counts}
 cell_counts_post_tbl = geo_so@meta.data %>% count(orig.ident, name = 'postfilter_cells')
 cell_counts_post_tbl
 ```
 
-~~~
-            orig.ident postfilter_cells
-1   HO.Day0.replicate1             1049
-2   HO.Day0.replicate2              615
-3   HO.Day0.replicate3             1191
-4   HO.Day0.replicate4              943
-5   HO.Day7.replicate1             4928
-6   HO.Day7.replicate2             4932
-7   HO.Day7.replicate3             4897
-8   HO.Day7.replicate4             4242
-9  HO.Day21.replicate1             2000
-10 HO.Day21.replicate2             1182
-11 HO.Day21.replicate3             1166
-12 HO.Day21.replicate4             2470
-~~~
 
 Looking at the total number of cells per sample is helpful to understand both how the called "cells" compare to what was expected for the experiment. It also allows us to determine the impact of our filtering thresholds. Let's combine the pre and post tables:
 
-```{r, eval = FALSE}
+```{r, cell_counts}
 cell_counts_tbl = cell_counts_pre_tbl %>% left_join(cell_counts_post_tbl, by = 'orig.ident')
 cell_counts_tbl
 ```
 
-~~~
-            orig.ident prefilter_cells postfilter_cells
-1   HO.Day0.replicate1            1183             1049
-2   HO.Day0.replicate2             689              615
-3   HO.Day0.replicate3            1310             1191
-4   HO.Day0.replicate4            1053              943
-5   HO.Day7.replicate1            5765             4928
-6   HO.Day7.replicate2            6020             4932
-7   HO.Day7.replicate3            6285             4897
-8   HO.Day7.replicate4            5166             4242
-9  HO.Day21.replicate1            2321             2000
-10 HO.Day21.replicate2            1322             1182
-11 HO.Day21.replicate3            1275             1166
-12 HO.Day21.replicate4            2827             2470
-~~~
-
 Let's also write this table to a file.
 
-```{r, eval = FALSE}
+```{r, write_cell_counts}
 write_csv(cell_counts_tbl, file = 'results/tables/cell_filtering_counts.csv')
 ```
 
@@ -386,12 +280,18 @@ write_csv(cell_counts_tbl, file = 'results/tables/cell_filtering_counts.csv')
 
 <!--Additional aside - For single-nuclei experiments removing background/ambient RNA with CellBlender OR DecontX is an important additional step since nuclei are both sticky and porous-->
 
-# Save the Seurat object
+# Save our progress
 
 Let's save this filtered form of our Seurat object. It will also include our changes to the `meta.data`:
 
-```{r, eval = FALSE}
-saveRDS(object = geo_so, file = 'results/rdata/geo_so_filtered.rds')
+```{r, save_rds_hidden, echo = FALSE}
+if(!file.exists('results/rdata/geo_so_filtered.rds')) {
+  saveRDS(geo_so, file = 'results/rdata/geo_so_filtered.rds')
+}
+```
+
+```{r, save_rds, eval = FALSE}
+saveRDS(geo_so, file = 'results/rdata/geo_so_filtered.rds')
 ```
 
 # Summary
@@ -413,5 +313,3 @@ These materials have been adapted and extended from materials listed above. Thes
 <hr/>
 | [Previous lesson](01-GettingStarted.html) | [Top of this lesson](#top) | [Next lesson](03-Normalization.html) |
 | :--- | :----: | ---: |
-
-
