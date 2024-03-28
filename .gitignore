@@ -10,5 +10,11 @@ html/images/source
 html/rdata/
 html/server_setup/
 html/tables/
-source/rdata/
-source/data
+source/inputs/*
+source/scripts/*
+source/results/*
+source/*_cache
+html/inputs/*
+html/scripts/*
+html/results/*
+._*
