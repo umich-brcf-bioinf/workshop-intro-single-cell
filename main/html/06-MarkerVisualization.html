@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core" />
 
-<meta name="date" content="2024-03-09" />
+<meta name="date" content="2024-03-28" />
 
 <title>Marker identification and visualization</title>
 
@@ -357,10 +357,10 @@ div.tocify {
       <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
     </li>
     <li>
-      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
     </li>
     <li>
-      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
     </li>
     <li>
       <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
@@ -428,7 +428,7 @@ div.tocify {
 <h1 class="title toc-ignore">Marker identification and
 visualization</h1>
 <h4 class="author">UM Bioinformatics Core</h4>
-<h4 class="date">2024-03-09</h4>
+<h4 class="date">2024-03-28</h4>
 
 </div>
 
@@ -561,12 +561,12 @@ geo_markers = FindAllMarkers(geo_so, only.pos = TRUE)</code></pre>
 <pre class="r"><code># Take a look at the first few rows of the result
 head(geo_markers)</code></pre>
 <pre><code>        p_val avg_log2FC pct.1 pct.2 p_val_adj cluster    gene
-Col12a1     0   3.856395 0.938 0.151         0       0 Col12a1
-Tnc         0   3.627855 0.864 0.121         0       0     Tnc
-Thbs2       0   3.560748 0.910 0.179         0       0   Thbs2
-Lox         0   2.758605 0.912 0.196         0       0     Lox
-Aebp1       0   1.955566 0.977 0.292         0       0   Aebp1
-Cthrc1      0   3.392469 0.958 0.273         0       0  Cthrc1</code></pre>
+Col12a1     0   3.941779 0.927 0.141         0       0 Col12a1
+Tnc         0   3.702778 0.848 0.112         0       0     Tnc
+Thbs2       0   3.639909 0.901 0.169         0       0   Thbs2
+Lox         0   2.897164 0.915 0.185         0       0     Lox
+Aebp1       0   2.179345 0.978 0.281         0       0   Aebp1
+Cthrc1      0   3.583623 0.954 0.264         0       0  Cthrc1</code></pre>
 <pre class="r"><code># Write out full cluster marker results to file
 write_csv(geo_markers, file = &#39;results/tables/marker_genes_0.4.csv&#39;)</code></pre>
 <!--- Consider adding figure showing example of what's being compared (circle cluster 1 and then circle all other cells for example) -->
@@ -601,12 +601,12 @@ head(top_5_by_log2FC)</code></pre>
 # Groups:   cluster [2]
   p_val avg_log2FC pct.1 pct.2 p_val_adj cluster gene 
   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;
-1     0       5.54 0.462 0.018         0 0       Scx  
-2     0       5.43 0.136 0.006         0 0       Cilp2
-3     0       5.15 0.092 0.004         0 0       Ucma 
-4     0       5.07 0.088 0.004         0 0       Matn3
-5     0       4.92 0.607 0.061         0 0       Fmod 
-6     0       4.81 0.144 0.006         0 1       Fcna </code></pre>
+1     0       5.79 0.086 0.004         0 0       Ucma 
+2     0       5.62 0.132 0.005         0 0       Cilp2
+3     0       5.56 0.437 0.016         0 0       Scx  
+4     0       5.45 0.084 0.003         0 0       Matn3
+5     0       5.30 0.137 0.007         0 0       Kera 
+6     0       5.15 0.238 0.01          0 1       C7   </code></pre>
 <p>We expect to see several columns:</p>
 <ul>
 <li><code>gene</code>: gene symbol</li>

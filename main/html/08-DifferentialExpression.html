@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core" />
 
-<meta name="date" content="2024-03-09" />
+<meta name="date" content="2024-03-28" />
 
 <title>Differential Expression Analysis</title>
 
@@ -357,10 +357,10 @@ div.tocify {
       <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
     </li>
     <li>
-      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
     </li>
     <li>
-      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
     </li>
     <li>
       <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
@@ -427,7 +427,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Differential Expression Analysis</h1>
 <h4 class="author">UM Bioinformatics Core</h4>
-<h4 class="date">2024-03-09</h4>
+<h4 class="date">2024-03-28</h4>
 
 </div>
 
@@ -519,13 +519,13 @@ de_cell_monocytes_D21_vs_D0 = FindMarkers(
     ident.1 = &#39;Day21_Monocyte&#39;, ident.2 = &#39;Day0_Monocyte&#39;)
 
 head(de_cell_monocytes_D21_vs_D0)</code></pre>
-<pre><code>               p_val avg_log2FC pct.1 pct.2    p_val_adj
-Ccdc88c 1.640815e-08  -3.252140 0.041 0.361 0.0003371547
-Lgals1  1.846842e-08   1.657768 0.932 0.722 0.0003794890
-Dusp16  5.390390e-08  -2.458591 0.095 0.472 0.0011076173
-Setd2   7.136715e-08  -2.422065 0.082 0.444 0.0014664522
-Ebi3    8.304268e-08  -3.392317 0.041 0.333 0.0017063609
-Ctsd    1.028585e-07   3.698173 0.714 0.278 0.0021135363</code></pre>
+<pre><code>               p_val avg_log2FC pct.1 pct.2   p_val_adj
+Ebi3    6.858784e-08  -3.332196 0.043 0.342 0.001409343
+Dusp16  6.920671e-08  -2.400637 0.099 0.474 0.001422059
+Setd2   7.370889e-08  -2.476586 0.071 0.421 0.001514570
+Ccdc88c 1.033442e-07  -3.114016 0.043 0.342 0.002123517
+Rbm3    1.157137e-07   1.436430 0.929 0.658 0.002377684
+Ctsd    1.782521e-07   3.449273 0.709 0.289 0.003662725</code></pre>
 <pre class="r"><code># Add rownames as a column for output
 de_cell_monocytes_D21_vs_D0$gene = rownames(de_cell_monocytes_D21_vs_D0)
 
@@ -533,7 +533,7 @@ de_cell_monocytes_D21_vs_D0$gene = rownames(de_cell_monocytes_D21_vs_D0)
 table(de_cell_monocytes_D21_vs_D0$p_val_adj &lt; 0.05 &amp; abs(de_cell_monocytes_D21_vs_D0$avg_log2FC) &gt; 1.5)</code></pre>
 <pre><code>
 FALSE  TRUE 
-10375    15 </code></pre>
+10890    10 </code></pre>
 <pre class="r"><code>write_csv(de_cell_monocytes_D21_vs_D0, file = &#39;results/tables/de_standard_monocytes_D21_vs_D0.csv&#39;)</code></pre>
 <p>Note - the <code>avg_log2FC</code> threshold of 1.5 we use here are
 quite stringent as the default log2FC threshold for the function is
@@ -554,7 +554,7 @@ de_cell_monocytes_D7_vs_D0$gene = rownames(de_cell_monocytes_D7_vs_D0)
 table(de_cell_monocytes_D7_vs_D0$p_val_adj &lt; 0.05 &amp; abs(de_cell_monocytes_D7_vs_D0$avg_log2FC) &gt; 1.5)</code></pre>
 <pre><code>
 FALSE  TRUE 
-10360   313 </code></pre>
+10571   333 </code></pre>
 <p>This same approach can be extended to run pairwise comparisons
 between conditions for each annotated cluster.</p>
 <!-- add code to loop through all clusters and generate comparisons -->
@@ -595,13 +595,13 @@ de_pseudo_monocytes_D21_vs_D0 = FindMarkers(
 
 # Take a look at the table
 head(de_pseudo_monocytes_D21_vs_D0)</code></pre>
-<pre><code>              p_val avg_log2FC pct.1 pct.2    p_val_adj
-Fabp5  5.317142e-21   6.800900     1  0.75 1.408458e-16
-Apoe   7.346328e-14   4.014950     1  1.00 1.945969e-09
-Ctsd   9.335367e-12   5.604553     1  0.50 2.472845e-07
-Cd9    1.988795e-11   4.734054     1  1.00 5.268118e-07
-Cstb   3.473534e-11   4.325875     1  0.75 9.201043e-07
-Lgals1 8.868949e-10   4.405824     1  1.00 2.349296e-05</code></pre>
+<pre><code>             p_val avg_log2FC pct.1 pct.2    p_val_adj
+Fabp5 2.828650e-15   6.658861     1  0.75 7.492811e-11
+Ctsd  6.694250e-10   5.412383     1  0.75 1.773240e-05
+Cstb  2.275702e-09   4.152574     1  0.75 6.028108e-05
+Vim   6.116206e-09   3.869536     1  1.00 1.620122e-04
+Mmp14 8.775472e-09   8.285402     1  0.00 2.324535e-04
+Txn1  1.705924e-08   3.868994     1  1.00 4.518822e-04</code></pre>
 <pre class="r"><code># Add rownames as a column for output
 de_pseudo_monocytes_D21_vs_D0$gene = rownames(de_pseudo_monocytes_D21_vs_D0)
 
@@ -609,7 +609,7 @@ de_pseudo_monocytes_D21_vs_D0$gene = rownames(de_pseudo_monocytes_D21_vs_D0)
 table(de_pseudo_monocytes_D21_vs_D0$p_val_adj &lt; 0.05 &amp; abs(de_pseudo_monocytes_D21_vs_D0$avg_log2FC) &gt; 1.5)</code></pre>
 <pre><code>
 FALSE  TRUE 
-14209    32 </code></pre>
+14467    19 </code></pre>
 <pre class="r"><code># output results
 write_csv(de_pseudo_monocytes_D21_vs_D0, file = &#39;results/tables/de_pseudo_monocytes_D21_vs_D0.csv&#39;)</code></pre>
 <p>Since we’re working with pseudobulk data, unlike in the marker
