@@ -14,7 +14,7 @@
 
 <title>Intro to Single Cell RNA-Seq Workshop</title>
 
-<script src="site_libs/header-attrs-2.24/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -46,6 +46,11 @@ https://favicon.io/emoji-favicons/dna/
 <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
 <meta name="msapplication-TileColor" content="#da532c">
 <meta name="theme-color" content="#ffffff">
+
+
+<meta property="og:url" content="https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/2024-04-15/html/"/>
+<meta property="og:title" content="Introduction to Single-Cell Analysis"/>
+<meta property="og:description" content="A three-afternoon virtual workshop for researchers who would like to better understand the analysis of single-cell RNA-Seq data." />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -270,10 +275,10 @@ $(document).ready(function () {
       <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
     </li>
     <li>
-      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
     </li>
     <li>
-      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
     </li>
     <li>
       <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
@@ -373,40 +378,40 @@ target="_blank">Slack workspace</a></h4>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="left">9:00</td>
+<td align="left">1:00</td>
 <td align="left"><a href="workshop_intro.html">Welcome /
 Housekeeping</a> (Chris &amp; Marci)</td>
 </tr>
 <tr class="even">
-<td align="left">9:30</td>
+<td align="left">1:30</td>
 <td align="left"><a href="00A-OrientingOnScRNASeq.html">Orienting on
 scRNA-Seq</a> (Chris)</td>
 </tr>
 <tr class="odd">
 <td align="left"></td>
-<td align="left"><a href="00B-CellRangerInAction.html">Cell Ranger in
-Action</a> (Matt)</td>
-</tr>
-<tr class="even">
-<td align="left">11:00</td>
-<td align="left">Break</td>
-</tr>
-<tr class="odd">
-<td align="left">11:15</td>
 <td align="left"><a href="01-GettingStarted.html">Getting started with
 Seurat</a> (Raymond)</td>
 </tr>
 <tr class="even">
+<td align="left">3:00</td>
+<td align="left">Break</td>
+</tr>
+<tr class="odd">
+<td align="left">3:15</td>
+<td align="left"><a href="00B-CellRangerInAction.html">Cell Ranger in
+Action</a> (Matt)</td>
+</tr>
+<tr class="even">
 <td align="left"></td>
 <td align="left"><a href="02-QCandFiltering.html">Initial QC &amp;
-Filtering</a></td>
+Filtering</a> (Raymond)</td>
 </tr>
 <tr class="odd">
 <td align="left"></td>
 <td align="left"><a href="03-Normalization.html">Normalization</a></td>
 </tr>
 <tr class="even">
-<td align="left">1:00</td>
+<td align="left">5:00</td>
 <td align="left">Day 1 concludes</td>
 </tr>
 </tbody>
@@ -421,11 +426,11 @@ Filtering</a></td>
 </colgroup>
 <tbody>
 <tr class="odd">
-<td align="left">9:00</td>
-<td align="left">Housekeeping, Review and Questions (Chris)</td>
+<td align="left">1:00</td>
+<td align="left">Housekeeping, Review, and Questions (Chris)</td>
 </tr>
 <tr class="even">
-<td align="left">9:20</td>
+<td align="left">1:20</td>
 <td align="left"><a href="04-PCAandIntegration.html">Principal Component
 Analysis &amp; Integration</a> (Dana)</td>
 </tr>
@@ -435,11 +440,11 @@ Analysis &amp; Integration</a> (Dana)</td>
 &amp; Projection</a></td>
 </tr>
 <tr class="even">
-<td align="left">11:00</td>
+<td align="left">3:00</td>
 <td align="left">Break</td>
 </tr>
 <tr class="odd">
-<td align="left">11:15</td>
+<td align="left">3:15</td>
 <td align="left"><a href="05-ProjectionAndClustering.html">Clustering
 &amp; Projection (continued)</a></td>
 </tr>
@@ -448,7 +453,7 @@ Analysis &amp; Integration</a> (Dana)</td>
 <td align="left">A review of sequencing approaches (Olivia/Tricia)</td>
 </tr>
 <tr class="odd">
-<td align="left">1:00</td>
+<td align="left">5:00</td>
 <td align="left">Day 2 concludes</td>
 </tr>
 </tbody>
@@ -463,11 +468,11 @@ Analysis &amp; Integration</a> (Dana)</td>
 </colgroup>
 <tbody>
 <tr class="odd">
-<td align="left">9:00</td>
+<td align="left">1:00</td>
 <td align="left">Housekeeping, Review and Questions (Chris)</td>
 </tr>
 <tr class="even">
-<td align="left">9:20</td>
+<td align="left">1:20</td>
 <td align="left"><a href="06-MarkerVisualization.html">Marker
 identification &amp; Visualization</a></td>
 </tr>
@@ -477,21 +482,21 @@ identification &amp; Visualization</a></td>
 annotation</a></td>
 </tr>
 <tr class="even">
-<td align="left">11:00</td>
+<td align="left">3:00</td>
 <td align="left">Break</td>
 </tr>
 <tr class="odd">
-<td align="left">11:15</td>
+<td align="left">3:15</td>
 <td align="left"><a href="08-DifferentialExpression.html">Differential
 expression analysis</a></td>
 </tr>
 <tr class="even">
-<td align="left">12:45</td>
+<td align="left">4:45</td>
 <td align="left"><a href="workshop_wrap_up.html">Wrap-up</a>
 (Chris)</td>
 </tr>
 <tr class="odd">
-<td align="left">1:00</td>
+<td align="left">5:00</td>
 <td align="left">Workshop concludes</td>
 </tr>
 </tbody>

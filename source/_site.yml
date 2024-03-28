@@ -19,10 +19,10 @@ navbar:
       menu:
         - text: "Orienting on scRNA-Seq"
           href: 00A-OrientingOnScRNASeq.html
-        - text: "Cell Ranger in Action"
-          href: 00B-CellRangerInAction.html
         - text: "Getting Started with Seurat"
           href: 01-GettingStarted.html
+        - text: "Cell Ranger in Action"
+          href: 00B-CellRangerInAction.html
         - text: "Secondary QC & Filtering"
           href: 02-QCandFiltering.html
         - text: "Normalization"
