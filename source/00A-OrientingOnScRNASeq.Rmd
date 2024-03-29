@@ -329,6 +329,6 @@ we cover in detail in the next lesson.
 <br/>
 <br/>
 <hr/>
-| [Back to introduction](workshop_intro.html) | [Top of this lesson](#top) | [Next lesson](00B-CellRangerInAction.html) |
+| [Back to introduction](workshop_intro.html) | [Top of this lesson](#top) | [Next lesson](01-GettingStarted.html) |
 | :--- | :----: | ---: |
 
