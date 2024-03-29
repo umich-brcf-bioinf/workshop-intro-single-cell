@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core" />
 
-<meta name="date" content="2024-03-09" />
+<meta name="date" content="2024-03-28" />
 
 <title>Cell Type Annotation</title>
 
@@ -357,10 +357,10 @@ div.tocify {
       <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
     </li>
     <li>
-      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
     </li>
     <li>
-      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
     </li>
     <li>
       <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
@@ -427,7 +427,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Cell Type Annotation</h1>
 <h4 class="author">UM Bioinformatics Core</h4>
-<h4 class="date">2024-03-09</h4>
+<h4 class="date">2024-03-28</h4>
 
 </div>
 
@@ -599,11 +599,11 @@ geo_catch = findcelltype(geo_catch)
 geo_catch@celltype %&gt;% select(cluster, cell_type, celltype_score)</code></pre>
 <pre><code>   cluster               cell_type celltype_score
 1        0               Stem Cell           0.83
-2        1              Macrophage           0.82
-3        2 Hematopoietic Stem Cell           0.87
-4        3               Stem Cell           0.88
-5        4          Dendritic Cell           0.86
-6        5                Monocyte           0.82
+2        1 Hematopoietic Stem Cell           0.87
+3        2              Macrophage           0.82
+4        3          Dendritic Cell           0.86
+5        4                Monocyte           0.82
+6        5               Stem Cell           0.88
 7        6              Neutrophil           0.81
 8        7               Stem Cell           0.85
 9        8 Hematopoietic Stem Cell           0.90
@@ -616,8 +616,7 @@ geo_catch@celltype %&gt;% select(cluster, cell_type, celltype_score)</code></pre
 16      15     Embryonic Stem Cell           0.87
 17      16 Hematopoietic Stem Cell           0.87
 18      17 Hematopoietic Stem Cell           0.88
-19      18  Muscle Progenitor Cell           0.76
-20      19             Muscle Cell           0.69</code></pre>
+19      18             Muscle Cell           0.69</code></pre>
 <p>When we look at our results we can see the cell type score, which
 gives us an idea of the confidence of that prediction. Not shown here
 but the full <code>celltype</code> table also includes marker genes and
@@ -647,34 +646,27 @@ rownames(new_metadata) = rownames(geo_so@meta.data) #  We are implicitly relying
 geo_so@meta.data = new_metadata 
 
 head(geo_so@meta.data)</code></pre>
-<pre><code>                                            orig.ident nCount_RNA nFeature_RNA
-HODay0replicate1_AAACCTGAGAGAACAG-1 HO.Day0.replicate1      10234         3226
-HODay0replicate1_AAACCTGGTCATGCAT-1 HO.Day0.replicate1       3158         1499
-HODay0replicate1_AAACCTGTCAGAGCTT-1 HO.Day0.replicate1      13464         4102
-HODay0replicate1_AAACGGGAGGCCCGTT-1 HO.Day0.replicate1       1189          629
-HODay0replicate1_AAACGGGCAACTGGCC-1 HO.Day0.replicate1       7726         2602
-HODay0replicate1_AAACGGGGTCCGAATT-1 HO.Day0.replicate1       5165         2362
-                                     day  replicate percent.mt nCount_SCT
-HODay0replicate1_AAACCTGAGAGAACAG-1 Day0 replicate1   1.240962       6061
-HODay0replicate1_AAACCTGGTCATGCAT-1 Day0 replicate1   7.536415       4625
-HODay0replicate1_AAACCTGTCAGAGCTT-1 Day0 replicate1   3.112002       5426
-HODay0replicate1_AAACGGGAGGCCCGTT-1 Day0 replicate1   3.700589       4165
-HODay0replicate1_AAACGGGCAACTGGCC-1 Day0 replicate1   2.938131       5858
-HODay0replicate1_AAACGGGGTCCGAATT-1 Day0 replicate1   9.196515       5162
-                                    nFeature_SCT integrated.sct.rpca.clusters
-HODay0replicate1_AAACCTGAGAGAACAG-1         2865                            2
-HODay0replicate1_AAACCTGGTCATGCAT-1         1510                            2
-HODay0replicate1_AAACCTGTCAGAGCTT-1         2485                            3
-HODay0replicate1_AAACGGGAGGCCCGTT-1          919                            2
-HODay0replicate1_AAACGGGCAACTGGCC-1         2585                            2
-HODay0replicate1_AAACGGGGTCCGAATT-1         2348                            8
-                                    seurat_clusters               cell_type
-HODay0replicate1_AAACCTGAGAGAACAG-1               2 Hematopoietic Stem Cell
-HODay0replicate1_AAACCTGGTCATGCAT-1               2 Hematopoietic Stem Cell
-HODay0replicate1_AAACCTGTCAGAGCTT-1               3               Stem Cell
-HODay0replicate1_AAACGGGAGGCCCGTT-1               2 Hematopoietic Stem Cell
-HODay0replicate1_AAACGGGCAACTGGCC-1               2 Hematopoietic Stem Cell
-HODay0replicate1_AAACGGGGTCCGAATT-1               8 Hematopoietic Stem Cell</code></pre>
+<pre><code>                                            orig.ident nCount_RNA nFeature_RNA  day  replicate percent.mt
+HODay0replicate1_AAACCTGAGAGAACAG-1 HO.Day0.replicate1      10234         3226 Day0 replicate1   1.240962
+HODay0replicate1_AAACCTGGTCATGCAT-1 HO.Day0.replicate1       3158         1499 Day0 replicate1   7.536415
+HODay0replicate1_AAACCTGTCAGAGCTT-1 HO.Day0.replicate1      13464         4102 Day0 replicate1   3.112002
+HODay0replicate1_AAACGGGAGGCCCGTT-1 HO.Day0.replicate1       1189          629 Day0 replicate1   3.700589
+HODay0replicate1_AAACGGGCAACTGGCC-1 HO.Day0.replicate1       7726         2602 Day0 replicate1   2.938131
+HODay0replicate1_AAACGGGGTCCGAATT-1 HO.Day0.replicate1       5165         2362 Day0 replicate1   9.196515
+                                    nCount_SCT nFeature_SCT integrated.sct.rpca.clusters seurat_clusters
+HODay0replicate1_AAACCTGAGAGAACAG-1       6061         2865                            1               1
+HODay0replicate1_AAACCTGGTCATGCAT-1       4625         1510                            1               1
+HODay0replicate1_AAACCTGTCAGAGCTT-1       5426         2485                            5               5
+HODay0replicate1_AAACGGGAGGCCCGTT-1       4165          919                            1               1
+HODay0replicate1_AAACGGGCAACTGGCC-1       5858         2585                            1               1
+HODay0replicate1_AAACGGGGTCCGAATT-1       5162         2348                            8               8
+                                                  cell_type
+HODay0replicate1_AAACCTGAGAGAACAG-1 Hematopoietic Stem Cell
+HODay0replicate1_AAACCTGGTCATGCAT-1 Hematopoietic Stem Cell
+HODay0replicate1_AAACCTGTCAGAGCTT-1               Stem Cell
+HODay0replicate1_AAACGGGAGGCCCGTT-1 Hematopoietic Stem Cell
+HODay0replicate1_AAACGGGCAACTGGCC-1 Hematopoietic Stem Cell
+HODay0replicate1_AAACGGGGTCCGAATT-1 Hematopoietic Stem Cell</code></pre>
 <p><strong>Checkpoint</strong> : Has the metadata for your
 <code>geo_so</code> object been updated?</p>
 <div id="visualise-annotated-clusters" class="section level2">

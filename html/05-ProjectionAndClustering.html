@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core" />
 
-<meta name="date" content="2024-03-09" />
+<meta name="date" content="2024-03-28" />
 
 <title>Clustering and Projection</title>
 
@@ -357,10 +357,10 @@ div.tocify {
       <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
     </li>
     <li>
-      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
     </li>
     <li>
-      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
     </li>
     <li>
       <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
@@ -427,7 +427,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Clustering and Projection</h1>
 <h4 class="author">UM Bioinformatics Core</h4>
-<h4 class="date">2024-03-09</h4>
+<h4 class="date">2024-03-28</h4>
 
 </div>
 
@@ -578,42 +578,28 @@ geo_so = FindClusters(geo_so, resolution = 0.4, cluster.name = &#39;integrated.s
 <pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
 Number of nodes: 29615
-Number of edges: 978654
+Number of edges: 978512
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.9396
-Number of communities: 20
+Maximum modularity in 10 random starts: 0.9388
+Number of communities: 19
 Elapsed time: 4 seconds</code></pre>
 <pre class="r"><code># look at meta.data to see cluster labels
 head(geo_so@meta.data)</code></pre>
-<pre><code>                                            orig.ident nCount_RNA nFeature_RNA
-HODay0replicate1_AAACCTGAGAGAACAG-1 HO.Day0.replicate1      10234         3226
-HODay0replicate1_AAACCTGGTCATGCAT-1 HO.Day0.replicate1       3158         1499
-HODay0replicate1_AAACCTGTCAGAGCTT-1 HO.Day0.replicate1      13464         4102
-HODay0replicate1_AAACGGGAGGCCCGTT-1 HO.Day0.replicate1       1189          629
-HODay0replicate1_AAACGGGCAACTGGCC-1 HO.Day0.replicate1       7726         2602
-HODay0replicate1_AAACGGGGTCCGAATT-1 HO.Day0.replicate1       5165         2362
-                                     day  replicate percent.mt nCount_SCT
-HODay0replicate1_AAACCTGAGAGAACAG-1 Day0 replicate1   1.240962       6061
-HODay0replicate1_AAACCTGGTCATGCAT-1 Day0 replicate1   7.536415       4625
-HODay0replicate1_AAACCTGTCAGAGCTT-1 Day0 replicate1   3.112002       5426
-HODay0replicate1_AAACGGGAGGCCCGTT-1 Day0 replicate1   3.700589       4165
-HODay0replicate1_AAACGGGCAACTGGCC-1 Day0 replicate1   2.938131       5858
-HODay0replicate1_AAACGGGGTCCGAATT-1 Day0 replicate1   9.196515       5162
-                                    nFeature_SCT integrated.sct.rpca.clusters
-HODay0replicate1_AAACCTGAGAGAACAG-1         2865                            2
-HODay0replicate1_AAACCTGGTCATGCAT-1         1510                            2
-HODay0replicate1_AAACCTGTCAGAGCTT-1         2485                            3
-HODay0replicate1_AAACGGGAGGCCCGTT-1          919                            2
-HODay0replicate1_AAACGGGCAACTGGCC-1         2585                            2
-HODay0replicate1_AAACGGGGTCCGAATT-1         2348                            8
-                                    seurat_clusters
-HODay0replicate1_AAACCTGAGAGAACAG-1               2
-HODay0replicate1_AAACCTGGTCATGCAT-1               2
-HODay0replicate1_AAACCTGTCAGAGCTT-1               3
-HODay0replicate1_AAACGGGAGGCCCGTT-1               2
-HODay0replicate1_AAACGGGCAACTGGCC-1               2
-HODay0replicate1_AAACGGGGTCCGAATT-1               8</code></pre>
+<pre><code>                                            orig.ident nCount_RNA nFeature_RNA  day  replicate percent.mt
+HODay0replicate1_AAACCTGAGAGAACAG-1 HO.Day0.replicate1      10234         3226 Day0 replicate1   1.240962
+HODay0replicate1_AAACCTGGTCATGCAT-1 HO.Day0.replicate1       3158         1499 Day0 replicate1   7.536415
+HODay0replicate1_AAACCTGTCAGAGCTT-1 HO.Day0.replicate1      13464         4102 Day0 replicate1   3.112002
+HODay0replicate1_AAACGGGAGGCCCGTT-1 HO.Day0.replicate1       1189          629 Day0 replicate1   3.700589
+HODay0replicate1_AAACGGGCAACTGGCC-1 HO.Day0.replicate1       7726         2602 Day0 replicate1   2.938131
+HODay0replicate1_AAACGGGGTCCGAATT-1 HO.Day0.replicate1       5165         2362 Day0 replicate1   9.196515
+                                    nCount_SCT nFeature_SCT integrated.sct.rpca.clusters seurat_clusters
+HODay0replicate1_AAACCTGAGAGAACAG-1       6061         2865                            1               1
+HODay0replicate1_AAACCTGGTCATGCAT-1       4625         1510                            1               1
+HODay0replicate1_AAACCTGTCAGAGCTT-1       5426         2485                            5               5
+HODay0replicate1_AAACGGGAGGCCCGTT-1       4165          919                            1               1
+HODay0replicate1_AAACGGGCAACTGGCC-1       5858         2585                            1               1
+HODay0replicate1_AAACGGGGTCCGAATT-1       5162         2348                            8               8</code></pre>
 <p>Generally it’s preferable to err on the side of too many clusters, as
 they can be combined manually in later steps. In our experience, this is
 another parameter that may need to be iteratively revised and
@@ -706,45 +692,40 @@ of the UMAP structure:</p>
 <pre class="r"><code># table of number of cells per cluster, split by condition
 table(geo_so@meta.data$day, geo_so@meta.data$integrated.sct.rpca.clusters)</code></pre>
 <pre><code>       
-           0    1    2    3    4    5    6    7    8    9   10   11   12   13
-  Day0    65  240  843  317  167   36   36  125  778  132  125  305   55   29
-  Day7  3184 2497  972 1689 2037 2374 1596  929  108  548  566  382  627  686
-  Day21 1329  355  964  663  461  147   81  452  383  499  379  227  108   72
-       
-          14   15   16   17   18   19
-  Day0   159  133   56  141   37   19
-  Day7   309   97  262   86   14   36
-  Day21   42  252  117  195   80   12</code></pre>
+           0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18
+  Day0    88  938  239  167   38  242   36   94  814  132  119  298   55   29  159  133   57  141   19
+  Day7  3434 1138 2507 2022 2409 1330 1594  935  119  546  562  325  626  659  309   98  262   88   36
+  Day21 1438 1138  368  463  141  482   81  430  402  500  375  201  108   69   42  256  117  195   12</code></pre>
 <pre class="r"><code># table of number of cells per cluster per sample
 table(geo_so@meta.data$orig.ident, geo_so@meta.data$integrated.sct.rpca.clusters)</code></pre>
 <pre><code>                     
-                         0    1    2    3    4    5    6    7    8    9   10
-  HO.Day0.replicate1    14   82  250   96   52   17   15   24  203   33   32
-  HO.Day0.replicate2    10   38  110   33   33    4    6   34  152   27   20
-  HO.Day0.replicate3    25   72  300  117   46    3    5   25  227   40   42
-  HO.Day0.replicate4    16   48  183   71   36   12   10   42  196   32   31
-  HO.Day7.replicate1   410  587  285  431  506  766  755  157   45  113  190
-  HO.Day7.replicate2  1156  616  184  361  580  468  220  372    7  158  135
-  HO.Day7.replicate3   887  722  377  592  534  395   90  241   48  178  146
-  HO.Day7.replicate4   731  572  126  305  417  745  531  159    8   99   95
-  HO.Day21.replicate1  338   96  317  221  144   40   30  139  115  145  110
-  HO.Day21.replicate2  168   69  189   86   82   25   12  106  113   78   48
-  HO.Day21.replicate3  184   72  168   93   91   26    8   62  100   90   69
-  HO.Day21.replicate4  639  118  290  263  144   56   31  145   55  186  152
+                         0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16
+  HO.Day0.replicate1    20  278   82   52   17   69   15   18  209   33   32   82   17   11   47   20    5
+  HO.Day0.replicate2    13  127   37   33    5   23    6   24  162   27   20   56    8    6   13   25   13
+  HO.Day0.replicate3    34  331   72   46    3   91    5   18  238   40   38   84   16    5   58   40   16
+  HO.Day0.replicate4    21  202   48   36   13   59   10   34  205   32   29   76   14    7   41   48   23
+  HO.Day7.replicate1   472  309  590  501  769  358  755  155   49  113  190   67  167  212   63   41   72
+  HO.Day7.replicate2  1219  219  615  574  486  280  218  378   10  157  132  105  180  150   86   19   88
+  HO.Day7.replicate3   957  457  727  531  407  465   90  243   50  177  145   90  163  152   93   27   72
+  HO.Day7.replicate4   786  153  575  416  747  227  531  159   10   99   95   63  116  145   67   11   30
+  HO.Day21.replicate1  369  363   99  145   38  172   30  134  119  145  110   63   35   14   13   66   26
+  HO.Day21.replicate2  189  218   74   82   21   57   12   97  123   79   46   36   15   14    6   51   28
+  HO.Day21.replicate3  203  187   73   91   25   67    8   61  102   90   68   31   16   20    7   55   20
+  HO.Day21.replicate4  677  370  122  145   57  186   31  138   58  186  151   71   42   21   16   84   43
                      
-                        11   12   13   14   15   16   17   18   19
-  HO.Day0.replicate1    84   17   11   47   20    5   35    5    7
-  HO.Day0.replicate2    57    8    6   13   25   13   16    9    1
-  HO.Day0.replicate3    86   16    5   58   40   16   54   12    2
-  HO.Day0.replicate4    78   14    7   41   48   22   36   11    9
-  HO.Day7.replicate1    79  167  213   63   40   72   28    4   17
-  HO.Day7.replicate2   126  180  160   86   19   88   12    1    3
-  HO.Day7.replicate3   110  163  164   93   27   72   36    8   14
-  HO.Day7.replicate4    67  117  149   67   11   30   10    1    2
-  HO.Day21.replicate1   73   35   14   13   65   26   56   20    3
-  HO.Day21.replicate2   40   15   14    6   51   29   29   17    5
-  HO.Day21.replicate3   34   16   20    7   55   20   39    9    3
-  HO.Day21.replicate4   80   42   24   16   81   42   71   34    1</code></pre>
+                        17   18
+  HO.Day0.replicate1    35    7
+  HO.Day0.replicate2    16    1
+  HO.Day0.replicate3    54    2
+  HO.Day0.replicate4    36    9
+  HO.Day7.replicate1    28   17
+  HO.Day7.replicate2    13    3
+  HO.Day7.replicate3    37   14
+  HO.Day7.replicate4    10    2
+  HO.Day21.replicate1   56    3
+  HO.Day21.replicate2   29    5
+  HO.Day21.replicate3   39    3
+  HO.Day21.replicate4   71    1</code></pre>
 <!-- consider adding later 
 Add DimPlot for % mitochondria to see if high % are across dataset or limited to one/few clusters (related to what Olivia talked about during Day 1)
 

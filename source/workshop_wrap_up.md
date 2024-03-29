@@ -83,8 +83,8 @@ connect to enable single-cell gene expression analysis from RNA-Seq data.
     would cover this.) For the intrepid, see relevant links below:
     - [Setting up R/R-Studio](workshop_setup/setup_instructions_advanced.html)
 
-
-## University of Michigan Resources
+<details>
+<summary>*University of Michigan Resources*</summary>
 - [UM CoderSpaces "office hours"](https://datascience.isr.umich.edu/events/coderspaces/){target="_blank"} and UM CoderSpaces Slack workspace. _(See "Useful Resources" section of the CoderSpaces page for instructions on how to join the CoderSpaces Slack workspace.)_
 - Upcoming [UM Advanced Research Computing workshops](https://arc.umich.edu/events/){target="_blank"}.
 - Advanced Research Computing (ARC) at University of Michigan hosts a
@@ -101,12 +101,12 @@ connect to enable single-cell gene expression analysis from RNA-Seq data.
 ## Resources for continued learning
   - Learning bioinformatic analyses is more like a process than a task. Resources 
     to consider:
+    - A CZI NDCN curated list of resources for [self-guided learning](https://ndcn.github.io/self-guided-learning/)
     - UM Bioinformatics Core links to [training resources/workshops](https://brcf.medicine.umich.edu/cores/bioinformatics-core/training/){target="_blank"}.
     - **Techniques in Bash and R**
       - Lesson plans from the UM Bioinformatics Core's recent [Computational Foundations Workshop](https://umich-brcf-bioinf.github.io/workshop-computational-foundations/main/html/){target="_blank"}.
       - Lessons and workshops in Bash / Git / R / Python : <a href="https://software-carpentry.org/lessons/" target="_blank">
-        Software Carpentry</a> and also the <a class="external" href="https://umcarpentries.org/" target="_blank">
-        UM Software Carpentry Group.</a>
+        Software Carpentry</a>
 
     - **More info on NGS analysis**
       (A decidedly non-exhaustive list in no discernible order.)
@@ -146,14 +146,13 @@ connect to enable single-cell gene expression analysis from RNA-Seq data.
 <br/>
 
 ## Thank you to/from the workshop team
-| ![](images/headshots/headshot_cgates.jpg) | ![](images/headshots/headshot_mbradenb.jpg) | ![](images/headshots/headshot_rcavalca.jpg) |
+| ![](images/headshots/headshot_cgates.jpg) | ![](images/headshots/headshot_mbradenb.jpg) | ![](images/headshots/headshot_rcavalca.jpg) | ![](images/headshots/headshot_damki.jpg) |
 |:-:|:-:|:-:|:-:|
-| **Chris** | **Marci** | **Raymond** |
-![](images/headshots/headshot_damki.jpg) | ![](images/headshots/headshot_ncarruth.jpg) | ![](images/headshots/headshot_trsaari.jpg) |
-| **Dana** | **Nick** | **Travis** |
+| **Chris (Gates)** | **Marci** | **Raymond** | **Dana** |
+ ![](images/headshots/headshot_ncarruth.jpg) | ![](images/headshots/headshot_trsaari.jpg) | ![](images/headshots/headshot_csifuentes.jpg) |
+| **Nick** | **Travis** | **Chris (Sifuentes)** |
 ![](images/headshots/headshot_mkdohert.jpg) | ![](images/headshots/headshot_okoues.jpg) | ![](images/headshots/headshot_phillipa.jpg) |
 | **Matt** | **Olivia** | **Tricia** |
-
 <br/>
 
 
