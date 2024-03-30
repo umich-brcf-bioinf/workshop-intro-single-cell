@@ -41,13 +41,13 @@ knitr_fig_path("04-PCAandIntegration/04-")
 
 # Introduction 
 
-One of our ultimate goals is to cluster the cells according to their expression profiles, and determine what cell types correspond to these clusters for the purposes of differential expression between clusters and/or between conditions within clusters.  However, in our dataset the 12 samples contain 1,000 - 3,000 cells with measurements for 21K genes per cell and current single cell experiments can generate even more cells per sample.
+One of our ultimate goals is to cluster the cells according to their expression profiles, and determine what cell types correspond to these clusters for the purposes of differential expression between clusters and/or between conditions within clusters.  However, across the 12 samples in our dataset over 20,000 cells are assayed with approximately 21K genes measured per cell.
 
-This means that even after filtering the data, we are working very "high-dimensional" data. High dimensional data presents two challenges: 1) the scale of the data makes analysis computationally expensive or even prohibitive and 2) there is likely uninteresting technical variation across our data that we don't want to be driving our clustering results. 
+This means that even after filtering the data, we are working very "high-dimensional" data. High dimensional data presents two challenges: 1) the scale of the data makes analysis steps costly and slow and 2) there is likely uninteresting technical variation across our data that we want to excludes. 
 
-In this section, we will demonstrate the steps to perform dimensionality reduction on our data using principal component analysis (PCA) to reduce the scale of the data by grouping correlated features into a single dimension and excluding dimensions that are less likely to correspond to interesting biological variance.
+In this section, we will use principal component analysis (PCA) to reduce the dimensionality of the data by grouping correlated features into a single dimension and excluding dimensions that are less likely to correspond to interesting biological variance.
 
-Similar to the previous sections, the process of selecting informative dimensions in a dataset is often iterative only a single value is likely to be reported, even when multiple parameter choices may have lead to similar results/conclusions.  
+Similar to the previous sections, the process of selecting informative dimensions in a dataset is often iterative and while a single value is likely to be reported, multiple parameter choices may have been tested.  
 
 
 ## Lesson motivations
@@ -57,7 +57,7 @@ Similar to the previous sections, the process of selecting informative dimension
 ## Objectives
 
 - Use the `RunPCA()` function to generate principal components for our data
-- Choose an appropriate number of principal components to capture variance in our dataset
+- Choose an appropriate number of principal components to capture variance in our data
 - Use `IntegrateLayers` to integrate across our data prior to clustering
 
 ---
@@ -80,15 +80,15 @@ if(!exists('geo_so')) {
 
 <!--Instruction Note: Using integrated data here and will compare to unintegrated results in next section, similar to  [here](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-021-03957-4)?-->
 
-In addition to the "high-dimensionality" expected for single-cell data, we expect the data to be both "sparse" and "noisy". Sparse in the sense that many genes will either not be expressed or not measured in many of the cells and have zero values. Noisy due to biological variability and practical limitations of both capture and sequencing depth [source](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr).
+In addition to the "high-dimensionality" expected for single-cell data, we expect the data to be both "sparse" and "noisy". Sparse in the sense that many genes will either not be expressed or not measured in many of the cells and have zero values. Noisy due to biological variability and the practical limitations of both capture and sequencing depth [source](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr).
 
 > *Note on zero "inflation" of single-cell data*
 >
 > Single-cell data is sometimes described as "zero inflated", however work by [Svensson](https://www.biorxiv.org/content/10.1101/582064v1.full) has challenged that characterization and argued that the higher number of zeros observed in scRNA-seq compared to bulk RNA-seq is more likely due to biological variance and lower sequencing saturation than technical artifacts. Work by [Choi et al. (2020)](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-020-02103-2) support that zeros in single-cell data are due to biology but [Jiang et al. (2022)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8783472/) delves more into the "controversy" zero inflation, including common approaches for handling zeros and the downstream impacts.
 
-For sparse, high-dimensional, _biological_ data, we expect many genes to have correlated expression as they would be impacted by the same biological process and for many genes with either low (more noisy) or similar expression across the cell population. 
+For sparse, high-dimensional, _biological_ data, we expect many genes to have correlated expression as they would be impacted by the same biological process and for other genes to have either low (more noisy) or similar expression across the cell population and therefore not likely to correspond to cell-type/subtypes. 
 
-So how do we determine what and how many genes to use before classifying cells in our samples into cell-types/subtypes based on their expression?
+So how do we determine what and how many genes to use before classifying cells into clusters based on their expression?
 
 <details>
     <summary>*More detail on dimensionality reduction *</summary>
@@ -105,11 +105,11 @@ So how do we determine what and how many genes to use before classifying cells i
 - Why do we use it 
 --->
 
-Principal component analysis (PCA) determines axes in high-dimensional space that capture the most variation. By definition, the PCs capture the greatest factors of heterogeneity in decreasing order in the data set. <!--- add sources -->
+Principal component analysis (PCA) determines axes in high-dimensional space that capture the most variation. By definition, the PCs capture the greatest factors of heterogeneity in decreasing order in the data set [source](https://bioconductor.org/books/3.13/OSCA.basic/dimensionality-reduction.html#principal-components-analysis). <!--- add sources -->
 
 ### PCA example
 
-To understand how PCA works, we can consider a smaller dataset measuring the expression of four genes measured in just two cells, we could plot the expression of those four genes, with data from one cell plotted on the x-axis and the second cell plotted on the y-axis.
+To understand how PCA works for single-cell data, we can consider a smaller dataset measuring the expression of four genes measured in just two cells, we could plot the expression of those four genes, with data from one cell plotted on the x-axis and the second cell plotted on the y-axis.
 
 ![A simple PCA example (from HBC)](./images/curriculum/04-PCAandIntegration/HBC-PCA_2sample_genes.png)
 <!--- Update plot to replace "Sample" with "cell" in figure and table --->
