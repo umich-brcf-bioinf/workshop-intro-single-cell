@@ -18,7 +18,7 @@ body{ /* Normal  */
 
 <br/>
 
-1. (optional) Take the <a href="https://forms.gle/GtQQ6XPReMrWQt6u6" target="_blank">Pre-workshop survey</a><br/>
+1. (optional) Take the <a href="https://forms.gle/8BHjAGpG4BLDAMicA" target="_blank">Pre-workshop survey</a><br/>
 To help us better understand your collective background, we invite you to take an optional, anonymous pre-workshop survey.
 
 2. Follow this link for <a href="setup_instructions.html" target="_blank">instructions to set up your computer</a><br/>
