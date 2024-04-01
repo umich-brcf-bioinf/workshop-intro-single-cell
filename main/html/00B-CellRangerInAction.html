@@ -430,23 +430,38 @@ table.fig, th.fig, td.fig {
   border-collapse: collapse;
   padding: 15px;
 }
+
+table{
+   width:100%;
+}
 </style>
 <div id="workflow-overview" class="section level1 unlisted unnumbered">
 <h1 class="unlisted unnumbered">Workflow Overview</h1>
-<p><br/> <img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/> <br/> <br/></p>
+<p><br/>
+<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<br/> <br/></p>
 <div id="objectives" class="section level2">
 <h2>Objectives</h2>
 <ul>
-<li>Understand what Cell Ranger does and also how to run <code>cellranger count</code></li>
+<li>Understand what Cell Ranger does and also how to run
+<code>cellranger count</code></li>
 <li>Describe the key inputs to Cell Ranger.</li>
-<li>Describe the purpose and overall structure of key Cell Ranger outputs.</li>
-<li>Interpret a <code>cellranger count</code> web_summary.html report to determine sample quality and inform decisions about additional sequencing.</li>
-<li>Understand when you would need to run Cell Ranger and the relevant system requirements. <br/> <br/></li>
+<li>Describe the purpose and overall structure of key Cell Ranger
+outputs.</li>
+<li>Interpret a <code>cellranger count</code> web_summary.html report to
+determine sample quality and inform decisions about additional
+sequencing.</li>
+<li>Understand when you would need to run Cell Ranger and the relevant
+system requirements. <br/> <br/></li>
 </ul>
 </div>
 <div id="cell-ranger-overview" class="section level2">
 <h2>Cell Ranger Overview</h2>
-<p>The initial data processing steps in scRNA-Seq transform sample FASTQ files to gene expression counts. Some of these steps are similar to bulk RNA-Seq and some are distinct. 10x Genomics provides a pipeline tool, Cell Ranger, to expedite these initial transformations <a href="#references">[1]</a>.</p>
+<p>The initial data processing steps in scRNA-Seq transform sample FASTQ
+files to gene expression counts. Some of these steps are similar to bulk
+RNA-Seq and some are distinct. 10x Genomics provides a pipeline tool,
+Cell Ranger, to expedite these initial transformations <a
+href="#references">[1]</a>.</p>
 <table class="fig">
 <tr>
 <th class="fig">
@@ -460,7 +475,11 @@ Cell Ranger inputs and outputs
 </tr>
 <tr>
 <td class="fig">
-Cell Ranger accepts a set of sample FASTQ files and a set of reference files. It produces a QC web summary (detailed below), a set of matrix files (also detailed below) along with a large collection of supporting files. The matrix files can be used for downstream analysis in Seurat and other tools.
+Cell Ranger accepts a set of sample FASTQ files and a set of reference
+files. It produces a QC web summary (detailed below), a set of matrix
+files (also detailed below) along with a large collection of supporting
+files. The matrix files can be used for downstream analysis in Seurat
+and other tools.
 </td>
 </tr>
 </table>
@@ -478,7 +497,18 @@ A high level view of Cell Ranger steps
 </tr>
 <tr>
 <td class="fig">
-A. For each sequence, the barcode and UMI (on read 1) is used to label and bin the sequences by their barcodes.<br/> B. The transcript sequences are aligned to a genome reference using a modified version of the STAR aligner.<br/> C. For each transcript that falls in a gene, count the pile-up of sequences aligned to each gene; deduplicate the reads based on UMI. Use these deduplicated counts to build a feature barcode matrix.<br/> D. Apply a cell-calling algorithm to distinguish putative cells from background <a href="#references">[3,4]</a><br/> E. Subset the raw matrix to only putative cells to create the filtered matrix.<br/> F. Use information from all previous steps to build a web summary QC report as well as basic gene expression clustering visualizations and other supporting files.<br/>
+A. For each sequence, the barcode and UMI (on read 1) is used to label
+and bin the sequences by their barcodes.<br/> B. The transcript
+sequences are aligned to a genome reference using a modified version of
+the STAR aligner.<br/> C. For each transcript that falls in a gene,
+count the pile-up of sequences aligned to each gene; deduplicate the
+reads based on UMI. Use these deduplicated counts to build a feature
+barcode matrix.<br/> D. Apply a cell-calling algorithm to distinguish
+putative cells from background <a href="#references">[3,4]</a><br/> E.
+Subset the raw matrix to only putative cells to create the filtered
+matrix.<br/> F. Use information from all previous steps to build a web
+summary QC report as well as basic gene expression clustering
+visualizations and other supporting files.<br/>
 </td>
 </tr>
 </table>
@@ -486,12 +516,16 @@ A. For each sequence, the barcode and UMI (on read 1) is used to label and bin t
 </div>
 <div id="key-inputs" class="section level2">
 <h2>Key inputs</h2>
-<p>The basic data package from the UM Advanced Genomics Core includes:</p>
+<p>The basic data package from the UM Advanced Genomics Core
+includes:</p>
 <ul>
 <li>an <strong>*.md5</strong> file to validate your data transfer.</li>
-<li>a <strong>DemuxStats_*.csv</strong> that has some basic metrics about how your samples performed on the sequencer.</li>
-<li>the <strong>fastq_*</strong> folder containing the fastq.gz files</li>
-<li>a <strong>README.txt</strong> including details about how your samples were processed.</li>
+<li>a <strong>DemuxStats_*.csv</strong> that has some basic metrics
+about how your samples performed on the sequencer.</li>
+<li>the <strong>fastq_*</strong> folder containing the fastq.gz
+files</li>
+<li>a <strong>README.txt</strong> including details about how your
+samples were processed.</li>
 </ul>
 <p>It looks like the tree below.</p>
 <pre><code>0000-SR
@@ -507,19 +541,28 @@ A. For each sequence, the barcode and UMI (on read 1) is used to label and bin t
 │   ├── 0000-SR-4-GEX_S28_R1_001.fastq.gz
 │   └── 0000-SR-4-GEX_S28_R2_001.fastq.gz
 └── README.txt</code></pre>
-<p>All you need to run 10x cellranger count are the above 10x sample FASTQ files and the correctly formatted <a href="https://www.10xgenomics.com/support/software/cell-ranger/downloads#reference-downloads" target="_blank">reference genome files</a>.</p>
+<p>All you need to run 10x cellranger count are the above 10x sample
+FASTQ files and the correctly formatted <a
+href="https://www.10xgenomics.com/support/software/cell-ranger/downloads#reference-downloads"
+target="_blank">reference genome files</a>.</p>
 <table class="fig">
 <tr>
 <td class="fig">
-<strong>As a researcher, what parts of these outputs should I download and save?</strong>
+<strong>As a researcher, what parts of these outputs should I download
+and save?</strong>
 </td>
 </tr>
 <tr>
 <td class="fig">
 <ol style="list-style-type: decimal">
-<li>If we sent it to you, it is probably important for either downstream analysis or publication of your sequencing data. So we recomend you download <strong>all of it</strong>.</li>
-<li>You can verify all of your files are intact using the *.md5 file.</li>
-<li>Keep these data safe as you are responsible for the storage of your data for publication and archival purposes. (Typically sequencing providers will regularly delete project data following delivery.)</li>
+<li>If we sent it to you, it is probably important for either downstream
+analysis or publication of your sequencing data. So we recomend you
+download <strong>all of it</strong>.</li>
+<li>You can verify all of your files are intact using the *.md5
+file.</li>
+<li>Keep these data safe as you are responsible for the storage of your
+data for publication and archival purposes. (Typically sequencing
+providers will regularly delete project data following delivery.)</li>
 </ol>
 </td>
 </tr>
@@ -528,7 +571,10 @@ A. For each sequence, the barcode and UMI (on read 1) is used to label and bin t
 </div>
 <div id="how-to-run-cell-ranger" class="section level2">
 <h2>How to run Cell Ranger</h2>
-<p>Cell Ranger is run from a Linux/Unix command shell <a href="#references">[2]</a>. You can print the usage statement to see what is needed to build the command: <code>cellranger count --help</code></p>
+<p>Cell Ranger is run from a Linux/Unix command shell <a
+href="#references">[2]</a>. You can print the usage statement to see
+what is needed to build the command:
+<code>cellranger count --help</code></p>
 <pre><code>cellranger-count
 Count gene expression (targeted or whole-transcriptome) and/or feature barcode reads from a single sample and GEM well
  
@@ -551,10 +597,19 @@ FLAGS:
   ...</code></pre>
 <p>To run <code>cellranger count</code>, you need to specify:</p>
 <ul>
-<li><strong><code>--id</code></strong>. This can be any string less than 64 characters. Cell Ranger creates an output directory named for the id string.</li>
-<li><strong><code>--fastqs</code></strong> path to the directory containing the FASTQ files.</li>
-<li><strong><code>--sample</code></strong> argument to specify which subset of FASTQ files to use (specified sample string should match the beginning of the FASTQ file name).</li>
-<li><strong><code>--transcriptome</code></strong> a path to the reference transcriptome. Typically you would download a specific transcript for your organism from <a href="https://www.10xgenomics.com/support/software/cell-ranger/downloads#reference-downloads" target="_blank">10x Genomics</a>.</li>
+<li><strong><code>--id</code></strong>. This can be any string less than
+64 characters. Cell Ranger creates an output directory named for the id
+string.</li>
+<li><strong><code>--fastqs</code></strong> path to the directory
+containing the FASTQ files.</li>
+<li><strong><code>--sample</code></strong> argument to specify which
+subset of FASTQ files to use (specified sample string should match the
+beginning of the FASTQ file name).</li>
+<li><strong><code>--transcriptome</code></strong> a path to the
+reference transcriptome. Typically you would download a specific
+transcript for your organism from <a
+href="https://www.10xgenomics.com/support/software/cell-ranger/downloads#reference-downloads"
+target="_blank">10x Genomics</a>.</li>
 </ul>
 <p>Recall the directory of outputs from the sequencer (from above):</p>
 <pre><code>0000-SR
@@ -575,7 +630,8 @@ FLAGS:
    --fastqs=/nfs/turbo/path/to/0000-SR/0000-SR_fastqs \
    --sample=0000-SR-1\
    --transcriptome=path/to/refereces/cellranger_count/refdata-gex-GRCh38-2020-A`</code></pre>
-<p>Data from a typical sample can take several hours to complete, so we’ve completed this step for you.</p>
+<p>Data from a typical sample can take several hours to complete, so
+we’ve completed this step for you.</p>
 <!-- This content will not appear in the rendered Markdown 
  but we're using a smaller data set that should process quickly.
 
@@ -601,7 +657,9 @@ When the output of the `cellranger count` command says, “Pipestance completed 
 </div>
 <div id="key-outputs" class="section level2">
 <h2>Key outputs</h2>
-<p>The <code>cellranger count</code> pipeline outputs are in the Sample directory in the outs folder (aka <code>~/ISC_Shell/cellranger_outputs/count_run_HODay0replicate1</code>).</p>
+<p>The <code>cellranger count</code> pipeline outputs are in the Sample
+directory in the outs folder (aka
+<code>~/ISC_Shell/cellranger_outputs/count_run_HODay0replicate1</code>).</p>
 <p>The output is similar to the following:</p>
 <pre><code>count_run_HODay0replicate1
 ├──...
@@ -617,21 +675,47 @@ When the output of the `cellranger count` command says, “Pipestance completed 
     ├── raw_feature_bc_matrix
     ├── raw_feature_bc_matrix.h5
     └── web_summary.html</code></pre>
-<p>10x Genomics provides excellent documentation on all the Cell Ranger <a href="https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-gex-overview" target="_blank">outputs</a>. Some of the most important outputs include:</p>
+<p>10x Genomics provides excellent documentation on all the Cell Ranger
+<a
+href="https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-gex-overview"
+target="_blank">outputs</a>. Some of the most important outputs
+include:</p>
 <ul>
-<li><strong>web_summary.html</strong> : A comprehensive report that includes quality control information and basic analysis.</li>
-<li><strong>metrics_summary.csv</strong> : Same data as the web_summary.html but in csv format.</li>
-<li><strong>raw_feature_bc_matrix</strong>: A set of three files that represent the feature x barcode count table; includes all detected barcodes. (Format details elaborated below.)</li>
-<li><strong>filtered_feature_bc_matrix</strong> : As above, but filtered to include only barcodes that passed Cell Ranger’s cell-calling algorithm <a href="#references">[3]</a>.</li>
-<li><strong>molecule.h5</strong> : An HDF5 (binary) file all containing information for all molecules assigned to a feature/barcode. See references <a href="#references">[6]</a> for more info on this format.</li>
-<li><strong>cloupe file</strong> : Used with the 10x Loupe Browser visualization software.</li>
+<li><strong>web_summary.html</strong> : A comprehensive report that
+includes quality control information and basic analysis.</li>
+<li><strong>metrics_summary.csv</strong> : Same data as the
+web_summary.html but in csv format.</li>
+<li><strong>raw_feature_bc_matrix</strong>: A set of three files that
+represent the feature x barcode count table; includes all detected
+barcodes. (Format details elaborated below.)</li>
+<li><strong>filtered_feature_bc_matrix</strong> : As above, but filtered
+to include only barcodes that passed Cell Ranger’s cell-calling
+algorithm <a href="#references">[3]</a>.</li>
+<li><strong>molecule.h5</strong> : An HDF5 (binary) file all containing
+information for all molecules assigned to a feature/barcode. See
+references <a href="#references">[6]</a> for more info on this
+format.</li>
+<li><strong>cloupe file</strong> : Used with the 10x Loupe Browser
+visualization software.</li>
 </ul>
 <div id="web-summary-html-report" class="section level3">
 <h3>Web Summary html report</h3>
-<p>It is useful to look at the web_summary.html files to get an idea of how each of your samples performed in the 10x pipeline, epecially if there were errors/wanrings and/or if your research could benefit from additional sequencing. <a href="https://cdn.10xgenomics.com/image/upload/v1660261286/support-documents/CG000329_TechnicalNote_InterpretingCellRangerWebSummaryFiles_RevA.pdf" target="_blank">10x provides a guide to interpreting this report</a>.</p>
-<p>Let’s traverse to the outs directory for sample HODay0replicate1 and open the <code>web_summary.html</code>. <strong><a href="images/cellranger/HODay0replicate1_web_summary.html">Example count_run_HODay0replicate1 web_summary.html</a></strong></p>
-<p>The <code>cellranger count</code> web summary has errors/warnings at the top of the report (if any) with additional metrics in the <code>Summary</code> and <code>Gene Expression</code> tabs.</p>
-<p>The important parts of the web_summary.html we look at to determine the quality of the 10x analaysis include:</p>
+<p>It is useful to look at the web_summary.html files to get an idea of
+how each of your samples performed in the 10x pipeline, epecially if
+there were errors/wanrings and/or if your research could benefit from
+additional sequencing. <a
+href="https://cdn.10xgenomics.com/image/upload/v1660261286/support-documents/CG000329_TechnicalNote_InterpretingCellRangerWebSummaryFiles_RevA.pdf"
+target="_blank">10x provides a guide to interpreting this
+report</a>.</p>
+<p>Let’s traverse to the outs directory for sample HODay0replicate1 and
+open the <code>web_summary.html</code>. <strong><a
+href="images/cellranger/HODay0replicate1_web_summary.html">Example
+count_run_HODay0replicate1 web_summary.html</a></strong></p>
+<p>The <code>cellranger count</code> web summary has errors/warnings at
+the top of the report (if any) with additional metrics in the
+<code>Summary</code> and <code>Gene Expression</code> tabs.</p>
+<p>The important parts of the web_summary.html we look at to determine
+the quality of the 10x analaysis include:</p>
 <ul>
 <li><strong>Warnings/Errors</strong></li>
 <li><strong>Barcode Rank Plot</strong></li>
@@ -644,58 +728,131 @@ When the output of the `cellranger count` command says, “Pipestance completed 
 </ul>
 <div id="warningserrors-remediations." class="section level4">
 <h4>Warnings/Errors &amp; remediations.</h4>
-<a href="https://www.10xgenomics.com/support/software/cell-ranger/latest/resources/cr-troubleshooting#alerts" target="_blank">Alerts</a> are generally the result of factors inherent in library preparation and sequencing or sample quality issues. Alerts do not affect the operation of the pipeline, but highlight potential causes for abnormal or missing data:
+<a
+href="https://www.10xgenomics.com/support/software/cell-ranger/latest/resources/cr-troubleshooting#alerts"
+target="_blank">Alerts</a> are generally the result of factors inherent
+in library preparation and sequencing or sample quality issues. Alerts
+do not affect the operation of the pipeline, but highlight potential
+causes for abnormal or missing data:
 </p>
 <ul>
-<li><strong><code>WARNING</code></strong> alerts indicate that some parameter is suboptimal.</li>
-<li><strong><code>ERROR</code></strong> alerts indicate a major issue.</li>
+<li><strong><code>WARNING</code></strong> alerts indicate that some
+parameter is suboptimal.</li>
+<li><strong><code>ERROR</code></strong> alerts indicate a major
+issue.</li>
 </ul>
 <p><img src="images/cellranger/HODay0_alerts.png" /></p>
-<p>Intron mode was used. <a href="https://www.10xgenomics.com/support/software/cell-ranger/latest/miscellaneous/cr-intron-mode-rec" target="_blank">This helps with cell calling and is on by default.</a></p>
+<p>Intron mode was used. <a
+href="https://www.10xgenomics.com/support/software/cell-ranger/latest/miscellaneous/cr-intron-mode-rec"
+target="_blank">This helps with cell calling and is on by
+default.</a></p>
 </div>
 <div id="other-alert-examples" class="section level4">
 <h4>Other alert examples</h4>
-<div class="figure">
-<img src="images/cellranger/cellranger-warn-alert-3.1.png" alt="" />
-<p class="caption">Report with alerts</p>
+<div class="float">
+<img src="images/cellranger/cellranger-warn-alert-3.1.png"
+alt="Report with alerts" />
+<div class="figcaption">Report with alerts</div>
 </div>
 <p><img src="images/cellranger/cellranger-error-alert-3.1.png" /></p>
 </div>
 <div id="summary-tab" class="section level4">
 <h4>Summary tab</h4>
-<p>The run summary from <code>cellranger count</code> can be viewed by clicking <code>Summary</code> in the top left tab of the HTML file. The summary metrics describe sequencing quality and various characteristics of the detected cells.</p>
+<p>The run summary from <code>cellranger count</code> can be viewed by
+clicking <code>Summary</code> in the top left tab of the HTML file. The
+summary metrics describe sequencing quality and various characteristics
+of the detected cells.</p>
 <p><img src="images/cellranger/HODay0_summary.png" /></p>
 </div>
 <div id="more-on-the-barcode-rank-plot" class="section level4">
 <h4>More on the Barcode Rank Plot</h4>
-<div class="figure">
-<img src="images/cellranger/BRP-1_with_legend.png" alt="" />
-<p class="caption">The y-axis is the number of UMI counts mapped to each barcode and the x-axis is the number of barcodes below that value.</p>
+<div class="float">
+<img src="images/cellranger/BRP-1_with_legend.png"
+alt="The y-axis is the number of UMI counts mapped to each barcode and the x-axis is the number of barcodes below that value." />
+<div class="figcaption">The y-axis is the number of UMI counts mapped to
+each barcode and the x-axis is the number of barcodes below that
+value.</div>
 </div>
-<p>The <a href="https://www.10xgenomics.com/support/software/cell-ranger/latest/advanced/cr-barcode-rank-plot" target="_blank">GEX Barcode Rank Plot</a> under the Cells dashboard is an interactive plot that shows all barcodes detected in an experiment, ranked from highest to lowest UMI count and which barcodes were inferred to be associated with cells. It is useful for understanding Cell Ranger’s cell calling algorithm and its performance on your data, and for providing insights into your sample quality.</p>
-<p>Basically, all 10x Barcodes detected during sequencing (~100k) are plotted in decreasing order of the number of UMIs associated with that particular barcode. The number of UMIs detected in each GEM is then used by Cell Ranger to identify barcodes/GEMs that are likely to contain an intact cell based on the expected cell number and UMI counts. Then distinguish low RNA content cells from empty droplets, since GEMs containing cells are expected to have a greater number of transcripts (and thus UMIs) associated with them than non-cell containing GEMs.</p>
-<p>Since barcodes can be associated with cells based on their UMI count or by their RNA profiles, some regions of the graph can contain both cell-associated and background-associated barcodes. The color of the graph represents the local density of barcodes that are cell-associated.</p>
-<p>A steep drop-off is indicative of good separation between the cell-associated barcodes and the barcodes associated with empty partitions.</p>
+<p>The <a
+href="https://www.10xgenomics.com/support/software/cell-ranger/latest/advanced/cr-barcode-rank-plot"
+target="_blank">GEX Barcode Rank Plot</a> under the Cells dashboard is
+an interactive plot that shows all barcodes detected in an experiment,
+ranked from highest to lowest UMI count and which barcodes were inferred
+to be associated with cells. It is useful for understanding Cell
+Ranger’s cell calling algorithm and its performance on your data, and
+for providing insights into your sample quality.</p>
+<p>Basically, all 10x Barcodes detected during sequencing (~100k) are
+plotted in decreasing order of the number of UMIs associated with that
+particular barcode. The number of UMIs detected in each GEM is then used
+by Cell Ranger to identify barcodes/GEMs that are likely to contain an
+intact cell based on the expected cell number and UMI counts. Then
+distinguish low RNA content cells from empty droplets, since GEMs
+containing cells are expected to have a greater number of transcripts
+(and thus UMIs) associated with them than non-cell containing GEMs.</p>
+<p>Since barcodes can be associated with cells based on their UMI count
+or by their RNA profiles, some regions of the graph can contain both
+cell-associated and background-associated barcodes. The color of the
+graph represents the local density of barcodes that are
+cell-associated.</p>
+<p>A steep drop-off is indicative of good separation between the
+cell-associated barcodes and the barcodes associated with empty
+partitions.</p>
 </div>
 <div id="gene-expression-tab" class="section level4">
 <h4>Gene Expression tab</h4>
-The automated secondary analysis results can be viewed by clicking the <code>Gene Expression</code> tab in the top left corner. Click the <code>?</code> icons next to each section title to display information about the secondary analyses shown in the dashboard.
+The automated secondary analysis results can be viewed by clicking the
+<code>Gene Expression</code> tab in the top left corner. Click the
+<code>?</code> icons next to each section title to display information
+about the secondary analyses shown in the dashboard.
 </p>
-The t-SNE Projection section shows the data reduced to two dimensions, colored by UMI count (left) or clustering (right). It is a good starting point to explore structure in the data. The projection colored by UMI counts is indicative of the RNA content of the cells and often correlates with cell size - redder points are cells with more RNA in them. For the projection colored by clustering results, select the type of clustering analysis to display from the drop-down button on the upper right (Graph-based by default) - change the category to vary the type of clustering and/or number of clusters (K=2-10) that are assigned to the data.
+The t-SNE Projection section shows the data reduced to two dimensions,
+colored by UMI count (left) or clustering (right). It is a good starting
+point to explore structure in the data. The projection colored by UMI
+counts is indicative of the RNA content of the cells and often
+correlates with cell size - redder points are cells with more RNA in
+them. For the projection colored by clustering results, select the type
+of clustering analysis to display from the drop-down button on the upper
+right (Graph-based by default) - change the category to vary the type of
+clustering and/or number of clusters (K=2-10) that are assigned to the
+data.
 </p>
-The Top Features By Cluster table shows which genes are differentially expressed in each cluster relative to all other clusters (Graph-based by default). To find the genes associated with a particular cluster, click the L2FC or p-value column headers associated with a given cluster number to sort the table by a specific cluster
+The Top Features By Cluster table shows which genes are differentially
+expressed in each cluster relative to all other clusters (Graph-based by
+default). To find the genes associated with a particular cluster, click
+the L2FC or p-value column headers associated with a given cluster
+number to sort the table by a specific cluster
 </p>
 <p><img src="images/cellranger/HODay0_tsne.png" /></p>
 <div id="the-sequencing-saturation-plot" class="section level5">
 <h5>The Sequencing Saturation plot</h5>
-The <a href="https://kb.10xgenomics.com/hc/en-us/articles/115005062366-What-is-sequencing-saturation" target="_blank">Sequecing Saturation</a> plot shows the effect of decreased sequencing depth on sequencing saturation, which is a measure of the fraction of library complexity that was observed. The right-most point on the line is the full sequencing depth obtained in this run.
+The <a
+href="https://kb.10xgenomics.com/hc/en-us/articles/115005062366-What-is-sequencing-saturation"
+target="_blank">Sequecing Saturation</a> plot shows the effect of
+decreased sequencing depth on sequencing saturation, which is a measure
+of the fraction of library complexity that was observed. The right-most
+point on the line is the full sequencing depth obtained in this run.
 </p>
-Similarly, the Median Genes per Cell plot shows the effect of decreased sequencing depth on median genes per cell, which is a way of measuring data yield as a function of depth. The right-most point on the line is the full sequencing depth obtained in this run.
+Similarly, the Median Genes per Cell plot shows the effect of decreased
+sequencing depth on median genes per cell, which is a way of measuring
+data yield as a function of depth. The right-most point on the line is
+the full sequencing depth obtained in this run.
 </p>
 <p><img src="images/cellranger/HODay0_seqsat.png" /></p>
-<p><strong>The recommended sequencing saturation is &gt;60%</strong>. If you are below this threshold, you would probably benefit from additional sequencing for increased depth.</p>
-<p>To think of this another way, if you hit 60% saturation, for every additional 100 reads/cell you could expect to see 40 more genes. At 40% saturation you could expect to see 60 additional genes for every additional 100 reads/cell. At 20% saturation you could expect to see 80 additional genes for every additional 100 reads/cell and so on. Therefore if your sequencing saturation is high enough, you are unlikely to gain additional biologically relevant data with additional sequencing. If your sequecing saturation is low, additional sequencing will improve your downstream analysis and reveal more about the underlying biology.</p>
-<p>Assuming the Advanced Genomics Core has your samples it is relatively easy to request additional sequencing through the core.</p>
+<p><strong>The recommended sequencing saturation is &gt;60%</strong>. If
+you are below this threshold, you would probably benefit from additional
+sequencing for increased depth.</p>
+<p>To think of this another way, if you hit 60% saturation, for every
+additional 100 reads/cell you could expect to see 40 more genes. At 40%
+saturation you could expect to see 60 additional genes for every
+additional 100 reads/cell. At 20% saturation you could expect to see 80
+additional genes for every additional 100 reads/cell and so on.
+Therefore if your sequencing saturation is high enough, you are unlikely
+to gain additional biologically relevant data with additional
+sequencing. If your sequecing saturation is low, additional sequencing
+will improve your downstream analysis and reveal more about the
+underlying biology.</p>
+<p>Assuming the Advanced Genomics Core has your samples it is relatively
+easy to request additional sequencing through the core.</p>
 <p><br/> <br/></p>
 </div>
 </div>
@@ -721,8 +878,15 @@ raw_feature_bc_matrix
 <tr>
 <td class="fig">
 <ol style="list-style-type: upper-alpha">
-<li>Each element of the feature-barcode matrix is the count of UMIs associated with a feature (row) and a barcode (column). Because the matrix is very sparse, storing the matrix as three individual, compressed files saves siginificant space. <a href="#references">[6]</a><br/></li>
-<li>In relation to the Barcode Rank Plot, raw matrices include cells and background and the filtered matrix files only contain data for cells. Downstream analysis typically uses the <strong>filtered</strong> matrix files.</li>
+<li>Each element of the feature-barcode matrix is the count of UMIs
+associated with a feature (row) and a barcode (column). Because the
+matrix is very sparse, storing the matrix as three individual,
+compressed files saves siginificant space. <a
+href="#references">[6]</a><br/></li>
+<li>In relation to the Barcode Rank Plot, raw matrices include cells and
+background and the filtered matrix files only contain data for cells.
+Downstream analysis typically uses the <strong>filtered</strong> matrix
+files.</li>
 </ol>
 </td>
 </tr>
@@ -775,18 +939,36 @@ The matrix file (UMI counts) uses the [Market Exchange Format (MEX)](https://mat
 </div>
 <div id="re-running-cell-ranger" class="section level2">
 <h2>Re-running Cell Ranger</h2>
-<p>It’s most common for the sequence provider to run Cell Ranger on your behalf. Cell Ranger’s preliminary QC outputs give the provider key information about whether the prep and sequencing run worked as expected. With that in mind it’s entirely possible you may never have to run Cell Ranger yourself.</p>
-<p>There are a few scenarios when you might consider re-running Cell Ranger:</p>
+<p>It’s most common for the sequence provider to run Cell Ranger on your
+behalf. Cell Ranger’s preliminary QC outputs give the provider key
+information about whether the prep and sequencing run worked as
+expected. With that in mind it’s entirely possible you may never have to
+run Cell Ranger yourself.</p>
+<p>There are a few scenarios when you might consider re-running Cell
+Ranger:</p>
 <ol style="list-style-type: decimal">
-<li>You need to combine new samples with previously processed samples and you want all samples to be run through the same version of cell ranger</li>
-<li>You need to adjust the run parameters (e.g. you want to exclude/include introns in the alignment).</li>
-<li>You need to align against a custom reference ( e.g. one that includes a transgene)</li>
+<li>You need to combine new samples with previously processed samples
+and you want all samples to be run through the same version of cell
+ranger</li>
+<li>You need to adjust the run parameters (e.g. you want to
+exclude/include introns in the alignment).</li>
+<li>You need to align against a custom reference ( e.g. one that
+includes a transgene)</li>
 </ol>
-<p>Also, keep in mind that if you or your collaborators have to re-run Cell Ranger for any reason you will need the original FASTQ files. (<strong>Again, you are repsonsible for your data.</strong> Your sequencing provider may not retain a copy and even if they do there may be charge and/or delay for reprocessing).</p>
-<div id="system-requirements-for-running-cell-ranger" class="section level3">
+<p>Also, keep in mind that if you or your collaborators have to re-run
+Cell Ranger for any reason you will need the original FASTQ files.
+(<strong>Again, you are repsonsible for your data.</strong> Your
+sequencing provider may not retain a copy and even if they do there may
+be charge and/or delay for reprocessing).</p>
+<div id="system-requirements-for-running-cell-ranger"
+class="section level3">
 <h3>System Requirements for running Cell Ranger</h3>
 <p><img src="images/cellranger/onedoesntlaptop.jpg" /></p>
-<p>Running Cell Ranger can be challenging because the <a href="https://www.10xgenomics.com/support/software/cell-ranger/downloads/cr-system-requirements" target="_blank">system requirements</a> exceed the specifications for a typical personal computer/laptop. In particiular, Cell Ranger pipelines run on Linux systems that meet these minimum requirements:</p>
+<p>Running Cell Ranger can be challenging because the <a
+href="https://www.10xgenomics.com/support/software/cell-ranger/downloads/cr-system-requirements"
+target="_blank">system requirements</a> exceed the specifications for a
+typical personal computer/laptop. In particiular, Cell Ranger pipelines
+run on Linux systems that meet these minimum requirements:</p>
 <ul>
 <li>64-bit CentOS/RedHat 7.0 or Ubuntu 14.04</li>
 <li>8-core Intel or AMD processor (16 cores recommended).</li>
@@ -794,7 +976,12 @@ The matrix file (UMI counts) uses the [Market Exchange Format (MEX)](https://mat
 </li>
 <li>1TB free disk space.</li>
 </ul>
-<p>Note that UM Advanced Genomics Core and Bioinformatics Core use the <a href="https://arc.umich.edu/greatlakes/" target="_blank">Great Lakes Computing cluster</a> to run Cell Ranger. If your lab has signed up for the <a href="https://arc.umich.edu/umrcp/" target="_blank">University of Michigan Research Computing Package (UMRCP)</a>, you can also get access to the cluster and the available software.</p>
+<p>Note that UM Advanced Genomics Core and Bioinformatics Core use the
+<a href="https://arc.umich.edu/greatlakes/" target="_blank">Great Lakes
+Computing cluster</a> to run Cell Ranger. If your lab has signed up for
+the <a href="https://arc.umich.edu/umrcp/" target="_blank">University of
+Michigan Research Computing Package (UMRCP)</a>, you can also get access
+to the cluster and the available software.</p>
 <p><br/> <br/></p>
 <p><img src="images/cellranger/iceberg.jpg" /></p>
 <p><br/> <br/></p>
@@ -803,29 +990,59 @@ The matrix file (UMI counts) uses the [Market Exchange Format (MEX)](https://mat
 <div id="conclusions" class="section level2">
 <h2>Conclusions</h2>
 <ul>
-<li>To run <strong><code>cellranger count</code></strong> you need a computing cluster, the <strong><code>--id</code></strong> and <strong><code>--fastqs</code></strong> for each <strong><code>--sample</code></strong>, and the path to the cellranger formated <strong><code>--transcriptome</code></strong> reference file.</li>
-<li>The Barcode Rank Plot shows how the software determined what were cells compared to background. The filtered matrix files only contain data for cells on the barcode rank plot, wheras the raw matrices include cells and background.</li>
-<li>Additional sequencing is suggested if your sequencing saturation is low.</li>
+<li>To run <strong><code>cellranger count</code></strong> you need a
+computing cluster, the <strong><code>--id</code></strong> and
+<strong><code>--fastqs</code></strong> for each
+<strong><code>--sample</code></strong>, and the path to the cellranger
+formated <strong><code>--transcriptome</code></strong> reference
+file.</li>
+<li>The Barcode Rank Plot shows how the software determined what were
+cells compared to background. The filtered matrix files only contain
+data for cells on the barcode rank plot, wheras the raw matrices include
+cells and background.</li>
+<li>Additional sequencing is suggested if your sequencing saturation is
+low.</li>
 </ul>
 <p><br/> <br/></p>
 </div>
 <div id="references" class="section level2">
 <h2>References</h2>
 <ol style="list-style-type: decimal">
-<li>Sections of this lesson were adapted from 10x training materials. See the <a href="https://www.10xgenomics.com/support/software/cell-ranger/latest" target="_blank">10x Genomics support website</a> for additional information.</li>
-<li><a href="https://www.10xgenomics.com/support/software/cell-ranger/latest/tutorials/cr-tutorial-ct">10x Genomics Cell Ranger count tutorial</a></li>
-<li><a href="https://www.10xgenomics.com/support/software/cell-ranger/latest/algorithms-overview/cr-gex-algorithm#cell_calling" target="_blank">10x Genomics cell-calling algorithm</a></li>
-<li><a href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1662-y" target="_blank">EmptyDrops method</a></li>
-<li><a href="https://portal.hdfgroup.org/documentation/index.html" target="_blank">Intro to HDF5 format</a></li>
-<li><a href="https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-molecule-info" target="_blank">Detailed explanation of 10x molecule HDF5 format</a></li>
-<li><a href="https://math.nist.gov/MatrixMarket/formats.html" target="_blank">Market Exchange Format (MEX)</a>.</li>
+<li>Sections of this lesson were adapted from 10x training materials.
+See the <a
+href="https://www.10xgenomics.com/support/software/cell-ranger/latest"
+target="_blank">10x Genomics support website</a> for additional
+information.</li>
+<li><a
+href="https://www.10xgenomics.com/support/software/cell-ranger/latest/tutorials/cr-tutorial-ct">10x
+Genomics Cell Ranger count tutorial</a></li>
+<li><a
+href="https://www.10xgenomics.com/support/software/cell-ranger/latest/algorithms-overview/cr-gex-algorithm#cell_calling"
+target="_blank">10x Genomics cell-calling algorithm</a></li>
+<li><a
+href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-019-1662-y"
+target="_blank">EmptyDrops method</a></li>
+<li><a href="https://portal.hdfgroup.org/documentation/index.html"
+target="_blank">Intro to HDF5 format</a></li>
+<li><a
+href="https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-molecule-info"
+target="_blank">Detailed explanation of 10x molecule HDF5
+format</a></li>
+<li><a href="https://math.nist.gov/MatrixMarket/formats.html"
+target="_blank">Market Exchange Format (MEX)</a>.</li>
 </ol>
-<br/> <br/>
-<hr/>
-<table>
+<p><br/> <br/></p>
+<hr />
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
 <thead>
 <tr class="header">
-<th align="left"><a href="01-GettingStarted.html">Previous lesson</a></th>
+<th align="left"><a href="01-GettingStarted.html">Previous
+lesson</a></th>
 <th align="center"><a href="#top">Top of this lesson</a></th>
 <th align="right"><a href="02-QCandFiltering.html">Next lesson</a></th>
 </tr>
