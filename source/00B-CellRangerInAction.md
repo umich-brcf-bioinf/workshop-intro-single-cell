@@ -32,6 +32,10 @@ table.fig, th.fig, td.fig {
   border-collapse: collapse;
   padding: 15px;
 }
+
+table{
+   width:100%;
+}
 </style>
 
 # Workflow Overview {.unlisted .unnumbered}
@@ -495,6 +499,8 @@ Note that UM Advanced Genomics Core and Bioinformatics Core use the [Great Lakes
 
 <br/>
 <br/>
-<hr/>
-| [Previous lesson](00A-OrientingOnScRNASeq.html) | [Top of this lesson](#top) | [Next lesson](01-GettingStarted.html) |
+
+-----
+
+| [Previous lesson](01-GettingStarted.html) | [Top of this lesson](#top) | [Next lesson](02-QCandFiltering.html) |
 | :--- | :----: | ---: |

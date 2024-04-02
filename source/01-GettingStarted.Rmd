@@ -26,6 +26,10 @@ code.r{
 pre {
   font-size: 12px
 }
+
+table{
+   width:100%;
+}
 </style>
 
 ```{r, include = FALSE}
@@ -264,6 +268,9 @@ These materials have been adapted and extended from materials listed above. Thes
 
 <br/>
 <br/>
-<hr/>
-| [Previous lesson](00B-CellRangerInAction.html) | [Top of this lesson](#top) | [Next lesson](02-QCandFiltering.html) |
+
+---------------
+
+| [Previous lesson](00A-OrientingOnScRNASeq.html) | [Top of this lesson](#top) | [Next lesson](00B-CellRangerInAction.html) |
 | :--- | :----: | ---: |
+
