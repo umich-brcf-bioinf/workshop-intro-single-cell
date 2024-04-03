@@ -20,9 +20,8 @@ render_site('source/workshop_intro.md')
 
 ## add content pages
 render_site('source/00A-OrientingOnScRNASeq.Rmd')
-render_site('source/00B-CellRangerInAction.md')
-
 render_site('source/01-GettingStarted.Rmd')
+render_site('source/00B-CellRangerInAction.md')
 render_site('source/02-QCandFiltering.Rmd')
 render_site('source/03-Normalization.Rmd')
 render_site('source/04-PCAandIntegration.Rmd')
@@ -34,4 +33,6 @@ render_site('source/09-IndependentExercise.Rmd')
 render_site('source/00-ResourcesAndExtendedContent.Rmd')
 
 render_site('source/workshop_wrap_up.md')
+rm(list=ls())
+gc(verbose=TRUE, full=TRUE)
 #clean_site(preview=TRUE)
