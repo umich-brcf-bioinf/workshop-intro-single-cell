@@ -33,4 +33,6 @@ render_site('source/09-IndependentExercise.Rmd')
 render_site('source/00-ResourcesAndExtendedContent.Rmd')
 
 render_site('source/workshop_wrap_up.md')
+rm(list=ls())
+gc(verbose=TRUE, full=TRUE)
 #clean_site(preview=TRUE)

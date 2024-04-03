@@ -46,7 +46,6 @@ table{
 <br/>
 
 ## Objectives
-* Understand what Cell Ranger does and also how to run `cellranger count` 
 * Describe the key inputs to Cell Ranger.
 * Describe the purpose and overall structure of key Cell Ranger outputs.
 * Interpret a `cellranger count` web_summary.html report to determine sample
@@ -135,100 +134,6 @@ publication of your sequencing data. So we recomend you download **all of it**.
 publication and archival purposes. (Typically sequencing providers will 
 regularly delete project data following delivery.)
 </td></tr></table>
-<br/>
-<br/>
-
-## How to run Cell Ranger
-
-Cell Ranger is run from a Linux/Unix command shell [[2]](#references). You can print the usage
-statement to see what is needed to build the command: `cellranger count --help`
-
-```
-cellranger-count
-Count gene expression (targeted or whole-transcriptome) and/or feature barcode reads from a single sample and GEM well
- 
-USAGE:
-    cellranger count [FLAGS] [OPTIONS] --id &lt;ID&gt; --transcriptome &lt;PATH&gt;
-     
-FLAGS:
-          --no-bam                  Do not generate a bam file
-          --nosecondary             Disable secondary analysis, e.g. clustering. Optional
-          --include-introns         Include intronic reads in count
-          --no-libraries            Proceed with processing using a --feature-ref but no Feature Barcode libraries
-                                    specified with the &#x27;libraries&#x27; flag
-          --no-target-umi-filter    Turn off the target UMI filtering subpipeline. Only applies when --target-panel is
-                            used
-          --dry                     Do not execute the pipeline. Generate a pipeline invocation (.mro) file and stop
-          --disable-ui              Do not serve the web UI
-          --noexit                  Keep web UI running after pipestance completes or fails
-          --nopreflight             Skip preflight checks
-      -h, --help                    Prints help information
-  ...
-```
-
-
-To run `cellranger count`, you need to specify:
-
-* **`--id`**. This can be any string less than 64 characters. Cell Ranger
-  creates an output directory named for the id string. 
-* **`--fastqs`**  path to the directory containing the FASTQ files. 
-* **`--sample`** argument to specify which subset of FASTQ files to use 
-  (specified sample string should match the beginning of the FASTQ file name). 
-* **`--transcriptome`** a path to the reference transcriptome. Typically you
-  would download a specific transcript for your organism from [10x Genomics](https://www.10xgenomics.com/support/software/cell-ranger/downloads#reference-downloads){target="_blank"}.
-
-Recall the directory of outputs from the sequencer (from above):
-
-```
-0000-SR
-├── 0000-SR.md5
-├── DemuxStats_0000-SR.csv
-├── fastqs_0000-SR
-│   ├── 0000-SR-1-GEX_S25_R1_001.fastq.gz
-│   ├── 0000-SR-1-GEX_S25_R2_001.fastq.gz
-│   ├── 0000-SR-2-GEX_S26_R1_001.fastq.gz
-│   ├── 0000-SR-2-GEX_S26_R2_001.fastq.gz
-│   ├── 0000-SR-3-GEX_S27_R1_001.fastq.gz
-│   ├── 0000-SR-3-GEX_S27_R2_001.fastq.gz
-│   ├── 0000-SR-4-GEX_S28_R1_001.fastq.gz
-│   └── 0000-SR-4-GEX_S28_R2_001.fastq.gz
-└── README.txt
-``` 
-
-We can create the `cellranger count` command:
-
-```
-cellranger count --id=Sample_0000-SR-1 \
-   --fastqs=/nfs/turbo/path/to/0000-SR/0000-SR_fastqs \
-   --sample=0000-SR-1\
-   --transcriptome=path/to/refereces/cellranger_count/refdata-gex-GRCh38-2020-A`
-```
-
-Data from a typical sample can take several hours to complete, so we've 
-completed this step for you.
-
-
-<!-- This content will not appear in the rendered Markdown 
- but we're using a smaller data set that should process quickly.
-
-The `cellranger count` screen output is similar to the following:
-
-```
-/mnt/yard/user.name/yard/apps/cellranger-7.2.0/bin
-cellranger count (7.2.0)
-
-cellranger count (7.2.0)
-Copyright (c) 2021 10x Genomics, Inc.  All rights reserved.
--------------------------------------------------------------------------------
-
-Martian Runtime - v4.0.6
-...
-2021-10-15 17:12:42 [perform] Serializing pipestance performance data.
-Waiting 6 seconds for UI to do final refresh.
-Pipestance completed successfully!
-```
-
-When the output of the `cellranger count` command says, “Pipestance completed successfully!”, this means the job is done.-->
 <br/>
 <br/>
 
@@ -452,8 +357,8 @@ for any reason you will need the original FASTQ files. (**Again, you are
 repsonsible for your data.** Your sequencing provider may not retain a copy and 
 even if they do there may be charge and/or delay for reprocessing).
 
-
-### System Requirements for running Cell Ranger
+<details>
+<summary>System Requirements for running Cell Ranger</summary>
 
  ![](images/cellranger/onedoesntlaptop.jpg)
 
@@ -466,21 +371,113 @@ Running Cell Ranger can be challenging because the [system requirements](https:/
 - 1TB free disk space.  
 
 Note that UM Advanced Genomics Core and Bioinformatics Core use the [Great Lakes Computing cluster](https://arc.umich.edu/greatlakes/){target="_blank"} to run Cell Ranger. If your lab has signed up for the [University of Michigan Research Computing Package (UMRCP)](https://arc.umich.edu/umrcp/){target="_blank"}, you can also get access to the cluster and the available software.
+</details>
 
 <br/>
+
+<details>
+<summary>How to run Cell Ranger</summary>
+
+Cell Ranger is run from a Linux/Unix command shell [[2]](#references). You can print the usage
+statement to see what is needed to build the command: `cellranger count --help`
+
+```
+cellranger-count
+Count gene expression (targeted or whole-transcriptome) and/or feature barcode reads from a single sample and GEM well
+ 
+USAGE:
+    cellranger count [FLAGS] [OPTIONS] --id &lt;ID&gt; --transcriptome &lt;PATH&gt;
+     
+FLAGS:
+          --no-bam                  Do not generate a bam file
+          --nosecondary             Disable secondary analysis, e.g. clustering. Optional
+          --include-introns         Include intronic reads in count
+          --no-libraries            Proceed with processing using a --feature-ref but no Feature Barcode libraries
+                                    specified with the &#x27;libraries&#x27; flag
+          --no-target-umi-filter    Turn off the target UMI filtering subpipeline. Only applies when --target-panel is
+                            used
+          --dry                     Do not execute the pipeline. Generate a pipeline invocation (.mro) file and stop
+          --disable-ui              Do not serve the web UI
+          --noexit                  Keep web UI running after pipestance completes or fails
+          --nopreflight             Skip preflight checks
+      -h, --help                    Prints help information
+  ...
+```
+
+
+To run `cellranger count`, you need to specify:
+
+* **`--id`**. This can be any string less than 64 characters. Cell Ranger
+  creates an output directory named for the id string. 
+* **`--fastqs`**  path to the directory containing the FASTQ files. 
+* **`--sample`** argument to specify which subset of FASTQ files to use 
+  (specified sample string should match the beginning of the FASTQ file name). 
+* **`--transcriptome`** a path to the reference transcriptome. Typically you
+  would download a specific transcript for your organism from [10x Genomics](https://www.10xgenomics.com/support/software/cell-ranger/downloads#reference-downloads){target="_blank"}.
+
+Recall the directory of outputs from the sequencer (from above):
+
+```
+0000-SR
+├── 0000-SR.md5
+├── DemuxStats_0000-SR.csv
+├── fastqs_0000-SR
+│   ├── 0000-SR-1-GEX_S25_R1_001.fastq.gz
+│   ├── 0000-SR-1-GEX_S25_R2_001.fastq.gz
+│   ├── 0000-SR-2-GEX_S26_R1_001.fastq.gz
+│   ├── 0000-SR-2-GEX_S26_R2_001.fastq.gz
+│   ├── 0000-SR-3-GEX_S27_R1_001.fastq.gz
+│   ├── 0000-SR-3-GEX_S27_R2_001.fastq.gz
+│   ├── 0000-SR-4-GEX_S28_R1_001.fastq.gz
+│   └── 0000-SR-4-GEX_S28_R2_001.fastq.gz
+└── README.txt
+``` 
+
+We can create the `cellranger count` command:
+
+```
+cellranger count --id=Sample_0000-SR-1 \
+   --fastqs=/nfs/turbo/path/to/0000-SR/0000-SR_fastqs \
+   --sample=0000-SR-1\
+   --transcriptome=path/to/refereces/cellranger_count/refdata-gex-GRCh38-2020-A`
+```
+
+Data from a typical sample can take several hours to complete, so we've 
+completed this step for you.
+
+
+<!-- This content will not appear in the rendered Markdown 
+ but we're using a smaller data set that should process quickly.
+
+The `cellranger count` screen output is similar to the following:
+
+```
+/mnt/yard/user.name/yard/apps/cellranger-7.2.0/bin
+cellranger count (7.2.0)
+
+cellranger count (7.2.0)
+Copyright (c) 2021 10x Genomics, Inc.  All rights reserved.
+-------------------------------------------------------------------------------
+
+Martian Runtime - v4.0.6
+...
+2021-10-15 17:12:42 [perform] Serializing pipestance performance data.
+Waiting 6 seconds for UI to do final refresh.
+Pipestance completed successfully!
+```
+
+When the output of the `cellranger count` command says, “Pipestance completed successfully!”, this means the job is done.-->
+
+</details>
 <br/>
 
-![](images/cellranger/iceberg.jpg)
 
-<br/>
-<br/>
+## Summary
 
-## Conclusions
-
-* To run **`cellranger count`** you need a computing cluster, the **`--id`** and **`--fastqs`** for each  **`--sample`**, and the  path to the cellranger formated **`--transcriptome`** reference file.
+* Cell Ranger is a command line too from 10x Genomics. It accepts the sequence FASTQs from a 10x experiment and emits QC reports and feature-barcode-count files used for downstream analysis. 
 * The Barcode Rank Plot shows how the software determined what were cells compared to background. The filtered matrix files only contain data for cells on the barcode rank plot, wheras the raw matrices include cells and background. 
 * Additional sequencing is suggested if your sequencing saturation is low. 
-
+* You may not ever need to run Cell Ranger yourself, but keep in mind that this part of the process is computationally intensive and can requires larger workstations/servers, abundant storage, and significant time.
 <br/>
 <br/>
 
