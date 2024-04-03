@@ -108,6 +108,9 @@ So how do we determine what and how many genes to use before classifying cells i
 Principal component analysis (PCA) determines axes in high-dimensional space that capture the most variation. By definition, the PCs capture the greatest factors of heterogeneity in decreasing order in the data set [source](https://bioconductor.org/books/3.13/OSCA.basic/dimensionality-reduction.html#principal-components-analysis).
 
 <!--- add PCA illustration here --->
+In practical terms, PCA creates a reduction that is representative of the overall data while reducing the scale and complexity. For example, we can think of a full single-cell data set as similar to the full Lord of the Rings trilogy - large and complex with quite a bit of detail that might be repeated and isn't necessary to understand the overall plot and make running the analysis prohibitively slow. Like a Cliff notes version or a movie pitch for the book series, the PCs capture correlated expression and reduce the size and complexity of the data, while still allowing the overall structure of the data - that we would expect to be related to cell-types or plot points in the analogy - to be represented.
+
+![](./images/curriculum/04-PCAandIntegration/PCA_purpose.png)
 
 ### PCA example
 
@@ -157,12 +160,12 @@ After running the command in the console, we should see that the `geo_so` Seurat
 
 We can then visualize the first several PCs using the `DimHeatmp()` function, which orders both cells and features (genes) according to their PCA scores and allows us to see some general patterns in the data. Here we will specify that the first 24 PCs be included in the figure and that 500 cells are randomly subsetted for the plot: __Note - you may need to increase your plot window size to resolve any errors regarding figure margins.___
 ```{r, pca_heatmap_plot}
-# Code block - plot cell by gene heatmaps for first several PCs
-DimHeatmap(geo_so, dims=1:24, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca')
-
+# Code block - plot cell by gene heatmaps for first several PCs (split into two plots to avoid plot margin errors)
+DimHeatmap(geo_so, dims=1:12, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca')
+DimHeatmap(geo_so, dims=13:24, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca')
 
 # note - need to use png() because this isn't a ggplot
-png(filename = 'results/figures/qc_pca_heatmap.png', width = 12, height = 4, units = 'in', res = 300)
+png(filename = 'results/figures/qc_pca_heatmap.png', width = 12, height = 40, units = 'in', res = 300)
 DimHeatmap(geo_so, dims=1:24, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca')
 dev.off()
 ```
@@ -175,13 +178,13 @@ We can also visualize both the cell and gene features that define each principal
 
 We can highlight genes loaded for each dimension using using `VizDimLoadings()` or look at how cells load on the first two principal components, similarly to how we often look at samples for bulk RNA-seq, with the `DimPlot()` function, or use `DimHeatmap()`, which orders both cells and features according to their PCA scores and allows us to see some general patterns in the data:
 
-```{r, pca_loading_plot}
+```{r, pca_loading_plot, eval = FALSE}
 # gene loadings
 VizDimLoadings(geo_so, dims = 1:2, reduction = 'unintegrated.sct.pca')
 ggsave(filename = 'results/figures/qc_pca_loadings.png', width = 12, height = 6, units = 'in')
 ```
 
-```{r, pca_plot}
+```{r, pca_plot, eval  = FALSE}
 # PCA style plot for PC1 and PC2
 DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'day')
 ggsave(filename = 'results/figures/qc_pca_plot_unintegrated_sct_day.png', width = 7, height = 6, units = 'in')
@@ -255,7 +258,7 @@ Again, this number is likely a starting point and may need to be revised dependi
 
 In addition to selecting a reduced number of PCs to represetn our data, we can also visualize , similarly to how we often look at samples for bulk RNA-seq using the `DimPlot()` function, with each cell plotted along the selected PCs and colored by a selected meta-data column:
 
-```{r, pca_loading_plot}
+```{r, pca_loading_plots}
 # Code block - PCA style plot for PC1 and PC2
 ?DimPlot # default dims = c(1,2)
 
