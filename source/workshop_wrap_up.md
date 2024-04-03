@@ -46,7 +46,7 @@ connect to enable single-cell gene expression analysis from RNA-Seq data.
 
 - Please take our optional [post-workshop survey](https://forms.gle/mafY39iccNRoEAVZ8){target="_blank"} (5-10 minutes).
 
-- Sign up here to attend [virtual office hours](https://forms.gle/9ZxC3zj8EuFYXeos5){target="_blank"} on 4/22 1-2 ET.
+- Sign up here to attend [Follow Up Help Session](https://forms.gle/9ZxC3zj8EuFYXeos5){target="_blank"} on 4/22 1-2 ET.
 
 - We will email you a link to the final session recordings by the end of next week.
 

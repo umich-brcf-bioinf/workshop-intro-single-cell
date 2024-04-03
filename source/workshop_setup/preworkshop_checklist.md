@@ -18,14 +18,16 @@ body{ /* Normal  */
 
 <br/>
 
-1. (optional) Take the <a href="https://forms.gle/8BHjAGpG4BLDAMicA" target="_blank">Pre-workshop survey</a><br/>
-To help us better understand your collective background, we invite you to take an optional, anonymous pre-workshop survey.
-
-2. Follow this link for <a href="setup_instructions.html" target="_blank">instructions to set up your computer</a><br/>
+1. Follow this link for <a href="setup_instructions.html" target="_blank">instructions to set up your computer</a><br/>
 A separate email with the subject **"UM BioinfCore Workshop Login"** will detail your individual username and password to access the shared server. (Note that this email is sometimes flagged as spam, so if you don't see it in your Inbox please check your spam folder.)
 
-3. Join the UM BioinfCore Workshops Slack channel<br/>
+2. Join the UM BioinfCore Workshops Slack channel<br/>
 You will receive an email invite soon; please accept that to set up your Slack account.
+
+<!--
+3. (optional) Take the <a href="https://forms.gle/8BHjAGpG4BLDAMicA" target="_blank">Pre-workshop survey</a><br/>
+To help us better understand your collective background, we invite you to take an optional, anonymous pre-workshop survey.
+-->
 
 We are looking forward to seeing you in the workshop. Please let us know if you have any questions.<br/><br/>
 
