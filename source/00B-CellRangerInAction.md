@@ -474,10 +474,10 @@ When the output of the `cellranger count` command says, “Pipestance completed 
 
 ## Summary
 
-* Cell Ranger is a command line too from 10x Genomics. It accepts the sequence FASTQs from a 10x experiment and emits QC reports and feature-barcode-count files used for downstream analysis. 
+* Cell Ranger is a command line tool from [10x Genomics](https://www.10xgenomics.com/support/software/cell-ranger/latest){target="_blank"}. It accepts the FASTQ sequences from a 10x experiment and emits QC reports and feature-barcode-count files used for downstream analysis. 
 * The Barcode Rank Plot shows how the software determined what were cells compared to background. The filtered matrix files only contain data for cells on the barcode rank plot, wheras the raw matrices include cells and background. 
 * Additional sequencing is suggested if your sequencing saturation is low. 
-* You may not ever need to run Cell Ranger yourself, but keep in mind that this part of the process is computationally intensive and can requires larger workstations/servers, abundant storage, and significant time.
+* You may not ever need to run Cell Ranger yourself, but keep in mind that this part of the process is computationally intensive and typically requires more powerful computers, abundant storage, and significant time.
 <br/>
 <br/>
 
