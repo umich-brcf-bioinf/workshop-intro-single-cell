@@ -52,11 +52,11 @@ pre {
 
 
 ## About the workshop team
-| ![](images/headshots/headshot_cgates.jpg) | ![](images/headshots/headshot_mbradenb.jpg) | ![](images/headshots/headshot_rcavalca.jpg) |
+| ![](images/headshots/headshot_cgates.jpg) | ![](images/headshots/headshot_mbradenb.jpg) | ![](images/headshots/headshot_rcavalca.jpg) | ![](images/headshots/headshot_damki.jpg) |
 |:-:|:-:|:-:|:-:|
-| **Chris** | **Marci** | **Raymond** |
-![](images/headshots/headshot_damki.jpg) | ![](images/headshots/headshot_ncarruth.jpg) | ![](images/headshots/headshot_trsaari.jpg) |
-| **Dana** | **Nick** | **Travis** |
+| **Chris (Gates)** | **Marci** | **Raymond** | **Dana** |
+ ![](images/headshots/headshot_ncarruth.jpg) | ![](images/headshots/headshot_trsaari.jpg) | ![](images/headshots/headshot_csifuentes.jpg) |
+| **Nick** | **Travis** | **Chris (Sifuentes)** |
 ![](images/headshots/headshot_mkdohert.jpg) | ![](images/headshots/headshot_okoues.jpg) | ![](images/headshots/headshot_phillipa.jpg) |
 | **Matt** | **Olivia** | **Tricia** |
 
@@ -251,12 +251,13 @@ It is important that you can see:
   collecting, organizing, preserving, communicating, sharing, and creating the record of human
   knowledge.
 
-## [Single Cell Spatial Analysis Program](https://singlecellspatialanalysis.umich.edu/){target="_blank"}
+## [CZI : Neurodegeneration Challenge Network](https://chanzuckerberg.com/science/programs-resources/neurodegeneration-challenge/){target="_blank"}
 
-  The Single Cell Spatial Analysis Program seeks to develop the University of Michigan into a 
-  recognized leader in applying high-resolution spatially-resolved multi‑omic analysis within 
-  individual cells and in cells within tissues to drive next-generation solutions in biology and 
-  human health.
+  The CZI Neurodegeneration Challenge Network (NCDN) was launched in 2018 with the vision that progress in solving 
+  neurodegenerative diseases will come from bringing new people into the neurodegeneration field from diverse disciplines 
+  and expertise; supporting interdisciplinary collaborations; empowering the broader scientific community with robust tools 
+  and platforms, and creating a culture of open science.
+
 <br/>
 <br/>
 
