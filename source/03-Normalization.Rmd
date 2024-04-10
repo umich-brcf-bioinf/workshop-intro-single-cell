@@ -42,15 +42,27 @@ knitr_fig_path("03-Normalization/03-")
 
 # Introduction 
 
-After removing low-quality cells from the data, the next task is the normalization and variance stabiliziation of the counts for downstream analysis. Variation in scRNA-seq data comes from both biological and technical sources. It is important to control for the technical sources of variation as much as possible, without removing the biological sources of variation.
+After removing low-quality cells from the data, the next task is the normalization and variance stabilization of the counts for downstream analysis. 
 
-Biological variation is related to differences in cell type and state, and can help answer biologically meaningful questions. Whereas technical variation may arise from fluctuations in cellular RNA content, efficiency in lysis and reverse transcription, and stochastic sampling during sequencing.
+Variation in scRNA-seq data comes from biological sources:
 
-A key driver of technical variation is cellular sequencing depth (that is, the number of UMIs sequenced per cell). The known relationship between gene abundance and gene variance is also an important factor to account for. While methods exist to address these issues in bulk RNA-seq, the sparsity of scRNA-seq data presents challenges to existing methods.
+- Differences in cell type or state
+- Differences in response to treatment
+
+And from technical sources:
+
+- Fluctuations in cellular RNA content
+- Efficiency in lysis and reverse transcription
+- Stochastic sampling during sequencing
+
+It is important to control for the technical sources of variation without removing the biological sources of variation. A key driver of technical variation is cellular sequencing depth (that is, the number of UMIs sequenced per cell). In the figure below, Sample A (left, red reads) is more deeply sequenced than Sample B (right, green reads). In a test for differential expression, we want to account for the difference in sequencing depth to avoid erroneously calling a gene differentially expressed.
+
+![Image: Different sequencing depths can erroneously imply differential expression. Source: [HBC training materials](https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html).](images/curriculum/03-Normalization/normalization_depth.png)
 
 ## Objectives
 
 - Understand why normalization is needed.
+- Describe the essence of the `SCTransform()` method.
 - Understand normalization options.
 - Normalize the counts with `SCTransform()`.
 
@@ -85,7 +97,41 @@ We see the 12 layers containing the count data for each of the samples. Next, ru
 geo_so = SCTransform(geo_so)
 ```
 
-## Details
+## Normalization explained
+
+To get the idea of what `SCTransform()` is doing, we'll consider a simplified example.
+
+![](images/curriculum/03-Normalization/Slide1.png)
+
+Consider two cells that are identical in terms of their type, expression, etc. Imagine that we put them through the microfluidic device and then sequenced the RNA content.
+
+![](images/curriculum/03-Normalization/Slide2.png)
+
+If we were to plot the total cell UMI count against a particular gene UMI count, in an ideal world, the points should be directly on top of each other because the cells had identical expression and everything done to measure that expression went perfectly.
+
+![](images/curriculum/03-Normalization/Slide3.png)
+
+However, we don't live in a perfect world. We will likely observe the cells have different total cell UMI counts as well as different gene UMI counts. This difference, given that the cells were identical, can be attributed to technical factors. For example, efficiency in lysis or in reverse transcription, or the stoachastic sampling that occurs during sequencing.
+
+**It is these technical factors that normalization seeks to correct for, getting us back to the “true” expression state.**
+
+![](images/curriculum/03-Normalization/Slide4.png)
+
+Imagine doing this for thousands of cells. We would get a point cloud like the above. Importantly, that point cloud **has structure**. There is a relationship between the total cell UMI count and the gene UMI count for each gene.
+
+![](images/curriculum/03-Normalization/Slide5.png)
+
+We could fit a line through the point cloud, where we estimate the intercept, the slope, and the error.
+
+![](images/curriculum/03-Normalization/Slide6.png)
+
+The residuals, or the distance from the point to the line, represents the expression of the gene less the total cell UMI count influence.
+
+![](images/curriculum/03-Normalization/Slide7.png)
+
+In other words, the residuals represent the biological variance, and the regression removes the technical variance. Note now that the residuals are the about the same for the two cells.
+
+## Additional details
 
 The full description and justification of the `SCTransform()` function are provided in two excellent papers:
 
@@ -93,23 +139,7 @@ The full description and justification of the `SCTransform()` function are provi
 
 - Choudhary & Satija, *Comparison and evaluation of statistical error models for scRNA-seq*, 2022, Genome Biology ([link](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-021-02584-9))
 
-Contained in the title of the first paper is the kernel of the approach: "regularized negative binomial regression". Let's explain the parts of that phrase at a high-level.
-
-- "Regression" means that for each gene in the scRNA-seq data, a generalized linear model is fit whereby the vector of UMI counts for the gene is estimated by a linear equation containing an intercept and the vector of sequencing depth of the cells. As a term in the model, the cell sequencing depth can be accounted for.
-
-- "Negative binomial" refers to the counts being modeled with a negative binomial distribution. It has been observed in both bulk and single-cell RNA-seq that the mean and variance of the count data are related to one another. Put another way, the variance is non-constant. The negative binomial distribution allows for the variance of the counts to be a function of the mean of the counts.
-
-- "Regularized" refers to a method to constrain parameter estimation. When computing the parameters of the model, the authors observed that genes with low to moderate expression levels had widely ranging model parameter estimates, even when the genes were similar to one another. They concluded this was a result of model overfitting--not of biological origin--and decided to constrain the model parameters by combining information across similar genes. That is, regularization. In this way, the variance of the gene counts is stabilized.
-
-Finally, the Choudhary & Satija paper introduced a modified version of the regularized negative binomial regression (`sctransform` v2). The modifications include:
-
-- The slope of the NB GLM is fixed at an analytically derived `ln(10)`. Consequently, only the intercept and overdispersion parameters remain to be estimated for each gene.
-
-- Genes with very low expression or with variance less than the mean have their dispersion parameters set to infinity, essentially reverting to a Poisson count distribution.
-
-- A lower bound on the minimum variance is used to prevent genes with very low UMI counts from being given very high normalized expression values.
-
-Additionally, the benefit of the GLM framework for normalization and variance stabilization is that the GLM can include other terms which can account for unwanted technical variation. One example of this is the percent mitochondrial reads (`percent.mt`). The `vars.to.regress` parameter of `SCTransform()` is used for this purpose. See the [documentation](https://satijalab.org/seurat/reference/sctransform) for details.
+A benefit of the this framework for normalization is that the model can include other terms which can account for unwanted technical variation. One example of this is the percent mitochondrial reads (`percent.mt`). The `vars.to.regress` parameter of `SCTransform()` is used for this purpose. See the [documentation](https://satijalab.org/seurat/reference/sctransform) for details.
 
 ## Other normalizations
 
