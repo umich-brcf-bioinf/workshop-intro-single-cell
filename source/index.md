@@ -37,7 +37,7 @@ body, td {
 |  1:30 | [Orienting on scRNA-Seq](00A-OrientingOnScRNASeq.html) (Chris) |
 |       | [Getting started with Seurat](01-GettingStarted.html) (Raymond) |
 | 3:00 | Break |
-| 3:15 | [Cell Ranger in Action](00B-CellRangerInAction.html) (Matt) |
+| 3:15 | [Cell Ranger in Action](00B-CellRangerInAction.html) (Olivia) |
 |       | [Initial QC & Filtering](02-QCandFiltering.html) (Raymond) |
 |       | [Normalization](03-Normalization.html) |
 | 5:00 | Day 1 concludes |
@@ -50,7 +50,7 @@ body, td {
 |       | [Clustering & Projection](05-ProjectionAndClustering.html) |
 | 3:00 | Break |
 | 3:15 | [Clustering & Projection (continued)](05-ProjectionAndClustering.html) |
-|       | A review of sequencing approaches (Olivia/Tricia) |
+|       | A review of sequencing approaches (Tricia) |
 | 5:00 | Day 2 concludes |
 
 #### Day 3 (Dana)
