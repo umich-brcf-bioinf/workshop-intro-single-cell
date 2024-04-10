@@ -60,12 +60,33 @@ To investigate this, cells from day 0 (prior to injury), and days 3, 7, and 21 p
 
 ## Objectives
 
+- Orient on RStudio.
 - Create RStudio project for analysis.
 - Create directory structure for analysis.
 - Learn how to read 10X data into Seurat.
 - Introduce the Seurat object, and how to access parts of it.
 
 ---
+
+# Orienting on RStudio
+
+To orient ourselves on the interface of RStudio, look in the lower right pane, that has a list of files and folders. Click on the `welcome.R` script.
+
+There should now be four panes in your RStudio window, with the `welcome.R` script in the upper left pane, this is the "Source" or "Scripts" pane. It displays the code that we will write to perform our analysis.
+
+<!-- Insert screenshot with welcome.R in script pane. -->
+
+In the Scripts pane, there is a line of icons, towards the right side of the pane there is a "Run" button. First highlight all the code in the Source pane, and then click "Run".
+
+<!-- Insert screenshot of the result of running welcome.R -->
+
+**Checkpoint**
+
+A number of things just happened in all the panes:
+
+1. There is a record of the code that was run along with the results in the lower left pane. This is the "Console" panel, and here is where the output of executing code is displayed. You can also type directly in the prompt and execute code, but it is not saved in the script.
+2. There is a `phenotypes_by_species` object listed in the upper right pane. This is the "Environment" panel, and it shows all the existing variables in the session, as well as a brief description.
+3. There is a plot in the lower right pane where the file structure was previously listed. This is the "Files / Plots / Help" pane, and it can show the file browser that we saw at the start, display plots that are executed in the Console, or display help pages as we'll see later.
 
 # Project setup
 
