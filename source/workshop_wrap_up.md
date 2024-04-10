@@ -44,7 +44,7 @@ connect to enable single-cell gene expression analysis from RNA-Seq data.
 
 ## Housekeeping
 
-- Please take our optional [post-workshop survey](https://forms.gle/mafY39iccNRoEAVZ8){target="_blank"} (5-10 minutes).
+- Please take our optional [post-workshop survey](https://forms.gle/P6x1kNFCrs1GoT158){target="_blank"} (5-10 minutes).
 
 - Sign up here to attend [Follow Up Help Session](https://forms.gle/9ZxC3zj8EuFYXeos5){target="_blank"} on 4/22 1-2 ET.
 
@@ -79,8 +79,8 @@ connect to enable single-cell gene expression analysis from RNA-Seq data.
     storage capacity. (i.e. it's impractical to run these on your laptop.)
   - Installing bioinformatics software is non-trivial and comprehensive instructions
     to setup a complete compute environment are outside the scope of this workshop.
-    (We are considering offering a Computational Reproducibility workshop that
-    would cover this.) For the intrepid, see relevant links below:
+    (For University of Michigan learners, we are planning to host a Computational Reproducibility workshop later this year 
+    that would cover this installation and other related tasks in more detail.) For the intrepid, see relevant links below:
     - [Setting up R/R-Studio](workshop_setup/setup_instructions_advanced.html)
 
 <details>

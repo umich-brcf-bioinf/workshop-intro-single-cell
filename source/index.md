@@ -47,10 +47,10 @@ body, td {
 | :---  | :---- |
 | 1:00 | Housekeeping, Review, and Questions (Chris) |
 | 1:20 | [Principal Component Analysis & Integration](04-PCAandIntegration.html) (Dana) |
-|       | [Clustering & Projection](05-ProjectionAndClustering.html) |
+|      | [Clustering & Projection](05-ProjectionAndClustering.html) |
 | 3:00 | Break |
-| 3:15 | [Clustering & Projection (continued)](05-ProjectionAndClustering.html) |
-|       | A review of sequencing approaches (Tricia) |
+| 3:15 | A review of sequencing approaches (Tricia) |
+|      | [Clustering & Projection (continued)](05-ProjectionAndClustering.html) | 
 | 5:00 | Day 2 concludes |
 
 #### Day 3 (Dana)
