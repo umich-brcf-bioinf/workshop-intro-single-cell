@@ -27,6 +27,12 @@ pre {
   font-size: 12px
 }
 
+table.fig, th.fig, td.fig {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 15px;
+}
+
 table{
    width:100%;
 }
@@ -50,7 +56,14 @@ As discussed at the start of the workshop, single-cell experiments using 10x Chr
 
 In this section, our goal is to use filtering thresholds to remove "cells" that were poorly measured, not cells at all, or included more than one cell.
 
+<table class='fig'><tr><td class='fig'>
+![](images/graphical_abstracts/graphical_abstract_QC_and_filtering.png)
+</td></tr><tr><td class='fig'>The Cell Ranger barcode feature matrix outputs (A) is a mix of good and poor quality cells (B). We can use expression patterns to further visualize and filter to the subset of putative healthy cells (C) to improve downstream analysis.
+</td></tr></table>
+<br/>
+
 Similar to many other areas of research, there are often gaps between how single-cell data is presented versus the reality of running an analysis. For example, only the final filtering thresholds might be reported in a paper but our process for choosing those is likely to be more iterative and include some trial and error.
+
 
 ## Objectives
 

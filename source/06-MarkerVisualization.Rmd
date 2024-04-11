@@ -26,6 +26,12 @@ code.r{
 pre {
   font-size: 12px
 }
+
+table.fig, th.fig, td.fig {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 15px;
+}
 </style>
 
 ```{r, include = FALSE}
@@ -43,6 +49,13 @@ knitr_fig_path("06-MarkerVisualization/06-")
 # Introduction
 
 To interpret our initial clustering results for all cells in our experiment, we'll need to characterize the gene expression driving separation between the clusters. 
+
+<table class='fig'>
+<tr class='fig'><td class='fig'>![](images/graphical_abstracts/graphical_abstract_marker_id.png)</td></tr>
+<tr class='fig'><td class='fig'>Expression profiles (A) for for each cell cluster are evaluated against all other clusters (B) to identify marker genes, i.e. genes useful for segregating the cells into clusters (C). 
+</td></tr>
+</table>
+<br/>
 
 In this section, we will demonstrate:
 - How to generate "analytical" markers based on gene expression in each cluster 
