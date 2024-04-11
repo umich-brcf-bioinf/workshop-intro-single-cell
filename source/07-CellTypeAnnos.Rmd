@@ -91,7 +91,7 @@ As described [in more detail by the Ouyang Lab](https://ouyanglab.com/singlecell
 
 However, across any of these approaches the quality of the reference data (and reliability of the authors labels) and relevancy to your specific tissue/experiment (and the resolution of your biological question) is crucial. Additionally, it's important to consider that rare or novel cell populations may not be present or well-characterized in available references and that even after filtering some clusters correspond to stressed or dying cells and not a particular cell-type or subtype. Therefore, any prediction should be reviewed and considered in the context both marker gene expression for the dataset and knowledge of the biological system and broader literature. 
 
-Some tools and references are available primarily for human tissues (and not mouse or rat), particular for tissues other than PBMCs and the brain. For human data, if a relevant reference is available for your experiment, we would recommend trying [Azimuth (created by authors of Seurat)](https://azimuth.hubmapconsortium.org/). [10x has a tutorial](https://www.10xgenomics.com/analysis-guides/automated-cell-type-annotation-from-r-to-loupe-using-louper) that includes example of using Azimuth, including a feature of the tool that allows for first pass of cell-type assignment of more common cell-types followed by identifying rarer populations that may not be identified in the first pass. 
+Some tools and references are available solely or primarily for human tissues (and not mouse or rat), particular for tissues other than PBMCs and the brain. For human data, if a relevant reference is available for your experiment, we would recommend trying [Azimuth (created by authors of Seurat)](https://azimuth.hubmapconsortium.org/). [10x has a tutorial](https://www.10xgenomics.com/analysis-guides/automated-cell-type-annotation-from-r-to-loupe-using-louper) that includes example of using Azimuth, including a feature of the tool that allows for first pass of cell-type assignment of more common cell-types followed by identifying rarer populations that may not be identified in the first pass. 
 
 <details>
     <summary>*Additional automated annotation resources*</summary>
@@ -135,11 +135,39 @@ geo_catch@celltype %>% select(cluster, cell_type, celltype_score)
 
 When we look at our results we can see the cell type score, which gives us an idea of the confidence of that prediction. Not shown here but the full `celltype` table also includes marker genes and PMIDs for relevant literature for each prediction.
 
-As these cell-types correspond to the cell-types and subtypes we'd expect to be present in these data and most of the prediction scores are quite high, we can reasonably use these results to annotate our clusters. In our experience, the scCATCH results often help guide cluster annotation but scores can vary and the predictions may need to be revised based on researcher's knowledge of the biological system.
+In our experience, these kinds of results often help guide cluster annotation but scores can vary and the predictions may need to be revised based on researcher's knowledge of the biological system. As these cell-types correspond to the cell-types and subtypes we'd expect to be present in these data and most of the prediction scores are quite high, we can reasonably use these results to annotate our clusters with some minor adjustments. 
+
+Let's look at some other key marker genes from [](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-022-04817-5/figures/2) to aid in our identification:
+```{r, marker_gene_check}
+# Code block - plot other markers to assist with identification
+other_markers = c('Sox9', 'Acan', 'Col2a1', # chondrocyte lineage
+                  'Adipoq', 'Lpl', 'Apoe', # adipocytic genes
+                  'Vcam1','Stab2', 'Cxcl12', 'Vegfc', 'Sox4',# blood vessels, endothelial & smooth muscle 
+                  'Cd14','Adgre1', #
+                  'Fn1','Dcn', 'Sema3c', # fibroblast specific genes
+                  'Cd34','Cd44', # fibroblast progenitors
+                  'Acta2', 'Tmem100', # myofibroblast
+                  'Col1a1', 'Nes', # skeletal, smooth muscle cells
+                  #'Lepr', 'Cxcl12', # mesenchymal stromal cells
+                  #'Sp7', 'Alpl', 'Runx2', # osteogenic genes
+                  'Ly6d', 'Cd19', 'Cd79b', 'Ms4a1', 'Cd22', # Ms4a1=CD20
+                  'Cd3d','Cd3e','Cd3g') # T-cell markers
+
+other_markers_dot_plot = DotPlot(geo_so, features = other_markers, assay = 'SCT') + coord_flip()
+other_markers_dot_plot
+
+# save to file
+ggsave(filename = 'results/figures/other_markers_sct_dot_plot.png', plot = fig1h_sct_dot_plot, width = 8, height = 6, units = 'in')
+```
+
+```{r, echo=FALSE, eval= FALSE}
+## testing alternative annotation tool - 
+
+```
 
 # Annotate clusters
 
-Next, we'll add celltype the predictions to our Seurat object to replace our clusters' numerical identities. Note: we will create a new metadata object where we join cell types. However, this will destroy the row names - which will cause a problem in Seurat - so we have to add them back.
+Next, we'll modify the cell type predictions and add the labels to our Seurat object to replace our clusters' numerical identities. Note: we will create a new metadata object where we join cell types. However, this will destroy the row names - which will cause a problem in Seurat - so we have to add them back.
 
 ```{r, annotate_clusters}
 # Extract the cell types only to merge into the meta.data
