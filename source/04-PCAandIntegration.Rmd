@@ -43,8 +43,9 @@ knitr_fig_path("04-PCAandIntegration/04-")
 
 After filtering and normalization, our next goal is to cluster the cells according to their expression profiles. However, even after filtering, we expect to have about 20,000 cells assayed with approximately 21,000 genes measured per cell. This means that we are working very "high-dimensional" data. 
 
-High dimensional data presents two challenges:   
-- The scale of the data makes analysis steps costly and slow    
+High dimensional data presents two challenges:
+
+- The scale of the data makes analysis steps costly and slow     
 - There is likely uninteresting variation across our data that we want to exclude    
 
 In this section, we will use principal component analysis (PCA) to reduce the dimensionality of the data, first by grouping correlated features and second by excluding correlated features that are less likely to correspond to interesting biological variance.
@@ -80,7 +81,7 @@ if(!exists('geo_so')) {
 
 
 
-## What is PCA?
+# What is PCA?
 
 <!--- Give some context and background on PCA
 - What is PCA
@@ -111,7 +112,7 @@ If we wanted to represent the most variation across the data, we would draw a di
 
 We'll skip the process of generating all possible PCs, but running PCA on our data will result in a score for each cell for each PC and each gene will have a weight or loading for a given PC. By definition, the PCs capture the greatest factors of heterogeneity in decreasing order in the data set [(source)](https://bioconductor.org/books/3.13/OSCA.basic/dimensionality-reduction.html#principal-components-analysis).
 
-### Why PCA is useful for single-cell data
+## Why PCA is useful for single-cell data
 
 In contrast to bulk RNA-seq, where the majority of the variance in a given dataset are usually explained by the first and second PC, for single-cell data we expect that many more PCs are contributing to the overall variance. 
 
@@ -125,7 +126,7 @@ This reduction in dimensionality, for example from 10,000 cells x 19,000 genes t
 >
 > For additional detail on , the OSCA chapter on [Principal components analysis](https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html) includes a more descriptive overview.
 
-### Sparsity 
+### Sparsity in single-cell data
 
 In addition to the "high-dimensionality" expected for single-cell data, we expect the data to be both "sparse" and "noisy". Sparse in the sense that many genes will either not be expressed or not measured in many of the cells and have zero values. Noisy due to biological variability and the practical limitations of both capture and sequencing depth [(source)](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr).
 
@@ -143,9 +144,9 @@ So how do we determine what and how many genes to use before classifying cells i
 </details>
 <br>
 
+<br>
 
-
-### Run PCA on our dataset
+# Run PCA on our dataset    
 
 <!--- Add introduction to function, including link to documentation --->
 
@@ -161,7 +162,7 @@ After running the command in the console, we should see that the `geo_so` Seurat
 
 
 We can then visualize the first several PCs using the `DimHeatmp()` function, which orders both cells and features (genes) according to their PCA scores and allows us to see some general patterns in the data. Here we will specify that the first 24 PCs be included in the figure and that 500 cells are randomly subsetted for the plot. _Note - you may need to increase your plot window size to resolve errors regarding figure margins._  
-```{r, pca_heatmap_plot, message = FALSE, fig.show='hold'}
+```{r, pca_heatmap_plot, eval=FALSE}
 # Code block - plot cell by gene heatmaps for first several PCs
 DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca') # look at first PC alone first
 DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca') # first 18 PCs
@@ -171,6 +172,18 @@ png(filename = 'results/figures/qc_pca_heatmap.png', width = 12, height = 40, un
   DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca')
 dev.off()
 ```
+
+```{r, pca_heatmap_one, echo=FALSE, message = FALSE, out.width='50%', fig.cap='DimHeatmap for PC1 alone'}
+# Code block - plot cell by gene heatmaps for first several PCs
+DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca') # look at first PC alone first
+```
+
+
+```{r, pca_heatmap_18, echo=FALSE, message = FALSE, fig.cap='DimHeatmap for PC1-18'}
+# Code block - plot cell by gene heatmaps for first several PCs
+DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca') # first 18 PCs
+```
+
 As we scroll down in this plot, we see less and less structure in our plots indicating that no only is less variation is being represented by larger PCs overall but also that those PCs are less likely to correspond to variation of interest, e.g. corresponding to cell types/subtypes.
 
 
@@ -181,7 +194,7 @@ As we scroll down in this plot, we see less and less structure in our plots indi
   We can highlight genes loaded for dimenstions of interest using using `VizDimLoadings()`:
 
 ```{r, pca_loading_plot, eval = TRUE, fig.show='hold'}
-# gene loadings for PC1 and PC2
+# Code block - gene loadings for PC1 and PC2
 VizDimLoadings(geo_so, dims = 1:2, reduction = 'unintegrated.sct.pca')
 ggsave(filename = 'results/figures/qc_pca_loadings.png', width = 12, height = 6, units = 'in')
 
@@ -258,9 +271,9 @@ Again, this number is likely a starting point and may need to be revised dependi
 
 In addition to selecting a reduced number of PCs to represent our data, we can also visualize , similarly to how we often look at samples for bulk RNA-seq using the `DimPlot()` function, with each cell plotted along the selected PCs and colored by a selected meta-data column:
 
-```{r, pca_loading_plots, fig.show='hold'}
+```{r, pca_loading_plots, message=FALSE, fig.show='hold'}
 # Code block - PCA style plot for PC1 and PC2 (unintegrated)
-#?DimPlot # default dims = c(1,2)
+?DimPlot # default dims = c(1,2)
 
 DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'orig.ident') # first label by sample
 DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'day') # then label by day
@@ -305,7 +318,7 @@ Note we have specified the unintegrated reduction `unintegrated.sct.pca`, which 
 > 
 
 ```{r, preview_seurat}
-# Check our updated object that we've read in from file
+# Code block - Check our updated object that we've read in from file
 geo_so # Observe that we now have a new reduction, `integrated.sct.rpca`
 ```
 
@@ -331,6 +344,7 @@ if(!file.exists('results/rdata/geo_so_sct_integrated.rds')) {
 ```
 
 ```{r, save_rds, eval = FALSE}
+# Code block - save updated seurat object to file
 saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated.rds')
 ```
 
