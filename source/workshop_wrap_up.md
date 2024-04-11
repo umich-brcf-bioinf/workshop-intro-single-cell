@@ -101,7 +101,7 @@ connect to enable single-cell gene expression analysis from RNA-Seq data.
 ## Resources for continued learning
   - Learning bioinformatic analyses is more like a process than a task. Resources 
     to consider:
-    - A CZI NDCN curated list of resources for [self-guided learning](https://ndcn.github.io/self-guided-learning/)
+    - A CZI NDCN curated list of resources for [self-guided learning](https://ndcn.github.io/self-guided-learning/){target="_blank"}
     - UM Bioinformatics Core links to [training resources/workshops](https://brcf.medicine.umich.edu/cores/bioinformatics-core/training/){target="_blank"}.
     - **Techniques in Bash and R**
       - Lesson plans from the UM Bioinformatics Core's recent [Computational Foundations Workshop](https://umich-brcf-bioinf.github.io/workshop-computational-foundations/main/html/){target="_blank"}.
