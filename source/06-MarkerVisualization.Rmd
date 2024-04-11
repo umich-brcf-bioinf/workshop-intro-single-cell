@@ -26,6 +26,12 @@ code.r{
 pre {
   font-size: 12px
 }
+
+table.fig, th.fig, td.fig {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 15px;
+}
 </style>
 
 ```{r, include = FALSE}
@@ -42,11 +48,20 @@ knitr_fig_path("06-MarkerVisualization/06-")
 
 # Introduction
 
-To interpret our initial clustering results for all cells in our experiment, we'll need to characterized the gene expression driving separation between the clusters. 
+To interpret our initial clustering results for all cells in our experiment, we'll need to characterize the gene expression driving separation between the clusters. 
 
-In this section, we will demonstrate how to generate analytical marker genes for each cluster and how to visualize the expression of genes of interest to aid in cluster identification and labeling in subsequent steps. 
+<table class='fig'>
+<tr class='fig'><td class='fig'>![](images/graphical_abstracts/graphical_abstract_marker_id.png)</td></tr>
+<tr class='fig'><td class='fig'>Expression profiles (A) for for each cell cluster are evaluated against all other clusters (B) to identify marker genes, i.e. genes useful for segregating the cells into clusters (C). 
+</td></tr>
+</table>
+<br/>
 
-This process can be a highly variable process, from seeing well-characterized marker genes as top markers to needing to dig through the literature and plot the expression for multiple sets of genes of interest. Like the previous sections (and like other areas of research), when this process is more involved or iterative, often only the final results are reported.
+In this section, we will demonstrate:
+- How to generate "analytical" markers based on gene expression in each cluster 
+- How to visualize the expression of genes of interest to aid in cluster identification and labeling
+
+This process can be a highly variable, from seeing well-characterized marker genes as top markers to needing to dig through the literature and plot the expression for multiple sets of genes of interest. Like the previous sections (and like other areas of research), when this process is more involved or iterative, often only the final results are reported.
 
 ## Objectives
 <!--Add specific goals for section-->
@@ -95,25 +110,20 @@ First, we'll ensure that the correct resolution is selected from our Seurat obje
 
 Then we'll run the`FindAllMarkers()` [function](https://satijalab.org/seurat/reference/findallmarkers) to generate comparisons between each cluster and all other cells, regardless of the experimental group. Note - the statistical test to perform can be specified in `FindAllMarkers()`, but the default is a Wilcoxon test. 
 
-```{r, prep_sct, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
+```{r, find_all_markers, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
+# Code block
 # Prep for cluster comparisons
 geo_so = SetIdent(geo_so, value = 'integrated.sct.rpca.clusters')
 geo_so = PrepSCTFindMarkers(geo_so)
-```
 
-```{r, find_all_markers, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
 # Run comparisons for each cluster to generate markers
-geo_markers = FindAllMarkers(geo_so, only.pos = TRUE)
-```
+geo_markers = FindAllMarkers(geo_so, only.pos = TRUE, min.pct = 0.05)
 
-```{r, preview_markers}
 # Take a look at the first few rows of the result
 head(geo_markers)
-```
 
-```{r, write_markers}
 # Write out full cluster marker results to file
-write_csv(geo_markers, file = 'results/tables/marker_genes_0.4.csv')
+write_csv(geo_markers, file = 'results/tables/marker_genes_0.4res.csv')
 ```
 
 <!--- Consider adding figure showing example of what's being compared (circle cluster 1 and then circle all other cells for example) -->
@@ -129,11 +139,18 @@ Note that over-interpretation of these results should be avoided, since each cel
 Therefore, it's useful to filter the results to highlight the top positive markers (since a positive fold-change would mean that gene is more highly expressed in the cluster compared to all other cells), before looking at our results
 
 ```{r, top_5_cluster_markers}
-# Create table of top 5 markers per cluster
-top_5_by_log2FC = geo_markers %>% group_by(cluster) %>% arrange(p_val_adj, desc(avg_log2FC)) %>% slice_head(n = 5)
+# Code block - identify marker genes for each cluster
+# Create table of top 5 markers per cluster (using default ranking)
+top_5 = geo_markers %>% filter(p_val_adj < 0.01) %>% group_by(cluster) %>% slice_head(n = 5)
 
 # Look at results
-head(top_5_by_log2FC)
+head(top_5, n = 10)
+
+# Optional - Create table of top 5 markers per cluster (ranked by logFC)
+top_5_by_log2FC = geo_markers %>% group_by(cluster) %>% arrange(p_val_adj, desc(avg_log2FC)) %>% slice_head(n = 5)
+
+# Look at results after ranking
+head(top_5_by_log2FC, n = 10) # notice difference in pct.1 column between tables
 ```
 
 We expect to see several columns:
@@ -155,7 +172,7 @@ Now that we have generated a set of marker genes for our clusters, it is useful 
 We'll use the `DotPlot()` [function](https://satijalab.org/seurat/reference/dotplot) with the SCT values to visualize the top 5 marker genes per cluster:
 
 ```{r, top_5_dot_plot_sct, fig.height = 18, fig.width = 8}
-top_5_sct_dot_plot = DotPlot(geo_so, features = unique(top_5_by_log2FC$gene)) + 
+top_5_sct_dot_plot = DotPlot(geo_so, features = unique(top_5$gene)) + 
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
     labs(title = 'Top 5 Cluster Genes by FDR and avg_log2FC') + coord_flip()
 top_5_sct_dot_plot
@@ -197,6 +214,7 @@ fig1g_sct_dot_plot = DotPlot(geo_so, features = fig1g_markers, assay = 'SCT')
 fig1h_sct_dot_plot = DotPlot(geo_so, features = fig1h_markers, assay = 'SCT')
 
 fig1g_sct_dot_plot
+fig1h_sct_dot_plot
 
 # save plots to file
 ggsave(filename = 'results/figures/markers_fig1g_sct_dot_plot.png', plot = fig1g_sct_dot_plot, width = 8, height = 6, units = 'in')

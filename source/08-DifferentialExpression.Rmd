@@ -26,6 +26,12 @@ code.r{
 pre {
   font-size: 12px
 }
+
+table.fig, th.fig, td.fig {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 15px;
+}
 </style>
 
 ```{r, include = FALSE}
@@ -43,6 +49,15 @@ knitr_fig_path("08-DifferentialExpression/08-")
 # Introduction
 
 Differential expression comparison is a key step to addressing the biological question at hand for the experiment, namely what genes might be contributing to the aberrant bone formation during healing that was observed in this experiment.
+
+<table class='fig'>
+<tr class='fig'><td class='fig'>![](images/graphical_abstracts/graphical_abstract_diffex.png)</td></tr>
+<tr class='fig'><td class='fig'>A. For differential expression, we consider a single cluster at a time. <br/>
+B. For the cluster of interest, the cells are partitioned into case vs control (or other appropriate groupings) and expression compared across all genes. <br/>
+C. Comparisons produce lists and visualizations of differently expressed genes across conditions.
+</td></tr>
+</table>
+<br/>
 
 As a reminder, our data includes cells isolated from issue from day 0 (prior to injury) as controls, and days 7 and 21 post-injury as experimental conditions.
 
