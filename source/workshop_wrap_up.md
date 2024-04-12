@@ -149,8 +149,8 @@ connect to enable single-cell gene expression analysis from RNA-Seq data.
 | ![](images/headshots/headshot_cgates.jpg) | ![](images/headshots/headshot_mbradenb.jpg) | ![](images/headshots/headshot_rcavalca.jpg) | ![](images/headshots/headshot_damki.jpg) |
 |:-:|:-:|:-:|:-:|
 | **Chris (Gates)** | **Marci** | **Raymond** | **Dana** |
- ![](images/headshots/headshot_ncarruth.jpg) | ![](images/headshots/headshot_trsaari.jpg) | ![](images/headshots/headshot_csifuentes.jpg) |
-| **Nick** | **Travis** | **Chris (Sifuentes)** |
+ ![](images/headshots/headshot_ncarruth.jpg) | ![](images/headshots/headshot_trsaari.jpg) | ![](images/headshots/headshot_weishwu.jpg) | ![](images/headshots/headshot_csifuentes.jpg) |
+| **Nick** | **Travis** | **Weisheng Wu** | **Chris (Sifuentes)** |
 ![](images/headshots/headshot_mkdohert.jpg) | ![](images/headshots/headshot_okoues.jpg) | ![](images/headshots/headshot_phillipa.jpg) |
 | **Matt** | **Olivia** | **Tricia** |
 <br/>

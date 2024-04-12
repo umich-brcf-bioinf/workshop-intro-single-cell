@@ -1,5 +1,5 @@
 ---
-title: "Initial Quality Control and Filtering"
+title: "Secondary Quality Control and Filtering"
 author: "UM Bioinformatics Core"
 date: "`r Sys.Date()`"
 output:
