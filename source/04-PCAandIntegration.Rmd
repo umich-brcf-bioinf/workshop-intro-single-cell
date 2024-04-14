@@ -47,6 +47,17 @@ knitr_fig_path("04-PCAandIntegration/04-")
 
 # Introduction 
 
+In this section, we will use principal component analysis (PCA) to reduce the dimensionality of the data, first by grouping correlated features and second by excluding correlated features that are less likely to correspond to interesting biological variance.
+
+<table class='fig'>
+<tr class='fig'><td class='fig'>![](images/graphical_abstracts/graphical_abstract_pca.png)</td></tr>
+<tr class='fig'><td class='fig'>A. Clustering the expression patterns directly on the feature-barcode count matrix is impractical because the expression patterns in the counts are often weak, repetitive, and diffuse (scattered across many, many genes). Also clustering cells across 20k dimensions (i.e. 20k genes) is extremely computationally intensive.<br/>
+B. Principal Component Analysis considers (PCA) the count data from new orientations that maximize the variance across the data. In this way, PCA replaces the original count matrix with new matrix of principal component (PC) values for each cell.<br/>
+C. Because PCA ranks the PCs from most variance to least, the truly discriminating PCs will be a small subset of top-most PCs. Focusing only on the top 10-30 PCs instead of 20k genes tells the same story, but cuts through 99.9% of the clutter making clustering about 1000x faster.
+</td></tr>
+</table>
+<br/>
+
 After filtering and normalization, our next goal is to cluster the cells according to their expression profiles. However, even after filtering, we expect to have about 20,000 cells assayed with approximately 21,000 genes measured per cell. This means that we are working very "high-dimensional" data. 
 
 High dimensional data presents two challenges:
@@ -54,7 +65,6 @@ High dimensional data presents two challenges:
 - The scale of the data makes analysis steps costly and slow     
 - There is likely uninteresting variation across our data that we want to exclude    
 
-In this section, we will use principal component analysis (PCA) to reduce the dimensionality of the data, first by grouping correlated features and second by excluding correlated features that are less likely to correspond to interesting biological variance.
 
 Similar to the previous sections, the process of parameter selection after PCA is often iterative and while we will be showing a single option, multiple parameter choices may need to be tested.  
 
