@@ -38,8 +38,8 @@ body, td {
 |       | [Getting started with Seurat](01-GettingStarted.html) (Raymond) |
 | 3:00 | Break |
 | 3:15 | [Cell Ranger in Action](00B-CellRangerInAction.html) (Olivia) |
-|       | [Initial QC & Filtering](02-QCandFiltering.html) (Raymond) |
-|       | [Normalization](03-Normalization.html) |
+|      | [Secondary QC & Filtering](02-QCandFiltering.html) (Raymond) |
+|      | [Normalization](03-Normalization.html) |
 | 5:00 | Day 1 concludes |
 
 #### Day 2 (Dana)
