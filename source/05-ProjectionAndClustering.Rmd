@@ -59,8 +59,9 @@ One of our goals in a single-cell analysis is to generate clusters that reasonab
 
 <table class='fig'>
 <tr class='fig'><td class='fig'>![](images/graphical_abstracts/graphical_abstract_cluster_projection.png)</td></tr>
-<tr class='fig'><td class='fig'>A. Cells are grouped together based on similar gene expression profiles. <br/>
-B. Cells originally in n-dimensional space (n = num of Principal Components) are projected down to two-dimensional space for visualization.
+<tr class='fig'><td class='fig'>A. The filtered, normalized feature barcode matrix is the input to the clustering step. <br/>
+B. Cells are plotted in a high-dimensional space (num dimesnions = num of Principal Components, e.g. 15 dimensions); cells with similar gene expression profiles are closer to each other and are clustered together. <br/>
+C. The cells clusters are projected from the high-dimensional space down to two-dimensional space for visualization.
 </td></tr>
 </table>
 <br/>
