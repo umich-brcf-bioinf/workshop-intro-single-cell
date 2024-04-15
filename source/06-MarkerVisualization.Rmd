@@ -98,7 +98,7 @@ First, we'll ensure that the correct resolution is selected from our Seurat obje
 Then we'll run the`FindAllMarkers()` [function](https://satijalab.org/seurat/reference/findallmarkers) to generate comparisons between each cluster and all other cells, regardless of the experimental group. Note - the statistical test to perform can be specified in `FindAllMarkers()`, but the default is a Wilcoxon test. 
 
 ```{r, find_all_markers, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
-# Code block
+# Code block - find empirical markers
 # Prep for cluster comparisons
 geo_so = SetIdent(geo_so, value = 'integrated.sct.rpca.clusters')
 geo_so = PrepSCTFindMarkers(geo_so)
@@ -191,7 +191,7 @@ Often we have prior information about what cell types are expected in our sample
 
 We can create lists of markers used in figures from the [original paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7002453/) before using the same `DotPlot()` function to visualize the expression level and frequency of these genes in our current clusters:
 
-```{r, known_dot_plots_sct}
+```{r, known_dot_plots_sct, fig.show='hold'}
 # manually create lists of genes from paper
 fig1g_markers = c('Cxcl1', 'Cxcl2', 'Ccl2', 'Ccl3', 'Ccl4', 'Il1b', 'Il6b', 'Tnf', 'Tgfb1', 'Tgfb2', 'Tgfb3', 'Cxcl5')
 fig1h_markers = c('Cxcr2', 'Csf1r', 'Csf3r', 'Tgfbr1', 'Tgfbr3', 'Il1r1', 'Il6ra', 'Lifr', 'Tgfbr2')

@@ -257,6 +257,9 @@ optimal_pcs = function(so, reduction) {
 # Apply function to our data
 pcs = optimal_pcs(geo_so, 'unintegrated.sct.pca')
 pcs
+
+# Based on the heatmap, we'll modify to 13 PCs
+pcs = 13
 ```
 
 
