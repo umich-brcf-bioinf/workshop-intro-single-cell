@@ -26,6 +26,18 @@ code.r{
 pre {
   font-size: 12px
 }
+
+table.fig, th.fig, td.fig {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 15px;
+}
+
+table.fig, th.fig, td.fig {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 15px;
+}
 </style>
 
 ```{r, include = FALSE}
@@ -44,6 +56,15 @@ knitr_fig_path("05-ProjectionAndClustering/05-")
 
 <!--- General goal: to generate clusters that reasonably approximate cell-types or sub-types of interest --->
 One of our goals in a single-cell analysis is to generate clusters that reasonably approximate cell-types or sub-types of interest in our samples before determining if there are differences in the proportions of these populations or differences in gene expression within these populations between experimental conditions.
+
+<table class='fig'>
+<tr class='fig'><td class='fig'>![](images/graphical_abstracts/graphical_abstract_cluster_projection.png)</td></tr>
+<tr class='fig'><td class='fig'>A. The prior step used the filtered, normalized counts as input to a prinicpal component analysis. The top principle components (PCs) are the input to the clustering step. <br/>
+B. Cells are plotted in a high-dimensional space (where the num dimesnions = num of included PCs, e.g. 15 dimensions); cells with similar gene expression profiles are closer to each other and are clustered together. <br/>
+C. The cells clusters are projected from the high-dimensional space (e.g. 15 dimensions) down to two-dimensional space for visualization.
+</td></tr>
+</table>
+<br/>
 
 
 In this section, we will demonstrate how to generate clusters using Seurat's graph based clustering approach and visualize those clustering assignments via a lower-dimensional projection of the full dataset.

@@ -117,7 +117,6 @@ be happy to lend a hand to get things working.
 Your workstation and logins are ready for the workshop; thank you for
    taking time to set this up in advance.
 
-   - You can close the command window by typing **exit** <Return/Enter> or simply closing the window.
    - You can close your RStudio session by clicking the small orange "power"
      button in the top-right corner (highlighted in the picture above by a red
      arrow).  The webpage will announce **R Session Ended**; you may now close
