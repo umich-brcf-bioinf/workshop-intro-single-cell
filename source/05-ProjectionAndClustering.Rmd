@@ -59,9 +59,9 @@ One of our goals in a single-cell analysis is to generate clusters that reasonab
 
 <table class='fig'>
 <tr class='fig'><td class='fig'>![](images/graphical_abstracts/graphical_abstract_cluster_projection.png)</td></tr>
-<tr class='fig'><td class='fig'>A. The filtered, normalized feature barcode matrix is the input to the clustering step. <br/>
-B. Cells are plotted in a high-dimensional space (num dimesnions = num of Principal Components, e.g. 15 dimensions); cells with similar gene expression profiles are closer to each other and are clustered together. <br/>
-C. The cells clusters are projected from the high-dimensional space down to two-dimensional space for visualization.
+<tr class='fig'><td class='fig'>A. The prior step used the filtered, normalized counts as input to a prinicpal component analysis. The top principle components (PCs) are the input to the clustering step. <br/>
+B. Cells are plotted in a high-dimensional space (where the num dimesnions = num of included PCs, e.g. 15 dimensions); cells with similar gene expression profiles are closer to each other and are clustered together. <br/>
+C. The cells clusters are projected from the high-dimensional space (e.g. 15 dimensions) down to two-dimensional space for visualization.
 </td></tr>
 </table>
 <br/>
@@ -138,7 +138,7 @@ Again, how a “cell type” or “subtype” should be defined for your data is
 Then, when we look at the meta data we should see that cluster labels have been added for each cell:
 
 ```{r, find_neighbors, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
-# Code block - clustering
+# Code block - clustering steps
 # Create KNN graph with `FindNeighbors()`
 geo_so = FindNeighbors(geo_so, dims = 1:pcs, reduction = 'integrated.sct.rpca')
 
@@ -166,6 +166,7 @@ While we unfortunately don't have time to compare and contrast tSNE, and UMAP, w
 To start this process, we'll use the `RunUMAP()` [function](https://satijalab.org/seurat/reference/runumap) to calculate the UMAP reduction for our data. Notice how the previous dimensionality choices carry through the downstream analysis and that the number of PCs selected in the previous steps are included as an argument.
 
 ```{r, run_umap, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
+# Code block - create UMAP reduction
 geo_so = RunUMAP(geo_so, dims = 1:pcs, reduction = 'integrated.sct.rpca', reduction.name = 'umap.integrated.sct.rpca')
 geo_so # Notice a third reduction has been added: `umap.integrated.sct.rpca`
 ```
@@ -183,7 +184,7 @@ At this stage, we want to determine if the clusters look fairly well separated, 
 
 We can also look at the same UMAP labeled by `day` to visually inspect if the UMAP structure corresponds to the `day`.
 
-```{r, umap_by_clusters}
+```{r, umap_by_clusters, fig.show='hold'}
 # Code block - UMAP cluster visualization 
 # cluster ID labels
 post_integration_umap_plot_clusters = DimPlot(geo_so, group.by = 'seurat_clusters', label = TRUE, reduction = 'umap.integrated.sct.rpca') + NoLegend()
@@ -224,7 +225,7 @@ If we had proceeded with our filtered data and only normalized our data without 
 
 <!--Add updated example of UMAP / sample labels for unintegrated data - need to check with Raymond regarding how best to do this in place --> 
 
-```{r, run_umap_unintegrated, echo = FALSE, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
+```{r, run_umap_unintegrated, echo = FALSE, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE, out.height='80%'}
 # Create KNN graph with `FindNeighbors()` for unintegrated data
 geo_so = FindNeighbors(geo_so, dims = 1:pcs, reduction = 'unintegrated.sct.pca')
 
@@ -255,11 +256,10 @@ geo_so = RunUMAP(geo_so, dims = 1:pcs, reduction = 'unintegrated.sct.pca', reduc
 The plots above were generated with:
 
 ```{r, eval=FALSE}
+# Code block - show unintegrated
 pre_integration_umap_plot_orig.ident = DimPlot(geo_so, group.by = 'orig.ident', label = FALSE, reduction = 'umap.unintegrated.sct.pca')
 ggsave(filename = 'results/figures/umap_unintegrated_sct_orig.ident.png', plot = pre_integration_umap_plot_orig.ident, width = 8, height = 6, units = 'in')
-```
 
-```{r, eval=FALSE}
 pre_integration_umap_plot_day = DimPlot(geo_so, group.by = 'day', label = FALSE, reduction = 'umap.unintegrated.sct.pca')
 ggsave(filename = 'results/figures/umap_unintegrated_sct_day.png', plot = pre_integration_umap_plot_day, width = 8, height = 6, units = 'in')
 ```
