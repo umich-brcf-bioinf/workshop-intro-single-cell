@@ -192,6 +192,12 @@ post_integration_umap_plot_clusters
 
 ggsave(filename = 'results/figures/umap_integrated_sct_clusters.png', plot = post_integration_umap_plot_clusters, width = 6, height = 6, units = 'in')
 
+# clusters with labels, split by condition
+post_integration_umap_plot_split_clusters = DimPlot(geo_so, group.by = 'seurat_clusters', split.by = 'day', label = TRUE, reduction = 'umap.integrated.sct.rpca') + NoLegend()
+post_integration_umap_plot_split_clusters
+
+ggsave(filename = 'results/figures/umap_integrated_sct_split_clusters.png', plot = post_integration_umap_plot_clusters, width = 14, height = 6, units = 'in')
+
 # UMAP with day labels (note - we added this column to the meta-data yesterday)
 post_integration_umap_plot_day = DimPlot(geo_so, group.by = 'day', label = FALSE, reduction = 'umap.integrated.sct.rpca')
 post_integration_umap_plot_day

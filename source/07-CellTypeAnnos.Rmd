@@ -163,7 +163,7 @@ immune_markers_plot = DotPlot(geo_so, features = immune_markers, assay = 'SCT') 
 immune_markers_plot
 
 # save to file
-ggsave(filename = 'results/figures/immune_markers_sct_dot_plot.png', plot = fig1h_sct_dot_plot, width = 8, height = 6, units = 'in')
+ggsave(filename = 'results/figures/immune_markers_sct_dot_plot.png', plot = immune_markers_plot, width = 8, height = 6, units = 'in')
 
 
 # plot known cell-type markers 
@@ -176,7 +176,7 @@ other_markers_dot_plot = DotPlot(geo_so, features = other_markers, assay = 'SCT'
 other_markers_dot_plot
 
 # save to file
-ggsave(filename = 'results/figures/other_markers_sct_dot_plot.png', plot = fig1h_sct_dot_plot, width = 8, height = 6, units = 'in')
+ggsave(filename = 'results/figures/other_markers_sct_dot_plot.png', plot = other_markers_dot_plot, width = 8, height = 6, units = 'in')
 
 ```
 In the first plot, B-cell and T-cell markers seem to line up with the predictions and are limited to single clusters. However, macrophage and dendrocyte markers match to multiple clusters including some annotated with different cell types, so we can consider modifying those cluster labels. 
@@ -246,6 +246,8 @@ catch_umap_condition_plot
 
 ggsave(filename = 'results/figures/umap_integrated_catch_byCondition.png', plot = catch_umap_plot, width = 10, height = 8, units = 'in')
 ```
+
+<!-- to add - number of cells per cluster and condition/replicate after annotation --->
 
 # Save our progress
 

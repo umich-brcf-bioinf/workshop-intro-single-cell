@@ -1,60 +1,10 @@
----
-title: "Independent Exercise"
-author: "UM Bioinformatics Core"
-date: "`r Sys.Date()`"
-output:
-        html_document:
-            includes:
-                in_header: header.html
-            theme: paper
-            toc: true
-            toc_depth: 4
-            toc_float: true
-            number_sections: false
-            fig_caption: true
-            markdown: GFM
-            code_download: true
----
-
-<style type="text/css">
-body, td {
-   font-size: 18px;
-}
-code.r{
-  font-size: 12px;
-}
-pre {
-  font-size: 12px
-}
-</style>
-
-```{r, include = FALSE}
-source("../bin/chunk-options.R")
-knitr_fig_path("XX")
-```
-
-# Workflow Overview {.unlisted .unnumbered}
-
-<br/>
-<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
-<br/>
-<br/>
-
-# Introduction
-
-We can extend our analysis by performing some parameter iteration to determine how that impacts our clustering (and might impact our later results).
-
-<!-- regular html comment --> 
-<!--Add specific goals for section-->
-
-```{r, eval = FALSE}
 # Exercise: adjust number of PCs and resolution to see impact on clustering
 
 # First - clear current Seurat object to free up memory & remove current results
 rm(geo_so) 
 
 # Then  load in integrated data & reset object on each iteration to avoid exceeding allocated space
-geo2_so = readRDS('/home/workshop/damki/ISC_R/results/rdata/geo_so_sct_integrated.rds')
+geo2_so = readRDS('/home/workshop/rcavalca/ISC_R/results/rdata/geo_so_sct_integrated.rds')
 
 # look at elbow plot
 ElbowPlot(geo2_so, ndims = 50, reduction = 'unintegrated.sct.pca')
@@ -154,21 +104,4 @@ catch_umap_plot
 #########
 
 ## Extension - how might you interate to generate DE comparisons between D21 and D7 for all annotated clusters?
-# Note - would want to re-load our last object 
-rm(geo2_so)
-geo_so = readRDS('/home/workshop/damki/ISC_R/results/rdata/geo_so_sct_integrated_final.rds')
-
-```
-
-
-
-----
-
-These materials have been adapted and extended from materials listed above. These are open access materials distributed under the terms of the [Creative Commons Attribution license (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.
-
-<br/>
-<br/>
-<hr/>
-| [Previous lesson](08-DifferentialExpression.html) | [Top of this lesson](#top) | [Workshop Wrap-up](workshop_wrap_up.html) |
-| :--- | :----: | ---: |
 
