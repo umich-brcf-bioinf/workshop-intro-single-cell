@@ -206,10 +206,7 @@ Next, we'll modify the cell type predictions and add the labels to our Seurat ob
 # First - Extract the cell types only from the predictions
 celltype_annos = geo_catch@celltype %>% select(cluster, cell_type)
 
-# Customize annotations - selecting the sub and then subsetting clusters 2,3,4 first before replacing values
-celltype_annos$cell_type[c(3,4,5)]  # check selection (& remember cluster 0 is first row)
-celltype_annos$cell_type[c(3,4,5)] <- "Dendritic Cell"
-
+# Customize annotations
 # update cluster 7, based on markers
 celltype_annos$cell_type[c(8)] <- "Macrophage"
 celltype_annos$cell_type[c(15)] <- "Hematopoetic precursor"

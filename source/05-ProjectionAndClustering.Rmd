@@ -225,7 +225,7 @@ If we had proceeded with our filtered data and only normalized our data without 
 
 <!--Add updated example of UMAP / sample labels for unintegrated data - need to check with Raymond regarding how best to do this in place --> 
 
-```{r, run_umap_unintegrated, echo = FALSE, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE, out.height=80%}
+```{r, run_umap_unintegrated, echo = FALSE, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE, out.height='80%'}
 # Create KNN graph with `FindNeighbors()` for unintegrated data
 geo_so = FindNeighbors(geo_so, dims = 1:pcs, reduction = 'unintegrated.sct.pca')
 
