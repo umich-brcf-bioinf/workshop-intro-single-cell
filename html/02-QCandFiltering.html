@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core" />
 
-<meta name="date" content="2024-04-12" />
+<meta name="date" content="2024-04-17" />
 
 <title>Secondary Quality Control and Filtering</title>
 
@@ -428,7 +428,7 @@ div.tocify {
 <h1 class="title toc-ignore">Secondary Quality Control and
 Filtering</h1>
 <h4 class="author">UM Bioinformatics Core</h4>
-<h4 class="date">2024-04-12</h4>
+<h4 class="date">2024-04-17</h4>
 
 </div>
 
@@ -564,13 +564,20 @@ little different, and we have new <code>day</code> and
 <code>replicate</code> columns. Note that there are many ways to have
 accomplished this, the above code is just one route.</p>
 <pre class="r"><code>head(geo_so@meta.data)</code></pre>
-<pre><code>                                            orig.ident nCount_RNA nFeature_RNA  day  replicate
-HODay0replicate1_AAACCTGAGAGAACAG-1 HO.Day0.replicate1      10234         3226 Day0 replicate1
-HODay0replicate1_AAACCTGGTCATGCAT-1 HO.Day0.replicate1       3158         1499 Day0 replicate1
-HODay0replicate1_AAACCTGTCAGAGCTT-1 HO.Day0.replicate1      13464         4102 Day0 replicate1
-HODay0replicate1_AAACGGGAGAGACTTA-1 HO.Day0.replicate1        577          346 Day0 replicate1
-HODay0replicate1_AAACGGGAGGCCCGTT-1 HO.Day0.replicate1       1189          629 Day0 replicate1
-HODay0replicate1_AAACGGGCAACTGGCC-1 HO.Day0.replicate1       7726         2602 Day0 replicate1</code></pre>
+<pre><code>                                            orig.ident nCount_RNA nFeature_RNA
+HODay0replicate1_AAACCTGAGAGAACAG-1 HO.Day0.replicate1      10234         3226
+HODay0replicate1_AAACCTGGTCATGCAT-1 HO.Day0.replicate1       3158         1499
+HODay0replicate1_AAACCTGTCAGAGCTT-1 HO.Day0.replicate1      13464         4102
+HODay0replicate1_AAACGGGAGAGACTTA-1 HO.Day0.replicate1        577          346
+HODay0replicate1_AAACGGGAGGCCCGTT-1 HO.Day0.replicate1       1189          629
+HODay0replicate1_AAACGGGCAACTGGCC-1 HO.Day0.replicate1       7726         2602
+                                     day  replicate
+HODay0replicate1_AAACCTGAGAGAACAG-1 Day0 replicate1
+HODay0replicate1_AAACCTGGTCATGCAT-1 Day0 replicate1
+HODay0replicate1_AAACCTGTCAGAGCTT-1 Day0 replicate1
+HODay0replicate1_AAACGGGAGAGACTTA-1 Day0 replicate1
+HODay0replicate1_AAACGGGAGGCCCGTT-1 Day0 replicate1
+HODay0replicate1_AAACGGGCAACTGGCC-1 Day0 replicate1</code></pre>
 <div id="percent-mitochondrial-reads" class="section level2">
 <h2>Percent mitochondrial reads</h2>
 <p>The <code>PercentageFeatureSet()</code> function enables us to
