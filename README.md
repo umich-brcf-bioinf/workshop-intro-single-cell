@@ -7,10 +7,13 @@ This is the custom curriculum for the UM Bioinformatics Core Intro to Single Cel
 
 __For site knitting:___
 
+* For repo setup, run `repo_setup.sh` script to ensure that untracked input files are copied to individual/local copy
+* Before making changes, run `repo_clean.sh` to clear out the object caches and .RData files that are manually writen
+	* This will remove `geo_so` files within `rdata` folder so the hidden code blocks are executed
+	* Note that `cache` folders and `inputs` and `results` are not tracked as part of the github repo
+* For editing and testing, `cd` into copy of repo and use singularity environment that's included as a comment at the top of the `repo_clean.sh`
 * For first knit for branch, either:
 	* Run `repo_setup.sh` script to pull (untracked) input files, then:
 		* Execute first two lines of `knit_site.R` on command line (on comps/Lighthouse or AWS) OR
 		* Open remote desktop and activate environment with rstudio 
 * Run knitting of pages in order - a hidden starting block will read in Robject modified in the previous module
-* After modifying an individual page, `geo_so` must be removed before re-knitting so the hidden code block is executed
-	* The `repo_clean.sh` script can be used to clear all inputs and reset state 

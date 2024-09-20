@@ -586,12 +586,12 @@ geo_markers = FindAllMarkers(geo_so, only.pos = TRUE, min.pct = 0.05)
 # Take a look at the first few rows of the result
 head(geo_markers)</code></pre>
 <pre><code>        p_val avg_log2FC pct.1 pct.2 p_val_adj cluster    gene
-Col12a1     0   3.856395 0.938 0.151         0       0 Col12a1
-Tnc         0   3.627855 0.864 0.121         0       0     Tnc
-Thbs2       0   3.560748 0.910 0.179         0       0   Thbs2
-Lox         0   2.758605 0.912 0.196         0       0     Lox
-Aebp1       0   1.955566 0.977 0.292         0       0   Aebp1
-Cthrc1      0   3.392469 0.958 0.273         0       0  Cthrc1</code></pre>
+Col12a1     0   3.830553 0.947 0.155         0       0 Col12a1
+Tnc         0   3.525350 0.874 0.124         0       0     Tnc
+Thbs2       0   3.525663 0.917 0.183         0       0   Thbs2
+Lox         0   2.693605 0.915 0.201         0       0     Lox
+Col11a1     0   4.357268 0.780 0.089         0       0 Col11a1
+Cthrc1      0   3.342556 0.962 0.278         0       0  Cthrc1</code></pre>
 <pre class="r"><code># Write out full cluster marker results to file
 write_csv(geo_markers, file = &#39;results/tables/marker_genes_0.4res.csv&#39;)</code></pre>
 <!--- Consider adding figure showing example of what's being compared (circle cluster 1 and then circle all other cells for example) -->
@@ -625,18 +625,18 @@ top_5 = geo_markers %&gt;% filter(p_val_adj &lt; 0.01) %&gt;% group_by(cluster) 
 head(top_5, n = 10)</code></pre>
 <pre><code># A tibble: 10 × 7
 # Groups:   cluster [2]
-   p_val avg_log2FC pct.1 pct.2 p_val_adj cluster gene   
-   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;  
- 1     0       3.86 0.938 0.151         0 0       Col12a1
- 2     0       3.63 0.864 0.121         0 0       Tnc    
- 3     0       3.56 0.91  0.179         0 0       Thbs2  
- 4     0       2.76 0.912 0.196         0 0       Lox    
- 5     0       1.96 0.977 0.292         0 0       Aebp1  
- 6     0       3.70 0.974 0.149         0 1       C1qc   
- 7     0       3.53 0.971 0.159         0 1       C1qa   
- 8     0       3.84 0.962 0.156         0 1       Pf4    
- 9     0       3.43 0.982 0.183         0 1       C1qb   
-10     0       3.60 0.921 0.127         0 1       Ms4a7  </code></pre>
+   p_val avg_log2FC pct.1 pct.2 p_val_adj cluster gene    
+   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;   
+ 1     0       3.83 0.947 0.155         0 0       Col12a1 
+ 2     0       3.53 0.874 0.124         0 0       Tnc     
+ 3     0       3.53 0.917 0.183         0 0       Thbs2   
+ 4     0       2.69 0.915 0.201         0 0       Lox     
+ 5     0       4.36 0.78  0.089         0 0       Col11a1 
+ 6     0       4.15 0.919 0.123         0 1       Clec3b  
+ 7     0       3.92 0.776 0.081         0 1       Tnxb    
+ 8     0       2.86 0.973 0.307         0 1       Serping1
+ 9     0       3.36 0.917 0.255         0 1       Igfbp6  
+10     0       2.91 0.808 0.161         0 1       Rarres2 </code></pre>
 <pre class="r"><code># Optional - Create table of top 5 markers per cluster (ranked by logFC)
 top_5_by_log2FC = geo_markers %&gt;% group_by(cluster) %&gt;% arrange(p_val_adj, desc(avg_log2FC)) %&gt;% slice_head(n = 5)
 
@@ -644,18 +644,18 @@ top_5_by_log2FC = geo_markers %&gt;% group_by(cluster) %&gt;% arrange(p_val_adj,
 head(top_5_by_log2FC, n = 10) # notice difference in pct.1 column between tables</code></pre>
 <pre><code># A tibble: 10 × 7
 # Groups:   cluster [2]
-   p_val avg_log2FC pct.1 pct.2 p_val_adj cluster gene  
-   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt; 
- 1     0       5.54 0.462 0.018         0 0       Scx   
- 2     0       5.43 0.136 0.006         0 0       Cilp2 
- 3     0       5.15 0.092 0.004         0 0       Ucma  
- 4     0       5.07 0.088 0.004         0 0       Matn3 
- 5     0       4.92 0.607 0.061         0 0       Fmod  
- 6     0       4.81 0.144 0.006         0 1       Fcna  
- 7     0       4.65 0.614 0.132         0 1       Ccl8  
- 8     0       4.65 0.091 0.005         0 1       Cd209f
- 9     0       4.26 0.564 0.038         0 1       Folr2 
-10     0       4.17 0.174 0.014         0 1       Cd163 </code></pre>
+   p_val avg_log2FC pct.1 pct.2 p_val_adj cluster gene   
+   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;  
+ 1     0       5.58 0.478 0.018         0 0       Scx    
+ 2     0       5.53 0.096 0.004         0 0       Ucma   
+ 3     0       5.29 0.093 0.004         0 0       Matn3  
+ 4     0       5.22 0.139 0.007         0 0       Cilp2  
+ 5     0       4.85 0.739 0.102         0 0       C1qtnf3
+ 6     0       5.36 0.174 0.006         0 1       Inmt   
+ 7     0       5.24 0.248 0.009         0 1       C7     
+ 8     0       5.21 0.389 0.021         0 1       Myoc   
+ 9     0       4.92 0.108 0.006         0 1       Dact2  
+10     0       4.86 0.184 0.007         0 1       Lvrn   </code></pre>
 <p>We expect to see several columns:</p>
 <ul>
 <li><code>gene</code>: gene symbol</li>
