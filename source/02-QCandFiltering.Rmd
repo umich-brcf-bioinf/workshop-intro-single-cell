@@ -207,7 +207,7 @@ A violin plot is similar to a box plot, but it shows the density of the data at 
 Let's look at the `nFeature_RNA` violin plot across all the samples. Again, this is the number of genes detected per cell.
 
 ```{r, feature_plot, fig.show = 'hold'}
-VlnPlot(geo_so, features = 'nFeature_RNA', assay = 'RNA', layer = 'counts') + NoLegend()
+VlnPlot(geo_so, features = 'nFeature_RNA', assay = 'RNA', layer = 'counts') + NoLegend() + geom_hline(yintercept = 500) + geom_hline(yintercept = 400) + geom_hline(yintercept = 300) + geom_hline(yintercept = 200)
 ggsave(filename = 'results/figures/qc_nFeature_violin.png', width = 12, height = 6, units = 'in')
 ```
 
@@ -229,7 +229,7 @@ We observe a similar within-and-across day behavior among the samples. Overall i
 Finally, lets plot the percent mitochondrial reads, `percent.mt`.
 
 ```{r, mito_plot, fig.show = 'hold'}
-VlnPlot(geo_so, features = 'percent.mt', assay = 'RNA', layer = 'counts') + NoLegend()
+VlnPlot(geo_so, features = 'percent.mt', assay = 'RNA', layer = 'counts') + NoLegend() + geom_hline(yintercept = 25) + geom_hline(yintercept = 20) + geom_hline(yintercept = 15) + geom_hline(yintercept = 10)
 ggsave(filename = 'results/figures/qc_mito_violin.png', width = 12, height = 6, units = 'in')
 ```
 
@@ -250,7 +250,7 @@ Fixed thresholds for any combination of `nFeature_RNA`, `nCount_RNA`, and `perce
 In other words, cells with > 500 `nFeature_RNA` and < 25% `percent.mt` were retained by the authors. We could preview what the resulting cell counts would be with these thresholds:
 
 ```{r, preview_postfilter_cell_counts}
-subset(geo_so, subset = nFeature_RNA > 500 & percent.mt < 25)@meta.data %>% 
+subset(geo_so, subset = nFeature_RNA > 300 & percent.mt < 15)@meta.data %>% 
     count(orig.ident, name = 'postfilter_cells')
 ```
 
@@ -260,10 +260,10 @@ For this workshop we will use the above fixed thresholds to match the publicatio
 
 # Removing low-quality cells
 
-In keeping with the publication, let's retain the cells with `nFeature_RNA > 500` and `percent.mt < 25`.
+In keeping with the publication, let's retain the cells with `nFeature_RNA > 300` and `percent.mt < 15`.
 
 ```{r, filter_seurat}
-geo_so = subset(geo_so, subset = nFeature_RNA > 500 & percent.mt < 25)
+geo_so = subset(geo_so, subset = nFeature_RNA > 300 & percent.mt < 15)
 geo_so
 ```
 
