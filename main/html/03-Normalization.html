@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core" />
 
-<meta name="date" content="2024-04-17" />
+<meta name="date" content="2024-09-20" />
 
 <title>Normalization</title>
 
@@ -427,7 +427,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Normalization</h1>
 <h4 class="author">UM Bioinformatics Core</h4>
-<h4 class="date">2024-04-17</h4>
+<h4 class="date">2024-09-20</h4>
 
 </div>
 
@@ -531,7 +531,7 @@ sample into layers, a requirement of Seurat v5:</p>
 <pre class="r"><code>geo_so[[&#39;RNA&#39;]] = split(geo_so[[&#39;RNA&#39;]], f = geo_so$orig.ident)
 geo_so</code></pre>
 <pre><code>An object of class Seurat 
-26489 features across 29615 samples within 1 assay 
+26489 features across 31560 samples within 1 assay 
 Active assay: RNA (26489 features, 0 variable features)
  12 layers present: counts.HO.Day0.replicate1, counts.HO.Day0.replicate2, counts.HO.Day0.replicate3, counts.HO.Day0.replicate4, counts.HO.Day21.replicate1, counts.HO.Day21.replicate2, counts.HO.Day21.replicate3, counts.HO.Day21.replicate4, counts.HO.Day7.replicate1, counts.HO.Day7.replicate2, counts.HO.Day7.replicate3, counts.HO.Day7.replicate4</code></pre>
 <p>We see the 12 layers containing the count data for each of the
@@ -619,8 +619,8 @@ alternative pipeline with caution.</p>
 let’s take a look at the result:</p>
 <pre class="r"><code>geo_so</code></pre>
 <pre><code>An object of class Seurat 
-47037 features across 29615 samples within 2 assays 
-Active assay: SCT (20548 features, 3000 variable features)
+46955 features across 31560 samples within 2 assays 
+Active assay: SCT (20466 features, 3000 variable features)
  3 layers present: counts, data, scale.data
  1 other assay present: RNA</code></pre>
 <p>We observe that the active assay is now “SCT”, but that the “RNA”
