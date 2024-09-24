@@ -208,7 +208,7 @@ celltype_annos = geo_catch@celltype %>% select(cluster, cell_type)
 
 # Customize annotations
 # update cluster 7, based on markers
-celltype_annos$cell_type[c(8)] <- "Macrophage"
+celltype_annos$cell_type[c(8)] <- "Macrophage" # remember cluster 0 = first cluster in table
 celltype_annos$cell_type[c(15)] <- "Hematopoetic precursor"
 
 # update cluster 5, since cancer stem cells are unlikely
