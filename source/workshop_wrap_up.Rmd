@@ -27,11 +27,11 @@ pre {
   font-size: 12px
 }
 
-a.external {
-    background: url(images/external-link.png) center right no-repeat;
-    padding-right: 13px;
-}
 </style>
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
+```
 
 ## Wrapping up
 
@@ -63,7 +63,8 @@ connect to enable single-cell gene expression analysis from RNA-Seq data.
   - _Please save all your R scripts now_ so that we can "right-size" the compute environment immediately following today's workshop session.
 - You can download files from the workshop environment from your terminal/command line window as below. 
   (You will need to substitute your actual workshop username and type workshop password when prompted.)
-  ```
+  ```{bash, eval=F, echo=T}
+  # download workshop files -------------------------------------------------
   mkdir intro_scrnaseq-workshop
   cd intro_scrnaseq-workshop
   scp -r YOUR_USERNAME@bfx-workshop01.med.umich.edu:"ISC_R*" .
