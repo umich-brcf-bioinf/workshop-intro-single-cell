@@ -32,6 +32,10 @@ table{
 }
 </style>
 
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
+```
+
 ```{r, include = FALSE}
 source("../bin/chunk-options.R")
 knitr_fig_path("01-GettingStarted/01-")
@@ -100,7 +104,7 @@ You should now be looking at a page that will allow you to login to the RStudio 
 
 Enter your user credentials and click <kbd>Sign In</kbd>. Your username and password were provided via email, but if you need help, a helper can retrieve it for you if you ask in Slack. Once logged in, you should now see the RStudio interface:
 
-![Image: Landing page after successful login to RStudio server.](images/curriculum/RStudio_landing.png)
+![Image: Landing page after successful login to RStudio server.](images/curriculum/rstudio_landing.png)
 
 <!-- consider adding welcome script or example of final goal?-->
 
@@ -117,6 +121,7 @@ Once we do this, RStudio will restart and the Files pane (lower right) should pu
 We have included the data to be used in the workshop in the `inputs/` folder. However, the project will need to include folders for our analysis and our analysis scripts. Let's create that directory structure with the `dir.create()` function.
 
 ```{r, dir_create}
+# create project directories ----------------------------------------------
 dir.create('scripts', showWarnings = FALSE, recursive = TRUE)
 dir.create('results/figures', showWarnings = FALSE, recursive = TRUE)
 dir.create('results/tables', showWarnings = FALSE, recursive = TRUE)
@@ -143,6 +148,7 @@ As we proceed through the workshop, we should save this file (by clicking the Fl
 We begin our analysis script by loading the libraries we expect to use. It's generally good practice to include all `library()` calls at the top of a script for visibility.
 
 ```{r, load_libraries, warning = FALSE, message = FALSE}
+# load libraries  ----------------------------------------------
 library(Seurat)
 library(BPCells)
 library(tidyverse)
@@ -181,13 +187,14 @@ The most recent release of `Seurat`, version 5, includes changes which take adva
 <!-- Introduce BPCell package and how most recent version of Seurat (Seurat 5) supports more efficient data storage to improve performance and accomodate larger datasets -->
 
 ```{r, read_matrix_dir}
-# This puts the data "on disk" rather than in memory"
+# This puts the data "on disk" rather than in memory"  ------
 geo_mat = open_matrix_dir(dir = 'inputs/10x_mat_filtered')
 ```
 
 This reads in the expression matrix which has genes as rows and cells as columns. The expression matrix is the precursor to creating the `Seurat` object upon which all our analysis will be done. To create the `Seurat` object:
 
 ```{r, create_seurat}
+# create seurat object  ----------------------------------------------
 geo_so = CreateSeuratObject(counts = geo_mat, min.cells = 1, min.features = 50)
 geo_so
 ```
@@ -199,7 +206,8 @@ We have specified some parameters to remove genes and cells which do not contain
 
 Above, we've demonstrated how to read data that was already arranged in the `BPCells` manner. We have done this for the workshop to reduce our memory footprint from the start, but when you get data back from AGC, you will have to follow the steps below.
 
-```{r, eval = FALSE}
+```
+# To load data from raw files ----------------------------------------------
 ### DO NOT RUN ###
 
 # Collect the directories containing the 3 files:
@@ -222,7 +230,7 @@ geo_mat = Read10X(data.dir = sample_dirs)
 
 This will generate the expression matrix that is the input to `CreateSeuratObject()`, as above. If you wanted to write this expression matrix using `BPCells` so that it could be used in the more memory-efficient manner, you would do:
 
-```{r, eval = FALSE}
+```
 write_matrix_dir(mat = geo_mat, dir = 'inputs/10x_mat_filtered')
 ```
 
@@ -255,6 +263,7 @@ As in bulk RNA-seq, the data of interest is stored as a count matrices, but inst
 The only slot of the `Seurat` object that we'll typically access or modify by hand--that is, without a function from the `Seurat` package--is the `meta.data` object. In R, slots are accessed with the `@` symbol, as in:
 
 ```{r, preview_metadata}
+# Examine seurat object ----------------------------------------------
 head(geo_so@meta.data)
 ```
 
@@ -271,6 +280,7 @@ if(!file.exists('results/rdata/geo_so_unfiltered.rds')) {
 ```
 
 ```{r, save_rds, eval = FALSE}
+# Save the seurat object ----------------------------------------------
 saveRDS(geo_so, file = 'results/rdata/geo_so_unfiltered.rds')
 ```
 
