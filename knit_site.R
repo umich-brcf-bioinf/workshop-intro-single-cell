@@ -1,6 +1,8 @@
 # module load singularity
 # singularity exec /nfs/mm-isilon/bioinfcore/Common/singularity/single_cell_0.11.0.sif R
 
+# install.packages('remotes'); library(remotes)
+remove.packages('klippy'); remotes::install_github("umich-brcf-bioinf/workshop-klippy")
 library(rmarkdown)
 
 # The html from the files below don't have the nav bar
@@ -31,7 +33,12 @@ render_site('source/08-DifferentialExpression.Rmd')
 render_site('source/09-IndependentExercise.Rmd')
 render_site('source/00-ResourcesAndExtendedContent.Rmd')
 
-render_site('source/workshop_wrap_up.md')
+render_site('source/workshop_wrap_up.Rmd')
 rm(list=ls())
 gc(verbose=TRUE, full=TRUE)
 #clean_site(preview=TRUE)
+
+
+
+
+
