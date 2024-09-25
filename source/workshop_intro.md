@@ -52,14 +52,11 @@ pre {
 
 
 ## About the workshop team
-| ![](images/headshots/headshot_cgates.jpg) | ![](images/headshots/headshot_mbradenb.jpg) | ![](images/headshots/headshot_rcavalca.jpg) | ![](images/headshots/headshot_damki.jpg) |
-|:-:|:-:|:-:|:-:|
-| **Chris (Gates)** | **Marci** | **Raymond** | **Dana** |
- ![](images/headshots/headshot_ncarruth.jpg) | ![](images/headshots/headshot_trsaari.jpg) | ![](images/headshots/headshot_weishwu.jpg) | ![](images/headshots/headshot_csifuentes.jpg) |
-| **Nick** | **Travis** | **Weisheng Wu** | **Chris (Sifuentes)** |
-![](images/headshots/headshot_mkdohert.jpg) | ![](images/headshots/headshot_okoues.jpg) | ![](images/headshots/headshot_phillipa.jpg) |
-| **Matt** | **Olivia** | **Tricia** |
-
+| ![](images/headshots/headshot_cgates.jpg) | ![](images/headshots/headshot_mbradenb.jpg) | ![](images/headshots/headshot_rcavalca.jpg) |
+|:-:|:-:|:-:|
+| **Chris** | **Marci** | **Raymond** |
+![](images/headshots/headshot_damki.jpg) | ![](images/headshots/headshot_trsaari.jpg) | ![](images/headshots/headshot_okoues.jpg) |
+| **Dana** | **Travis** | **Olivia** |
 
 <br/>
 
@@ -250,13 +247,6 @@ It is important that you can see:
   service activities of faculty, students, and staff, and contribute to the common good by
   collecting, organizing, preserving, communicating, sharing, and creating the record of human
   knowledge.
-
-## [CZI : Neurodegeneration Challenge Network](https://chanzuckerberg.com/science/programs-resources/neurodegeneration-challenge/){target="_blank"}
-
-  The CZI Neurodegeneration Challenge Network (NCDN) was launched in 2018 with the vision that progress in solving 
-  neurodegenerative diseases will come from bringing new people into the neurodegeneration field from diverse disciplines 
-  and expertise; supporting interdisciplinary collaborations; empowering the broader scientific community with robust tools 
-  and platforms, and creating a culture of open science.
 
 <br/>
 <br/>

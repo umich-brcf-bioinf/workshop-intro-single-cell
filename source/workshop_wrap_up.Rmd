@@ -44,11 +44,9 @@ connect to enable single-cell gene expression analysis from RNA-Seq data.
 
 ## Housekeeping
 
-- Please take our optional [post-workshop survey](https://forms.gle/P6x1kNFCrs1GoT158){target="_blank"} (5-10 minutes).
+- Please take our optional [post-workshop survey](https://forms.gle/St5D6b6mQMg5rmEk9){target="_blank"} (5-10 minutes).
 
-- Sign up here to attend [Follow Up Help Session](https://forms.gle/9ZxC3zj8EuFYXeos5){target="_blank"} on 4/22 1-2 ET.
-
-- We will email you a link to the final session recordings by the end of next week.
+- We will email you a link to the final session recordings next week.
 
 - The website/notes for this workshop will be available.
 
@@ -147,13 +145,11 @@ connect to enable single-cell gene expression analysis from RNA-Seq data.
 <br/>
 
 ## Thank you to/from the workshop team
-| ![](images/headshots/headshot_cgates.jpg) | ![](images/headshots/headshot_mbradenb.jpg) | ![](images/headshots/headshot_rcavalca.jpg) | ![](images/headshots/headshot_damki.jpg) |
-|:-:|:-:|:-:|:-:|
-| **Chris (Gates)** | **Marci** | **Raymond** | **Dana** |
- ![](images/headshots/headshot_ncarruth.jpg) | ![](images/headshots/headshot_trsaari.jpg) | ![](images/headshots/headshot_weishwu.jpg) | ![](images/headshots/headshot_csifuentes.jpg) |
-| **Nick** | **Travis** | **Weisheng Wu** | **Chris (Sifuentes)** |
-![](images/headshots/headshot_mkdohert.jpg) | ![](images/headshots/headshot_okoues.jpg) | ![](images/headshots/headshot_phillipa.jpg) |
-| **Matt** | **Olivia** | **Tricia** |
+| ![](images/headshots/headshot_cgates.jpg) | ![](images/headshots/headshot_mbradenb.jpg) | ![](images/headshots/headshot_rcavalca.jpg) |
+|:-:|:-:|:-:|
+| **Chris** | **Marci** | **Raymond** |
+![](images/headshots/headshot_damki.jpg) | ![](images/headshots/headshot_trsaari.jpg) | ![](images/headshots/headshot_okoues.jpg) |
+| **Dana** | **Travis** | **Olivia** |
 <br/>
 
 
