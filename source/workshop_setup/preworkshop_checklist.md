@@ -24,10 +24,8 @@ A separate email with the subject **"UM BioinfCore Workshop Login"** will detail
 2. Join the UM BioinfCore Workshops Slack channel<br/>
 You will receive an email invite soon; please accept that to set up your Slack account.
 
-<!--
-3. (optional) Take the <a href="https://forms.gle/8BHjAGpG4BLDAMicA" target="_blank">Pre-workshop survey</a><br/>
+3. (optional) Take the <a href="https://forms.gle/TXiweYcC5LJU1K4F8" target="_blank">Pre-workshop survey</a><br/>
 To help us better understand your collective background, we invite you to take an optional, anonymous pre-workshop survey.
--->
 
 We are looking forward to seeing you in the workshop. Please let us know if you have any questions.<br/><br/>
 
