@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core" />
+
+<meta name="date" content="2024-04-17" />
+
+<title>Resource Links</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<!--
+Favicon dervied from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+    </li>
+    <li>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+    </li>
+    <li>
+      <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
+    </li>
+    <li>
+      <a href="03-Normalization.html">Normalization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
+    </li>
+    <li>
+      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="06-MarkerVisualization.html">Marker identification and visualization</a>
+    </li>
+    <li>
+      <a href="07-CellTypeAnnos.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="08-DifferentialExpression.html">Differential expression analysis</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Resource Links</h1>
+<h4 class="author">UM Bioinformatics Core</h4>
+<h4 class="date">2024-04-17</h4>
+
+</div>
+
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+</style>
+<div id="workflow-overview" class="section level1 unlisted unnumbered">
+<h1 class="unlisted unnumbered">Workflow Overview</h1>
+</div>
+<div id="topics" class="section level1">
+<h1>Topics</h1>
+<div id="university-of-michigan-resources" class="section level2">
+<h2>University of Michigan Resources</h2>
+<ul>
+<li><a
+href="https://medresearch.umich.edu/office-research/about-office-research/biomedical-research-core-facilities/advanced-genomics-core/technologies/single-cell-processing">Advanced
+Genomics Core (AGC) - Single Cell Processing</a></li>
+<li><a href="https://arc.umich.edu/umrcp/">Advanced Research Computing
+(ARC) - UM Research Computing package</a></li>
+</ul>
+</div>
+<div id="cell-ranger-and-10x-assays" class="section level2">
+<h2>Cell Ranger and 10x Assays:</h2>
+<ul>
+<li><p><a
+href="https://www.10xgenomics.com/support/software/cell-ranger/latest">10x
+- Cell Ranger Support</a></p></li>
+<li><p><a
+href="https://holab-hku.github.io/Fundamental-scRNA/raw2matrix.html#cell-ranger">Cell
+Ranger Overview - Ho Lab</a></p></li>
+<li><p><a
+href="https://www.10xgenomics.com/support/software/cell-ranger/latest/algorithms-overview">10x
+- Cell Ranger algorithms overview</a></p></li>
+<li><p><a
+href="https://www.10xgenomics.com/analysis-guides/quality-assessment-using-the-cell-ranger-web-summary">Quality
+Assessment Using the Cell Ranger Web Summary</a></p></li>
+<li><p><a
+href="https://www.10xgenomics.com/support/single-cell-gene-expression">10x
+- 3’ Single Gell Gene Expression</a></p></li>
+<li><p><a
+href="https://www.10xgenomics.com/support/single-cell-gene-expression-flex/documentation/steps/probe-sets/chromium-frp-probe-sets-overview">10x
+- Fixed RNA Profiling Probe Sets Overview</a></p></li>
+</ul>
+</div>
+<div id="loupe-browser" class="section level2">
+<h2>Loupe Browser:</h2>
+<ul>
+<li><a
+href="https://www.10xgenomics.com/support/software/loupe-browser/latest/getting-started">10x
+resources for getting started with Loupe Browser</a></li>
+<li><a
+href="https://www.10xgenomics.com/support/software/loupe-browser/latest/tutorials/introduction/lb-sc-interface-and-navigation">10x
+tutorial - Loupe Browser navigation for Single-cell</a></li>
+<li><a
+href="https://www.10xgenomics.com/support/software/loupe-browser/latest/tutorials/introduction/lb-louper">10x
+tutorial - LoupeR to Generate CLOUPE files from Seurat Objects</a></li>
+</ul>
+</div>
+<div id="seurat-tutorialsworkflows" class="section level2">
+<h2>Seurat tutorials/workflows:</h2>
+<ul>
+<li><a href="https://ouyanglab.com/singlecell/">Single-cell Analysis -
+Ouyang Lab</a> - materials last updated in January 2023</li>
+<li><a href="https://github.com/hbctraining/scRNA-seq_online">scRNA-seq
+workshop - HBC training</a> - lastest release of materials is from March
+2023
+<ul>
+<li>To cite materials from the HBC course, please use:
+<code>Mary Piper, Meeta Mistry, Jihe Liu, William Gammerdinger, &amp; Radhika Khetani. (2022, January 6). hbctraining/scRNA-seq_online: scRNA-seq Lessons from HCBC (first release). Zenodo. [https://doi.org/10.5281/zenodo.5826256](https://doi.org/10.5281/zenodo.5826256)</code></li>
+</ul></li>
+<li><a
+href="https://holab-hku.github.io/Fundamental-scRNA/downstream.html">Analysis
+using Seurat - Ho Lab</a> - materials last updated in 2021 <a
+href="https://rnabio.org/module-08-scrna/0008/08/01/scRNA/">Single-cell
+complete workflow exercise, RNA-seq Bioinformatics - Griffith Lab</a> -
+exercise from workshop</li>
+</ul>
+</div>
+<div id="resources-and-documentation-for-seurat-and-related-tools"
+class="section level2">
+<h2>Resources and documentation for Seurat and related tools:</h2>
+<ul>
+<li><a
+href="https://satijalab.org/seurat/articles/seurat5_sketch_analysis">Seurat
+5 - Sketch analysis</a></li>
+<li><a
+href="https://satijalab.org/seurat/articles/cell_cycle_vignette.html">Seurat
+- Cell Cycle and Regression</a></li>
+<li><a
+href="https://satijalab.org/seurat/articles/visualization_vignette">Seurat
+- data visualization methods</a></li>
+<li><a
+href="https://rpubs.com/kenneditodd/doublet_finder_example">Doublet
+Finder Example, 2022</a>
+<ul>
+<li><a
+href="https://github.com/chris-mcginnis-ucsf/DoubletFinder/issues/171">Issue
+reported for Seurat 5</a>, so may not be compatible with Seurat workflow
+until bug is fixed</li>
+</ul></li>
+</ul>
+</div>
+<div id="resource-compilations" class="section level2">
+<h2>Resource compilations:</h2>
+<ul>
+<li><a
+href="https://www.10xgenomics.com/analysis-guides/continuing-your-journey-after-running-cell-ranger">10x
+- Continuing your journey after running cell ranger</a></li>
+<li><a
+href="https://www.10xgenomics.com/analysis-guides?query=&amp;page=1&amp;refinementList%5Bproducts.name%5D%5B0%5D=Single%20Cell%20Gene%20Expression">10x
+Analysis Guides - single-cell gene expression</a></li>
+<li><a
+href="https://github.com/crazyhottommy/scRNAseq-analysis-notes">Ming
+Tang’s scRNA analysis notes repository</a></li>
+<li><a href="https://github.com/seandavi/awesome-single-cell">Sean
+Davis’ list of single-cell packages</a></li>
+<li><a href="https://github.com/mdozmorov/scRNA-seq_notes">Mikhail
+Dozmorov’s compilation of single-cell analysis tools and papers</a></li>
+<li><a
+href="https://ouyanglab.com/singlecell/appendix.html#useful-resources">Ouyang
+Lab’s “Useful resources”</a></li>
+</ul>
+</div>
+<div id="deep-dive-single-cell-tutorials-and-guides"
+class="section level2">
+<h2>Deep-dive single-cell tutorials and guides:</h2>
+<ul>
+<li><a href="https://bioconductor.org/books/3.15/OSCA.basic/">Basics of
+Single-Cell Analysis with Bioconductor (OSCA), 2022</a></li>
+<li><a href="https://broadinstitute.github.io/2019_scWorkshop/">Broad
+Institute - ANALYSIS OF SINGLE CELL RNA-SEQ DATA, 2019</a></li>
+<li><a href="https://www.sc-best-practices.org/preamble.html">Single
+Cell Best Practices (Python/scanpy)- Digital Book</a></li>
+</ul>
+</div>
+<div id="resources-for-broader-contextdiscussion"
+class="section level2">
+<h2>Resources for broader context/discussion:</h2>
+<ul>
+<li><p><a href="https://satijalab.org/">Satija Lab Website</a></p></li>
+<li><p><a
+href="https://www.embopress.org/doi/full/10.15252/msb.20188746">Luecken
+MD, Theis FJ. Current best practices in single-cell RNA-seq analysis: a
+tutorial. Mol Syst Biol. 2019 Jun 19;15(6):e8746. doi:
+10.15252/msb.20188746. PMID: 31217225; PMCID: PMC6582955.</a></p></li>
+<li><p><a
+href="https://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1011288">Chari
+T, Pachter L (2023) The specious art of single-cell genomics. PLoS
+Comput Biol 19(8): e1011288.
+https://doi.org/10.1371/journal.pcbi.1011288</a></p></li>
+<li><p><a href="https://doi.org/10.1186/s13059-019-1898-6">Sun, Shiquan,
+Jiaqiang Zhu, Ying Ma, and Xiang Zhou. 2019. “Accuracy, Robustness and
+Scalability of Dimensionality Reduction Methods for Single-Cell RNA-Seq
+Analysis.” Genome Biology 20: 269.
+https://doi.org/10.1186/s13059-019-1898-6.</a></p></li>
+<li><p><a
+href="https://pair-code.github.io/understanding-umap/">Understanding
+UMAP</a></p></li>
+<li><p><a
+href="https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html">OSCA
+Chapter 4: Dimensionality reduction</a></p></li>
+</ul>
+</div>
+<div id="other-third-party-tools" class="section level2">
+<h2>Other third party tools</h2>
+<ul>
+<li><a href="https://bioturing.com/bbrowserx">BioTuring - BBrowser X</a>
+- Graphical user interface (GUI) analysis suite, similar to Loupe
+Browser but with more extensive functionalities (requires paid
+subscription but 1-month trial available)
+<ul>
+<li><a
+href="https://talk2data.bioturing.com/document#h.k5o4lxkht6rz">BBrowser
+X documentation</a></li>
+</ul></li>
+<li><a
+href="https://scanpy.readthedocs.io/en/latest/_tutorials.html">Scanpy
+(Python) documentation and tutorials</a></li>
+</ul>
+<p><br/></p>
+<hr />
+<p>These materials have been adapted and extended from materials listed
+above. These are open access materials distributed under the terms of
+the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
+Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
+use, distribution, and reproduction in any medium, provided the original
+author and source are credited.</p>
+<br/> <br/>
+<hr/>
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="workshop_intro">Back to introduction</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="01-GettingStarted.html">Next lesson</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiUmVzb3VyY2UgTGlua3MiCmF1dGhvcjogIlVNIEJpb2luZm9ybWF0aWNzIENvcmUiCmRhdGU6ICJgciBTeXMuRGF0ZSgpYCIKb3V0cHV0OgogICAgICAgIGh0bWxfZG9jdW1lbnQ6CiAgICAgICAgICAgIGluY2x1ZGVzOgogICAgICAgICAgICAgICAgaW5faGVhZGVyOiBoZWFkZXIuaHRtbAogICAgICAgICAgICB0aGVtZTogcGFwZXIKICAgICAgICAgICAgdG9jOiB0cnVlCiAgICAgICAgICAgIHRvY19kZXB0aDogNAogICAgICAgICAgICB0b2NfZmxvYXQ6IHRydWUKICAgICAgICAgICAgbnVtYmVyX3NlY3Rpb25zOiBmYWxzZQogICAgICAgICAgICBmaWdfY2FwdGlvbjogdHJ1ZQogICAgICAgICAgICBtYXJrZG93bjogR0ZNCiAgICAgICAgICAgIGNvZGVfZG93bmxvYWQ6IHRydWUKLS0tCgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgpib2R5LCB0ZCB7CiAgIGZvbnQtc2l6ZTogMThweDsKfQpjb2RlLnJ7CiAgZm9udC1zaXplOiAxMnB4Owp9CnByZSB7CiAgZm9udC1zaXplOiAxMnB4Cn0KPC9zdHlsZT4KCmBgYHtyLCBpbmNsdWRlID0gRkFMU0V9CnNvdXJjZSgiLi4vYmluL2NodW5rLW9wdGlvbnMuUiIpCmtuaXRyX2ZpZ19wYXRoKCJYWCIpCmBgYAoKIyBXb3JrZmxvdyBPdmVydmlldyB7LnVubGlzdGVkIC51bm51bWJlcmVkfQoKIyBUb3BpY3MKCiMjIFVuaXZlcnNpdHkgb2YgTWljaGlnYW4gUmVzb3VyY2VzCgotIFtBZHZhbmNlZCBHZW5vbWljcyBDb3JlIChBR0MpIC0gU2luZ2xlIENlbGwgUHJvY2Vzc2luZ10oaHR0cHM6Ly9tZWRyZXNlYXJjaC51bWljaC5lZHUvb2ZmaWNlLXJlc2VhcmNoL2Fib3V0LW9mZmljZS1yZXNlYXJjaC9iaW9tZWRpY2FsLXJlc2VhcmNoLWNvcmUtZmFjaWxpdGllcy9hZHZhbmNlZC1nZW5vbWljcy1jb3JlL3RlY2hub2xvZ2llcy9zaW5nbGUtY2VsbC1wcm9jZXNzaW5nKQotIFtBZHZhbmNlZCBSZXNlYXJjaCBDb21wdXRpbmcgKEFSQykgLSBVTSBSZXNlYXJjaCBDb21wdXRpbmcgcGFja2FnZV0oaHR0cHM6Ly9hcmMudW1pY2guZWR1L3VtcmNwLykKCgojIyBDZWxsIFJhbmdlciBhbmQgMTB4IEFzc2F5czoKCi0gWzEweCAtIENlbGwgUmFuZ2VyIFN1cHBvcnRdKGh0dHBzOi8vd3d3LjEweGdlbm9taWNzLmNvbS9zdXBwb3J0L3NvZnR3YXJlL2NlbGwtcmFuZ2VyL2xhdGVzdCkKLSBbQ2VsbCBSYW5nZXIgT3ZlcnZpZXcgLSBIbyBMYWJdKGh0dHBzOi8vaG9sYWItaGt1LmdpdGh1Yi5pby9GdW5kYW1lbnRhbC1zY1JOQS9yYXcybWF0cml4Lmh0bWwjY2VsbC1yYW5nZXIpCi0gWzEweCAtIENlbGwgUmFuZ2VyIGFsZ29yaXRobXMgb3ZlcnZpZXddKGh0dHBzOi8vd3d3LjEweGdlbm9taWNzLmNvbS9zdXBwb3J0L3NvZnR3YXJlL2NlbGwtcmFuZ2VyL2xhdGVzdC9hbGdvcml0aG1zLW92ZXJ2aWV3KQotIFtRdWFsaXR5IEFzc2Vzc21lbnQgVXNpbmcgdGhlIENlbGwgUmFuZ2VyIFdlYiBTdW1tYXJ5XShodHRwczovL3d3dy4xMHhnZW5vbWljcy5jb20vYW5hbHlzaXMtZ3VpZGVzL3F1YWxpdHktYXNzZXNzbWVudC11c2luZy10aGUtY2VsbC1yYW5nZXItd2ViLXN1bW1hcnkpCgotIFsxMHggLSAzJyBTaW5nbGUgR2VsbCBHZW5lIEV4cHJlc3Npb25dKGh0dHBzOi8vd3d3LjEweGdlbm9taWNzLmNvbS9zdXBwb3J0L3NpbmdsZS1jZWxsLWdlbmUtZXhwcmVzc2lvbikKLSBbMTB4IC0gRml4ZWQgUk5BIFByb2ZpbGluZyBQcm9iZSBTZXRzIE92ZXJ2aWV3XShodHRwczovL3d3dy4xMHhnZW5vbWljcy5jb20vc3VwcG9ydC9zaW5nbGUtY2VsbC1nZW5lLWV4cHJlc3Npb24tZmxleC9kb2N1bWVudGF0aW9uL3N0ZXBzL3Byb2JlLXNldHMvY2hyb21pdW0tZnJwLXByb2JlLXNldHMtb3ZlcnZpZXcpCgojIyBMb3VwZSBCcm93c2VyOgoKLSBbMTB4IHJlc291cmNlcyBmb3IgZ2V0dGluZyBzdGFydGVkIHdpdGggTG91cGUgQnJvd3Nlcl0oaHR0cHM6Ly93d3cuMTB4Z2Vub21pY3MuY29tL3N1cHBvcnQvc29mdHdhcmUvbG91cGUtYnJvd3Nlci9sYXRlc3QvZ2V0dGluZy1zdGFydGVkKQotIFsxMHggdHV0b3JpYWwgLSAgTG91cGUgQnJvd3NlciBuYXZpZ2F0aW9uIGZvciBTaW5nbGUtY2VsbF0oaHR0cHM6Ly93d3cuMTB4Z2Vub21pY3MuY29tL3N1cHBvcnQvc29mdHdhcmUvbG91cGUtYnJvd3Nlci9sYXRlc3QvdHV0b3JpYWxzL2ludHJvZHVjdGlvbi9sYi1zYy1pbnRlcmZhY2UtYW5kLW5hdmlnYXRpb24pCi0gWzEweCB0dXRvcmlhbCAtIExvdXBlUiB0byBHZW5lcmF0ZSBDTE9VUEUgZmlsZXMgZnJvbSBTZXVyYXQgT2JqZWN0cyBdKGh0dHBzOi8vd3d3LjEweGdlbm9taWNzLmNvbS9zdXBwb3J0L3NvZnR3YXJlL2xvdXBlLWJyb3dzZXIvbGF0ZXN0L3R1dG9yaWFscy9pbnRyb2R1Y3Rpb24vbGItbG91cGVyKQoKIyMgU2V1cmF0IHR1dG9yaWFscy93b3JrZmxvd3M6CgotIFtTaW5nbGUtY2VsbCBBbmFseXNpcyAtIE91eWFuZyBMYWJdKGh0dHBzOi8vb3V5YW5nbGFiLmNvbS9zaW5nbGVjZWxsLykgLSBtYXRlcmlhbHMgbGFzdCB1cGRhdGVkIGluIEphbnVhcnkgMjAyMwotIFtzY1JOQS1zZXEgd29ya3Nob3AgLSBIQkMgdHJhaW5pbmddKGh0dHBzOi8vZ2l0aHViLmNvbS9oYmN0cmFpbmluZy9zY1JOQS1zZXFfb25saW5lKSAtIGxhc3Rlc3QgcmVsZWFzZSBvZiBtYXRlcmlhbHMgaXMgZnJvbSBNYXJjaCAyMDIzCgktIFRvIGNpdGUgbWF0ZXJpYWxzIGZyb20gdGhlIEhCQyBjb3Vyc2UsIHBsZWFzZSB1c2U6IGBNYXJ5IFBpcGVyLCBNZWV0YSBNaXN0cnksIEppaGUgTGl1LCBXaWxsaWFtIEdhbW1lcmRpbmdlciwgJiBSYWRoaWthIEtoZXRhbmkuICgyMDIyLCBKYW51YXJ5IDYpLiBoYmN0cmFpbmluZy9zY1JOQS1zZXFfb25saW5lOiBzY1JOQS1zZXEgTGVzc29ucyBmcm9tIEhDQkMgKGZpcnN0IHJlbGVhc2UpLiBaZW5vZG8uIFtodHRwczovL2RvaS5vcmcvMTAuNTI4MS96ZW5vZG8uNTgyNjI1Nl0oaHR0cHM6Ly9kb2kub3JnLzEwLjUyODEvemVub2RvLjU4MjYyNTYpYAotIFtBbmFseXNpcyB1c2luZyBTZXVyYXQgLSBIbyBMYWJdKGh0dHBzOi8vaG9sYWItaGt1LmdpdGh1Yi5pby9GdW5kYW1lbnRhbC1zY1JOQS9kb3duc3RyZWFtLmh0bWwpIC0gbWF0ZXJpYWxzIGxhc3QgdXBkYXRlZCBpbiAyMDIxCltTaW5nbGUtY2VsbCBjb21wbGV0ZSB3b3JrZmxvdyBleGVyY2lzZSwgUk5BLXNlcSBCaW9pbmZvcm1hdGljcyAtIEdyaWZmaXRoIExhYl0oaHR0cHM6Ly9ybmFiaW8ub3JnL21vZHVsZS0wOC1zY3JuYS8wMDA4LzA4LzAxL3NjUk5BLykgLSBleGVyY2lzZSBmcm9tIHdvcmtzaG9wCgoKIyMgUmVzb3VyY2VzIGFuZCBkb2N1bWVudGF0aW9uIGZvciBTZXVyYXQgYW5kIHJlbGF0ZWQgdG9vbHM6IAoKLSBbU2V1cmF0IDUgLSBTa2V0Y2ggYW5hbHlzaXNdKGh0dHBzOi8vc2F0aWphbGFiLm9yZy9zZXVyYXQvYXJ0aWNsZXMvc2V1cmF0NV9za2V0Y2hfYW5hbHlzaXMpCi0gW1NldXJhdCAtIENlbGwgQ3ljbGUgYW5kIFJlZ3Jlc3Npb25dKGh0dHBzOi8vc2F0aWphbGFiLm9yZy9zZXVyYXQvYXJ0aWNsZXMvY2VsbF9jeWNsZV92aWduZXR0ZS5odG1sKQotIFtTZXVyYXQgLSBkYXRhIHZpc3VhbGl6YXRpb24gbWV0aG9kc10oaHR0cHM6Ly9zYXRpamFsYWIub3JnL3NldXJhdC9hcnRpY2xlcy92aXN1YWxpemF0aW9uX3ZpZ25ldHRlKQotIFtEb3VibGV0IEZpbmRlciBFeGFtcGxlLCAyMDIyXShodHRwczovL3JwdWJzLmNvbS9rZW5uZWRpdG9kZC9kb3VibGV0X2ZpbmRlcl9leGFtcGxlKQoJLSBbSXNzdWUgcmVwb3J0ZWQgZm9yIFNldXJhdCA1XShodHRwczovL2dpdGh1Yi5jb20vY2hyaXMtbWNnaW5uaXMtdWNzZi9Eb3VibGV0RmluZGVyL2lzc3Vlcy8xNzEpLCBzbyBtYXkgbm90IGJlIGNvbXBhdGlibGUgd2l0aCBTZXVyYXQgd29ya2Zsb3cgdW50aWwgYnVnIGlzIGZpeGVkCgojIyBSZXNvdXJjZSBjb21waWxhdGlvbnM6CgotIFsxMHggLSBDb250aW51aW5nIHlvdXIgam91cm5leSBhZnRlciBydW5uaW5nIGNlbGwgcmFuZ2VyXShodHRwczovL3d3dy4xMHhnZW5vbWljcy5jb20vYW5hbHlzaXMtZ3VpZGVzL2NvbnRpbnVpbmcteW91ci1qb3VybmV5LWFmdGVyLXJ1bm5pbmctY2VsbC1yYW5nZXIpCi0gWzEweCBBbmFseXNpcyBHdWlkZXMgLSBzaW5nbGUtY2VsbCBnZW5lIGV4cHJlc3Npb25dKGh0dHBzOi8vd3d3LjEweGdlbm9taWNzLmNvbS9hbmFseXNpcy1ndWlkZXM/cXVlcnk9JnBhZ2U9MSZyZWZpbmVtZW50TGlzdCU1QnByb2R1Y3RzLm5hbWUlNUQlNUIwJTVEPVNpbmdsZSUyMENlbGwlMjBHZW5lJTIwRXhwcmVzc2lvbikKLSBbTWluZyBUYW5nJ3Mgc2NSTkEgYW5hbHlzaXMgbm90ZXMgcmVwb3NpdG9yeV0oaHR0cHM6Ly9naXRodWIuY29tL2NyYXp5aG90dG9tbXkvc2NSTkFzZXEtYW5hbHlzaXMtbm90ZXMpCi0gW1NlYW4gRGF2aXMnIGxpc3Qgb2Ygc2luZ2xlLWNlbGwgcGFja2FnZXNdKGh0dHBzOi8vZ2l0aHViLmNvbS9zZWFuZGF2aS9hd2Vzb21lLXNpbmdsZS1jZWxsKQotIFtNaWtoYWlsIERvem1vcm92J3MgY29tcGlsYXRpb24gb2Ygc2luZ2xlLWNlbGwgYW5hbHlzaXMgdG9vbHMgYW5kIHBhcGVyc10oaHR0cHM6Ly9naXRodWIuY29tL21kb3ptb3Jvdi9zY1JOQS1zZXFfbm90ZXMpCi0gW091eWFuZyBMYWIncyAiVXNlZnVsIHJlc291cmNlcyJdKGh0dHBzOi8vb3V5YW5nbGFiLmNvbS9zaW5nbGVjZWxsL2FwcGVuZGl4Lmh0bWwjdXNlZnVsLXJlc291cmNlcykKCgojIyBEZWVwLWRpdmUgc2luZ2xlLWNlbGwgdHV0b3JpYWxzIGFuZCBndWlkZXM6CgotIFtCYXNpY3Mgb2YgU2luZ2xlLUNlbGwgQW5hbHlzaXMgd2l0aCBCaW9jb25kdWN0b3IgKE9TQ0EpLCAyMDIyXShodHRwczovL2Jpb2NvbmR1Y3Rvci5vcmcvYm9va3MvMy4xNS9PU0NBLmJhc2ljLykKLSBbQnJvYWQgSW5zdGl0dXRlIC0gQU5BTFlTSVMgT0YgU0lOR0xFIENFTEwgUk5BLVNFUSBEQVRBLCAyMDE5XShodHRwczovL2Jyb2FkaW5zdGl0dXRlLmdpdGh1Yi5pby8yMDE5X3NjV29ya3Nob3AvKQotIFtTaW5nbGUgQ2VsbCBCZXN0IFByYWN0aWNlcyAoUHl0aG9uL3NjYW5weSktIERpZ2l0YWwgQm9va10oaHR0cHM6Ly93d3cuc2MtYmVzdC1wcmFjdGljZXMub3JnL3ByZWFtYmxlLmh0bWwpCgoKCiMjIFJlc291cmNlcyBmb3IgYnJvYWRlciBjb250ZXh0L2Rpc2N1c3Npb246CgotIFtTYXRpamEgTGFiIFdlYnNpdGVdKGh0dHBzOi8vc2F0aWphbGFiLm9yZy8pCi0gW0x1ZWNrZW4gTUQsIFRoZWlzIEZKLiBDdXJyZW50IGJlc3QgcHJhY3RpY2VzIGluIHNpbmdsZS1jZWxsIFJOQS1zZXEgYW5hbHlzaXM6IGEgdHV0b3JpYWwuIE1vbCBTeXN0IEJpb2wuIDIwMTkgSnVuIDE5OzE1KDYpOmU4NzQ2LiBkb2k6IDEwLjE1MjUyL21zYi4yMDE4ODc0Ni4gUE1JRDogMzEyMTcyMjU7IFBNQ0lEOiBQTUM2NTgyOTU1Ll0oaHR0cHM6Ly93d3cuZW1ib3ByZXNzLm9yZy9kb2kvZnVsbC8xMC4xNTI1Mi9tc2IuMjAxODg3NDYpCi0gW0NoYXJpIFQsIFBhY2h0ZXIgTCAoMjAyMykgVGhlIHNwZWNpb3VzIGFydCBvZiBzaW5nbGUtY2VsbCBnZW5vbWljcy4gUExvUyBDb21wdXQgQmlvbCAxOSg4KTogZTEwMTEyODguIGh0dHBzOi8vZG9pLm9yZy8xMC4xMzcxL2pvdXJuYWwucGNiaS4xMDExMjg4XShodHRwczovL2pvdXJuYWxzLnBsb3Mub3JnL3Bsb3Njb21wYmlvbC9hcnRpY2xlP2lkPTEwLjEzNzEvam91cm5hbC5wY2JpLjEwMTEyODgpCgotIFtTdW4sIFNoaXF1YW4sIEppYXFpYW5nIFpodSwgWWluZyBNYSwgYW5kIFhpYW5nIFpob3UuIDIwMTkuIOKAnEFjY3VyYWN5LCBSb2J1c3RuZXNzIGFuZCBTY2FsYWJpbGl0eSBvZiBEaW1lbnNpb25hbGl0eSBSZWR1Y3Rpb24gTWV0aG9kcyBmb3IgU2luZ2xlLUNlbGwgUk5BLVNlcSBBbmFseXNpcy7igJ0gR2Vub21lIEJpb2xvZ3kgMjA6IDI2OS4gaHR0cHM6Ly9kb2kub3JnLzEwLjExODYvczEzMDU5LTAxOS0xODk4LTYuXShodHRwczovL2RvaS5vcmcvMTAuMTE4Ni9zMTMwNTktMDE5LTE4OTgtNikKCi0gW1VuZGVyc3RhbmRpbmcgVU1BUF0oaHR0cHM6Ly9wYWlyLWNvZGUuZ2l0aHViLmlvL3VuZGVyc3RhbmRpbmctdW1hcC8pCi0gW09TQ0EgQ2hhcHRlciA0OiBEaW1lbnNpb25hbGl0eSByZWR1Y3Rpb25dKGh0dHBzOi8vYmlvY29uZHVjdG9yLm9yZy9ib29rcy8zLjE1L09TQ0EuYmFzaWMvZGltZW5zaW9uYWxpdHktcmVkdWN0aW9uLmh0bWwpCgojIyBPdGhlciB0aGlyZCBwYXJ0eSB0b29scwoKLSBbQmlvVHVyaW5nIC0gQkJyb3dzZXIgWF0oaHR0cHM6Ly9iaW90dXJpbmcuY29tL2Jicm93c2VyeCkgLSBHcmFwaGljYWwgdXNlciBpbnRlcmZhY2UgKEdVSSkgYW5hbHlzaXMgc3VpdGUsIHNpbWlsYXIgdG8gTG91cGUgQnJvd3NlciBidXQgd2l0aCBtb3JlIGV4dGVuc2l2ZSBmdW5jdGlvbmFsaXRpZXMgKHJlcXVpcmVzIHBhaWQgc3Vic2NyaXB0aW9uIGJ1dCAxLW1vbnRoIHRyaWFsIGF2YWlsYWJsZSkKCS0gW0JCcm93c2VyIFggZG9jdW1lbnRhdGlvbl0oaHR0cHM6Ly90YWxrMmRhdGEuYmlvdHVyaW5nLmNvbS9kb2N1bWVudCNoLms1bzRseGtodDZyeikKLSBbU2NhbnB5IChQeXRob24pIGRvY3VtZW50YXRpb24gYW5kIHR1dG9yaWFsc10oaHR0cHM6Ly9zY2FucHkucmVhZHRoZWRvY3MuaW8vZW4vbGF0ZXN0L190dXRvcmlhbHMuaHRtbCkKCjxici8+CgotLS0tCgpUaGVzZSBtYXRlcmlhbHMgaGF2ZSBiZWVuIGFkYXB0ZWQgYW5kIGV4dGVuZGVkIGZyb20gbWF0ZXJpYWxzIGxpc3RlZCBhYm92ZS4gVGhlc2UgYXJlIG9wZW4gYWNjZXNzIG1hdGVyaWFscyBkaXN0cmlidXRlZCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIFtDcmVhdGl2ZSBDb21tb25zIEF0dHJpYnV0aW9uIGxpY2Vuc2UgKENDIEJZIDQuMCldKGh0dHA6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC8pLCB3aGljaCBwZXJtaXRzIHVucmVzdHJpY3RlZCB1c2UsIGRpc3RyaWJ1dGlvbiwgYW5kIHJlcHJvZHVjdGlvbiBpbiBhbnkgbWVkaXVtLCBwcm92aWRlZCB0aGUgb3JpZ2luYWwgYXV0aG9yIGFuZCBzb3VyY2UgYXJlIGNyZWRpdGVkLgoKPGJyLz4KPGJyLz4KPGhyLz4KfCBbQmFjayB0byBpbnRyb2R1Y3Rpb25dKHdvcmtzaG9wX2ludHJvKSB8IFtUb3Agb2YgdGhpcyBsZXNzb25dKCN0b3ApIHwgW05leHQgbGVzc29uXSgwMS1HZXR0aW5nU3RhcnRlZC5odG1sKSB8CnwgOi0tLSB8IDotLS0tOiB8IC0tLTogfAoK</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("00-ResourcesAndExtendedContent.Rmd");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

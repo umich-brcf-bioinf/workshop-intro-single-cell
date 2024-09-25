@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core" />
+
+<meta name="date" content="2024-09-20" />
+
+<title>Differential Expression Analysis</title>
+
+<script src="site_libs/header-attrs-2.25/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<!--
+Favicon dervied from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+    </li>
+    <li>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+    </li>
+    <li>
+      <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
+    </li>
+    <li>
+      <a href="03-Normalization.html">Normalization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
+    </li>
+    <li>
+      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="06-MarkerVisualization.html">Marker identification and visualization</a>
+    </li>
+    <li>
+      <a href="07-CellTypeAnnos.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="08-DifferentialExpression.html">Differential expression analysis</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Differential Expression Analysis</h1>
+<h4 class="author">UM Bioinformatics Core</h4>
+<h4 class="date">2024-09-20</h4>
+
+</div>
+
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+
+table.fig, th.fig, td.fig {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 15px;
+}
+</style>
+<div id="workflow-overview" class="section level1 unlisted unnumbered">
+<h1 class="unlisted unnumbered">Workflow Overview</h1>
+<p><br/>
+<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<br/> <br/></p>
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>Differential expression comparison is a key step to addressing the
+biological question at hand for the experiment, namely what genes might
+be contributing to the aberrant bone formation during healing that was
+observed in this experiment.</p>
+<table class="fig">
+<tr class="fig">
+<td class="fig">
+<img src="images/graphical_abstracts/graphical_abstract_diffex.png" />
+</td>
+</tr>
+<tr class="fig">
+<td class="fig">
+A. For differential expression, we consider a single cluster at a time.
+<br/> B. For the cluster of interest, the cells are partitioned into
+case vs control (or other appropriate groupings) and expression compared
+across all genes. <br/> C. Comparisons produce lists and visualizations
+of differently expressed genes across conditions.
+</td>
+</tr>
+</table>
+<p><br/></p>
+<p>As a reminder, our data includes cells isolated from issue from day 0
+(prior to injury) as controls, and days 7 and 21 post-injury as
+experimental conditions.</p>
+<p><img src="images/curriculum/experimental_design.jpg" /></p>
+<p>We already introduced DE comparisons in the <a
+href="06-MarkerVisualization.html">marker identification section of this
+workshop</a>, but here we will show how to run comparisons between
+experimental conditions for each annotated cluster.</p>
+<div id="objectives" class="section level2">
+<h2>Objectives</h2>
+<!--Add specific goals for section-->
+<ul>
+<li>Run cell-level differential expression comparisons</li>
+<li>Run sample level differential expression comparisons</li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="differential-expression" class="section level1">
+<h1>Differential Expression</h1>
+<p>For single-cell data there are generally two types approaches for
+running differential expression - either a cell-level or sample-level
+approach.</p>
+<p>For cell-level comparisons, simpler statistical methods like a t-test
+or the Wilcoxon rank-sum test or single-cell specific methods that
+models cells individually like <a
+href="https://doi.org/10.1186/s13059-015-0844-5">MAST</a> can be
+used.</p>
+<p>As mentioned earlier, many of the tools developed for bulk RNA-seq
+have been shown to have good performance for single-cell data, such as
+EdgeR or DESeq2, particularly when the count data is aggregated into
+sample-level “pseudobulk” values for each cluster <a
+href="https://www.sc-best-practices.org/conditions/differential_gene_expression.html">source</a>.</p>
+<p>As discussed in the <a
+href="https://www.sc-best-practices.org/conditions/differential_gene_expression.html">single-cell
+best practices book</a> and in the <a
+href="https://ouyanglab.com/singlecell/clust.html#sec:diffexpr">Ouyang
+Lab’s marker gene identification materials</a>, there are active
+benchmarking efforts and threshold considerations for single-cell
+data.</p>
+<!-- add more in depth model comparisons options later?
+## Model options
+
+Wilcoxon (default), DESeq2, MAST, etc.
+-->
+<div id="standard-comparisons" class="section level2">
+<h2>Standard comparisons</h2>
+<p>First we’ll run cell-level comparisons for our data for the pericyte
+cluster, starting with cells from the D21 vs D7 conditions. We’ll need
+to ensure our cells are labeled to reflect both the cluster and
+condition identities before running our comparison using
+<code>FindMarker()</code> and summarizing the results:</p>
+<!-- add UMAP with facets by groups to show what's being compared? -->
+<pre class="r"><code># set up combined label of day + celltype &amp; assign as identities
+geo_so$day.celltype = paste(geo_so$day, geo_so$cell_type, sep = &#39;_&#39;)
+# check labels
+unique(geo_so$day.celltype)</code></pre>
+<pre><code> [1] &quot;Day0_Stem Cell&quot;                &quot;Day0_Macrophage&quot;              
+ [3] &quot;Day0_Pericyte&quot;                 &quot;Day0_Hematopoietic Stem Cell&quot; 
+ [5] &quot;Day0_Dendritic Cell&quot;           &quot;Day0_CD8+ T Cell&quot;             
+ [7] &quot;Day0_Muscle Satellite Cell&quot;    &quot;Day0_Unknown&quot;                 
+ [9] &quot;Day0_Regulatory T Cell&quot;        &quot;Day0_Hematopoetic precursor&quot;  
+[11] &quot;Day21_Hematopoietic Stem Cell&quot; &quot;Day21_Dendritic Cell&quot;         
+[13] &quot;Day21_Macrophage&quot;              &quot;Day21_Stem Cell&quot;              
+[15] &quot;Day21_Pericyte&quot;                &quot;Day21_Muscle Satellite Cell&quot;  
+[17] &quot;Day21_Regulatory T Cell&quot;       &quot;Day21_Hematopoetic precursor&quot; 
+[19] &quot;Day21_Unknown&quot;                 &quot;Day21_CD8+ T Cell&quot;            
+[21] &quot;Day21_Muscle Progenitor Cell&quot;  &quot;Day7_Hematopoietic Stem Cell&quot; 
+[23] &quot;Day7_Dendritic Cell&quot;           &quot;Day7_Pericyte&quot;                
+[25] &quot;Day7_Stem Cell&quot;                &quot;Day7_Macrophage&quot;              
+[27] &quot;Day7_Muscle Progenitor Cell&quot;   &quot;Day7_CD8+ T Cell&quot;             
+[29] &quot;Day7_Regulatory T Cell&quot;        &quot;Day7_Muscle Satellite Cell&quot;   
+[31] &quot;Day7_Unknown&quot;                  &quot;Day7_Hematopoetic precursor&quot;  </code></pre>
+<pre class="r"><code># Reset cell identities to the combined condition + cluster label
+Idents(geo_so) = &#39;day.celltype&#39;
+
+# run comparison for D21 vs D0, using wilcoxon test
+de_cell_pericyte_D21_vs_D7 = FindMarkers(
+    object = geo_so,
+    slot = &#39;data&#39;, test = &#39;wilcox&#39;,
+    ident.1 = &#39;Day21_Pericyte&#39;, ident.2 = &#39;Day7_Pericyte&#39;)
+
+head(de_cell_pericyte_D21_vs_D7)</code></pre>
+<pre><code>                p_val avg_log2FC pct.1 pct.2     p_val_adj
+Prelp    0.000000e+00  2.4618522 0.736 0.225  0.000000e+00
+Fmod     0.000000e+00  2.3478790 0.851 0.442  0.000000e+00
+Gm10076  0.000000e+00 -1.2167588 0.818 0.966  0.000000e+00
+Tpt1     0.000000e+00  0.7830756 0.997 0.984  0.000000e+00
+Cilp2   2.572417e-295  5.8178344 0.355 0.012 5.264709e-291
+Wfdc1   4.579283e-292  5.5652383 0.342 0.008 9.371961e-288</code></pre>
+<pre class="r"><code># Add rownames as a column for output
+de_cell_pericyte_D21_vs_D7$gene = rownames(de_cell_pericyte_D21_vs_D7)
+
+# summarize our results
+table(de_cell_pericyte_D21_vs_D7$p_val_adj &lt; 0.05 &amp; abs(de_cell_pericyte_D21_vs_D7$avg_log2FC) &gt; 1.5)</code></pre>
+<pre><code>
+FALSE  TRUE 
+ 9226   503 </code></pre>
+<pre class="r"><code>write_csv(de_cell_pericyte_D21_vs_D7, file = &#39;results/tables/de_standard_pericyte_D21_vs_D7.csv&#39;)</code></pre>
+<p>Note - the <code>avg_log2FC</code> threshold of 1.5 we use here are
+quite stringent as the default log2FC threshold for the function is
+0.25. However the default threshold corresponds to only a 19% difference
+in RNA levels, which is quite permissive.</p>
+<p>If there is enough time - we can also compare between cells from the
+D7 and D0 conditions.</p>
+<pre class="r"><code># run comparison for D7 vs D0, using wilcoxon test
+de_cell_pericyte_D7_vs_D0 = FindMarkers(
+    object = geo_so,
+    slot = &#39;data&#39;, test = &#39;wilcox&#39;,
+    ident.1 = &#39;Day7_Pericyte&#39;, ident.2 = &#39;Day0_Pericyte&#39;)
+
+head(de_cell_pericyte_D7_vs_D0)</code></pre>
+<pre><code>              p_val avg_log2FC pct.1 pct.2     p_val_adj
+Myoc  3.107048e-229  -7.891927 0.005 0.382 6.358885e-225
+Chad  4.253214e-215  -9.575883 0.002 0.290 8.704628e-211
+Vit   8.365220e-207  -6.393371 0.006 0.366 1.712026e-202
+Cilp2 1.424816e-186  -7.228151 0.012 0.412 2.916029e-182
+Ptx4  1.895882e-176  -6.709085 0.004 0.290 3.880112e-172
+Hmcn2 8.241405e-174  -6.519140 0.009 0.366 1.686686e-169</code></pre>
+<pre class="r"><code># Add rownames as a column for output
+de_cell_pericyte_D7_vs_D0$gene = rownames(de_cell_pericyte_D7_vs_D0)
+
+# summarize results
+table(de_cell_pericyte_D7_vs_D0$p_val_adj &lt; 0.05 &amp; abs(de_cell_pericyte_D7_vs_D0$avg_log2FC) &gt; 1.5)</code></pre>
+<pre><code>
+FALSE  TRUE 
+10339  1200 </code></pre>
+<p>This same approach can be extended to run pairwise comparisons
+between conditions for each annotated cluster of interest.</p>
+<!-- add code to loop through all clusters and generate comparisons -->
+</div>
+<div id="pseudobulk-comparisons" class="section level2">
+<h2>Pseudobulk comparisons</h2>
+<!-- [10x analysis guide for differential expression with biological replicates](https://www.10xgenomics.com/analysis-guides/differential-gene-expression-analysis-in-scrna-seq-data-between-conditions-with-biological-replicates) -->
+<!-- [Ouyang](https://ouyanglab.com/singlecell/clust.html#sec:diffexpr) For (ii), single-cell studies are now more complex, often including samples from multiple donors. It is possible that there are more cells being profiled from a specific donor than others and this can skew the DE results. For example, consider a study where there are three diseased samples (D1,D2,D3) and three healthy samples (H1,H2,H3_ and there are a lot more cells from sample D1. In this scenario, a gene that is specifically expressed in D1 may be identified as differentially expressed when comparing diseased and healthy single-cells. In fact, Squair et al. have shown that ignoring biological replicates can often result in false discoveries in single-cell DE (Squair et al. 2021). To circumvent this, Squair et al. suggested the use of pseudo-bulk profiles where the single-cell profiles from each individual is being collected and then subjected to bulk RNA-seq based DE methods. Another possible approach is to downsample the number of single cells such that each individual have roughly a similar number of cells. -->
+<p>With advances in the technology as well as decreased sequencing costs
+allowing for larger scale single-cell experiments (that include
+replicates), along with a study by <a
+href="https://www.nature.com/articles/s41467-021-25960-2">Squair et al
+(2021)</a> that highlighted the possibility of inflated false discovery
+rates for the cell-level approaches since cells isolated from the same
+sample are unlikely to be statistically independent <a
+href="https://www.sc-best-practices.org/conditions/differential_gene_expression.html">source</a>
+the use of sample-level or “psuedobulk” can be advantageous.</p>
+<!-- add UMAP with facets by sample to show what's being compared? -->
+<p>We’ll run psuedobulk comparisons for our data for the monocyte
+cluster, starting with the D21 vs D0 conditions. We’ll need to generate
+the aggregated counts first (ensuring that we are grouping cells by
+replicate labels), before labeling the cells to reflect the cluster and
+condition. Then we will run our comparison using
+<code>FindMarker()</code> but specifying DESeq2 as our method before
+summarizing the results:</p>
+<pre class="r"><code># Create pseudobulk 
+pseudo_catch_so = AggregateExpression(geo_so, assays = &#39;RNA&#39;, return.seurat = TRUE, group.by = c(&#39;cell_type&#39;, &#39;day&#39;, &#39;replicate&#39;))
+
+# Set up labels to use for comparisons &amp; assign as cell identities
+pseudo_catch_so$day.celltype = paste(pseudo_catch_so$day, pseudo_catch_so$cell_type, sep = &#39;_&#39;)
+Idents(pseudo_catch_so) = &#39;day.celltype&#39;
+
+# Run pseudobulk comparison between Day 21 and Day 0, using DESeq2
+de_pseudo_pericyte_D21_vs_D7 = FindMarkers(
+    object = pseudo_catch_so, 
+    ident.1 = &#39;Day21_Pericyte&#39;, ident.2 = &#39;Day7_Pericyte&#39;, 
+    test.use = &#39;DESeq2&#39;)
+
+# Take a look at the table
+head(de_pseudo_pericyte_D21_vs_D7)</code></pre>
+<pre><code>               p_val avg_log2FC pct.1 pct.2     p_val_adj
+Cilp2  1.971538e-247  4.8995439     1     1 5.222408e-243
+Cd55   8.094150e-143  1.4764380     1     1 2.144059e-138
+Ltbp4  2.302440e-102  1.3481250     1     1  6.098932e-98
+Prelp   1.287181e-96  1.7399832     1     1  3.409613e-92
+Lamb2   1.272952e-89  0.5651106     1     1  3.371923e-85
+H2-Ab1  2.863968e-86 -3.9988630     1     1  7.586366e-82</code></pre>
+<pre class="r"><code># Add rownames as a column for output
+de_pseudo_pericyte_D21_vs_D7$gene = rownames(de_pseudo_pericyte_D21_vs_D7)
+
+# look at results, using the same thresholds
+table(de_pseudo_pericyte_D21_vs_D7$p_val_adj &lt; 0.05 &amp; abs(de_pseudo_pericyte_D21_vs_D7$avg_log2FC) &gt; 1.5)</code></pre>
+<pre><code>
+FALSE  TRUE 
+23136   940 </code></pre>
+<pre class="r"><code># output results
+write_csv(de_pseudo_pericyte_D21_vs_D7, file = &#39;results/tables/de_pseudo_pericyte_D21_vs_D7.csv&#39;)</code></pre>
+<p>Since we’re working with pseudobulk data, unlike in the marker
+identification section, there is no percentage of cells expressing to
+need to represent so we can summarize our DE results with a volcano
+plot:</p>
+<pre class="r"><code>pseudo_pericyte_D21_vs_D7_volcano = ggplot(de_pseudo_pericyte_D21_vs_D7, aes(x = avg_log2FC, y = -log10(p_val))) + geom_point()
+pseudo_pericyte_D21_vs_D7_volcano</code></pre>
+<p><img src="images/curriculum/08-DifferentialExpression/08-de_pseudobulk_volcano-1.png" width="816" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(filename = &#39;results/figures/volcano_de_pseudo_pericyte_D21_vs_D0.png&#39;, plot = pseudo_pericyte_D21_vs_D7_volcano, width = 7, height = 7, units = &#39;in&#39;)</code></pre>
+<!--- 
+### Iterating over all clusters
+
+Add code to generate pseudobulk results for each cluster for all Day 7 vs Day 21 comparisons
+--->
+<div id="further-examining-de-results" class="section level3">
+<h3>Further examining DE results</h3>
+<p>We can also overlay the expression of interesting differentially
+expressed genes back onto our UMAP plots to highlight the localization
+and possible function, again using the <code>FeaturePlot</code>
+function.</p>
+<pre class="r"><code>FeaturePlot(geo_so, features = &quot;Cd55&quot;, split.by = &quot;day&quot;)</code></pre>
+<p><img src="images/curriculum/08-DifferentialExpression/08-show_DE_featurePlot-1.png" width="816" style="display: block; margin: auto;" />
+So we found Cd55 based on differential expression comparison in the
+Pericyte population between Day 7 and Day 21 but in looking at the
+Feature plot of expression, we also see high expression in a subset of
+cells on Day 0. This interesting, since according to <a
+href="https://onlinelibrary.wiley.com/doi/full/10.1002/jbmr.3861">Shin
+et al (2019)</a>, CD55 regulates bone mass in mice.</p>
+<p>It also looks like there is a high percentage of expression in a
+subpopulation of the other two precursor/stem cell populations on the
+top right of our plots, which is interesting and might suggest an
+interesting subpopulation that we might try to identify, particularly
+given the role of this gene and our interest in determining why abberant
+bone can form after injury.</p>
+</div>
+</div>
+<div id="next-steps" class="section level2">
+<h2>Next steps</h2>
+<p>While looking at individual genes can reveal interesting patterns
+like in the case of Cd55, it’s not a very efficient process. So after
+running ‘standard’ and/or psuedobulk differential expression
+comparisons, we can use the same types of tools used downstream of bulk
+RNA-seq to interpret these results, such as GO term enrichment, KEGG
+pathway enrichment, and GSEA with mSigDB.</p>
+</div>
+</div>
+<div id="save-our-progress" class="section level1">
+<h1>Save our progress</h1>
+<p>We’ll save the scCATCH object. The Seurat object has not been changed
+in this module.</p>
+<pre class="r"><code>saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_integrated_final.rds&#39;)</code></pre>
+<hr />
+</div>
+<div id="downstream-approaches" class="section level1">
+<h1>Downstream approaches</h1>
+<p>Beyond differential expression within clusters and , there are many
+other possible avenues of exploration and analysis for scRNA-seq data.
+Including, but not limited to:</p>
+<ul>
+<li><p>Integration with other modalities (e.g. ATAC-seq, VDJ,
+etc.)</p></li>
+<li><p>Subclustering clusters of interest, see <a
+href="https://hbctraining.github.io/scRNA-seq_online/lessons/seurat_subclustering.html">HBC’s
+summary on subclustering</a>, <a
+href="https://satijalab.org/seurat/reference/findsubcluster">Seurat’s
+findSubcCluster documentation</a> and <a
+href="https://github.com/satijalab/seurat/issues/1883">this related
+issue thread</a></p></li>
+<li><p>Trajectory or Pseudotime analysis, see<a
+href="https://ouyanglab.com/singlecell/dimrd.html">Ouyang Lab’s
+trajectory analysis</a> or <a
+href="https://broadinstitute.github.io/2020_scWorkshop/trajectory-analysis.html">Broad
+Institute’s materials on trajectory analysis</a>, among other
+resources</p></li>
+<li><p>Cell - Cell communication network inference, see <a
+href="https://www.nature.com/articles/s41587-023-01782-z">review by Wilk
+et al (2023)</a></p></li>
+<li><p>Velocity analysis (note: not compatible with the flex probe based
+kits), see <a
+href="https://www.sc-best-practices.org/trajectories/rna_velocity.html">the
+chapter from the single-cells best practices book</a> for detailed
+theory/modeling or the <a
+href="https://pklab.med.harvard.edu/velocyto/notebooks/R/SCG71.nb.html">10x
+data vignette for velocyto</a> for a practical example in R</p></li>
+</ul>
+<p>We would recommend looking for studies in similar tissues or
+experimental questions and see what kind of approaches and tools were
+used to answer questions related to your biological question</p>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>Reviewing these results should allow us to identify genes of interest
+that are impacted by injury and in the context of the cell-types in
+which they are differentially expressed, formalize some hypotheses for
+what cell-types or biological processes might be contributing to
+aberrant bone formation.</p>
+<hr />
+<p>These materials have been adapted and extended from materials listed
+above. These are open access materials distributed under the terms of
+the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
+Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
+use, distribution, and reproduction in any medium, provided the original
+author and source are credited.</p>
+<br/> <br/>
+<hr/>
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="07-CellTypeAnnos.html">Previous
+lesson</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="workshop_wrap_up.html">Workshop Wrap
+Up</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiRGlmZmVyZW50aWFsIEV4cHJlc3Npb24gQW5hbHlzaXMiCmF1dGhvcjogIlVNIEJpb2luZm9ybWF0aWNzIENvcmUiCmRhdGU6ICJgciBTeXMuRGF0ZSgpYCIKb3V0cHV0OgogICAgICAgIGh0bWxfZG9jdW1lbnQ6CiAgICAgICAgICAgIGluY2x1ZGVzOgogICAgICAgICAgICAgICAgaW5faGVhZGVyOiBoZWFkZXIuaHRtbAogICAgICAgICAgICB0aGVtZTogcGFwZXIKICAgICAgICAgICAgdG9jOiB0cnVlCiAgICAgICAgICAgIHRvY19kZXB0aDogNAogICAgICAgICAgICB0b2NfZmxvYXQ6IHRydWUKICAgICAgICAgICAgbnVtYmVyX3NlY3Rpb25zOiBmYWxzZQogICAgICAgICAgICBmaWdfY2FwdGlvbjogdHJ1ZQogICAgICAgICAgICBtYXJrZG93bjogR0ZNCiAgICAgICAgICAgIGNvZGVfZG93bmxvYWQ6IHRydWUKLS0tCgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgpib2R5LCB0ZCB7CiAgIGZvbnQtc2l6ZTogMThweDsKfQpjb2RlLnJ7CiAgZm9udC1zaXplOiAxMnB4Owp9CnByZSB7CiAgZm9udC1zaXplOiAxMnB4Cn0KCnRhYmxlLmZpZywgdGguZmlnLCB0ZC5maWcgewogIGJvcmRlcjogMXB4IHNvbGlkIGJsYWNrOwogIGJvcmRlci1jb2xsYXBzZTogY29sbGFwc2U7CiAgcGFkZGluZzogMTVweDsKfQo8L3N0eWxlPgoKYGBge3IsIGluY2x1ZGUgPSBGQUxTRX0Kc291cmNlKCIuLi9iaW4vY2h1bmstb3B0aW9ucy5SIikKa25pdHJfZmlnX3BhdGgoIjA4LURpZmZlcmVudGlhbEV4cHJlc3Npb24vMDgtIikKYGBgCgojIFdvcmtmbG93IE92ZXJ2aWV3IHsudW5saXN0ZWQgLnVubnVtYmVyZWR9Cgo8YnIvPgo8aW1nIHNyYz0iaW1hZ2VzL3dheWZpbmRlci93YXlmaW5kZXIucG5nIiBhbHQ9IndheWZpbmRlciIgc3R5bGU9ImhlaWdodDogNDAwcHg7Ii8+Cjxici8+Cjxici8+CgojIEludHJvZHVjdGlvbgoKRGlmZmVyZW50aWFsIGV4cHJlc3Npb24gY29tcGFyaXNvbiBpcyBhIGtleSBzdGVwIHRvIGFkZHJlc3NpbmcgdGhlIGJpb2xvZ2ljYWwgcXVlc3Rpb24gYXQgaGFuZCBmb3IgdGhlIGV4cGVyaW1lbnQsIG5hbWVseSB3aGF0IGdlbmVzIG1pZ2h0IGJlIGNvbnRyaWJ1dGluZyB0byB0aGUgYWJlcnJhbnQgYm9uZSBmb3JtYXRpb24gZHVyaW5nIGhlYWxpbmcgdGhhdCB3YXMgb2JzZXJ2ZWQgaW4gdGhpcyBleHBlcmltZW50LgoKPHRhYmxlIGNsYXNzPSdmaWcnPgo8dHIgY2xhc3M9J2ZpZyc+PHRkIGNsYXNzPSdmaWcnPiFbXShpbWFnZXMvZ3JhcGhpY2FsX2Fic3RyYWN0cy9ncmFwaGljYWxfYWJzdHJhY3RfZGlmZmV4LnBuZyk8L3RkPjwvdHI+Cjx0ciBjbGFzcz0nZmlnJz48dGQgY2xhc3M9J2ZpZyc+QS4gRm9yIGRpZmZlcmVudGlhbCBleHByZXNzaW9uLCB3ZSBjb25zaWRlciBhIHNpbmdsZSBjbHVzdGVyIGF0IGEgdGltZS4gPGJyLz4KQi4gRm9yIHRoZSBjbHVzdGVyIG9mIGludGVyZXN0LCB0aGUgY2VsbHMgYXJlIHBhcnRpdGlvbmVkIGludG8gY2FzZSB2cyBjb250cm9sIChvciBvdGhlciBhcHByb3ByaWF0ZSBncm91cGluZ3MpIGFuZCBleHByZXNzaW9uIGNvbXBhcmVkIGFjcm9zcyBhbGwgZ2VuZXMuIDxici8+CkMuIENvbXBhcmlzb25zIHByb2R1Y2UgbGlzdHMgYW5kIHZpc3VhbGl6YXRpb25zIG9mIGRpZmZlcmVudGx5IGV4cHJlc3NlZCBnZW5lcyBhY3Jvc3MgY29uZGl0aW9ucy4KPC90ZD48L3RyPgo8L3RhYmxlPgo8YnIvPgoKQXMgYSByZW1pbmRlciwgb3VyIGRhdGEgaW5jbHVkZXMgY2VsbHMgaXNvbGF0ZWQgZnJvbSBpc3N1ZSBmcm9tIGRheSAwIChwcmlvciB0byBpbmp1cnkpIGFzIGNvbnRyb2xzLCBhbmQgZGF5cyA3IGFuZCAyMSBwb3N0LWluanVyeSBhcyBleHBlcmltZW50YWwgY29uZGl0aW9ucy4KCiFbXSguL2ltYWdlcy9jdXJyaWN1bHVtL2V4cGVyaW1lbnRhbF9kZXNpZ24uanBnKQoKV2UgYWxyZWFkeSBpbnRyb2R1Y2VkIERFIGNvbXBhcmlzb25zIGluIHRoZSBbbWFya2VyIGlkZW50aWZpY2F0aW9uIHNlY3Rpb24gb2YgdGhpcyB3b3Jrc2hvcF0oMDYtTWFya2VyVmlzdWFsaXphdGlvbi5odG1sKSwgYnV0IGhlcmUgd2Ugd2lsbCBzaG93IGhvdyB0byBydW4gY29tcGFyaXNvbnMgYmV0d2VlbiBleHBlcmltZW50YWwgY29uZGl0aW9ucyBmb3IgZWFjaCBhbm5vdGF0ZWQgY2x1c3Rlci4KCiMjIE9iamVjdGl2ZXMKCjwhLS1BZGQgc3BlY2lmaWMgZ29hbHMgZm9yIHNlY3Rpb24tLT4KLSBSdW4gY2VsbC1sZXZlbCBkaWZmZXJlbnRpYWwgZXhwcmVzc2lvbiBjb21wYXJpc29ucwotIFJ1biBzYW1wbGUgbGV2ZWwgZGlmZmVyZW50aWFsIGV4cHJlc3Npb24gY29tcGFyaXNvbnMKCi0tLS0KCmBgYHtyLCByZWFkX3Jkc19oaWRkZW4sIGVjaG8gPSBGQUxTRSwgd2FybmluZyA9IEZBTFNFLCBtZXNzYWdlID0gRkFMU0V9CmlmKCFleGlzdHMoJ2dlb19zbycpKSB7CiAgbGlicmFyeShTZXVyYXQpCiAgbGlicmFyeShCUENlbGxzKQogIGxpYnJhcnkodGlkeXZlcnNlKQoKICBvcHRpb25zKGZ1dHVyZS5nbG9iYWxzLm1heFNpemUgPSAxZTkpCgogIGdlb19zbyA9IHJlYWRSRFMoJ3Jlc3VsdHMvcmRhdGEvZ2VvX3NvX3NjdF9pbnRlZ3JhdGVkX3dpdGhfY2F0Y2gucmRzJykKfQpgYGAKCiMgRGlmZmVyZW50aWFsIEV4cHJlc3Npb24KCkZvciBzaW5nbGUtY2VsbCBkYXRhIHRoZXJlIGFyZSBnZW5lcmFsbHkgdHdvIHR5cGVzIGFwcHJvYWNoZXMgZm9yIHJ1bm5pbmcgZGlmZmVyZW50aWFsIGV4cHJlc3Npb24gLSBlaXRoZXIgYSBjZWxsLWxldmVsIG9yIHNhbXBsZS1sZXZlbCBhcHByb2FjaC4gCgpGb3IgY2VsbC1sZXZlbCBjb21wYXJpc29ucywgc2ltcGxlciBzdGF0aXN0aWNhbCBtZXRob2RzIGxpa2UgYSB0LXRlc3Qgb3IgdGhlIFdpbGNveG9uIHJhbmstc3VtIHRlc3Qgb3Igc2luZ2xlLWNlbGwgc3BlY2lmaWMgbWV0aG9kcyB0aGF0IG1vZGVscyBjZWxscyBpbmRpdmlkdWFsbHkgbGlrZSBbTUFTVF0oaHR0cHM6Ly9kb2kub3JnLzEwLjExODYvczEzMDU5LTAxNS0wODQ0LTUpIGNhbiBiZSB1c2VkLiAKCkFzIG1lbnRpb25lZCBlYXJsaWVyLCBtYW55IG9mIHRoZSB0b29scyBkZXZlbG9wZWQgZm9yIGJ1bGsgUk5BLXNlcSBoYXZlIGJlZW4gc2hvd24gdG8gaGF2ZSBnb29kIHBlcmZvcm1hbmNlIGZvciBzaW5nbGUtY2VsbCBkYXRhLCBzdWNoIGFzIEVkZ2VSIG9yIERFU2VxMiwgcGFydGljdWxhcmx5IHdoZW4gdGhlIGNvdW50IGRhdGEgaXMgYWdncmVnYXRlZCBpbnRvIHNhbXBsZS1sZXZlbCAicHNldWRvYnVsayIgdmFsdWVzIGZvciBlYWNoIGNsdXN0ZXIgW3NvdXJjZV0oaHR0cHM6Ly93d3cuc2MtYmVzdC1wcmFjdGljZXMub3JnL2NvbmRpdGlvbnMvZGlmZmVyZW50aWFsX2dlbmVfZXhwcmVzc2lvbi5odG1sKS4gCgpBcyBkaXNjdXNzZWQgaW4gdGhlIFtzaW5nbGUtY2VsbCBiZXN0IHByYWN0aWNlcyBib29rXShodHRwczovL3d3dy5zYy1iZXN0LXByYWN0aWNlcy5vcmcvY29uZGl0aW9ucy9kaWZmZXJlbnRpYWxfZ2VuZV9leHByZXNzaW9uLmh0bWwpIGFuZCBpbiB0aGUgW091eWFuZyBMYWIncyBtYXJrZXIgZ2VuZSBpZGVudGlmaWNhdGlvbiBtYXRlcmlhbHNdKGh0dHBzOi8vb3V5YW5nbGFiLmNvbS9zaW5nbGVjZWxsL2NsdXN0Lmh0bWwjc2VjOmRpZmZleHByKSwgdGhlcmUgYXJlIGFjdGl2ZSBiZW5jaG1hcmtpbmcgZWZmb3J0cyBhbmQgdGhyZXNob2xkIGNvbnNpZGVyYXRpb25zIGZvciBzaW5nbGUtY2VsbCBkYXRhLgoKPCEtLSBhZGQgbW9yZSBpbiBkZXB0aCBtb2RlbCBjb21wYXJpc29ucyBvcHRpb25zIGxhdGVyPwojIyBNb2RlbCBvcHRpb25zCgpXaWxjb3hvbiAoZGVmYXVsdCksIERFU2VxMiwgTUFTVCwgZXRjLgotLT4KCiMjIFN0YW5kYXJkIGNvbXBhcmlzb25zCgpGaXJzdCB3ZSdsbCBydW4gY2VsbC1sZXZlbCBjb21wYXJpc29ucyBmb3Igb3VyIGRhdGEgZm9yIHRoZSBwZXJpY3l0ZSBjbHVzdGVyLCBzdGFydGluZyB3aXRoIGNlbGxzIGZyb20gdGhlIEQyMSB2cyBENyBjb25kaXRpb25zLiBXZSdsbCBuZWVkIHRvIGVuc3VyZSBvdXIgY2VsbHMgYXJlIGxhYmVsZWQgdG8gcmVmbGVjdCBib3RoIHRoZSBjbHVzdGVyIGFuZCBjb25kaXRpb24gaWRlbnRpdGllcyBiZWZvcmUgcnVubmluZyBvdXIgY29tcGFyaXNvbiB1c2luZyBgRmluZE1hcmtlcigpYCBhbmQgc3VtbWFyaXppbmcgdGhlIHJlc3VsdHM6Cgo8IS0tIGFkZCBVTUFQIHdpdGggZmFjZXRzIGJ5IGdyb3VwcyB0byBzaG93IHdoYXQncyBiZWluZyBjb21wYXJlZD8gLS0+CgpgYGB7ciwgZGVfd2lsY294MSwgbWVzc2FnZSA9IEZBTFNFLCB3YXJuaW5nID0gRkFMU0V9CiMgc2V0IHVwIGNvbWJpbmVkIGxhYmVsIG9mIGRheSArIGNlbGx0eXBlICYgYXNzaWduIGFzIGlkZW50aXRpZXMKZ2VvX3NvJGRheS5jZWxsdHlwZSA9IHBhc3RlKGdlb19zbyRkYXksIGdlb19zbyRjZWxsX3R5cGUsIHNlcCA9ICdfJykKIyBjaGVjayBsYWJlbHMKdW5pcXVlKGdlb19zbyRkYXkuY2VsbHR5cGUpCgojIFJlc2V0IGNlbGwgaWRlbnRpdGllcyB0byB0aGUgY29tYmluZWQgY29uZGl0aW9uICsgY2x1c3RlciBsYWJlbApJZGVudHMoZ2VvX3NvKSA9ICdkYXkuY2VsbHR5cGUnCgojIHJ1biBjb21wYXJpc29uIGZvciBEMjEgdnMgRDAsIHVzaW5nIHdpbGNveG9uIHRlc3QKZGVfY2VsbF9wZXJpY3l0ZV9EMjFfdnNfRDcgPSBGaW5kTWFya2VycygKICAgIG9iamVjdCA9IGdlb19zbywKICAgIHNsb3QgPSAnZGF0YScsIHRlc3QgPSAnd2lsY294JywKICAgIGlkZW50LjEgPSAnRGF5MjFfUGVyaWN5dGUnLCBpZGVudC4yID0gJ0RheTdfUGVyaWN5dGUnKQoKaGVhZChkZV9jZWxsX3BlcmljeXRlX0QyMV92c19ENykKCiMgQWRkIHJvd25hbWVzIGFzIGEgY29sdW1uIGZvciBvdXRwdXQKZGVfY2VsbF9wZXJpY3l0ZV9EMjFfdnNfRDckZ2VuZSA9IHJvd25hbWVzKGRlX2NlbGxfcGVyaWN5dGVfRDIxX3ZzX0Q3KQoKIyBzdW1tYXJpemUgb3VyIHJlc3VsdHMKdGFibGUoZGVfY2VsbF9wZXJpY3l0ZV9EMjFfdnNfRDckcF92YWxfYWRqIDwgMC4wNSAmIGFicyhkZV9jZWxsX3BlcmljeXRlX0QyMV92c19ENyRhdmdfbG9nMkZDKSA+IDEuNSkKCndyaXRlX2NzdihkZV9jZWxsX3BlcmljeXRlX0QyMV92c19ENywgZmlsZSA9ICdyZXN1bHRzL3RhYmxlcy9kZV9zdGFuZGFyZF9wZXJpY3l0ZV9EMjFfdnNfRDcuY3N2JykKYGBgCgpOb3RlIC0gdGhlIGBhdmdfbG9nMkZDYCB0aHJlc2hvbGQgb2YgMS41IHdlIHVzZSBoZXJlIGFyZSBxdWl0ZSBzdHJpbmdlbnQgYXMgdGhlIGRlZmF1bHQgbG9nMkZDIHRocmVzaG9sZCBmb3IgdGhlIGZ1bmN0aW9uIGlzIDAuMjUuIEhvd2V2ZXIgdGhlIGRlZmF1bHQgdGhyZXNob2xkIGNvcnJlc3BvbmRzIHRvIG9ubHkgYSAxOSUgZGlmZmVyZW5jZSBpbiBSTkEgbGV2ZWxzLCB3aGljaCBpcyBxdWl0ZSBwZXJtaXNzaXZlLiAKCklmIHRoZXJlIGlzIGVub3VnaCB0aW1lIC0gd2UgY2FuIGFsc28gY29tcGFyZSBiZXR3ZWVuIGNlbGxzIGZyb20gdGhlIEQ3IGFuZCBEMCBjb25kaXRpb25zLgoKYGBge3IsIGRlX3dpbGNveDIsIG1lc3NhZ2UgPSBGQUxTRSwgd2FybmluZyA9IEZBTFNFfQojIHJ1biBjb21wYXJpc29uIGZvciBENyB2cyBEMCwgdXNpbmcgd2lsY294b24gdGVzdApkZV9jZWxsX3BlcmljeXRlX0Q3X3ZzX0QwID0gRmluZE1hcmtlcnMoCiAgICBvYmplY3QgPSBnZW9fc28sCiAgICBzbG90ID0gJ2RhdGEnLCB0ZXN0ID0gJ3dpbGNveCcsCiAgICBpZGVudC4xID0gJ0RheTdfUGVyaWN5dGUnLCBpZGVudC4yID0gJ0RheTBfUGVyaWN5dGUnKQoKaGVhZChkZV9jZWxsX3BlcmljeXRlX0Q3X3ZzX0QwKQoKIyBBZGQgcm93bmFtZXMgYXMgYSBjb2x1bW4gZm9yIG91dHB1dApkZV9jZWxsX3BlcmljeXRlX0Q3X3ZzX0QwJGdlbmUgPSByb3duYW1lcyhkZV9jZWxsX3BlcmljeXRlX0Q3X3ZzX0QwKQoKIyBzdW1tYXJpemUgcmVzdWx0cwp0YWJsZShkZV9jZWxsX3BlcmljeXRlX0Q3X3ZzX0QwJHBfdmFsX2FkaiA8IDAuMDUgJiBhYnMoZGVfY2VsbF9wZXJpY3l0ZV9EN192c19EMCRhdmdfbG9nMkZDKSA+IDEuNSkKYGBgCgpUaGlzIHNhbWUgYXBwcm9hY2ggY2FuIGJlIGV4dGVuZGVkIHRvIHJ1biBwYWlyd2lzZSBjb21wYXJpc29ucyBiZXR3ZWVuIGNvbmRpdGlvbnMgZm9yIGVhY2ggYW5ub3RhdGVkIGNsdXN0ZXIgb2YgaW50ZXJlc3QuCgo8IS0tIGFkZCBjb2RlIHRvIGxvb3AgdGhyb3VnaCBhbGwgY2x1c3RlcnMgYW5kIGdlbmVyYXRlIGNvbXBhcmlzb25zIC0tPgoKIyMgUHNldWRvYnVsayBjb21wYXJpc29ucwoKPCEtLSBbMTB4IGFuYWx5c2lzIGd1aWRlIGZvciBkaWZmZXJlbnRpYWwgZXhwcmVzc2lvbiB3aXRoIGJpb2xvZ2ljYWwgcmVwbGljYXRlc10oaHR0cHM6Ly93d3cuMTB4Z2Vub21pY3MuY29tL2FuYWx5c2lzLWd1aWRlcy9kaWZmZXJlbnRpYWwtZ2VuZS1leHByZXNzaW9uLWFuYWx5c2lzLWluLXNjcm5hLXNlcS1kYXRhLWJldHdlZW4tY29uZGl0aW9ucy13aXRoLWJpb2xvZ2ljYWwtcmVwbGljYXRlcykgLS0+Cgo8IS0tIFtPdXlhbmddKGh0dHBzOi8vb3V5YW5nbGFiLmNvbS9zaW5nbGVjZWxsL2NsdXN0Lmh0bWwjc2VjOmRpZmZleHByKSBGb3IgKGlpKSwgc2luZ2xlLWNlbGwgc3R1ZGllcyBhcmUgbm93IG1vcmUgY29tcGxleCwgb2Z0ZW4gaW5jbHVkaW5nIHNhbXBsZXMgZnJvbSBtdWx0aXBsZSBkb25vcnMuIEl0IGlzIHBvc3NpYmxlIHRoYXQgdGhlcmUgYXJlIG1vcmUgY2VsbHMgYmVpbmcgcHJvZmlsZWQgZnJvbSBhIHNwZWNpZmljIGRvbm9yIHRoYW4gb3RoZXJzIGFuZCB0aGlzIGNhbiBza2V3IHRoZSBERSByZXN1bHRzLiBGb3IgZXhhbXBsZSwgY29uc2lkZXIgYSBzdHVkeSB3aGVyZSB0aGVyZSBhcmUgdGhyZWUgZGlzZWFzZWQgc2FtcGxlcyAoRDEsRDIsRDMpIGFuZCB0aHJlZSBoZWFsdGh5IHNhbXBsZXMgKEgxLEgyLEgzXyBhbmQgdGhlcmUgYXJlIGEgbG90IG1vcmUgY2VsbHMgZnJvbSBzYW1wbGUgRDEuIEluIHRoaXMgc2NlbmFyaW8sIGEgZ2VuZSB0aGF0IGlzIHNwZWNpZmljYWxseSBleHByZXNzZWQgaW4gRDEgbWF5IGJlIGlkZW50aWZpZWQgYXMgZGlmZmVyZW50aWFsbHkgZXhwcmVzc2VkIHdoZW4gY29tcGFyaW5nIGRpc2Vhc2VkIGFuZCBoZWFsdGh5IHNpbmdsZS1jZWxscy4gSW4gZmFjdCwgU3F1YWlyIGV0IGFsLiBoYXZlIHNob3duIHRoYXQgaWdub3JpbmcgYmlvbG9naWNhbCByZXBsaWNhdGVzIGNhbiBvZnRlbiByZXN1bHQgaW4gZmFsc2UgZGlzY292ZXJpZXMgaW4gc2luZ2xlLWNlbGwgREUgKFNxdWFpciBldCBhbC4gMjAyMSkuIFRvIGNpcmN1bXZlbnQgdGhpcywgU3F1YWlyIGV0IGFsLiBzdWdnZXN0ZWQgdGhlIHVzZSBvZiBwc2V1ZG8tYnVsayBwcm9maWxlcyB3aGVyZSB0aGUgc2luZ2xlLWNlbGwgcHJvZmlsZXMgZnJvbSBlYWNoIGluZGl2aWR1YWwgaXMgYmVpbmcgY29sbGVjdGVkIGFuZCB0aGVuIHN1YmplY3RlZCB0byBidWxrIFJOQS1zZXEgYmFzZWQgREUgbWV0aG9kcy4gQW5vdGhlciBwb3NzaWJsZSBhcHByb2FjaCBpcyB0byBkb3duc2FtcGxlIHRoZSBudW1iZXIgb2Ygc2luZ2xlIGNlbGxzIHN1Y2ggdGhhdCBlYWNoIGluZGl2aWR1YWwgaGF2ZSByb3VnaGx5IGEgc2ltaWxhciBudW1iZXIgb2YgY2VsbHMuIC0tPgoKV2l0aCBhZHZhbmNlcyBpbiB0aGUgdGVjaG5vbG9neSBhcyB3ZWxsIGFzIGRlY3JlYXNlZCBzZXF1ZW5jaW5nIGNvc3RzIGFsbG93aW5nIGZvciBsYXJnZXIgc2NhbGUgc2luZ2xlLWNlbGwgZXhwZXJpbWVudHMgKHRoYXQgaW5jbHVkZSByZXBsaWNhdGVzKSwgYWxvbmcgd2l0aCBhIHN0dWR5IGJ5IFtTcXVhaXIgZXQgYWwgKDIwMjEpXShodHRwczovL3d3dy5uYXR1cmUuY29tL2FydGljbGVzL3M0MTQ2Ny0wMjEtMjU5NjAtMikgdGhhdCBoaWdobGlnaHRlZCB0aGUgcG9zc2liaWxpdHkgb2YgaW5mbGF0ZWQgZmFsc2UgZGlzY292ZXJ5IHJhdGVzIGZvciB0aGUgY2VsbC1sZXZlbCBhcHByb2FjaGVzIHNpbmNlIGNlbGxzIGlzb2xhdGVkIGZyb20gdGhlIHNhbWUgc2FtcGxlIGFyZSB1bmxpa2VseSB0byBiZSBzdGF0aXN0aWNhbGx5IGluZGVwZW5kZW50IFtzb3VyY2VdKGh0dHBzOi8vd3d3LnNjLWJlc3QtcHJhY3RpY2VzLm9yZy9jb25kaXRpb25zL2RpZmZlcmVudGlhbF9nZW5lX2V4cHJlc3Npb24uaHRtbCkgdGhlIHVzZSBvZiBzYW1wbGUtbGV2ZWwgb3IgInBzdWVkb2J1bGsiIGNhbiBiZSBhZHZhbnRhZ2VvdXMuIAoKPCEtLSBhZGQgVU1BUCB3aXRoIGZhY2V0cyBieSBzYW1wbGUgdG8gc2hvdyB3aGF0J3MgYmVpbmcgY29tcGFyZWQ/IC0tPgoKV2UnbGwgcnVuIHBzdWVkb2J1bGsgY29tcGFyaXNvbnMgZm9yIG91ciBkYXRhIGZvciB0aGUgbW9ub2N5dGUgY2x1c3Rlciwgc3RhcnRpbmcgd2l0aCB0aGUgRDIxIHZzIEQwIGNvbmRpdGlvbnMuIFdlJ2xsIG5lZWQgdG8gZ2VuZXJhdGUgdGhlIGFnZ3JlZ2F0ZWQgY291bnRzIGZpcnN0IChlbnN1cmluZyB0aGF0IHdlIGFyZSBncm91cGluZyBjZWxscyBieSByZXBsaWNhdGUgbGFiZWxzKSwgYmVmb3JlIGxhYmVsaW5nIHRoZSBjZWxscyB0byByZWZsZWN0IHRoZSBjbHVzdGVyIGFuZCBjb25kaXRpb24uIFRoZW4gd2Ugd2lsbCBydW4gb3VyIGNvbXBhcmlzb24gdXNpbmcgYEZpbmRNYXJrZXIoKWAgYnV0IHNwZWNpZnlpbmcgREVTZXEyIGFzIG91ciBtZXRob2QgYmVmb3JlIHN1bW1hcml6aW5nIHRoZSByZXN1bHRzOgoKYGBge3IsIGRlX3BzZXVkb2J1bGssIG1lc3NhZ2UgPSBGQUxTRSwgd2FybmluZyA9IEZBTFNFfQojIENyZWF0ZSBwc2V1ZG9idWxrIApwc2V1ZG9fY2F0Y2hfc28gPSBBZ2dyZWdhdGVFeHByZXNzaW9uKGdlb19zbywgYXNzYXlzID0gJ1JOQScsIHJldHVybi5zZXVyYXQgPSBUUlVFLCBncm91cC5ieSA9IGMoJ2NlbGxfdHlwZScsICdkYXknLCAncmVwbGljYXRlJykpCgojIFNldCB1cCBsYWJlbHMgdG8gdXNlIGZvciBjb21wYXJpc29ucyAmIGFzc2lnbiBhcyBjZWxsIGlkZW50aXRpZXMKcHNldWRvX2NhdGNoX3NvJGRheS5jZWxsdHlwZSA9IHBhc3RlKHBzZXVkb19jYXRjaF9zbyRkYXksIHBzZXVkb19jYXRjaF9zbyRjZWxsX3R5cGUsIHNlcCA9ICdfJykKSWRlbnRzKHBzZXVkb19jYXRjaF9zbykgPSAnZGF5LmNlbGx0eXBlJwoKIyBSdW4gcHNldWRvYnVsayBjb21wYXJpc29uIGJldHdlZW4gRGF5IDIxIGFuZCBEYXkgMCwgdXNpbmcgREVTZXEyCmRlX3BzZXVkb19wZXJpY3l0ZV9EMjFfdnNfRDcgPSBGaW5kTWFya2VycygKICAgIG9iamVjdCA9IHBzZXVkb19jYXRjaF9zbywgCiAgICBpZGVudC4xID0gJ0RheTIxX1BlcmljeXRlJywgaWRlbnQuMiA9ICdEYXk3X1BlcmljeXRlJywgCiAgICB0ZXN0LnVzZSA9ICdERVNlcTInKQoKIyBUYWtlIGEgbG9vayBhdCB0aGUgdGFibGUKaGVhZChkZV9wc2V1ZG9fcGVyaWN5dGVfRDIxX3ZzX0Q3KQoKIyBBZGQgcm93bmFtZXMgYXMgYSBjb2x1bW4gZm9yIG91dHB1dApkZV9wc2V1ZG9fcGVyaWN5dGVfRDIxX3ZzX0Q3JGdlbmUgPSByb3duYW1lcyhkZV9wc2V1ZG9fcGVyaWN5dGVfRDIxX3ZzX0Q3KQoKIyBsb29rIGF0IHJlc3VsdHMsIHVzaW5nIHRoZSBzYW1lIHRocmVzaG9sZHMKdGFibGUoZGVfcHNldWRvX3BlcmljeXRlX0QyMV92c19ENyRwX3ZhbF9hZGogPCAwLjA1ICYgYWJzKGRlX3BzZXVkb19wZXJpY3l0ZV9EMjFfdnNfRDckYXZnX2xvZzJGQykgPiAxLjUpCgojIG91dHB1dCByZXN1bHRzCndyaXRlX2NzdihkZV9wc2V1ZG9fcGVyaWN5dGVfRDIxX3ZzX0Q3LCBmaWxlID0gJ3Jlc3VsdHMvdGFibGVzL2RlX3BzZXVkb19wZXJpY3l0ZV9EMjFfdnNfRDcuY3N2JykKYGBgCgoKU2luY2Ugd2UncmUgd29ya2luZyB3aXRoIHBzZXVkb2J1bGsgZGF0YSwgdW5saWtlIGluIHRoZSBtYXJrZXIgaWRlbnRpZmljYXRpb24gc2VjdGlvbiwgdGhlcmUgaXMgbm8gcGVyY2VudGFnZSBvZiBjZWxscyBleHByZXNzaW5nIHRvIG5lZWQgdG8gcmVwcmVzZW50IHNvIHdlIGNhbiBzdW1tYXJpemUgb3VyIERFIHJlc3VsdHMgd2l0aCBhIHZvbGNhbm8gcGxvdDoKCmBgYHtyLCBkZV9wc2V1ZG9idWxrX3ZvbGNhbm8sIHdhcm5pbmcgPSBGQUxTRSwgbWVzc2FnZSA9IEZBTFNFfQpwc2V1ZG9fcGVyaWN5dGVfRDIxX3ZzX0Q3X3ZvbGNhbm8gPSBnZ3Bsb3QoZGVfcHNldWRvX3BlcmljeXRlX0QyMV92c19ENywgYWVzKHggPSBhdmdfbG9nMkZDLCB5ID0gLWxvZzEwKHBfdmFsKSkpICsgZ2VvbV9wb2ludCgpCnBzZXVkb19wZXJpY3l0ZV9EMjFfdnNfRDdfdm9sY2FubwoKZ2dzYXZlKGZpbGVuYW1lID0gJ3Jlc3VsdHMvZmlndXJlcy92b2xjYW5vX2RlX3BzZXVkb19wZXJpY3l0ZV9EMjFfdnNfRDAucG5nJywgcGxvdCA9IHBzZXVkb19wZXJpY3l0ZV9EMjFfdnNfRDdfdm9sY2Fubywgd2lkdGggPSA3LCBoZWlnaHQgPSA3LCB1bml0cyA9ICdpbicpCmBgYAo8IS0tLSAKIyMjIEl0ZXJhdGluZyBvdmVyIGFsbCBjbHVzdGVycwoKQWRkIGNvZGUgdG8gZ2VuZXJhdGUgcHNldWRvYnVsayByZXN1bHRzIGZvciBlYWNoIGNsdXN0ZXIgZm9yIGFsbCBEYXkgNyB2cyBEYXkgMjEgY29tcGFyaXNvbnMKLS0tPgoKIyMjIEZ1cnRoZXIgZXhhbWluaW5nIERFIHJlc3VsdHMKCldlIGNhbiBhbHNvIG92ZXJsYXkgdGhlIGV4cHJlc3Npb24gb2YgaW50ZXJlc3RpbmcgZGlmZmVyZW50aWFsbHkgZXhwcmVzc2VkIGdlbmVzIGJhY2sgb250byBvdXIgVU1BUCBwbG90cyB0byBoaWdobGlnaHQgdGhlIGxvY2FsaXphdGlvbiBhbmQgcG9zc2libGUgZnVuY3Rpb24sIGFnYWluIHVzaW5nIHRoZSBgRmVhdHVyZVBsb3RgIGZ1bmN0aW9uLiAKCmBgYHtyLCBzaG93X0RFX2ZlYXR1cmVQbG90LCB3YXJuaW5nID0gRkFMU0UsIG1lc3NhZ2UgPSBGQUxTRX0KRmVhdHVyZVBsb3QoZ2VvX3NvLCBmZWF0dXJlcyA9ICJDZDU1Iiwgc3BsaXQuYnkgPSAiZGF5IikKYGBgClNvIHdlIGZvdW5kIENkNTUgYmFzZWQgb24gZGlmZmVyZW50aWFsIGV4cHJlc3Npb24gY29tcGFyaXNvbiBpbiB0aGUgUGVyaWN5dGUgcG9wdWxhdGlvbiBiZXR3ZWVuIERheSA3IGFuZCBEYXkgMjEgYnV0IGluIGxvb2tpbmcgYXQgdGhlIEZlYXR1cmUgcGxvdCBvZiBleHByZXNzaW9uLCB3ZSBhbHNvIHNlZSBoaWdoIGV4cHJlc3Npb24gaW4gYSBzdWJzZXQgb2YgY2VsbHMgb24gRGF5IDAuIFRoaXMgaW50ZXJlc3RpbmcsIHNpbmNlIGFjY29yZGluZyB0byBbU2hpbiBldCBhbCAoMjAxOSldKGh0dHBzOi8vb25saW5lbGlicmFyeS53aWxleS5jb20vZG9pL2Z1bGwvMTAuMTAwMi9qYm1yLjM4NjEpLCBDRDU1IHJlZ3VsYXRlcyBib25lIG1hc3MgaW4gbWljZS4KCkl0IGFsc28gbG9va3MgbGlrZSB0aGVyZSBpcyBhIGhpZ2ggcGVyY2VudGFnZSBvZiBleHByZXNzaW9uIGluIGEgc3VicG9wdWxhdGlvbiBvZiB0aGUgb3RoZXIgdHdvIHByZWN1cnNvci9zdGVtIGNlbGwgcG9wdWxhdGlvbnMgb24gdGhlIHRvcCByaWdodCBvZiBvdXIgcGxvdHMsIHdoaWNoIGlzIGludGVyZXN0aW5nIGFuZCBtaWdodCBzdWdnZXN0IGFuIGludGVyZXN0aW5nIHN1YnBvcHVsYXRpb24gdGhhdCB3ZSBtaWdodCB0cnkgdG8gaWRlbnRpZnksIHBhcnRpY3VsYXJseSBnaXZlbiB0aGUgcm9sZSBvZiB0aGlzIGdlbmUgYW5kIG91ciBpbnRlcmVzdCBpbiBkZXRlcm1pbmluZyB3aHkgYWJiZXJhbnQgYm9uZSBjYW4gZm9ybSBhZnRlciBpbmp1cnkuCgojIyBOZXh0IHN0ZXBzIAoKV2hpbGUgbG9va2luZyBhdCBpbmRpdmlkdWFsIGdlbmVzIGNhbiByZXZlYWwgaW50ZXJlc3RpbmcgcGF0dGVybnMgbGlrZSBpbiB0aGUgY2FzZSBvZiBDZDU1LCBpdCdzIG5vdCBhIHZlcnkgZWZmaWNpZW50IHByb2Nlc3MuIFNvIGFmdGVyIHJ1bm5pbmcgJ3N0YW5kYXJkJyBhbmQvb3IgcHN1ZWRvYnVsayBkaWZmZXJlbnRpYWwgZXhwcmVzc2lvbiBjb21wYXJpc29ucywgd2UgY2FuIHVzZSB0aGUgc2FtZSB0eXBlcyBvZiB0b29scyB1c2VkIGRvd25zdHJlYW0gb2YgYnVsayBSTkEtc2VxIHRvIGludGVycHJldCB0aGVzZSByZXN1bHRzLCBzdWNoIGFzIEdPIHRlcm0gZW5yaWNobWVudCwgS0VHRyBwYXRod2F5IGVucmljaG1lbnQsIGFuZCBHU0VBIHdpdGggbVNpZ0RCLiAKCgojIFNhdmUgb3VyIHByb2dyZXNzCgpXZSdsbCBzYXZlIHRoZSBzY0NBVENIIG9iamVjdC4gVGhlIFNldXJhdCBvYmplY3QgaGFzIG5vdCBiZWVuIGNoYW5nZWQgaW4gdGhpcyBtb2R1bGUuCgpgYGB7ciwgc2F2ZV9yZHNfaGlkZGVuLCBlY2hvID0gRkFMU0V9CmlmKCFmaWxlLmV4aXN0cygncmVzdWx0cy9yZGF0YS9nZW9fc29fc2N0X2ludGVncmF0ZWRfd2l0aF9maW5hbC5yZHMnKSkgewogIHNhdmVSRFMoZ2VvX3NvLCBmaWxlID0gJ3Jlc3VsdHMvcmRhdGEvZ2VvX3NvX3NjdF9pbnRlZ3JhdGVkX2ZpbmFsLnJkcycpCn0KYGBgCgpgYGB7ciwgc2F2ZV9yZHMsIGV2YWw9RkFMU0V9CnNhdmVSRFMoZ2VvX3NvLCBmaWxlID0gJ3Jlc3VsdHMvcmRhdGEvZ2VvX3NvX3NjdF9pbnRlZ3JhdGVkX2ZpbmFsLnJkcycpCmBgYAoKLS0tCgojIERvd25zdHJlYW0gYXBwcm9hY2hlcwoKQmV5b25kIGRpZmZlcmVudGlhbCBleHByZXNzaW9uIHdpdGhpbiBjbHVzdGVycyBhbmQgLCB0aGVyZSBhcmUgbWFueSBvdGhlciBwb3NzaWJsZSBhdmVudWVzIG9mIGV4cGxvcmF0aW9uIGFuZCBhbmFseXNpcyBmb3Igc2NSTkEtc2VxIGRhdGEuIEluY2x1ZGluZywgYnV0IG5vdCBsaW1pdGVkIHRvOgoKLSBJbnRlZ3JhdGlvbiB3aXRoIG90aGVyIG1vZGFsaXRpZXMgKGUuZy4gQVRBQy1zZXEsIFZESiwgZXRjLikKCi0gU3ViY2x1c3RlcmluZyBjbHVzdGVycyBvZiBpbnRlcmVzdCwgc2VlIFtIQkMncyBzdW1tYXJ5IG9uIHN1YmNsdXN0ZXJpbmddKGh0dHBzOi8vaGJjdHJhaW5pbmcuZ2l0aHViLmlvL3NjUk5BLXNlcV9vbmxpbmUvbGVzc29ucy9zZXVyYXRfc3ViY2x1c3RlcmluZy5odG1sKSwgW1NldXJhdCdzIGZpbmRTdWJjQ2x1c3RlciBkb2N1bWVudGF0aW9uXShodHRwczovL3NhdGlqYWxhYi5vcmcvc2V1cmF0L3JlZmVyZW5jZS9maW5kc3ViY2x1c3RlcikgYW5kIFt0aGlzIHJlbGF0ZWQgaXNzdWUgdGhyZWFkXShodHRwczovL2dpdGh1Yi5jb20vc2F0aWphbGFiL3NldXJhdC9pc3N1ZXMvMTg4MykgIAoKLSBUcmFqZWN0b3J5IG9yIFBzZXVkb3RpbWUgYW5hbHlzaXMsIHNlZVtPdXlhbmcgTGFiJ3MgdHJhamVjdG9yeSBhbmFseXNpc10oaHR0cHM6Ly9vdXlhbmdsYWIuY29tL3NpbmdsZWNlbGwvZGltcmQuaHRtbCkgb3IgW0Jyb2FkIEluc3RpdHV0ZSdzIG1hdGVyaWFscyBvbiB0cmFqZWN0b3J5IGFuYWx5c2lzXShodHRwczovL2Jyb2FkaW5zdGl0dXRlLmdpdGh1Yi5pby8yMDIwX3NjV29ya3Nob3AvdHJhamVjdG9yeS1hbmFseXNpcy5odG1sKSwgYW1vbmcgb3RoZXIgcmVzb3VyY2VzICAgIAoKLSBDZWxsIC0gQ2VsbCBjb21tdW5pY2F0aW9uIG5ldHdvcmsgaW5mZXJlbmNlLCBzZWUgW3JldmlldyBieSBXaWxrIGV0IGFsICgyMDIzKV0oaHR0cHM6Ly93d3cubmF0dXJlLmNvbS9hcnRpY2xlcy9zNDE1ODctMDIzLTAxNzgyLXopCgotIFZlbG9jaXR5IGFuYWx5c2lzIChub3RlOiBub3QgY29tcGF0aWJsZSB3aXRoIHRoZSBmbGV4IHByb2JlIGJhc2VkIGtpdHMpLCBzZWUgW3RoZSBjaGFwdGVyIGZyb20gdGhlIHNpbmdsZS1jZWxscyBiZXN0IHByYWN0aWNlcyBib29rXShodHRwczovL3d3dy5zYy1iZXN0LXByYWN0aWNlcy5vcmcvdHJhamVjdG9yaWVzL3JuYV92ZWxvY2l0eS5odG1sKSBmb3IgZGV0YWlsZWQgdGhlb3J5L21vZGVsaW5nIG9yIHRoZSBbMTB4IGRhdGEgdmlnbmV0dGUgZm9yIHZlbG9jeXRvXShodHRwczovL3BrbGFiLm1lZC5oYXJ2YXJkLmVkdS92ZWxvY3l0by9ub3RlYm9va3MvUi9TQ0c3MS5uYi5odG1sKSBmb3IgYSBwcmFjdGljYWwgZXhhbXBsZSBpbiBSCgpXZSB3b3VsZCByZWNvbW1lbmQgbG9va2luZyBmb3Igc3R1ZGllcyBpbiBzaW1pbGFyIHRpc3N1ZXMgb3IgZXhwZXJpbWVudGFsIHF1ZXN0aW9ucyBhbmQgc2VlIHdoYXQga2luZCBvZiBhcHByb2FjaGVzIGFuZCB0b29scyB3ZXJlIHVzZWQgdG8gYW5zd2VyIHF1ZXN0aW9ucyByZWxhdGVkIHRvIHlvdXIgYmlvbG9naWNhbCBxdWVzdGlvbgoKIyBTdW1tYXJ5CgpSZXZpZXdpbmcgdGhlc2UgcmVzdWx0cyBzaG91bGQgYWxsb3cgdXMgdG8gaWRlbnRpZnkgZ2VuZXMgb2YgaW50ZXJlc3QgdGhhdCBhcmUgaW1wYWN0ZWQgYnkgaW5qdXJ5IGFuZCBpbiB0aGUgY29udGV4dCBvZiB0aGUgY2VsbC10eXBlcyBpbiB3aGljaCB0aGV5IGFyZSBkaWZmZXJlbnRpYWxseSBleHByZXNzZWQsIGZvcm1hbGl6ZSBzb21lIGh5cG90aGVzZXMgZm9yIHdoYXQgY2VsbC10eXBlcyBvciBiaW9sb2dpY2FsIHByb2Nlc3NlcyBtaWdodCBiZSBjb250cmlidXRpbmcgdG8gYWJlcnJhbnQgYm9uZSBmb3JtYXRpb24uIAoKLS0tLQoKVGhlc2UgbWF0ZXJpYWxzIGhhdmUgYmVlbiBhZGFwdGVkIGFuZCBleHRlbmRlZCBmcm9tIG1hdGVyaWFscyBsaXN0ZWQgYWJvdmUuIFRoZXNlIGFyZSBvcGVuIGFjY2VzcyBtYXRlcmlhbHMgZGlzdHJpYnV0ZWQgdW5kZXIgdGhlIHRlcm1zIG9mIHRoZSBbQ3JlYXRpdmUgQ29tbW9ucyBBdHRyaWJ1dGlvbiBsaWNlbnNlIChDQyBCWSA0LjApXShodHRwOi8vY3JlYXRpdmVjb21tb25zLm9yZy9saWNlbnNlcy9ieS80LjAvKSwgd2hpY2ggcGVybWl0cyB1bnJlc3RyaWN0ZWQgdXNlLCBkaXN0cmlidXRpb24sIGFuZCByZXByb2R1Y3Rpb24gaW4gYW55IG1lZGl1bSwgcHJvdmlkZWQgdGhlIG9yaWdpbmFsIGF1dGhvciBhbmQgc291cmNlIGFyZSBjcmVkaXRlZC4KCjxici8+Cjxici8+Cjxoci8+CnwgW1ByZXZpb3VzIGxlc3Nvbl0oMDctQ2VsbFR5cGVBbm5vcy5odG1sKSB8IFtUb3Agb2YgdGhpcyBsZXNzb25dKCN0b3ApIHwgW1dvcmtzaG9wIFdyYXAgVXBdKHdvcmtzaG9wX3dyYXBfdXAuaHRtbCkgfAp8IDotLS0gfCA6LS0tLTogfCAtLS06IHwK</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("08-DifferentialExpression.Rmd");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
