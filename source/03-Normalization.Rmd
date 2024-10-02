@@ -34,6 +34,10 @@ table.fig, th.fig, td.fig {
 }
 </style>
 
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
+```
+
 ```{r, include = FALSE}
 source("../bin/chunk-options.R")
 knitr_fig_path("03-Normalization/03-")
@@ -61,9 +65,10 @@ And from technical sources:
 - Efficiency in lysis and reverse transcription
 - Stochastic sampling during sequencing
 
+<br/>
 <table class='fig'>
 <tr class='fig'><td class='fig'>![](images/graphical_abstracts/graphical_abstract_normalization.png)</td></tr>
-<tr class='fig'><td class='fig'>A. The counts reported in the feature barcode matrix are a blend of technical and biological effects. <br/>
+<tr class='fig'><td class='fig'>A. The counts in the feature barcode matrix are a blend of technical and biological effects. <br/>
 B. Technical effects can distort or mask the biological effects of interest; this can confound downstream analyses. <br/>
 C. Seurat can model the technical effects based on overall patterns in expression across all cells. <br/>
 D. Once these technical effects are minimized, the remaining signal is primarily biological variance.</td></tr>
