@@ -40,6 +40,10 @@ table.fig, th.fig, td.fig {
 }
 </style>
 
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
+```
+
 ```{r, include = FALSE}
 source("../bin/chunk-options.R")
 knitr_fig_path("05-ProjectionAndClustering/05-")

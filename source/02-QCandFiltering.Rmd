@@ -38,6 +38,10 @@ table{
 }
 </style>
 
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
+```
+
 ```{r, include = FALSE}
 source("../bin/chunk-options.R")
 knitr_fig_path("02-QCandFiltering/02-")
@@ -250,17 +254,17 @@ Fixed thresholds for any combination of `nFeature_RNA`, `nCount_RNA`, and `perce
 In other words, cells with > 500 `nFeature_RNA` and < 25% `percent.mt` were retained by the authors. We could preview what the resulting cell counts would be with these thresholds:
 
 ```{r, preview_postfilter_cell_counts}
-subset(geo_so, subset = nFeature_RNA > 300 & percent.mt < 15)@meta.data %>% 
+subset(geo_so, subset = nFeature_RNA > 500 & percent.mt < 25)@meta.data %>% 
     count(orig.ident, name = 'postfilter_cells')
 ```
 
 ## Adaptive thresholds
 
-For this workshop we will use the above fixed thresholds to match the publication, but another option is to remove low-quality cells adaptively. This approach assumes that most of the cells are of acceptable quality. For more information see the relevant section in Bioconductor's online book: Orchestrating Single-Cell Analysis ([link](https://bioconductor.org/books/3.12/OSCA/quality-control.html#quality-control-outlier)).
+For this workshop we will use fixed thresholds, but another option is to remove low-quality cells adaptively. This approach assumes that most of the cells are of acceptable quality. For more information see the relevant section in Bioconductor's online book: Orchestrating Single-Cell Analysis ([link](https://bioconductor.org/books/3.12/OSCA/quality-control.html#quality-control-outlier)).
 
 # Removing low-quality cells
 
-In keeping with the publication, let's retain the cells with `nFeature_RNA > 300` and `percent.mt < 15`.
+We will deviate from the publication slightly and retain the cells with `nFeature_RNA > 300` and `percent.mt < 15`. Noting that the `nFeature_RNA` plot had a gap around 300, and that we want to be more lenient than the usual 5-10% cutoff for mitochondrial reads.
 
 ```{r, filter_seurat}
 geo_so = subset(geo_so, subset = nFeature_RNA > 300 & percent.mt < 15)
