@@ -16,6 +16,11 @@ output:
             code_download: true
 ---
 
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
+```
+
+
 <style type="text/css">
 body, td {
    font-size: 18px;
