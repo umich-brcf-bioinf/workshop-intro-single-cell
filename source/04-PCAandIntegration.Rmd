@@ -16,11 +16,6 @@ output:
             code_download: true
 ---
 
-```{r klippy, echo=FALSE, include=TRUE}
-klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
-```
-
-
 <style type="text/css">
 body, td {
    font-size: 18px;
@@ -38,6 +33,10 @@ table.fig, th.fig, td.fig {
   padding: 15px;
 }
 </style>
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
+```
 
 ```{r, include = FALSE}
 source("../bin/chunk-options.R")
