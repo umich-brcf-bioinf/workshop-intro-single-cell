@@ -130,6 +130,12 @@ head(geo_markers)
 write_csv(geo_markers, file = 'results/tables/marker_genes_0.4res.csv')
 ```
 
+Note that with `SetIdent()` above, we are changing identities of the cells to "integrated.sct.rpca.clusters" explicitly. The "seurat_clusters" column is the default column for cell identities and changes each time a new clustering is performed.
+
+![Image: Schematic after SetIdent().](images/seurat_schematic/Slide11.png)
+
+<!--- Consider how to represent the result of PrepSCTFindMarkers() in the schematic. It's a little too subtle... -->
+
 <!--- Consider adding figure showing example of what's being compared (circle cluster 1 and then circle all other cells for example) -->
 
 <details>

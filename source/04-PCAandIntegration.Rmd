@@ -178,10 +178,13 @@ Since PCA is sensitive to scale, we will run it on the SCT normalized assay ([re
 geo_so = RunPCA(geo_so, reduction.name = 'unintegrated.sct.pca')
 geo_so
 ```
-After running the command in the console, we should see that the `geo_so` Seurat object has been updated to add "1 dimensional reduction calculated".
 
+After running the command in the console, we should see that the `geo_so` Seurat object has a new reduction. Viewed in our running schematic:
+
+![Image: Schematic after RunPCA().](images/seurat_schematic/Slide6.png)
 
 We can then visualize the first several PCs using the `DimHeatmp()` function, which orders both cells and features (genes) according to their PCA scores and allows us to see some general patterns in the data. Here we will specify that the first 24 PCs be included in the figure and that 500 cells are randomly subsetted for the plot. _Note - you may need to increase your plot window size to resolve errors regarding figure margins._  
+
 ```{r, pca_heatmap_plot, eval=FALSE}
 # Code block - plot cell by gene heatmaps for first several PCs
 DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca') # look at first PC alone first
@@ -347,6 +350,9 @@ Note we have specified the unintegrated reduction `unintegrated.sct.pca`, which 
 geo_so # Observe that we now have a new reduction, `integrated.sct.rpca`
 ```
 
+Viewed in our running schematic:
+
+![Image: Schematic after IntegrateLayers().](images/seurat_schematic/Slide7.png)
 
 We can also confirm that our integration method has helped to correct the `Day` effects we saw in the initial PCA plots
 

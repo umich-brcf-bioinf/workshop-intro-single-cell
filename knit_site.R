@@ -2,7 +2,7 @@
 # singularity exec /nfs/mm-isilon/bioinfcore/Common/singularity/single_cell_0.11.0.sif R
 
 # install.packages('remotes'); library(remotes)
-#remove.packages('klippy');remotes::install_github("umich-brcf-bioinf/workshop-klippy"); library(klippy)
+# remove.packages('klippy');remotes::install_github("umich-brcf-bioinf/workshop-klippy"); library(klippy)
 library(rmarkdown)
 
 # The html from the files below don't have the nav bar

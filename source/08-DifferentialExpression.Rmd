@@ -137,6 +137,10 @@ table(de_cell_pericyte_D21_vs_D7$p_val_adj < 0.05 & abs(de_cell_pericyte_D21_vs_
 write_csv(de_cell_pericyte_D21_vs_D7, file = 'results/tables/de_standard_pericyte_D21_vs_D7.csv')
 ```
 
+In the first 3 lines of the above code block we can see the changes to the schematic:
+
+![Image: Schematic after setting the Idents().](images/seurat_schematic/Slide13.png)
+
 Note - the `avg_log2FC` threshold of 1.5 we use here are quite stringent as the default log2FC threshold for the function is 0.25. However the default threshold corresponds to only a 19% difference in RNA levels, which is quite permissive. 
 
 If there is enough time - we can also compare between cells from the D7 and D0 conditions.

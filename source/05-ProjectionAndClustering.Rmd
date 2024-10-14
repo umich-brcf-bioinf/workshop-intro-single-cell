@@ -153,6 +153,14 @@ geo_so = FindClusters(geo_so, resolution = 0.4, cluster.name = 'integrated.sct.r
 head(geo_so@meta.data)
 ```
 
+The result of `FindNeighbors()` adds graph information to the `graphs` slot:
+
+![Image: Schematic after FindNeighbors().](images/seurat_schematic/Slide8.png)
+
+The result of `FindClusters()` adds two columns to the `meta.data` table and changes the `active.ident` to the "seurat_clusters" column. In other words, the cells now belong to clusters rather than to their `orig.ident`.
+
+![Image: Schematic after FindClusters().](images/seurat_schematic/Slide9.png)
+
 Generally it's preferable to err on the side of too many clusters, as they can be combined manually in later steps. In our experience, this is another parameter that often needs to be iteratively revised and reviewed. 
 
 <details>
@@ -175,6 +183,9 @@ geo_so = RunUMAP(geo_so, dims = 1:pcs, reduction = 'integrated.sct.rpca', reduct
 geo_so # Notice a third reduction has been added: `umap.integrated.sct.rpca`
 ```
 
+The resulting Seurat object now has an additional `umap.integrated.sct.rpca` in the `reduction` slot:
+
+![Image: Schematic after RunUMAP().](images/seurat_schematic/Slide10.png)
 
 # Visualizing and evaluating clustering
 

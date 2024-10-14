@@ -104,14 +104,20 @@ if(!exists('geo_so')) {
 
 We will use the `SCTransform()` function, which uses a generalized linear model (GLM) framework to account for cell-level sequencing depth while also stabilizing the variance of the counts. Let's get the normalization started, as it takes a little time, and then we can explain what it's doing and why it is an improvement on alternate methods.
 
-First, we'll run the following command to separate the data from each sample into layers, a requirement of Seurat v5:
+## Layers of a Seurat object
+
+The `assays` in a Seurat v5 object store data in "layers". When we first read the data in, we saw there was only one layer in the RNA assay. In order to run `SCTransform()` in Seurat v5, we have to separate the sample-wise data into layers with the following command:
 
 ```{r, convert_to_layers}
 geo_so[['RNA']] = split(geo_so[['RNA']], f = geo_so$orig.ident)
 geo_so
 ```
 
-We see the 12 layers containing the count data for each of the samples. Next, run `SCTransform()`:
+We see the 12 layers containing the count data for each of the samples. Our running schematic has now changed:
+
+![Image: Schematic splitting the counts layer of the RNA assay by sample.](images/seurat_schematic/Slide4.png)
+
+Next, run `SCTransform()`:
 
 ```{r, normalize, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
 geo_so = SCTransform(geo_so)
@@ -173,7 +179,11 @@ By now, `SCTransform()` should have finished running, so let's take a look at th
 geo_so
 ```
 
-We observe that the active assay is now "SCT", but that the "RNA" assay is still present. `SCTransform()` has also determined the common variable features across the cells to be used in our downstream analysis.
+We now observe changes to our running schematic:
+
+![Image: Schematic after SCTransform().](images/seurat_schematic/Slide5.png)
+
+Note that we have a new assay, `SCT` which has three layers: `counts`, `data`, and `scale.data`. Also note additional columns in `meta.data` and the change of the `active.assay` to `SCT`. `SCTransform()` has also determined the common variable features across the cells to be used in our downstream analysis. Viewed in our running schematic:
 
 # Save our progress
 
