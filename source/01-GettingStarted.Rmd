@@ -242,7 +242,7 @@ You'd then have the items needed to run the code we've already run.
 
 The `Seurat` object is a complex data type, so let's get a birds eye view with an image from [this tutorial](https://swbioinf.github.io/scRNAseqInR_Doco/seuratobject.html#discussion-the-seurat-object-in-r) on single-cell analysis.
 
-![Image: Schematic of `Seurat` object.](images/curriculum/seurat_object.png)
+![Image: Schematic of `Seurat` object.](images/seurat_schematic/Slide1.png)
 
 The three main "slots" in the object are:
 
@@ -250,13 +250,13 @@ The three main "slots" in the object are:
 2. The `meta.data` slot which stores cell-level information, including technical and phenotypic data.
 3. The `reductions` slot stores the results of dimension reduction applied to the `assays`.
 
-There are other slots which store information that becomes relevant when identifying clusters of cells: `graphs` and `neighbors`. There are slots related to spatial analysis: `images`. There are also slots which track what has been done to the object: `commands`.
+There are other slots which store information that becomes relevant as we progress through the analysis. We will highlight the other slots as they come up.
 
-### Layers of a Seurat object
+After reading the data in and creating the Seurat object above, we can imagine the following schematic representing our object:
 
-The `assays` in a Seurat v5 object store data in layers. Layers can store raw, un-normalized counts (`layer = 'counts'`), normalized data (`layer = 'data'`), or z-scored/variance-stabilized data (`layer = 'scale.data'`). We will come back to the idea of these layers when we perform normalization and variance-stabilization later.
+![Image: Schematic after creating the Seurat object.](images/seurat_schematic/Slide2.png)
 
-As in bulk RNA-seq, the data of interest is stored as a count matrices, but instead of the counts being at the sample level, they are the **cell** level.
+Note the RNA assay contains a `count` layer consisting of a raw count matrix where the rows are genes (features, more generically), and the columns are all cells across all samples. Note also the presence of a `meta.data` table giving information about each cell. We'll pay close attention to this as we proceed. The other slots include information about the `active.assay` and `active.ident` which tell Seurat which expression data to use and how the cells are to be identified.
 
 ## Accessing parts of the object
 

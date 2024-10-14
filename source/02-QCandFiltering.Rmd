@@ -161,6 +161,8 @@ summary(geo_so$percent.mt)
 
 Just looking at the summary, we can see that there are some cells with a high percentage of mitochondrial reads.
 
+![Image: Schematic after altering some meta data columns.](images/seurat_schematic/Slide3.png)
+
 # Quality Metrics
 
 Cell Ranger is a first-pass filter to determine what is a "cell" and what is not. It only considers one sample at a time, and does not consider the cells relative to one another. 
