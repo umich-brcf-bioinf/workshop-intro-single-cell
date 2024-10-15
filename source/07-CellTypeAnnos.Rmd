@@ -234,6 +234,10 @@ head(geo_so@meta.data)
 
 **Checkpoint** : Has the metadata for your `geo_so` object been updated?
 
+We have now added a "cell_type" column to the `meta.data` table:
+
+![Image: Schematic after adding cell_type column.](images/seurat_schematic/Slide12.png)
+
 ## Visualise annotated clusters
 
 Lastly, we can generate a revised UMAP plot with our descriptive cluster labels by using our updated Seurat object and providing the new `cell_type` label for the `group.by` argument:
