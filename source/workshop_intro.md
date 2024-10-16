@@ -57,7 +57,8 @@ pre {
 | **Chris** | **Marci** | **Raymond** |
 ![](images/headshots/headshot_damki.jpg) | ![](images/headshots/headshot_trsaari.jpg) | ![](images/headshots/headshot_okoues.jpg) |
 | **Dana** | **Travis** | **Olivia** |
-
+![](images/headshots/headshot_rammohan.jpg) | ![](images/headshots/headshot_mkdohert.jpg) | ![](images/headshots/headshot_ncarruth.jpg) |
+| **Ram** | **Matt** | **Nick** |
 <br/>
 
 # Code of Conduct

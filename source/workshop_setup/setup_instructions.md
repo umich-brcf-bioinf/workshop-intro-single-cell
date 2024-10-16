@@ -100,14 +100,14 @@ be happy to lend a hand to get things working.
 
 ### **Launch R/RStudio (from the web)**
 
-  3.1 Open the following web address: <https://bfx-workshop02.med.umich.edu/>
+  3.1 Open the following web address: [https://bfx-workshop02.med.umich.edu](https://bfx-workshop02.med.umich.edu){target="_blank"}
 
   3.2 When prompted, enter the  username and password supplied by your hosts and
    click **Sign In**.
 
-  3.3 The login page will immediate go blank - **it may take several seconds for the next page to appear** 
+  3.3 The login page will immediately go blank - **it may take several seconds for the next page to appear** 
    (sometimes up to **60 seconds**, but usually faster). After this delay, you 
-   should see a new webpage that looks like something like this:
+   should see a new webpage that looks something like this:
 
    ![RStudio initial screen](images/setup_instructions_rstudio.png)
 

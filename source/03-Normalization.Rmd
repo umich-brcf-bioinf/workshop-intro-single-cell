@@ -109,6 +109,7 @@ We will use the `SCTransform()` function, which uses a generalized linear model 
 The `assays` in a Seurat v5 object store data in "layers". When we first read the data in, we saw there was only one layer in the RNA assay. In order to run `SCTransform()` in Seurat v5, we have to separate the sample-wise data into layers with the following command:
 
 ```{r, convert_to_layers}
+# Separate sample data into layers  ---------------------------------------
 geo_so[['RNA']] = split(geo_so[['RNA']], f = geo_so$orig.ident)
 geo_so
 ```
@@ -120,6 +121,7 @@ We see the 12 layers containing the count data for each of the samples. Our runn
 Next, run `SCTransform()`:
 
 ```{r, normalize, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
+# Normalize the data with SCTransform  ------------------------------------
 geo_so = SCTransform(geo_so)
 ```
 
@@ -176,6 +178,7 @@ From the Seurat documentation, the `SCTransform()` function "replaces `Normalize
 By now, `SCTransform()` should have finished running, so let's take a look at the result:
 
 ```{r, preview_seurat}
+# Examine Seurat Object  --------------------------------------------------
 geo_so
 ```
 
@@ -196,6 +199,7 @@ if(!file.exists('results/rdata/geo_so_sct_normalized.rds')) {
 ```
 
 ```{r, save_rds, eval = FALSE}
+# Save Seurat object  -----------------------------------------------------
 saveRDS(geo_so, file = 'results/rdata/geo_so_sct_normalized.rds')
 ```
 

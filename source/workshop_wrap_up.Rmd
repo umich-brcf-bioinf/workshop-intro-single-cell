@@ -57,7 +57,7 @@ connect to enable single-cell gene expression analysis from RNA-Seq data.
 ## Looking ahead
 
 #### Workshop environment
-- RStudio workshop compute environment will be available until **5/1/2024**.
+- RStudio workshop compute environment will be available until **10/22/2024**.
   - _Please save all your R scripts now_ so that we can "right-size" the compute environment immediately following today's workshop session.
 - You can download files from the workshop environment from your terminal/command line window as below. 
   (You will need to substitute your actual workshop username and type workshop password when prompted.)
@@ -145,11 +145,15 @@ connect to enable single-cell gene expression analysis from RNA-Seq data.
 <br/>
 
 ## Thank you to/from the workshop team
+
 | ![](images/headshots/headshot_cgates.jpg) | ![](images/headshots/headshot_mbradenb.jpg) | ![](images/headshots/headshot_rcavalca.jpg) |
 |:-:|:-:|:-:|
 | **Chris** | **Marci** | **Raymond** |
 ![](images/headshots/headshot_damki.jpg) | ![](images/headshots/headshot_trsaari.jpg) | ![](images/headshots/headshot_okoues.jpg) |
 | **Dana** | **Travis** | **Olivia** |
+![](images/headshots/headshot_rammohan.jpg) | ![](images/headshots/headshot_mkdohert.jpg) | ![](images/headshots/headshot_ncarruth.jpg) |
+| **Ram** | **Matt** | **Nick** |
+
 <br/>
 
 
