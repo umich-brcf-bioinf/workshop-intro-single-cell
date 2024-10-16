@@ -331,7 +331,7 @@ The details of how integration works depends on the method, but for the RPCA app
 
 New to Seurat v5 are improvements that make selecting different integration methods much easier. The results of each alternative integration method are stored within the same `Seurat` object, which makes comparing downstream effects much easier.  So, if we wanted to run the `RPCAIntegration` method, we would run (**but we won't here**):
 
-```{r, integrate_layers, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
+```{r, integrate_layers, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE, echo=FALSE, include=FALSE}
 ### DO NOT RUN ###
 geo_so = IntegrateLayers(
   object = geo_so, 
@@ -340,6 +340,17 @@ geo_so = IntegrateLayers(
   normalization.method = 'SCT',
   new.reduction = 'integrated.sct.rpca')
 ```
+
+```{r_no_klippy, integrate_layers_do_not_run, eval=FALSE, include=TRUE}
+### DO NOT RUN ###
+geo_so = IntegrateLayers(
+  object = geo_so, 
+  method = RPCAIntegration, 
+  orig.reduction = 'unintegrated.sct.pca',
+  normalization.method = 'SCT',
+  new.reduction = 'integrated.sct.rpca')
+```
+
 
 The Seurat v5 vignette on integrative analysis ([link](https://satijalab.org/seurat/articles/seurat5_integration#perform-streamlined-one-line-integrative-analysis)) provides examples of each integration method. Note, that the vignette code uses the `NormalizeData()`, `ScaleData()`, `FindVariableFeatures()` pipeline, so their `IntegrateLayers()` call does not include `normalization.method = 'SCT'`, as ours must.
 
@@ -394,7 +405,7 @@ saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated.rds')
 > 
 > After normalizing the data with `SCTransform()` and performed the dimension reduction with `RunPCA()`, alternatively we could also use the `CCA` integration method with:
 > 
-> ```{r, eval = FALSE}
+> ```{r_no_klippy, eval = FALSE}
 > ### DO NOT RUN ###
 > geo_so = IntegrateLayers(
 >     object = geo_so, 
