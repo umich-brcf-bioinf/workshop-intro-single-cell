@@ -34,6 +34,10 @@ table.fig, th.fig, td.fig {
 }
 </style>
 
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
+```
+
 ```{r, include = FALSE}
 source("../bin/chunk-options.R")
 knitr_fig_path("07-CellTypeAnnotation/07-")
@@ -124,6 +128,8 @@ First, we need to load the scCATCH library. Then, we'll double check that we are
 To increase the speed and accuracy of our predictions, we'll create query of relevant tissues (which requires some prior knowledge of the experiment and using the [scCATCH wiki](https://github.com/ZJUFanLab/scCATCH/wiki) to select tissues from the species) before we run the tool:
 
 ```{r, sccatch, message = FALSE, warning = FALSE}
+# Annotate clusters using scCATCH  ----------------------------------------
+
 library(scCATCH)
 
 # check that cell identities are set to expected resolution 
@@ -151,7 +157,7 @@ In our experience, these kinds of results often help guide cluster annotation bu
 
 To confirm, we'll spot check some known markers for immune populations. Then we'll look look at some other key marker genes from the original [Sorkin et al (2020) paper](), as well as some other resrouces like [Li et al (2022)](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-022-04817-5/figures/2) and [Nestorowa et al (2016)](https://ashpublications.org/blood/article/128/8/e20/35749/A-single-cell-resolution-map-of-mouse) to see if other modifications should be made to the scCATCH predictions:
 ```{r, marker_gene_check, fig.show='hold'}
-# Code block - plot other markers/features to assist with identification
+# Plot other markers/features to assist with identification ---------------
 
 # spot check known immune markers
 immune_markers = c('Cd14', 'Cd68', # macrophage marker
@@ -187,7 +193,8 @@ From the other marker genes, the patterns are less clear so we may want to test 
 
 Before deciding our final labels, we'll also check the percentage of mitochondrial genes to determine if there are any clusters (or sub populations) that might correspond to interesting cell death patterns (or might indicate further filtering is needed):
 ```{r, echo=TRUE, eval= TRUE}
-# Code block - check mitochondrial gene expression 
+# Check mitochondrial gene expression -------------------------------------
+
 percent_mito_plot = FeaturePlot(geo_so, features='percent.mt')
 percent_mito_plot
 
@@ -202,7 +209,8 @@ We see that a higher % seem to be somewhat concentrated in a few places (the par
 Next, we'll modify the cell type predictions and add the labels to our Seurat object to replace our clusters' numerical identities. Note: we will create a new metadata object where we join cell types. However, this will destroy the row names - which will cause a problem in Seurat - so we have to add them back. <!--- modify to have a hidden block that runs after to keep this large block intact -->
 
 ```{r, annotate_clusters}
-# Code block - annotate clusters using modified predictions
+# Annotate clusters using modified predictions ----------------------------
+
 # First - Extract the cell types only from the predictions
 celltype_annos = geo_catch@celltype %>% select(cluster, cell_type)
 
@@ -230,11 +238,16 @@ head(geo_so@meta.data)
 
 **Checkpoint** : Has the metadata for your `geo_so` object been updated?
 
+We have now added a "cell_type" column to the `meta.data` table:
+
+![Image: Schematic after adding cell_type column.](images/seurat_schematic/Slide12.png)
+
 ## Visualise annotated clusters
 
 Lastly, we can generate a revised UMAP plot with our descriptive cluster labels by using our updated Seurat object and providing the new `cell_type` label for the `group.by` argument:
 
 ```{r, catch_umap_plot, fig.width = 10, fig.height = 8, fig.show='hold'}
+# Make a labeled UMAP plot of clusters ------------------------------------
 
 catch_umap_plot = DimPlot(geo_so, group.by = 'cell_type', label = TRUE, reduction = 'umap.integrated.sct.rpca')
 catch_umap_plot
@@ -264,6 +277,7 @@ if(!file.exists('results/rdata/geo_catch.rds')) {
 ```
 
 ```{r, save_rds, eval=FALSE}
+# Save Seurat object and annotations --------------------------------------
 saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated_with_catch.rds')
 saveRDS(geo_catch, file = 'results/rdata/geo_catch.rds')
 ```

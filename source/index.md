@@ -33,33 +33,33 @@ body, td {
 #### Day 1
 | Time | Topic : Details |
 | :---  | :---- |
-|  1:00 | [Welcome / Housekeeping](workshop_intro.html) (Chris & Marci) |
-|  1:30 | [Orienting on scRNA-Seq](00A-OrientingOnScRNASeq.html) (Chris) |
+|  9:00 | [Welcome / Housekeeping](workshop_intro.html) (Chris & Marci) |
+|  9:30 | [Orienting on scRNA-Seq](00A-OrientingOnScRNASeq.html) (Chris) |
 |       | [Getting started with Seurat](01-GettingStarted.html) (Raymond) |
-| 3:00 | Break |
-| 3:15 | [Cell Ranger in Action](00B-CellRangerInAction.html) (Olivia) |
+| 11:00 | Break |
+| 11:15 | [Cell Ranger in Action](00B-CellRangerInAction.html) (Olivia) |
 |      | [Secondary QC & Filtering](02-QCandFiltering.html) (Raymond) |
 |      | [Normalization](03-Normalization.html) |
-| 5:00 | Day 1 concludes |
+| 1:00 | Day 1 concludes |
 
 #### Day 2 (Dana)
 | | |
 | :---  | :---- |
-| 1:00 | Housekeeping, Review, and Questions (Chris) |
-| 1:20 | [Principal Component Analysis & Integration](04-PCAandIntegration.html) (Dana) |
+| 9:00 | Housekeeping, Review, and Questions (Chris) |
+| 9:20 | [Principal Component Analysis & Integration](04-PCAandIntegration.html) (Dana) |
 |      | [Clustering & Projection](05-ProjectionAndClustering.html) |
-| 3:00 | Break |
-| 3:15 | A review of sequencing approaches (Tricia) |
+| 11:00 | Break |
+| 11:15 | A review of sequencing approaches (Olivia) |
 |      | [Clustering & Projection (continued)](05-ProjectionAndClustering.html) | 
-| 5:00 | Day 2 concludes |
+| 1:00 | Day 2 concludes |
 
 #### Day 3 (Dana)
 | | |
 | :---  | :---- |
-| 1:00 | Housekeeping, Review and Questions (Chris) |
-| 1:20 | [Marker identification & Visualization](06-MarkerVisualization.html)
+| 9:00 | Housekeeping, Review and Questions (Chris) |
+| 9:20 | [Marker identification & Visualization](06-MarkerVisualization.html)
 |       | [Cell type annotation](07-CellTypeAnnos.html) |
-| 3:00 | Break |
-| 3:15 | [Differential expression analysis](08-DifferentialExpression.html) |
-| 4:45 | [Wrap-up](workshop_wrap_up.html) (Chris) |
-| 5:00 | Workshop concludes |
+| 11:00 | Break |
+| 11:15 | [Differential expression analysis](08-DifferentialExpression.html) |
+| 12:45 | [Wrap-up](workshop_wrap_up.html) (Chris) |
+| 1:00 | Workshop concludes |

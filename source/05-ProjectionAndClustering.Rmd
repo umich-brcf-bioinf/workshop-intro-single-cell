@@ -40,6 +40,10 @@ table.fig, th.fig, td.fig {
 }
 </style>
 
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
+```
+
 ```{r, include = FALSE}
 source("../bin/chunk-options.R")
 knitr_fig_path("05-ProjectionAndClustering/05-")
@@ -138,7 +142,8 @@ Again, how a “cell type” or “subtype” should be defined for your data is
 Then, when we look at the meta data we should see that cluster labels have been added for each cell:
 
 ```{r, find_neighbors, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
-# Code block - clustering steps
+# Clustering --------------------------------------------------------------
+
 # Create KNN graph with `FindNeighbors()`
 geo_so = FindNeighbors(geo_so, dims = 1:pcs, reduction = 'integrated.sct.rpca')
 
@@ -148,6 +153,14 @@ geo_so = FindClusters(geo_so, resolution = 0.4, cluster.name = 'integrated.sct.r
 # look at meta.data to see cluster labels
 head(geo_so@meta.data)
 ```
+
+The result of `FindNeighbors()` adds graph information to the `graphs` slot:
+
+![Image: Schematic after FindNeighbors().](images/seurat_schematic/Slide8.png)
+
+The result of `FindClusters()` adds two columns to the `meta.data` table and changes the `active.ident` to the "seurat_clusters" column. In other words, the cells now belong to clusters rather than to their `orig.ident`.
+
+![Image: Schematic after FindClusters().](images/seurat_schematic/Slide9.png)
 
 Generally it's preferable to err on the side of too many clusters, as they can be combined manually in later steps. In our experience, this is another parameter that often needs to be iteratively revised and reviewed. 
 
@@ -166,11 +179,14 @@ While we unfortunately don't have time to compare and contrast tSNE, and UMAP, w
 To start this process, we'll use the `RunUMAP()` [function](https://satijalab.org/seurat/reference/runumap) to calculate the UMAP reduction for our data. Notice how the previous dimensionality choices carry through the downstream analysis and that the number of PCs selected in the previous steps are included as an argument.
 
 ```{r, run_umap, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
-# Code block - create UMAP reduction
+# Create UMAP reduction ---------------------------------------------------
 geo_so = RunUMAP(geo_so, dims = 1:pcs, reduction = 'integrated.sct.rpca', reduction.name = 'umap.integrated.sct.rpca')
 geo_so # Notice a third reduction has been added: `umap.integrated.sct.rpca`
 ```
 
+The resulting Seurat object now has an additional `umap.integrated.sct.rpca` in the `reduction` slot:
+
+![Image: Schematic after RunUMAP().](images/seurat_schematic/Slide10.png)
 
 # Visualizing and evaluating clustering
 
@@ -185,7 +201,8 @@ At this stage, we want to determine if the clusters look fairly well separated, 
 We can also look at the same UMAP labeled by `day` to visually inspect if the UMAP structure corresponds to the `day`.
 
 ```{r, umap_by_clusters, fig.show='hold'}
-# Code block - UMAP cluster visualization 
+# Visualize UMAP cluster --------------------------------------------------
+
 # cluster ID labels
 post_integration_umap_plot_clusters = DimPlot(geo_so, group.by = 'seurat_clusters', label = TRUE, reduction = 'umap.integrated.sct.rpca') + NoLegend()
 post_integration_umap_plot_clusters
@@ -210,7 +227,8 @@ Similar to the PCA plots, the `day` labeled UMAP can tell us if technical source
 Another approach is to evaluate the number of cells per cluster using the `table()` function, split by `day` or split by `orig.ident` to see if the individual samples are driving any of the UMAP structure:
 
 ```{r, table_by_day}
-# Code block - cell count tables
+# Make tables of cell counts ----------------------------------------------
+
 # cells per cluster, split by condition
 table(geo_so@meta.data$day, geo_so@meta.data$integrated.sct.rpca.clusters)
 
@@ -313,6 +331,8 @@ if(!file.exists('results/rdata/geo_so_sct_clustered.rds')) {
 ```
 
 ```{r, eval=FALSE}
+# Save Seurat object ------------------------------------------------------
+
 saveRDS(geo_so, file = 'results/rdata/geo_so_sct_clustered.rds')
 ```
 

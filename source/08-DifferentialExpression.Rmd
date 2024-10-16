@@ -34,6 +34,10 @@ table.fig, th.fig, td.fig {
 }
 </style>
 
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
+```
+
 ```{r, include = FALSE}
 source("../bin/chunk-options.R")
 knitr_fig_path("08-DifferentialExpression/08-")
@@ -108,6 +112,8 @@ First we'll run cell-level comparisons for our data for the pericyte cluster, st
 <!-- add UMAP with facets by groups to show what's being compared? -->
 
 ```{r, de_wilcox1, message = FALSE, warning = FALSE}
+# Compare pericyte cluster D21 v D7 ---------------------------------------
+
 # set up combined label of day + celltype & assign as identities
 geo_so$day.celltype = paste(geo_so$day, geo_so$cell_type, sep = '_')
 # check labels
@@ -133,12 +139,17 @@ table(de_cell_pericyte_D21_vs_D7$p_val_adj < 0.05 & abs(de_cell_pericyte_D21_vs_
 write_csv(de_cell_pericyte_D21_vs_D7, file = 'results/tables/de_standard_pericyte_D21_vs_D7.csv')
 ```
 
+In the first 3 lines of the above code block we can see the changes to the schematic:
+
+![Image: Schematic after setting the Idents().](images/seurat_schematic/Slide13.png)
+
 Note - the `avg_log2FC` threshold of 1.5 we use here are quite stringent as the default log2FC threshold for the function is 0.25. However the default threshold corresponds to only a 19% difference in RNA levels, which is quite permissive. 
 
 If there is enough time - we can also compare between cells from the D7 and D0 conditions.
 
 ```{r, de_wilcox2, message = FALSE, warning = FALSE}
-# run comparison for D7 vs D0, using wilcoxon test
+# Compare pericyte cluster D7 v D0 ----------------------------------------
+
 de_cell_pericyte_D7_vs_D0 = FindMarkers(
     object = geo_so,
     slot = 'data', test = 'wilcox',
@@ -170,7 +181,8 @@ With advances in the technology as well as decreased sequencing costs allowing f
 We'll run psuedobulk comparisons for our data for the monocyte cluster, starting with the D21 vs D0 conditions. We'll need to generate the aggregated counts first (ensuring that we are grouping cells by replicate labels), before labeling the cells to reflect the cluster and condition. Then we will run our comparison using `FindMarker()` but specifying DESeq2 as our method before summarizing the results:
 
 ```{r, de_pseudobulk, message = FALSE, warning = FALSE}
-# Create pseudobulk 
+# Create pseudobulk object -------------------------------------------------
+
 pseudo_catch_so = AggregateExpression(geo_so, assays = 'RNA', return.seurat = TRUE, group.by = c('cell_type', 'day', 'replicate'))
 
 # Set up labels to use for comparisons & assign as cell identities
@@ -200,6 +212,8 @@ write_csv(de_pseudo_pericyte_D21_vs_D7, file = 'results/tables/de_pseudo_pericyt
 Since we're working with pseudobulk data, unlike in the marker identification section, there is no percentage of cells expressing to need to represent so we can summarize our DE results with a volcano plot:
 
 ```{r, de_pseudobulk_volcano, warning = FALSE, message = FALSE}
+# Make a volcano plot of pseudobulk diffex results ------------------------
+
 pseudo_pericyte_D21_vs_D7_volcano = ggplot(de_pseudo_pericyte_D21_vs_D7, aes(x = avg_log2FC, y = -log10(p_val))) + geom_point()
 pseudo_pericyte_D21_vs_D7_volcano
 
@@ -216,6 +230,7 @@ Add code to generate pseudobulk results for each cluster for all Day 7 vs Day 21
 We can also overlay the expression of interesting differentially expressed genes back onto our UMAP plots to highlight the localization and possible function, again using the `FeaturePlot` function. 
 
 ```{r, show_DE_featurePlot, warning = FALSE, message = FALSE}
+# UMAP feature plot of Cd55 gene ------------------------------------------
 FeaturePlot(geo_so, features = "Cd55", split.by = "day")
 ```
 So we found Cd55 based on differential expression comparison in the Pericyte population between Day 7 and Day 21 but in looking at the Feature plot of expression, we also see high expression in a subset of cells on Day 0. This interesting, since according to [Shin et al (2019)](https://onlinelibrary.wiley.com/doi/full/10.1002/jbmr.3861), CD55 regulates bone mass in mice.
@@ -238,6 +253,7 @@ if(!file.exists('results/rdata/geo_so_sct_integrated_with_final.rds')) {
 ```
 
 ```{r, save_rds, eval=FALSE}
+# Save Seurat object ------------------------------------------------------
 saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated_final.rds')
 ```
 

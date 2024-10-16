@@ -34,6 +34,10 @@ table.fig, th.fig, td.fig {
 }
 </style>
 
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
+```
+
 ```{r, include = FALSE}
 source("../bin/chunk-options.R")
 knitr_fig_path("06-MarkerVisualization/06-")
@@ -111,7 +115,8 @@ First, we'll ensure that the correct resolution is selected from our Seurat obje
 Then we'll run the`FindAllMarkers()` [function](https://satijalab.org/seurat/reference/findallmarkers) to generate comparisons between each cluster and all other cells, regardless of the experimental group. Note - the statistical test to perform can be specified in `FindAllMarkers()`, but the default is a Wilcoxon test. 
 
 ```{r, find_all_markers, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
-# Code block - find empirical markers
+# Find empirical markers  -------------------------------------------------
+
 # Prep for cluster comparisons
 geo_so = SetIdent(geo_so, value = 'integrated.sct.rpca.clusters')
 geo_so = PrepSCTFindMarkers(geo_so)
@@ -126,6 +131,12 @@ head(geo_markers)
 write_csv(geo_markers, file = 'results/tables/marker_genes_0.4res.csv')
 ```
 
+Note that with `SetIdent()` above, we are changing identities of the cells to "integrated.sct.rpca.clusters" explicitly. The "seurat_clusters" column is the default column for cell identities and changes each time a new clustering is performed.
+
+![Image: Schematic after SetIdent().](images/seurat_schematic/Slide11.png)
+
+<!--- Consider how to represent the result of PrepSCTFindMarkers() in the schematic. It's a little too subtle... -->
+
 <!--- Consider adding figure showing example of what's being compared (circle cluster 1 and then circle all other cells for example) -->
 
 <details>
@@ -139,7 +150,8 @@ Note that over-interpretation of these results should be avoided, since each cel
 Therefore, it's useful to filter the results to highlight the top positive markers (since a positive fold-change would mean that gene is more highly expressed in the cluster compared to all other cells), before looking at our results
 
 ```{r, top_5_cluster_markers}
-# Code block - identify marker genes for each cluster
+# Identify marker genes for each cluster ----------------------------------
+
 # Create table of top 5 markers per cluster (using default ranking)
 top_5 = geo_markers %>% filter(p_val_adj < 0.01) %>% group_by(cluster) %>% slice_head(n = 5)
 
@@ -172,6 +184,8 @@ Now that we have generated a set of marker genes for our clusters, it is useful 
 We'll use the `DotPlot()` [function](https://satijalab.org/seurat/reference/dotplot) with the SCT values to visualize the top 5 marker genes per cluster:
 
 ```{r, top_5_dot_plot_sct, fig.height = 18, fig.width = 8}
+# Dot plot to visualize top marker genes ----------------------------------
+
 top_5_sct_dot_plot = DotPlot(geo_so, features = unique(top_5$gene)) + 
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
     labs(title = 'Top 5 Cluster Genes by FDR and avg_log2FC') + coord_flip()
@@ -187,6 +201,8 @@ In the dotplot we can see that the color indicates the expression of the gene wh
     In addition to plotting the SCT values, the raw or normalized RNA values can be plotted as well:
 
 ```{r, top_5_dot_plot_rna, eval=FALSE}
+# Add RNA values to dot plot  ---------------------------------------------
+
 top_5_rna_dot_plot = DotPlot(geo_so, features = unique(top_5_by_log2FC$gene), assay = 'RNA') + 
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
     labs(title = 'Top 5 Cluster Genes by FDR and avg_log2FC') + coord_flip()
@@ -205,7 +221,9 @@ Often we have prior information about what cell types are expected in our sample
 We can create lists of markers used in figures from the [original paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7002453/) before using the same `DotPlot()` function to visualize the expression level and frequency of these genes in our current clusters:
 
 ```{r, known_dot_plots_sct, fig.show='hold'}
-# manually create lists of genes from paper
+# Visualizing manually selected marker genes ------------------------------
+
+# Create lists of genes from paper 
 fig1g_markers = c('Cxcl1', 'Cxcl2', 'Ccl2', 'Ccl3', 'Ccl4', 'Il1b', 'Il6b', 'Tnf', 'Tgfb1', 'Tgfb2', 'Tgfb3', 'Cxcl5')
 fig1h_markers = c('Cxcr2', 'Csf1r', 'Csf3r', 'Tgfbr1', 'Tgfbr3', 'Il1r1', 'Il6ra', 'Lifr', 'Tgfbr2')
 
@@ -226,6 +244,8 @@ ggsave(filename = 'results/figures/markers_fig1h_sct_dot_plot.png', plot = fig1h
     We can also generate the same plots, but using the unintegrated data by specifying the `RNA` assay:
 
 ```{r, known_dot_plot_rna, eval=FALSE}
+# Visualizing manually selected marker genes (from unintegrated data) ----
+
 rna_dot_plot = DotPlot(geo_so, features = fig1g_markers, assay = 'RNA')
 fig1h_rna_dot_plot = DotPlot(geo_so, features = fig1h_markers, assay = 'RNA')
 
@@ -252,6 +272,7 @@ if(!file.exists('results/rdata/geo_markers.rds')) {
 ```
 
 ```{r, save_rds, eval=FALSE}
+# Save Seurat object and gene marker data ---------------------------------
 saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated_with_markers.rds')
 saveRDS(geo_markers, file = 'results/rdata/geo_markers.rds')
 ```

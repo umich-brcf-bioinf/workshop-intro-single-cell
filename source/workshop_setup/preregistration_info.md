@@ -29,15 +29,15 @@ This workshop is targeted toward researchers who would like to better understand
 
 ### More details:
 
-* The workshop runs 9am-1pm ET for three days: 2/28-3/1. (Registration closes 2/21/2024.)
-* The cost is $390/seat. (University of Michigan (UM) participants can pay with a UM shortcode. Also, the first 30 UM SCSAP members to register receive a $100 discount; see [SCSAP website](https://singlecellspatialanalysis.umich.edu/membership-application/){target=_blank} to apply for SCSAP membership.)
+* The workshop runs 9am-1pm ET for three days: 10/23-25. (Registration closes 10/16/2024.)
+* The cost is $390/seat. (University of Michigan (UM) participants can pay with a UM shortcode.)
 * The workshop is entirely online and will be conducted over Zoom and Slack.
 * Basic understanding of NGS sequencing protocols and/or familiarity with bulk RNA-Seq analysis is desirable. This workshop assumes some experience working with R/R-Studio. (Previous attendance in a Computational Foundations workshop or Software Carpentry workshop is sufficient.)  
 * The workshop experience is designed to be interactive and includes a combination of lecture, live-coding, and opportunities for questions throughout.
 
 
 
-<table style="margin-left:auto; margin-right:auto;"><tr><td><a title="Learn More and Register" href="https://www.eventbrite.com/e/intro-to-single-cell-analysis-workshop-registration-779434368177" style="padding:18px; background-color:#00B2A9; font-weight:bold;letter-spacing:normal;line-height:100%;text-align:center;text-decoration:none;color:#ffffff;display:block" target="_blank">Learn More and Register</a></td></tr></table>
+<table style="margin-left:auto; margin-right:auto;"><tr><td><a title="Learn More and Register" href="https://www.eventbrite.com/e/intro-to-single-cell-analysis-workshop-registration-956658871437" style="padding:18px; background-color:#00B2A9; font-weight:bold;letter-spacing:normal;line-height:100%;text-align:center;text-decoration:none;color:#ffffff;display:block" target="_blank">Learn More and Register</a></td></tr></table>
 <br/>
 
 For any questions, please email the Bioinformatics Core Workshop Team at <br/> [bioinformatics-workshops@umich.edu](mailto:bioinformatics-workshops@umich.edu)

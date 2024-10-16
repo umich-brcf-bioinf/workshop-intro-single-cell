@@ -96,6 +96,7 @@ if(!exists('geo_so')) {
 We're going to alter and add some columns to `meta.data` to ease some downstream analysis and plotting steps. This will often be necessary, as sample names contain combined information about phenotypes. Let's take a look at the first few rows again, to reacquaint ourselves.
 
 ```{r, preview_metadata1}
+# Examine Seurat metdata  ----------------------------------------------
 head(geo_so@meta.data)
 ```
 
@@ -110,7 +111,9 @@ We can add arbitrary per-cell information to this table such as:
 The following code chunk will create new columns from the `orig.ident` column, one for the `day` and one for the `replicate`. We'll also use factors to make the days appear in the correct order (by default R will order them Day0, Day21, Day7).
 
 ```{r, alter_metadata}
-# Make metadata more granular, this is a quality of life thing
+# Make metadata more granular ------------------------------------------
+# (So it's easier for us to understand)  
+
 orig.ident_levels = apply(
     expand.grid(c('HO'), c('replicate1', 'replicate2', 'replicate3', 'replicate4'), c('Day0','Day7','Day21')), 
     MARGIN = 1, FUN = function(row){paste(row[1], row[3], row[2], sep = '.')})
@@ -138,6 +141,7 @@ Idents(geo_so) = 'orig.ident'
 Taking a look at the result, we see `orig.ident` looks a little different, and we have new `day` and `replicate` columns. Note that there are many ways to have accomplished this, the above code is just one route.
 
 ```{r, preview_metadata3}
+# Re-examine Seurat metdata  -------------------------------------------
 head(geo_so@meta.data)
 ```
 
@@ -146,6 +150,8 @@ head(geo_so@meta.data)
 The `PercentageFeatureSet()` function enables us to quickly determine the counts belonging to a subset of the possible features for each cell. Since mitochondrial transcripts in mouse begin with "mt", we will use that pattern to count the percentage of reads coming from mitochondrial transcripts.
 
 ```{r, assign_percent_mt}
+# Consider mitochondrial transcripts  ----------------------------------
+
 # We use "mt" because this is mouse, depending on the organism, this might need to be changed
 geo_so$percent.mt = PercentageFeatureSet(geo_so, pattern = '^mt-')
 
@@ -154,6 +160,8 @@ summary(geo_so$percent.mt)
 ```
 
 Just looking at the summary, we can see that there are some cells with a high percentage of mitochondrial reads.
+
+![Image: Schematic after altering some meta data columns.](images/seurat_schematic/Slide3.png)
 
 # Quality Metrics
 
@@ -186,6 +194,7 @@ The number of UMIs detected (`nCount`) and number of expressed features (`nFeatu
 Cell counts per sample (based on the numbrer of unique cellular barcodes detected by Cell Ranger) can indicate if an entire sample was of poor quality. The table below is the number of cells called by Cell Ranger, with the added filter from `CreateSeurateObject()` in the previous lesson: `min.cells = 1, min.features = 50`. Recall, this means a gene is removed if it is expressed in 1 or fewer cells, and a cell is removed if it contains reads for 50 or fewer genes.
 
 ```{r, prefilter_cell_counts}
+# Assign overall cell counts  ------------------------------------------
 cell_counts_pre_tbl = geo_so@meta.data %>% count(orig.ident, name = 'prefilter_cells')
 cell_counts_pre_tbl
 ```
@@ -207,6 +216,7 @@ A violin plot is similar to a box plot, but it shows the density of the data at 
 Let's look at the `nFeature_RNA` violin plot across all the samples. Again, this is the number of genes detected per cell.
 
 ```{r, feature_plot, fig.show = 'hold'}
+# Review feature violin plots   ----------------------------------------
 VlnPlot(geo_so, features = 'nFeature_RNA', assay = 'RNA', layer = 'counts') + NoLegend() + geom_hline(yintercept = 500) + geom_hline(yintercept = 400) + geom_hline(yintercept = 300) + geom_hline(yintercept = 200)
 ggsave(filename = 'results/figures/qc_nFeature_violin.png', width = 12, height = 6, units = 'in')
 ```
@@ -218,6 +228,7 @@ We observe that samples behave similarly within a day, but have different distri
 Now let's look at `nCount_RNA` plot, the total number of UMIs detected.
 
 ```{r, count_plot, fig.show = 'hold'}
+# Review count violin plots   ------------------------------------------
 VlnPlot(geo_so, features = 'nCount_RNA', assay = 'RNA', layer = 'counts') + NoLegend()
 ggsave(filename = 'results/figures/qc_nCount_violin.png', width = 12, height = 6, units = 'in')
 ```
@@ -229,6 +240,7 @@ We observe a similar within-and-across day behavior among the samples. Overall i
 Finally, lets plot the percent mitochondrial reads, `percent.mt`.
 
 ```{r, mito_plot, fig.show = 'hold'}
+# Review mitochondrial violin plots   ----------------------------------
 VlnPlot(geo_so, features = 'percent.mt', assay = 'RNA', layer = 'counts') + NoLegend() + geom_hline(yintercept = 25) + geom_hline(yintercept = 20) + geom_hline(yintercept = 15) + geom_hline(yintercept = 10)
 ggsave(filename = 'results/figures/qc_mito_violin.png', width = 12, height = 6, units = 'in')
 ```
@@ -250,19 +262,21 @@ Fixed thresholds for any combination of `nFeature_RNA`, `nCount_RNA`, and `perce
 In other words, cells with > 500 `nFeature_RNA` and < 25% `percent.mt` were retained by the authors. We could preview what the resulting cell counts would be with these thresholds:
 
 ```{r, preview_postfilter_cell_counts}
-subset(geo_so, subset = nFeature_RNA > 300 & percent.mt < 15)@meta.data %>% 
+# Consider excluding suspect cells -------------------------------------
+subset(geo_so, subset = nFeature_RNA > 500 & percent.mt < 25)@meta.data %>% 
     count(orig.ident, name = 'postfilter_cells')
 ```
 
 ## Adaptive thresholds
 
-For this workshop we will use the above fixed thresholds to match the publication, but another option is to remove low-quality cells adaptively. This approach assumes that most of the cells are of acceptable quality. For more information see the relevant section in Bioconductor's online book: Orchestrating Single-Cell Analysis ([link](https://bioconductor.org/books/3.12/OSCA/quality-control.html#quality-control-outlier)).
+For this workshop we will use fixed thresholds, but another option is to remove low-quality cells adaptively. This approach assumes that most of the cells are of acceptable quality. For more information see the relevant section in Bioconductor's online book: Orchestrating Single-Cell Analysis ([link](https://bioconductor.org/books/3.12/OSCA/quality-control.html#quality-control-outlier)).
 
 # Removing low-quality cells
 
-In keeping with the publication, let's retain the cells with `nFeature_RNA > 300` and `percent.mt < 15`.
+We will deviate from the publication slightly and retain the cells with `nFeature_RNA > 300` and `percent.mt < 15`. Noting that the `nFeature_RNA` plot had a gap around 300, and that we want to be more lenient than the usual 5-10% cutoff for mitochondrial reads.
 
 ```{r, filter_seurat}
+# Filter to exclude suspect cells and assign to new Seurat object ------
 geo_so = subset(geo_so, subset = nFeature_RNA > 300 & percent.mt < 15)
 geo_so
 ```
@@ -270,6 +284,7 @@ geo_so
 And let's record the number of cells remaining after filtering:
 
 ```{r, postfilter_cell_counts}
+# Remaining cell counts ------------------------------------------------
 cell_counts_post_tbl = geo_so@meta.data %>% count(orig.ident, name = 'postfilter_cells')
 cell_counts_post_tbl
 ```
@@ -277,6 +292,7 @@ cell_counts_post_tbl
 Let's combine the pre and post tables:
 
 ```{r, cell_counts}
+# Show cell counts before and after filtering --------------------------
 cell_counts_tbl = cell_counts_pre_tbl %>% left_join(cell_counts_post_tbl, by = 'orig.ident')
 cell_counts_tbl
 ```
@@ -308,6 +324,7 @@ if(!file.exists('results/rdata/geo_so_filtered.rds')) {
 ```
 
 ```{r, save_rds, eval = FALSE}
+# Save the current Seurat object ---------------------------------------
 saveRDS(geo_so, file = 'results/rdata/geo_so_filtered.rds')
 ```
 
