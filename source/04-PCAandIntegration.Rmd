@@ -174,7 +174,8 @@ Since PCA is sensitive to scale, we will run it on the SCT normalized assay ([re
 
 
 ```{r, run_pca, warning = FALSE, message = FALSE}
-# Code block - run PCA
+# Build a PCA and add it to the Seurat object  ----------------------------
+
 geo_so = RunPCA(geo_so, reduction.name = 'unintegrated.sct.pca')
 geo_so
 ```
@@ -186,7 +187,9 @@ After running the command in the console, we should see that the `geo_so` Seurat
 We can then visualize the first several PCs using the `DimHeatmp()` function, which orders both cells and features (genes) according to their PCA scores and allows us to see some general patterns in the data. Here we will specify that the first 24 PCs be included in the figure and that 500 cells are randomly subsetted for the plot. _Note - you may need to increase your plot window size to resolve errors regarding figure margins._  
 
 ```{r, pca_heatmap_plot, eval=FALSE}
-# Code block - plot cell by gene heatmaps for first several PCs
+# Build heatmaps of PCAs  -------------------------------------------------
+
+# Plot cell by gene heatmaps for first several PCs
 DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca') # look at first PC alone first
 DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca') # first 18 PCs
 
@@ -197,14 +200,17 @@ dev.off()
 ```
 
 ```{r, pca_heatmap_one, echo=FALSE, message = FALSE, out.width='50%', fig.cap='DimHeatmap for PC1 alone'}
-# Code block - plot cell by gene heatmaps for first several PCs
-DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca') # look at first PC alone first
+# look at first PC alone first
+DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca') 
+
 ```
 
 
 ```{r, pca_heatmap_18, echo=FALSE, message = FALSE, fig.cap='DimHeatmap for PC1-18'}
-# Code block - plot cell by gene heatmaps for first several PCs
-DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca') # first 18 PCs
+# Plot cell by gene heatmaps for first several PCs  -----------------------
+
+# first 18 PCs
+DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca') 
 ```
 
 As we scroll down in this plot, we see less and less structure in our plots indicating that no only is less variation is being represented by larger PCs overall but also that those PCs are less likely to correspond to variation of interest, e.g. corresponding to cell types/subtypes.
@@ -217,7 +223,7 @@ As we scroll down in this plot, we see less and less structure in our plots indi
   We can highlight genes loaded for dimenstions of interest using using `VizDimLoadings()`:
 
 ```{r, pca_loading_plot, eval = TRUE, fig.show='hold'}
-# Code block - gene loadings for PC1 and PC2
+# Gene loadings for PC1 and PC2  ------------------------------------------
 VizDimLoadings(geo_so, dims = 1:2, reduction = 'unintegrated.sct.pca')
 ggsave(filename = 'results/figures/qc_pca_loadings.png', width = 12, height = 6, units = 'in')
 
@@ -239,7 +245,8 @@ ggsave(filename = 'results/figures/qc_pca_loadings.png', width = 12, height = 6,
 One way to evaluate the PCs to include is by looking at an elbow plot, which shows the percent variance explained by successive PCs. We'll use the `ElbowPlot()` function to do this, specifying that the first 50 PCs be plotted. 
 
 ```{r, elbow_plot, fig.show='hold', out.width='80%'}
-# Code block - elbow plot
+# Elbow plot help visualize how many PCs to include -----------------------
+
 ElbowPlot(geo_so, ndims = 50, reduction = 'unintegrated.sct.pca')
 ggsave(filename = 'results/figures/qc_sct_elbow_plot.png', width = 8, height = 8, units = 'in')
 ```
@@ -265,7 +272,8 @@ Related - how important is that decision to the downstream impact (e.g. how much
 Instead of choosing based on the elbow plot by sight alone, we can try to quantify our choice. Here we create a function to return a minimum PCs based on two possible metrics (cumulative variation or above a minium step size) and then we'll apply that function to our data:
 
 ```{r, optimal_pcs}
-# Code block - Function to determine optimal PCs after RunPCA()
+# Function to determine optimal PCs to include ----------------------------
+
 optimal_pcs = function(so, reduction) {
     # quantitative check for number of PCs to include
     pct = so@reductions[[reduction]]@stdev / sum(so@reductions[[reduction]]@stdev) * 100
@@ -302,7 +310,8 @@ In addition to selecting a reduced number of PCs to represent our data, we can a
 ~~~
 
 ```{r, pca_loading_plots, message=FALSE, fig.show='hold'}
-# Code block - PCA style plot for PC1 and PC2 (unintegrated)
+# PCA style plot for PC1 and PC2 (unintegrated) --------------------------- 
+
 DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'orig.ident') # first label by sample
 DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'day') # then label by day
 ggsave(filename = 'results/figures/qc_pca_plot_unintegrated_sct_day.png', width = 7, height = 6, units = 'in') # save 
@@ -346,8 +355,10 @@ Note we have specified the unintegrated reduction `unintegrated.sct.pca`, which 
 > 
 
 ```{r, preview_seurat}
-# Code block - Check our updated object that we've read in from file
-geo_so # Observe that we now have a new reduction, `integrated.sct.rpca`
+# Check our updated object that we've read in from file ------------------- 
+
+# Observe that we now have a new reduction, `integrated.sct.rpca`
+geo_so 
 ```
 
 Viewed in our running schematic:
@@ -357,7 +368,7 @@ Viewed in our running schematic:
 We can also confirm that our integration method has helped to correct the `Day` effects we saw in the initial PCA plots
 
 ```{r, check_integration, fig.show='hold'}
-# Code block - integrated data, PCA style plot for PC1 and PC2
+# PCA style plot for PC1 and PC2 (integrated) -----------------------------
 DimPlot(geo_so, reduction = 'integrated.sct.rpca', group.by = 'day')
 ggsave(filename = 'results/figures/qc_pca_plot_integrated_sct_day.png', width = 7, height = 6, units = 'in')
 ```
@@ -375,7 +386,7 @@ if(!file.exists('results/rdata/geo_so_sct_integrated.rds')) {
 ```
 
 ```{r, save_rds, eval = FALSE}
-# Code block - save updated seurat object to file
+# Save updated seurat object to file  -------------------------------------
 saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated.rds')
 ```
 
