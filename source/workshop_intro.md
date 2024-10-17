@@ -52,13 +52,13 @@ pre {
 
 
 ## About the workshop team
-| ![](images/headshots/headshot_cgates.jpg) | ![](images/headshots/headshot_mbradenb.jpg) | ![](images/headshots/headshot_rcavalca.jpg) |
-|:-:|:-:|:-:|
-| **Chris** | **Marci** | **Raymond** |
-![](images/headshots/headshot_damki.jpg) | ![](images/headshots/headshot_trsaari.jpg) | ![](images/headshots/headshot_okoues.jpg) |
-| **Dana** | **Travis** | **Olivia** |
-![](images/headshots/headshot_rammohan.jpg) | ![](images/headshots/headshot_mkdohert.jpg) | ![](images/headshots/headshot_ncarruth.jpg) |
-| **Ram** | **Matt** | **Nick** |
+| ![](images/headshots/headshot_cgates.jpg) | ![](images/headshots/headshot_mbradenb.jpg) | ![](images/headshots/headshot_rcavalca.jpg) | ![](images/headshots/headshot_damki.jpg) | 
+|:-:|:-:|:-:|:-:|
+| **Chris** | **Marci** | **Raymond** | **Dana** |
+| ![](images/headshots/headshot_trsaari.jpg) | ![](images/headshots/headshot_okoues.jpg) | ![](images/headshots/headshot_rammohan.jpg) | 
+| **Travis** | **Olivia** | **Ram** |
+| ![](images/headshots/headshot_mkdohert.jpg) | ![](images/headshots/headshot_joegrego.jpg) | ![](images/headshots/headshot_ncarruth.jpg) |
+|  **Matt** |  **Joe** | **Nick** |
 <br/>
 
 # Code of Conduct

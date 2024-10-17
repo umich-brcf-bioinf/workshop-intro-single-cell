@@ -175,7 +175,6 @@ Since PCA is sensitive to scale, we will run it on the SCT normalized assay ([re
 
 ```{r, run_pca, warning = FALSE, message = FALSE}
 # Build a PCA and add it to the Seurat object  ----------------------------
-
 geo_so = RunPCA(geo_so, reduction.name = 'unintegrated.sct.pca')
 geo_so
 ```
@@ -188,7 +187,6 @@ We can then visualize the first several PCs using the `DimHeatmp()` function, wh
 
 ```{r, pca_heatmap_plot, eval=FALSE}
 # Build heatmaps of PCAs  -------------------------------------------------
-
 # Plot cell by gene heatmaps for first several PCs
 DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca') # look at first PC alone first
 DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca') # first 18 PCs
@@ -208,7 +206,6 @@ DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, reduction = 'unintegrated.s
 
 ```{r, pca_heatmap_18, echo=FALSE, message = FALSE, fig.cap='DimHeatmap for PC1-18'}
 # Plot cell by gene heatmaps for first several PCs  -----------------------
-
 # first 18 PCs
 DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca') 
 ```
@@ -223,7 +220,7 @@ As we scroll down in this plot, we see less and less structure in our plots indi
   We can highlight genes loaded for dimenstions of interest using using `VizDimLoadings()`:
 
 ```{r, pca_loading_plot, eval = TRUE, fig.show='hold'}
-# Gene loadings for PC1 and PC2  ------------------------------------------
+# Visualize gene loadings for PC1 and PC2 ---------------------------------
 VizDimLoadings(geo_so, dims = 1:2, reduction = 'unintegrated.sct.pca')
 ggsave(filename = 'results/figures/qc_pca_loadings.png', width = 12, height = 6, units = 'in')
 
@@ -245,8 +242,7 @@ ggsave(filename = 'results/figures/qc_pca_loadings.png', width = 12, height = 6,
 One way to evaluate the PCs to include is by looking at an elbow plot, which shows the percent variance explained by successive PCs. We'll use the `ElbowPlot()` function to do this, specifying that the first 50 PCs be plotted. 
 
 ```{r, elbow_plot, fig.show='hold', out.width='80%'}
-# Elbow plot help visualize how many PCs to include -----------------------
-
+# Visualize how many PCs to include using an elbow plot -------------------
 ElbowPlot(geo_so, ndims = 50, reduction = 'unintegrated.sct.pca')
 ggsave(filename = 'results/figures/qc_sct_elbow_plot.png', width = 8, height = 8, units = 'in')
 ```
@@ -272,8 +268,7 @@ Related - how important is that decision to the downstream impact (e.g. how much
 Instead of choosing based on the elbow plot by sight alone, we can try to quantify our choice. Here we create a function to return a minimum PCs based on two possible metrics (cumulative variation or above a minium step size) and then we'll apply that function to our data:
 
 ```{r, optimal_pcs}
-# Function to determine optimal PCs to include ----------------------------
-
+# Estimate optimal PCs to include with a function -------------------------
 optimal_pcs = function(so, reduction) {
     # quantitative check for number of PCs to include
     pct = so@reductions[[reduction]]@stdev / sum(so@reductions[[reduction]]@stdev) * 100
@@ -310,8 +305,7 @@ In addition to selecting a reduced number of PCs to represent our data, we can a
 ~~~
 
 ```{r, pca_loading_plots, message=FALSE, fig.show='hold'}
-# PCA style plot for PC1 and PC2 (unintegrated) --------------------------- 
-
+# Visualize PCA (PC1 and PC2, unintegrated) -------------------------------
 DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'orig.ident') # first label by sample
 DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'day') # then label by day
 ggsave(filename = 'results/figures/qc_pca_plot_unintegrated_sct_day.png', width = 7, height = 6, units = 'in') # save 
@@ -367,7 +361,6 @@ Note we have specified the unintegrated reduction `unintegrated.sct.pca`, which 
 
 ```{r, preview_seurat}
 # Check our updated object that we've read in from file ------------------- 
-
 # Observe that we now have a new reduction, `integrated.sct.rpca`
 geo_so 
 ```
@@ -379,7 +372,7 @@ Viewed in our running schematic:
 We can also confirm that our integration method has helped to correct the `Day` effects we saw in the initial PCA plots
 
 ```{r, check_integration, fig.show='hold'}
-# PCA style plot for PC1 and PC2 (integrated) -----------------------------
+# Visualize PCA (PC1 and PC2, integrated) ---------------------------------
 DimPlot(geo_so, reduction = 'integrated.sct.rpca', group.by = 'day')
 ggsave(filename = 'results/figures/qc_pca_plot_integrated_sct_day.png', width = 7, height = 6, units = 'in')
 ```
