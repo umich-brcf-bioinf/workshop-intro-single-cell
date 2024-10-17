@@ -129,7 +129,6 @@ To increase the speed and accuracy of our predictions, we'll create query of rel
 
 ```{r, sccatch, message = FALSE, warning = FALSE}
 # Annotate clusters using scCATCH  ----------------------------------------
-
 library(scCATCH)
 
 # check that cell identities are set to expected resolution 
@@ -158,7 +157,6 @@ In our experience, these kinds of results often help guide cluster annotation bu
 To confirm, we'll spot check some known markers for immune populations. Then we'll look look at some other key marker genes from the original [Sorkin et al (2020) paper](), as well as some other resrouces like [Li et al (2022)](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-022-04817-5/figures/2) and [Nestorowa et al (2016)](https://ashpublications.org/blood/article/128/8/e20/35749/A-single-cell-resolution-map-of-mouse) to see if other modifications should be made to the scCATCH predictions:
 ```{r, marker_gene_check, fig.show='hold'}
 # Plot other markers/features to assist with identification ---------------
-
 # spot check known immune markers
 immune_markers = c('Cd14', 'Cd68', # macrophage marker
                    'Itgam', 'Adgre1', # Itgam=Cd11b; dendritic markers 
@@ -194,7 +192,6 @@ From the other marker genes, the patterns are less clear so we may want to test 
 Before deciding our final labels, we'll also check the percentage of mitochondrial genes to determine if there are any clusters (or sub populations) that might correspond to interesting cell death patterns (or might indicate further filtering is needed):
 ```{r, echo=TRUE, eval= TRUE}
 # Check mitochondrial gene expression -------------------------------------
-
 percent_mito_plot = FeaturePlot(geo_so, features='percent.mt')
 percent_mito_plot
 
@@ -210,7 +207,6 @@ Next, we'll modify the cell type predictions and add the labels to our Seurat ob
 
 ```{r, annotate_clusters}
 # Annotate clusters using modified predictions ----------------------------
-
 # First - Extract the cell types only from the predictions
 celltype_annos = geo_catch@celltype %>% select(cluster, cell_type)
 
@@ -248,7 +244,6 @@ Lastly, we can generate a revised UMAP plot with our descriptive cluster labels 
 
 ```{r, catch_umap_plot, fig.width = 10, fig.height = 8, fig.show='hold'}
 # Make a labeled UMAP plot of clusters ------------------------------------
-
 catch_umap_plot = DimPlot(geo_so, group.by = 'cell_type', label = TRUE, reduction = 'umap.integrated.sct.rpca')
 catch_umap_plot
 

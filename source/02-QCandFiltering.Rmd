@@ -151,7 +151,6 @@ The `PercentageFeatureSet()` function enables us to quickly determine the counts
 
 ```{r, assign_percent_mt}
 # Consider mitochondrial transcripts  ----------------------------------
-
 # We use "mt" because this is mouse, depending on the organism, this might need to be changed
 geo_so$percent.mt = PercentageFeatureSet(geo_so, pattern = '^mt-')
 
@@ -284,7 +283,7 @@ geo_so
 And let's record the number of cells remaining after filtering:
 
 ```{r, postfilter_cell_counts}
-# Remaining cell counts ------------------------------------------------
+# Examine remaining cell counts ----------------------------------------
 cell_counts_post_tbl = geo_so@meta.data %>% count(orig.ident, name = 'postfilter_cells')
 cell_counts_post_tbl
 ```
