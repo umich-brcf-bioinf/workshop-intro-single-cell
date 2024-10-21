@@ -121,7 +121,7 @@ Once we do this, RStudio will restart and the Files pane (lower right) should pu
 We have included the data to be used in the workshop in the `inputs/` folder. However, the project will need to include folders for our analysis and our analysis scripts. Let's create that directory structure with the `dir.create()` function.
 
 ```{r, dir_create}
-# create project directories ----------------------------------------------
+# Create project directories ----------------------------------------------
 dir.create('scripts', showWarnings = FALSE, recursive = TRUE)
 dir.create('results/figures', showWarnings = FALSE, recursive = TRUE)
 dir.create('results/tables', showWarnings = FALSE, recursive = TRUE)
@@ -148,7 +148,7 @@ As we proceed through the workshop, we should save this file (by clicking the Fl
 We begin our analysis script by loading the libraries we expect to use. It's generally good practice to include all `library()` calls at the top of a script for visibility.
 
 ```{r, load_libraries, warning = FALSE, message = FALSE}
-# load libraries  ----------------------------------------------
+# Load libraries  ----------------------------------------------
 library(Seurat)
 library(BPCells)
 library(tidyverse)
@@ -187,14 +187,14 @@ The most recent release of `Seurat`, version 5, includes changes which take adva
 <!-- Introduce BPCell package and how most recent version of Seurat (Seurat 5) supports more efficient data storage to improve performance and accomodate larger datasets -->
 
 ```{r, read_matrix_dir}
-# This puts the data "on disk" rather than in memory"  ------
+# Puts the data "on disk" rather than "in memory"  -------------
 geo_mat = open_matrix_dir(dir = 'inputs/10x_mat_filtered')
 ```
 
 This reads in the expression matrix which has genes as rows and cells as columns. The expression matrix is the precursor to creating the `Seurat` object upon which all our analysis will be done. To create the `Seurat` object:
 
 ```{r, create_seurat}
-# create seurat object  ----------------------------------------------
+# Create seurat object  ----------------------------------------------
 geo_so = CreateSeuratObject(counts = geo_mat, min.cells = 1, min.features = 50)
 geo_so
 ```
@@ -263,7 +263,7 @@ Note the RNA assay contains a `count` layer consisting of a raw count matrix whe
 The only slot of the `Seurat` object that we'll typically access or modify by hand--that is, without a function from the `Seurat` package--is the `meta.data` object. In R, slots are accessed with the `@` symbol, as in:
 
 ```{r, preview_metadata}
-# Examine seurat object ----------------------------------------------
+# Examine Seurat object ----------------------------------------------
 head(geo_so@meta.data)
 ```
 
@@ -280,7 +280,7 @@ if(!file.exists('results/rdata/geo_so_unfiltered.rds')) {
 ```
 
 ```{r, save_rds, eval = FALSE}
-# Save the seurat object ----------------------------------------------
+# Save the Seurat object ----------------------------------------------
 saveRDS(geo_so, file = 'results/rdata/geo_so_unfiltered.rds')
 ```
 

@@ -113,7 +113,6 @@ First we'll run cell-level comparisons for our data for the pericyte cluster, st
 
 ```{r, de_wilcox1, message = FALSE, warning = FALSE}
 # Compare pericyte cluster D21 v D7 ---------------------------------------
-
 # set up combined label of day + celltype & assign as identities
 geo_so$day.celltype = paste(geo_so$day, geo_so$cell_type, sep = '_')
 # check labels
@@ -149,7 +148,6 @@ If there is enough time - we can also compare between cells from the D7 and D0 c
 
 ```{r, de_wilcox2, message = FALSE, warning = FALSE}
 # Compare pericyte cluster D7 v D0 ----------------------------------------
-
 de_cell_pericyte_D7_vs_D0 = FindMarkers(
     object = geo_so,
     slot = 'data', test = 'wilcox',
@@ -182,7 +180,6 @@ We'll run psuedobulk comparisons for our data for the monocyte cluster, starting
 
 ```{r, de_pseudobulk, message = FALSE, warning = FALSE}
 # Create pseudobulk object -------------------------------------------------
-
 pseudo_catch_so = AggregateExpression(geo_so, assays = 'RNA', return.seurat = TRUE, group.by = c('cell_type', 'day', 'replicate'))
 
 # Set up labels to use for comparisons & assign as cell identities
@@ -213,7 +210,6 @@ Since we're working with pseudobulk data, unlike in the marker identification se
 
 ```{r, de_pseudobulk_volcano, warning = FALSE, message = FALSE}
 # Make a volcano plot of pseudobulk diffex results ------------------------
-
 pseudo_pericyte_D21_vs_D7_volcano = ggplot(de_pseudo_pericyte_D21_vs_D7, aes(x = avg_log2FC, y = -log10(p_val))) + geom_point()
 pseudo_pericyte_D21_vs_D7_volcano
 

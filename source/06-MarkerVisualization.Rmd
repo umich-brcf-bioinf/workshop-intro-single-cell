@@ -116,7 +116,6 @@ Then we'll run the`FindAllMarkers()` [function](https://satijalab.org/seurat/ref
 
 ```{r, find_all_markers, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
 # Find empirical markers  -------------------------------------------------
-
 # Prep for cluster comparisons
 geo_so = SetIdent(geo_so, value = 'integrated.sct.rpca.clusters')
 geo_so = PrepSCTFindMarkers(geo_so)
@@ -151,7 +150,6 @@ Therefore, it's useful to filter the results to highlight the top positive marke
 
 ```{r, top_5_cluster_markers}
 # Identify marker genes for each cluster ----------------------------------
-
 # Create table of top 5 markers per cluster (using default ranking)
 top_5 = geo_markers %>% filter(p_val_adj < 0.01) %>% group_by(cluster) %>% slice_head(n = 5)
 
@@ -184,8 +182,7 @@ Now that we have generated a set of marker genes for our clusters, it is useful 
 We'll use the `DotPlot()` [function](https://satijalab.org/seurat/reference/dotplot) with the SCT values to visualize the top 5 marker genes per cluster:
 
 ```{r, top_5_dot_plot_sct, fig.height = 18, fig.width = 8}
-# Dot plot to visualize top marker genes ----------------------------------
-
+# Visualize top marker genes as dot plot ----------------------------------
 top_5_sct_dot_plot = DotPlot(geo_so, features = unique(top_5$gene)) + 
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
     labs(title = 'Top 5 Cluster Genes by FDR and avg_log2FC') + coord_flip()
@@ -202,7 +199,6 @@ In the dotplot we can see that the color indicates the expression of the gene wh
 
 ```{r, top_5_dot_plot_rna, eval=FALSE}
 # Add RNA values to dot plot  ---------------------------------------------
-
 top_5_rna_dot_plot = DotPlot(geo_so, features = unique(top_5_by_log2FC$gene), assay = 'RNA') + 
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
     labs(title = 'Top 5 Cluster Genes by FDR and avg_log2FC') + coord_flip()
@@ -221,8 +217,7 @@ Often we have prior information about what cell types are expected in our sample
 We can create lists of markers used in figures from the [original paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7002453/) before using the same `DotPlot()` function to visualize the expression level and frequency of these genes in our current clusters:
 
 ```{r, known_dot_plots_sct, fig.show='hold'}
-# Visualizing manually selected marker genes ------------------------------
-
+# Visualize manually selected marker genes --------------------------------
 # Create lists of genes from paper 
 fig1g_markers = c('Cxcl1', 'Cxcl2', 'Ccl2', 'Ccl3', 'Ccl4', 'Il1b', 'Il6b', 'Tnf', 'Tgfb1', 'Tgfb2', 'Tgfb3', 'Cxcl5')
 fig1h_markers = c('Cxcr2', 'Csf1r', 'Csf3r', 'Tgfbr1', 'Tgfbr3', 'Il1r1', 'Il6ra', 'Lifr', 'Tgfbr2')
@@ -244,8 +239,7 @@ ggsave(filename = 'results/figures/markers_fig1h_sct_dot_plot.png', plot = fig1h
     We can also generate the same plots, but using the unintegrated data by specifying the `RNA` assay:
 
 ```{r, known_dot_plot_rna, eval=FALSE}
-# Visualizing manually selected marker genes (from unintegrated data) ----
-
+# Visualize manually selected marker genes (from unintegrated data) ------
 rna_dot_plot = DotPlot(geo_so, features = fig1g_markers, assay = 'RNA')
 fig1h_rna_dot_plot = DotPlot(geo_so, features = fig1h_markers, assay = 'RNA')
 
