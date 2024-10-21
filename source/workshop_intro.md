@@ -103,12 +103,8 @@ pre {
 - You can enable transcription subtitles for your view.
 - We will be using Breakout Rooms occasionally for ad-hoc 1-1 helper support.
   We will review this in detail together in a few minutes.
-- Zoom's "non-verbal controls" are a useful way to interact
-  - Depending on your version of Zoom you can access these either
-    - in the **Reactions** button on you main Zoom window
-    - at the bottom of the **Participant** pane
-
-![Zoom non verbals](images/workshop_intro/zoom_nonverbals.png)
+- Zoom's "Reactions" are a useful way to interact. You can access these from the *React* button.
+![Zoom non verbals](images/workshop_intro/zoom_reactions.png)
 
   - **Raise Hand** to request clarification or ask a question. (Same an in-person workshop.)
   - Instructors will use **Green check** and **Red X** to poll the group
@@ -195,7 +191,7 @@ this is ok.
 
 Once logged in, you should now see the RStudio interface:
 
-![Image: Landing page after successful login to RStudio server.](images/curriculum/RStudio_landing.png)
+![Image: Landing page after successful login to RStudio server.](images/workshop_intro/rstudio_landing.png)
 <br/>
 <br/>
 
