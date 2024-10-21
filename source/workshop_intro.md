@@ -103,7 +103,7 @@ pre {
 - You can enable transcription subtitles for your view.
 - We will be using Breakout Rooms occasionally for ad-hoc 1-1 helper support.
   We will review this in detail together in a few minutes.
-- Zoom's "Reactions" are a useful way to interact. You can access these from the *React* button.
+- Zoom's "Reactions" are a useful way to interact. You can access these from the **React** button.
 ![Zoom non verbals](images/workshop_intro/zoom_reactions.png)
 
   - **Raise Hand** to request clarification or ask a question. (Same an in-person workshop.)
