@@ -442,24 +442,81 @@ analysis from RNA-Seq data.</p>
 <p><img src="images/wayfinder/wayfinder_workshop_wrap_up.png" /></p>
 <hr />
 </div>
-<div id="single-cell-publication-methods" class="section level2">
-<h2>Single-cell publication methods</h2>
+<div id="example-methods" class="section level2">
+<h2>Example methods</h2>
 <details>
 <summary>
-Methods
+<strong>Single cell RNA sequencing using 10× genomics</strong>
 </summary>
-<p>… details about model systems, sample metadata, treatment, tissue
-acquisition, dissociation, library preparation, sequencing
-platform/versions/parameters, etc. …</p>
-<p><strong>Data analysis:</strong> All analysis and graphics were
-generated in R (v4.4.1) [1]. Analysis was performed primarily using the
-Seurat package (v5.0.1) [2]. Filtered CellRanger (v7.2.0) outputs for
-each sample were loaded. Cells with extreme values (which indicate low
-complexity, doublets, or apoptotic cells) were excluded by filtering to
-include only cells where Genes/cell &gt;300 and % mitochondrial &lt; 15%
-resulting in approximately 600-5,600 cells per sample after filtering.
-Counts were then normalized using the SCTransform method with default
-parameters [3].</p>
+<p>The example dataset used in the workshop was inspired by this Sorkin
+et al. and the experimental methods below were excerpted directly from
+that paper:</p>
+<ul>
+<li>Sorkin, Michael et al. <strong>“Regulation of heterotopic
+ossification by monocytes in a mouse model of aberrant wound
+healing.”</strong> Nature communications vol. 11,1 722. 5
+Feb. 2020.<br/>
+<a class="external" href="https://pubmed.ncbi.nlm.nih.gov/32024825/" target="_blank">https://pubmed.ncbi.nlm.nih.gov/32024825/</a></li>
+</ul>
+<p>Tissues harvested from the extremity injury site were digested for
+45 min in 0.3% Type 1 Collagenase and 0.4% Dispase II (Gibco) in Roswell
+Park Memorial Institute (RPMI) medium at 37 °C under constant agitation
+at 120 rpm. Digestions were subsequently quenched with 10% FBS RPMI and
+filtered through 40μm sterile strainers. Cells were then washed in PBS
+with 0.04% BSA, counted and resuspended at a concentration of ~1000
+cells/μl. Cell viability was assessed with Trypan blue exclusion on a
+Countess II (Thermo Fisher Scientific) automated counter and only
+samples with &gt;85% viability were processed for further
+sequencing.</p>
+University of Michigan Biomedical Research Core Facilities Advanced
+Genomics Core generated single-cell 3’ libraries on the 10× Genomics
+Chromium Controller following the manufacturers protocol for the v2
+reagent kit (10× Genomics, Pleasanton, CA, USA). Cell suspensions were
+loaded onto a Chromium Single-Cell A chip along with reverse
+transcription (RT) master mix and single cell 3’ gel beads, aiming for
+2000–6000 cells per channel. In this experiment, 8700 cells were
+encapsulated into emulsion droplets at a concentration of 700–1200
+cells/ul which targets 5000 single cells with an expected multiplet rate
+of 3.9%. Following generation of single-cell gel bead-in-emulsions
+(GEMs), reverse transcription was performed and the resulting Post
+GEM-RT product was cleaned up using DynaBeads MyOne Silane beads (Thermo
+Fisher Scientific, Waltham, MA, USA). The cDNA was amplified, SPRIselect
+(Beckman Coulter, Brea, CA, USA) cleaned and quantified then
+enzymatically fragmented and size selected using SPRIselect beads to
+optimize the cDNA amplicon size prior to library construction. An
+additional round of double-sided SPRI bead cleanup is performed after
+end repair and A-tailing. Another single-sided cleanup is done after
+adapter ligation. Indexes were added during PCR amplification and a
+final double-sided SPRI cleanup was performed. Libraries were quantified
+by Kapa qPCR for Illumina Adapters (Roche) and size was determined by
+Agilent tapestation D1000 tapes. Read 1 primer sequence are added to the
+molecules during GEM incubation. P5, P7 and sample index and read 2
+primer sequence are added during library construction via end repair,
+A-tailing, adaptor ligation and PCR. Libraries were generated with
+unique sample indices (SI) for each sample. Libraries were sequenced on
+a HiSeq 4000, (Illumina, San Diego, CA, USA) using a HiSeq 4000 PE
+Cluster Kit (PN PE-410-1001) with HiSeq 4000 SBS Kit (100 cycles, PN
+FC-410-1002) reagents, loaded at 200 pM following Illumina’s denaturing
+and dilution recommendations. The run configuration was 26 × 8 × 98
+cycles for Read 1, Index and Read 2, respectively.
+</details>
+<details>
+<summary>
+<strong>Data analysis</strong>
+</summary>
+<p>University of Michigan Biomedical Research Core Facilities Advanced
+Genomics Core executed 10x Genomics Cell Ranger (v7.2.0) to perform
+sample de-multiplexing, barcode processing, and single cell gene
+counting (Alignment, Barcoding and UMI Count). The Cell Ranger filtered
+barcode feature matrix was used as input to downstream analysis.</p>
+<p>All analysis and graphics were generated in R (v4.4.1) [1]. Analysis
+was performed primarily using the Seurat package (v5.0.1) [2]. Cells
+with extreme values (which indicate low complexity, doublets, or
+apoptotic cells) were excluded by filtering to include only cells where
+Genes/cell &gt;300 and % mitochondrial &lt; 15% resulting in
+approximately 600-5,600 cells per sample after filtering. Counts were
+then normalized using the SCTransform method with default parameters
+[3].</p>
 <p>Normalized data were integrated using the RPCA method
 (IntegrateLayers function with “SCT” as normalization method. Principal
 Component Analysis (PCA) was then performed and the first significant
@@ -507,7 +564,16 @@ change and dispersion for RNA-seq data with DESeq2.” Genome Biology, 15,
 550. <a href="doi:10.1186/s13059-014-0550-8"
 class="uri">doi:10.1186/s13059-014-0550-8</a>.</li>
 </ol>
-<p><strong>Session Info</strong></p>
+</details>
+<details>
+<summary>
+<strong>Session Info</strong>
+</summary>
+<p><em><code>Session info</code> lists the relevant versions of R and
+all the libraries that were loaded in the analysis. This info is
+generally not included in main body of a paper, but serious
+reproducibility street-cred if it shows up in supplemental.<br/> Hear me
+now, believe me later.</em></p>
 <pre><code>devtools::session_info()
 ─ Session info ───────────────────────────────────────────────────────────────────────────────────
  setting  value
