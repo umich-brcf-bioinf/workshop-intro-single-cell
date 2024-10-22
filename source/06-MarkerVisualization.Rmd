@@ -108,13 +108,15 @@ Many of the differential expression (DE) tools designed for bulk RNA-seq samples
 
 ## Marker identification
 
-First, we'll ensure that the correct resolution is selected from our Seurat object and then we'll use the `PrepSCTFindMarkers()` [function](https://satijalab.org/seurat/reference/prepsctfindmarkers) in preparation for DE comaprisons to "reverse the individual SCT regression model using minimum of median UMI as the sequencing depth covariate" according to the [Seurat documentation](https://satijalab.org/seurat/reference/prepsctfindmarkers). 
+First, we'll change identities of the cells to "integrated.sct.rpca.clusters" explicitly with `SetIdent()`. The "seurat_clusters" column is the default column for cell identities and changes each time a new clustering is performed. Then, we'll ensure that the correct resolution is selected from our Seurat object and then we'll use the `PrepSCTFindMarkers()` [function](https://satijalab.org/seurat/reference/prepsctfindmarkers) in preparation for DE comaprisons to "reverse the individual SCT regression model using minimum of median UMI as the sequencing depth covariate" according to the [Seurat documentation](https://satijalab.org/seurat/reference/prepsctfindmarkers). Remember that we've performed integration and clustering to assign the cells to clusters regardless of their experimental condition but that we now want to ensure that the data is normalized but not with the SCTransformation scaling needed for the previous steps.
 
 <!-- if we want to use the normalized RNA data (not the integrated data) `DefaultAssay(geo_so) <- "RNA"`, although need to check if that still makes sense for Seurat v5 --> 
 
 Then we'll run the`FindAllMarkers()` [function](https://satijalab.org/seurat/reference/findallmarkers) to generate comparisons between each cluster and all other cells, regardless of the experimental group. Note - the statistical test to perform can be specified in `FindAllMarkers()`, but the default is a Wilcoxon test. 
 
 ```{r, find_all_markers, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
+##### Day 3 - Marker identification and visualization 
+
 # Find empirical markers  -------------------------------------------------
 # Prep for cluster comparisons
 geo_so = SetIdent(geo_so, value = 'integrated.sct.rpca.clusters')
@@ -130,7 +132,6 @@ head(geo_markers)
 write_csv(geo_markers, file = 'results/tables/marker_genes_0.4res.csv')
 ```
 
-Note that with `SetIdent()` above, we are changing identities of the cells to "integrated.sct.rpca.clusters" explicitly. The "seurat_clusters" column is the default column for cell identities and changes each time a new clustering is performed.
 
 ![Image: Schematic after SetIdent().](images/seurat_schematic/Slide11.png)
 
@@ -210,46 +211,19 @@ ggsave(filename = 'results/figures/markers_top_5_rna_dot_plot.png', plot = top_5
 <br>
 <br>
 
-# Utilizing genes of interest
+Before proceeding with cluster annotations, we'll also check the percentage of mitochondrial genes to determine if there are any clusters (or sub populations) that might correspond to interesting cell death patterns (or might indicate further filtering is needed):
+```{r, echo=TRUE, eval= TRUE}
+# Check mitochondrial gene expression -------------------------------------
+percent_mito_plot = FeaturePlot(geo_so, features='percent.mt')
+percent_mito_plot
 
-Often we have prior information about what cell types are expected in our samples and key marker genes for those populations. This can be an important part of evaluating our clusters, since if genes that are known markers for a specific cell type are found in too many or too few clusters as that can suggest that re-clustering is needed or that some of the clusters should be manually combined before annotating.
-
-We can create lists of markers used in figures from the [original paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7002453/) before using the same `DotPlot()` function to visualize the expression level and frequency of these genes in our current clusters:
-
-```{r, known_dot_plots_sct, fig.show='hold'}
-# Visualize manually selected marker genes --------------------------------
-# Create lists of genes from paper 
-fig1g_markers = c('Cxcl1', 'Cxcl2', 'Ccl2', 'Ccl3', 'Ccl4', 'Il1b', 'Il6b', 'Tnf', 'Tgfb1', 'Tgfb2', 'Tgfb3', 'Cxcl5')
-fig1h_markers = c('Cxcr2', 'Csf1r', 'Csf3r', 'Tgfbr1', 'Tgfbr3', 'Il1r1', 'Il6ra', 'Lifr', 'Tgfbr2')
-
-# create DotPlots for genes from paper
-fig1g_sct_dot_plot = DotPlot(geo_so, features = fig1g_markers, assay = 'SCT')
-fig1h_sct_dot_plot = DotPlot(geo_so, features = fig1h_markers, assay = 'SCT')
-
-fig1g_sct_dot_plot
-fig1h_sct_dot_plot
-
-# save plots to file
-ggsave(filename = 'results/figures/markers_fig1g_sct_dot_plot.png', plot = fig1g_sct_dot_plot, width = 8, height = 6, units = 'in')
-ggsave(filename = 'results/figures/markers_fig1h_sct_dot_plot.png', plot = fig1h_sct_dot_plot, width = 8, height = 6, units = 'in')
+# save to file
+ggsave(filename = 'results/figures/percent_umap_mito_plot.png', plot = percent_mito_plot, width = 6, height = 6, units = 'in')
 ```
 
-<details>
-    <summary>*Using raw RNA values for genes of interest*</summary>
-    We can also generate the same plots, but using the unintegrated data by specifying the `RNA` assay:
+We see that a higher % seem to be somewhat concentrated in a few places, but if cell death might be of interest for the research question, we'd want to consider investigating this pattern further by splitting up the plots by day and/or waiting until after running initial differential expression analysis to determine if these cell populations are interesting biology or not.
 
-```{r, known_dot_plot_rna, eval=FALSE}
-# Visualize manually selected marker genes (from unintegrated data) ------
-rna_dot_plot = DotPlot(geo_so, features = fig1g_markers, assay = 'RNA')
-fig1h_rna_dot_plot = DotPlot(geo_so, features = fig1h_markers, assay = 'RNA')
 
-ggsave(filename = 'results/figures/markers_fig1g_rna_dot_plot.png', plot = fig1g_rna_dot_plot, width = 8, height = 6, units = 'in')
-ggsave(filename = 'results/figures/markers_fig1h_rna_dot_plot.png', plot = fig1h_rna_dot_plot, width = 8, height = 6, units = 'in')
-```
-</details>
-<br>
-
-For known marker genes, it's important to note that since scRNA-seq is only measuring transcriptional signals that markers at the protein level (e.g used for approaches like FACS) may be less effective. An alternative or complement to using marker genes could be methods like using gene set enrichment (GSEA) [as demonstrated in the OSCA book](https://bioconductor.org/books/3.15/OSCA.basic/cell-type-annotation.html#computing-gene-set-activities) to aid in annotations. However, the book ["Best practices for single-cell analysis across modalities" by Heumos, Schaar, Lance, et al. ](https://www.sc-best-practices.org/cellular_structure/annotation.html) points out that "it is often useful to work together with experts ... [like a] biologist who has more extensive knowledge of the tissue, the biology, the expected cell types and markers etc.". In our experience, we find that experience and knowledge of the researchers we work with is invaluable. 
 
 # Save our progress
 

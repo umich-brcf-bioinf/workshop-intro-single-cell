@@ -38,6 +38,10 @@ table{
 }
 </style>
 
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
+```
+
 ```{r, include = FALSE}
 source("../bin/chunk-options.R")
 knitr_fig_path("02-QCandFiltering/02-")
@@ -96,6 +100,8 @@ if(!exists('geo_so')) {
 We're going to alter and add some columns to `meta.data` to ease some downstream analysis and plotting steps. This will often be necessary, as sample names contain combined information about phenotypes. Let's take a look at the first few rows again, to reacquaint ourselves.
 
 ```{r, preview_metadata1}
+##### Day 1 - Secondary QC and filtering
+
 # Examine Seurat metdata  ----------------------------------------------
 head(geo_so@meta.data)
 ```
@@ -113,7 +119,6 @@ The following code chunk will create new columns from the `orig.ident` column, o
 ```{r, alter_metadata}
 # Make metadata more granular ------------------------------------------
 # (So it's easier for us to understand)  
-
 orig.ident_levels = apply(
     expand.grid(c('HO'), c('replicate1', 'replicate2', 'replicate3', 'replicate4'), c('Day0','Day7','Day21')), 
     MARGIN = 1, FUN = function(row){paste(row[1], row[3], row[2], sep = '.')})

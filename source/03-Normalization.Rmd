@@ -109,6 +109,8 @@ We will use the `SCTransform()` function, which uses a generalized linear model 
 The `assays` in a Seurat v5 object store data in "layers". When we first read the data in, we saw there was only one layer in the RNA assay. In order to run `SCTransform()` in Seurat v5, we have to separate the sample-wise data into layers with the following command:
 
 ```{r, convert_to_layers}
+##### Day 1 - Normalization 
+
 # Separate sample data into layers  ---------------------------------------
 geo_so[['RNA']] = split(geo_so[['RNA']], f = geo_so$orig.ident)
 geo_so

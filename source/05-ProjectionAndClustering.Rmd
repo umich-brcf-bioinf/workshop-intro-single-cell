@@ -141,7 +141,19 @@ Again, how a “cell type” or “subtype” should be defined for your data is
 
 Then, when we look at the meta data we should see that cluster labels have been added for each cell:
 
-```{r, find_neighbors, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
+```{r, find_neighbors, eval = FALSE}
+# Cluster PCAs ------------------------------------------------------------
+# Create KNN graph with `FindNeighbors()`
+geo_so = FindNeighbors(geo_so, dims = 1:pcs, reduction = 'integrated.sct.rpca')
+
+# generate clusters
+geo_so = FindClusters(geo_so, resolution = 0.4, cluster.name = 'integrated.sct.rpca.clusters')
+
+# look at meta.data to see cluster labels
+head(geo_so@meta.data)
+```
+
+```{r, find_neighbors_hidden, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE, echo=FALSE}
 # Cluster PCAs ------------------------------------------------------------
 # Create KNN graph with `FindNeighbors()`
 geo_so = FindNeighbors(geo_so, dims = 1:pcs, reduction = 'integrated.sct.rpca')
@@ -157,14 +169,17 @@ The result of `FindNeighbors()` adds graph information to the `graphs` slot:
 
 ![Image: Schematic after FindNeighbors().](images/seurat_schematic/Slide8.png)
 
+<br>
+
 The result of `FindClusters()` adds two columns to the `meta.data` table and changes the `active.ident` to the "seurat_clusters" column. In other words, the cells now belong to clusters rather than to their `orig.ident`.
 
 ![Image: Schematic after FindClusters().](images/seurat_schematic/Slide9.png)
 
 Generally it's preferable to err on the side of too many clusters, as they can be combined manually in later steps. In our experience, this is another parameter that often needs to be iteratively revised and reviewed. 
 
+### Resolution parameters recommendations
 <details>
-    <summary>*Resolution parameter recommendations*</summary>
+    <summary>*More details on choosing a clustering resolution*</summary>
     The [Seurat clustering tutorial](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction) recommends selecting a resolution between 0.4 - 1.2 for datasets of approximately 3k cells, while the [HBC course](https://hbctraining.github.io/scRNA-seq_online/lessons/07_SC_clustering_cells_SCT.html) recommends 0.4-1.4 for 3k-5k cells. However, in our experience reasonable starting resolutions can be very dataset dependent.
 </details>
 <br>
@@ -224,7 +239,16 @@ Similar to the PCA plots, the `day` labeled UMAP can tell us if technical source
 
 Another approach is to evaluate the number of cells per cluster using the `table()` function, split by `day` or split by `orig.ident` to see if the individual samples are driving any of the UMAP structure:
 
-```{r, table_by_day}
+```{r, table_by_day, eval = FALSE}
+# Make tables of cell counts ----------------------------------------------
+# cells per cluster, split by condition
+table(geo_so@meta.data$day, geo_so@meta.data$integrated.sct.rpca.clusters)
+
+# cells per cluster per sample
+table(geo_so@meta.data$orig.ident, geo_so@meta.data$integrated.sct.rpca.clusters)
+```
+
+```{r, table_by_day_hidden, echo = FALSE}
 # Make tables of cell counts ----------------------------------------------
 # cells per cluster, split by condition
 table(geo_so@meta.data$day, geo_so@meta.data$integrated.sct.rpca.clusters)
@@ -246,9 +270,9 @@ If we had proceeded with our filtered data and only normalized our data without 
 
 <!--Add updated example of UMAP / sample labels for unintegrated data - need to check with Raymond regarding how best to do this in place --> 
 
-```{r, run_umap_unintegrated, echo = FALSE, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE, out.height='80%'}
+```{r, run_umap_unintegrated, echo = FALSE, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE, out.height='60%'}
 # Create KNN graph with `FindNeighbors()` for unintegrated data
-geo_so = FindNeighbors(geo_so, dims = 1:pcs, reduction = 'unintegrated.sct.pca')
+geo_so = FindNeighbors(geo_so, dims = 1:pcs, reduction = 'unintegrated.sct.pca', verbose=FALSE)
 
 # generate clusters for unintegrated data
 geo_so = FindClusters(geo_so, resolution = 0.4, cluster.name = 'unintegrated.sct.pca.clusters')
