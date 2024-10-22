@@ -5,6 +5,9 @@
 # remove.packages('klippy');remotes::install_github("umich-brcf-bioinf/workshop-klippy"); library(klippy)
 library(rmarkdown)
 
+# IF KNITTING ON AWS:
+# setwd("~/workshop-intro-single-cell")
+
 # The html from the files below don't have the nav bar
 
 render('source/workshop_setup/preregistration_info.md', output_dir='html/workshop_setup/')
