@@ -49,7 +49,7 @@ body, td {
 | 9:20 | [Principal Component Analysis & Integration](04-PCAandIntegration.html) (Dana) |
 |      | [Clustering & Projection](05-ProjectionAndClustering.html) |
 | 11:00 | Break |
-| 11:15 | A review of sequencing approaches (Tricia) |
+| 11:15 | A review of sequencing approaches (Olivia) |
 |      | [Clustering & Projection (continued)](05-ProjectionAndClustering.html) | 
 | 1:00 | Day 2 concludes |
 

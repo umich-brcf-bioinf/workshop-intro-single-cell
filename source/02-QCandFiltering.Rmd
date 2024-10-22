@@ -96,6 +96,8 @@ if(!exists('geo_so')) {
 We're going to alter and add some columns to `meta.data` to ease some downstream analysis and plotting steps. This will often be necessary, as sample names contain combined information about phenotypes. Let's take a look at the first few rows again, to reacquaint ourselves.
 
 ```{r, preview_metadata1}
+##### Day 1 - Secondary QC and filtering
+
 # Examine Seurat metdata  ----------------------------------------------
 head(geo_so@meta.data)
 ```
@@ -113,7 +115,6 @@ The following code chunk will create new columns from the `orig.ident` column, o
 ```{r, alter_metadata}
 # Make metadata more granular ------------------------------------------
 # (So it's easier for us to understand)  
-
 orig.ident_levels = apply(
     expand.grid(c('HO'), c('replicate1', 'replicate2', 'replicate3', 'replicate4'), c('Day0','Day7','Day21')), 
     MARGIN = 1, FUN = function(row){paste(row[1], row[3], row[2], sep = '.')})
@@ -151,7 +152,6 @@ The `PercentageFeatureSet()` function enables us to quickly determine the counts
 
 ```{r, assign_percent_mt}
 # Consider mitochondrial transcripts  ----------------------------------
-
 # We use "mt" because this is mouse, depending on the organism, this might need to be changed
 geo_so$percent.mt = PercentageFeatureSet(geo_so, pattern = '^mt-')
 
@@ -284,7 +284,7 @@ geo_so
 And let's record the number of cells remaining after filtering:
 
 ```{r, postfilter_cell_counts}
-# Remaining cell counts ------------------------------------------------
+# Examine remaining cell counts ----------------------------------------
 cell_counts_post_tbl = geo_so@meta.data %>% count(orig.ident, name = 'postfilter_cells')
 cell_counts_post_tbl
 ```
