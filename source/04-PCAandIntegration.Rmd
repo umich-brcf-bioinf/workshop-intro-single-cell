@@ -174,6 +174,8 @@ Since PCA is sensitive to scale, we will run it on the SCT normalized assay ([re
 
 
 ```{r, run_pca, warning = FALSE, message = FALSE}
+##### Day 2 - PCA and Integration
+
 # Build a PCA and add it to the Seurat object  ----------------------------
 geo_so = RunPCA(geo_so, reduction.name = 'unintegrated.sct.pca')
 geo_so
@@ -268,7 +270,7 @@ Related - how important is that decision to the downstream impact (e.g. how much
 Instead of choosing based on the elbow plot by sight alone, we can try to quantify our choice. Here we create a function to return a minimum PCs based on two possible metrics (cumulative variation or above a minium step size) and then we'll apply that function to our data:
 
 ```{r, optimal_pcs}
-# Estimate optimal PCs to include with a function -------------------------
+# Estimate optimal PCs for clustering with a function -------------------------
 optimal_pcs = function(so, reduction) {
     # quantitative check for number of PCs to include
     pct = so@reductions[[reduction]]@stdev / sum(so@reductions[[reduction]]@stdev) * 100
@@ -326,7 +328,7 @@ The details of how integration works depends on the method, but for the RPCA app
 New to Seurat v5 are improvements that make selecting different integration methods much easier. The results of each alternative integration method are stored within the same `Seurat` object, which makes comparing downstream effects much easier.  So, if we wanted to run the `RPCAIntegration` method, we would run (**but we won't here**):
 
 ```{r, integrate_layers, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE, echo=FALSE, include=FALSE}
-### DO NOT RUN ###
+### Hidden code block to generate integrated data
 geo_so = IntegrateLayers(
   object = geo_so, 
   method = RPCAIntegration, 
@@ -346,7 +348,7 @@ geo_so = IntegrateLayers(
 ```
 
 
-The Seurat v5 vignette on integrative analysis ([link](https://satijalab.org/seurat/articles/seurat5_integration#perform-streamlined-one-line-integrative-analysis)) provides examples of each integration method. Note, that the vignette code uses the `NormalizeData()`, `ScaleData()`, `FindVariableFeatures()` pipeline, so their `IntegrateLayers()` call does not include `normalization.method = 'SCT'`, as ours must.
+Note that the integration is run on the layers, which from our prior steps each correspond to a single sample, in our `geo_so` Seurat object. For additional information, refer to the Seurat v5 vignette on integrative analysis ([link](https://satijalab.org/seurat/articles/seurat5_integration#perform-streamlined-one-line-integrative-analysis)) provides examples of each integration method. Note, that the vignette code uses the `NormalizeData()`, `ScaleData()`, `FindVariableFeatures()` pipeline, so their `IntegrateLayers()` call does not include `normalization.method = 'SCT'`, as ours must.
 
 Note we have specified the unintegrated reduction `unintegrated.sct.pca`, which is what `IntegrateLayers()` operates on, along with the `SCT` assay. Let's take a look to see what's different about the `Seurat` object:
 
