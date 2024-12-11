@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core" />
+
+<meta name="date" content="2024-10-22" />
+
+<title>Independent Exercise</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<!--
+Favicon dervied from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<link rel="manifest" href="site.webmanifest">
+<link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+    </li>
+    <li>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+    </li>
+    <li>
+      <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
+    </li>
+    <li>
+      <a href="03-Normalization.html">Normalization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
+    </li>
+    <li>
+      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="06-MarkerVisualization.html">Marker identification and visualization</a>
+    </li>
+    <li>
+      <a href="07-CellTypeAnnos.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="08-DifferentialExpression.html">Differential expression analysis</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Independent Exercise</h1>
+<h4 class="author">UM Bioinformatics Core</h4>
+<h4 class="date">2024-10-22</h4>
+
+</div>
+
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+</style>
+<script>
+  addClassKlippyTo("pre.r, pre.markdown, pre.bash");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<div id="workflow-overview" class="section level1 unlisted unnumbered">
+<h1 class="unlisted unnumbered">Workflow Overview</h1>
+<p><br/>
+<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<br/> <br/></p>
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>We can extend our analysis by performing some parameter iteration to
+determine how that impacts our clustering (and might impact our later
+results).</p>
+<!-- regular html comment -->
+<!--Add specific goals for section-->
+<pre class="r"><code># Exercise: adjust number of PCs and resolution to see impact on clustering
+
+# First - clear current Seurat object to free up memory &amp; remove current results
+rm(geo_so) 
+
+# Then  load in integrated data &amp; reset object on each iteration to avoid exceeding allocated space
+geo2_so = readRDS(&#39;/home/workshop/damki/ISC_R/results/rdata/geo_so_sct_integrated.rds&#39;)
+
+# look at elbow plot
+ElbowPlot(geo2_so, ndims = 50, reduction = &#39;unintegrated.sct.pca&#39;)
+
+## Clustering
+# Round 1: manually adjust number of PCs to include in clustering
+#pcs = 20 # increase number of PCs
+pcs = 10 # reduce number of PCs
+
+# generate nearest neighbor (graph), using selected number of PCs
+geo2_so = FindNeighbors(geo2_so, dims = 1:pcs, reduction = &#39;integrated.sct.rpca&#39;)
+
+# Round 2: adjust resolution after testing PCs (remember this only impacts the how the boundaries of the neighbors are drawn, not the underlying NN graph/structure)
+res = 0.4
+# res = 1.0
+# res = 0.2
+
+# generate clusters, using 
+geo2_so = FindClusters(geo2_so, resolution = res, cluster.name = &#39;integrated.sct.rpca.clusters&#39;)
+
+# look at meta.data to see cluster labels
+head(geo2_so@meta.data)
+
+# Prep for UMAP
+geo2_so = RunUMAP(geo2_so, dims = 1:pcs, reduction = &#39;integrated.sct.rpca&#39;, 
+                 reduction.name = &#39;umap.integrated.sct.rpca&#39;)
+geo2_so
+
+# look at clustering results
+post_integration_umap_clusters_testing = 
+  DimPlot(geo2_so, group.by = &#39;seurat_clusters&#39;, label = TRUE, 
+          reduction = &#39;umap.integrated.sct.rpca&#39;) + NoLegend()
+post_integration_umap_clusters_testing # look at plot
+
+# output to file, including the number of PCs and resolution used to generate results
+ggsave(filename = paste0(&#39;results/figures/umap_integrated_sct_clusters&#39;, 
+                         pcs,&#39;PCs&#39;,res,&#39;res.png&#39;),
+       plot = post_integration_umap_plot_clusters, 
+       width = 8, height = 6, units = &#39;in&#39;)
+
+## generate markers and annotate clusters to see how that changes
+
+# prep for cluster comparisons
+geo2_so = SetIdent(geo2_so, value = &#39;integrated.sct.rpca.clusters&#39;)
+geo2_so = PrepSCTFindMarkers(geo2_so)
+
+# run comparisons for each cluster to generate markers
+geo2_markers = FindAllMarkers(geo2_so, only.pos = TRUE)
+
+# manually create lists of genes from paper
+fig1g_markers = c(&#39;Cxcl1&#39;, &#39;Cxcl2&#39;, &#39;Ccl2&#39;, &#39;Ccl3&#39;, &#39;Ccl4&#39;, &#39;Il1b&#39;, &#39;Il6b&#39;, &#39;Tnf&#39;, &#39;Tgfb1&#39;, &#39;Tgfb2&#39;, &#39;Tgfb3&#39;, &#39;Cxcl5&#39;)
+fig1h_markers = c(&#39;Cxcr2&#39;, &#39;Csf1r&#39;, &#39;Csf3r&#39;, &#39;Tgfbr1&#39;, &#39;Tgfbr3&#39;, &#39;Il1r1&#39;, &#39;Il6ra&#39;, &#39;Lifr&#39;, &#39;Tgfbr2&#39;)
+
+# create DotPlots for genes from paper
+fig1g_sct_dot_plot = DotPlot(geo2_so, features = fig1g_markers, assay = &#39;SCT&#39;)
+fig1h_sct_dot_plot = DotPlot(geo2_so, features = fig1h_markers, assay = &#39;SCT&#39;)
+fig1h_sct_dot_plot
+
+# run cell type predictions for current clustering results
+library(scCATCH)
+
+# create scCATCH object, using count data
+geo2_catch = createscCATCH(data = geo2_so@assays$SCT@counts, cluster = as.character(Idents(geo2_so)))
+
+# add marker genes to use for predictions
+catch_markers = geo2_markers %&gt;% rename(&#39;logfc&#39; = &#39;avg_log2FC&#39;)
+geo2_catch@markergene = geo2_markers
+
+# specify tissues/cell-types from the scCATCH reference
+geo2_catch@marker = cellmatch[cellmatch$species == &#39;Mouse&#39; &amp; cellmatch$tissue %in% c(&#39;Blood&#39;, &#39;Peripheral Blood&#39;, &#39;Muscle&#39;, &#39;Skeletal muscle&#39;, &#39;Epidermis&#39;, &#39;Skin&#39;), ]
+
+# run scCATCH to generate predictions
+geo2_catch = findcelltype(geo2_catch)
+
+# look at the predictions
+geo2_catch@celltype %&gt;% select(cluster, cell_type, celltype_score)
+
+## annotate clusters
+# Extract the cell types only to merge into the meta.data
+catch_celltypes = geo2_catch@celltype %&gt;% select(cluster, cell_type)
+
+# Merge cell types in but as a new table to slide into @meta.data
+new_metadata = geo2_so@meta.data %&gt;% left_join(catch_celltypes, 
+                                              by = c(&#39;integrated.sct.rpca.clusters&#39; = &#39;cluster&#39;))
+rownames(new_metadata) = rownames(geo2_so@meta.data) #  We are implicitly relying on the same row order!
+
+# Replace the meta.data
+geo2_so@meta.data = new_metadata 
+head(geo2_so@meta.data)
+
+catch_umap_plot = DimPlot(geo2_so, group.by = &#39;cell_type&#39;, 
+                          label = TRUE, reduction = &#39;umap.integrated.sct.rpca&#39;)
+catch_umap_plot
+
+
+
+#########
+
+## Extension - how might you interate to generate DE comparisons between D21 and D7 for all annotated clusters?
+# Note - would want to re-load our last object 
+rm(geo2_so)
+geo_so = readRDS(&#39;/home/workshop/damki/ISC_R/results/rdata/geo_so_sct_integrated_final.rds&#39;)</code></pre>
+<hr />
+<p>These materials have been adapted and extended from materials listed
+above. These are open access materials distributed under the terms of
+the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
+Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
+use, distribution, and reproduction in any medium, provided the original
+author and source are credited.</p>
+<br/> <br/>
+<hr/>
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="08-DifferentialExpression.html">Previous
+lesson</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="workshop_wrap_up.html">Workshop
+Wrap-up</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiSW5kZXBlbmRlbnQgRXhlcmNpc2UiCmF1dGhvcjogIlVNIEJpb2luZm9ybWF0aWNzIENvcmUiCmRhdGU6ICJgciBTeXMuRGF0ZSgpYCIKb3V0cHV0OgogICAgICAgIGh0bWxfZG9jdW1lbnQ6CiAgICAgICAgICAgIGluY2x1ZGVzOgogICAgICAgICAgICAgICAgaW5faGVhZGVyOiBoZWFkZXIuaHRtbAogICAgICAgICAgICB0aGVtZTogcGFwZXIKICAgICAgICAgICAgdG9jOiB0cnVlCiAgICAgICAgICAgIHRvY19kZXB0aDogNAogICAgICAgICAgICB0b2NfZmxvYXQ6IHRydWUKICAgICAgICAgICAgbnVtYmVyX3NlY3Rpb25zOiBmYWxzZQogICAgICAgICAgICBmaWdfY2FwdGlvbjogdHJ1ZQogICAgICAgICAgICBtYXJrZG93bjogR0ZNCiAgICAgICAgICAgIGNvZGVfZG93bmxvYWQ6IHRydWUKLS0tCgo8c3R5bGUgdHlwZT0idGV4dC9jc3MiPgpib2R5LCB0ZCB7CiAgIGZvbnQtc2l6ZTogMThweDsKfQpjb2RlLnJ7CiAgZm9udC1zaXplOiAxMnB4Owp9CnByZSB7CiAgZm9udC1zaXplOiAxMnB4Cn0KPC9zdHlsZT4KCmBgYHtyIGtsaXBweSwgZWNobz1GQUxTRSwgaW5jbHVkZT1UUlVFfQprbGlwcHk6OmtsaXBweShsYW5nID0gYygiciIsICJtYXJrZG93biIsICJiYXNoIiksIHBvc2l0aW9uID0gYygidG9wIiwgInJpZ2h0IikpCmBgYAoKYGBge3IsIGluY2x1ZGUgPSBGQUxTRX0Kc291cmNlKCIuLi9iaW4vY2h1bmstb3B0aW9ucy5SIikKa25pdHJfZmlnX3BhdGgoIlhYIikKYGBgCgojIFdvcmtmbG93IE92ZXJ2aWV3IHsudW5saXN0ZWQgLnVubnVtYmVyZWR9Cgo8YnIvPgo8aW1nIHNyYz0iaW1hZ2VzL3dheWZpbmRlci93YXlmaW5kZXIucG5nIiBhbHQ9IndheWZpbmRlciIgc3R5bGU9ImhlaWdodDogNDAwcHg7Ii8+Cjxici8+Cjxici8+CgojIEludHJvZHVjdGlvbgoKV2UgY2FuIGV4dGVuZCBvdXIgYW5hbHlzaXMgYnkgcGVyZm9ybWluZyBzb21lIHBhcmFtZXRlciBpdGVyYXRpb24gdG8gZGV0ZXJtaW5lIGhvdyB0aGF0IGltcGFjdHMgb3VyIGNsdXN0ZXJpbmcgKGFuZCBtaWdodCBpbXBhY3Qgb3VyIGxhdGVyIHJlc3VsdHMpLgoKPCEtLSByZWd1bGFyIGh0bWwgY29tbWVudCAtLT4gCjwhLS1BZGQgc3BlY2lmaWMgZ29hbHMgZm9yIHNlY3Rpb24tLT4KCmBgYHtyLCBldmFsID0gRkFMU0V9CiMgRXhlcmNpc2U6IGFkanVzdCBudW1iZXIgb2YgUENzIGFuZCByZXNvbHV0aW9uIHRvIHNlZSBpbXBhY3Qgb24gY2x1c3RlcmluZwoKIyBGaXJzdCAtIGNsZWFyIGN1cnJlbnQgU2V1cmF0IG9iamVjdCB0byBmcmVlIHVwIG1lbW9yeSAmIHJlbW92ZSBjdXJyZW50IHJlc3VsdHMKcm0oZ2VvX3NvKSAKCiMgVGhlbiAgbG9hZCBpbiBpbnRlZ3JhdGVkIGRhdGEgJiByZXNldCBvYmplY3Qgb24gZWFjaCBpdGVyYXRpb24gdG8gYXZvaWQgZXhjZWVkaW5nIGFsbG9jYXRlZCBzcGFjZQpnZW8yX3NvID0gcmVhZFJEUygnL2hvbWUvd29ya3Nob3AvZGFta2kvSVNDX1IvcmVzdWx0cy9yZGF0YS9nZW9fc29fc2N0X2ludGVncmF0ZWQucmRzJykKCiMgbG9vayBhdCBlbGJvdyBwbG90CkVsYm93UGxvdChnZW8yX3NvLCBuZGltcyA9IDUwLCByZWR1Y3Rpb24gPSAndW5pbnRlZ3JhdGVkLnNjdC5wY2EnKQoKIyMgQ2x1c3RlcmluZwojIFJvdW5kIDE6IG1hbnVhbGx5IGFkanVzdCBudW1iZXIgb2YgUENzIHRvIGluY2x1ZGUgaW4gY2x1c3RlcmluZwojcGNzID0gMjAgIyBpbmNyZWFzZSBudW1iZXIgb2YgUENzCnBjcyA9IDEwICMgcmVkdWNlIG51bWJlciBvZiBQQ3MKCiMgZ2VuZXJhdGUgbmVhcmVzdCBuZWlnaGJvciAoZ3JhcGgpLCB1c2luZyBzZWxlY3RlZCBudW1iZXIgb2YgUENzCmdlbzJfc28gPSBGaW5kTmVpZ2hib3JzKGdlbzJfc28sIGRpbXMgPSAxOnBjcywgcmVkdWN0aW9uID0gJ2ludGVncmF0ZWQuc2N0LnJwY2EnKQoKIyBSb3VuZCAyOiBhZGp1c3QgcmVzb2x1dGlvbiBhZnRlciB0ZXN0aW5nIFBDcyAocmVtZW1iZXIgdGhpcyBvbmx5IGltcGFjdHMgdGhlIGhvdyB0aGUgYm91bmRhcmllcyBvZiB0aGUgbmVpZ2hib3JzIGFyZSBkcmF3biwgbm90IHRoZSB1bmRlcmx5aW5nIE5OIGdyYXBoL3N0cnVjdHVyZSkKcmVzID0gMC40CiMgcmVzID0gMS4wCiMgcmVzID0gMC4yCgojIGdlbmVyYXRlIGNsdXN0ZXJzLCB1c2luZyAKZ2VvMl9zbyA9IEZpbmRDbHVzdGVycyhnZW8yX3NvLCByZXNvbHV0aW9uID0gcmVzLCBjbHVzdGVyLm5hbWUgPSAnaW50ZWdyYXRlZC5zY3QucnBjYS5jbHVzdGVycycpCgojIGxvb2sgYXQgbWV0YS5kYXRhIHRvIHNlZSBjbHVzdGVyIGxhYmVscwpoZWFkKGdlbzJfc29AbWV0YS5kYXRhKQoKIyBQcmVwIGZvciBVTUFQCmdlbzJfc28gPSBSdW5VTUFQKGdlbzJfc28sIGRpbXMgPSAxOnBjcywgcmVkdWN0aW9uID0gJ2ludGVncmF0ZWQuc2N0LnJwY2EnLCAKICAgICAgICAgICAgICAgICByZWR1Y3Rpb24ubmFtZSA9ICd1bWFwLmludGVncmF0ZWQuc2N0LnJwY2EnKQpnZW8yX3NvCgojIGxvb2sgYXQgY2x1c3RlcmluZyByZXN1bHRzCnBvc3RfaW50ZWdyYXRpb25fdW1hcF9jbHVzdGVyc190ZXN0aW5nID0gCiAgRGltUGxvdChnZW8yX3NvLCBncm91cC5ieSA9ICdzZXVyYXRfY2x1c3RlcnMnLCBsYWJlbCA9IFRSVUUsIAogICAgICAgICAgcmVkdWN0aW9uID0gJ3VtYXAuaW50ZWdyYXRlZC5zY3QucnBjYScpICsgTm9MZWdlbmQoKQpwb3N0X2ludGVncmF0aW9uX3VtYXBfY2x1c3RlcnNfdGVzdGluZyAjIGxvb2sgYXQgcGxvdAoKIyBvdXRwdXQgdG8gZmlsZSwgaW5jbHVkaW5nIHRoZSBudW1iZXIgb2YgUENzIGFuZCByZXNvbHV0aW9uIHVzZWQgdG8gZ2VuZXJhdGUgcmVzdWx0cwpnZ3NhdmUoZmlsZW5hbWUgPSBwYXN0ZTAoJ3Jlc3VsdHMvZmlndXJlcy91bWFwX2ludGVncmF0ZWRfc2N0X2NsdXN0ZXJzJywgCiAgICAgICAgICAgICAgICAgICAgICAgICBwY3MsJ1BDcycscmVzLCdyZXMucG5nJyksCiAgICAgICBwbG90ID0gcG9zdF9pbnRlZ3JhdGlvbl91bWFwX3Bsb3RfY2x1c3RlcnMsIAogICAgICAgd2lkdGggPSA4LCBoZWlnaHQgPSA2LCB1bml0cyA9ICdpbicpCgojIyBnZW5lcmF0ZSBtYXJrZXJzIGFuZCBhbm5vdGF0ZSBjbHVzdGVycyB0byBzZWUgaG93IHRoYXQgY2hhbmdlcwoKIyBwcmVwIGZvciBjbHVzdGVyIGNvbXBhcmlzb25zCmdlbzJfc28gPSBTZXRJZGVudChnZW8yX3NvLCB2YWx1ZSA9ICdpbnRlZ3JhdGVkLnNjdC5ycGNhLmNsdXN0ZXJzJykKZ2VvMl9zbyA9IFByZXBTQ1RGaW5kTWFya2VycyhnZW8yX3NvKQoKIyBydW4gY29tcGFyaXNvbnMgZm9yIGVhY2ggY2x1c3RlciB0byBnZW5lcmF0ZSBtYXJrZXJzCmdlbzJfbWFya2VycyA9IEZpbmRBbGxNYXJrZXJzKGdlbzJfc28sIG9ubHkucG9zID0gVFJVRSkKCiMgbWFudWFsbHkgY3JlYXRlIGxpc3RzIG9mIGdlbmVzIGZyb20gcGFwZXIKZmlnMWdfbWFya2VycyA9IGMoJ0N4Y2wxJywgJ0N4Y2wyJywgJ0NjbDInLCAnQ2NsMycsICdDY2w0JywgJ0lsMWInLCAnSWw2YicsICdUbmYnLCAnVGdmYjEnLCAnVGdmYjInLCAnVGdmYjMnLCAnQ3hjbDUnKQpmaWcxaF9tYXJrZXJzID0gYygnQ3hjcjInLCAnQ3NmMXInLCAnQ3NmM3InLCAnVGdmYnIxJywgJ1RnZmJyMycsICdJbDFyMScsICdJbDZyYScsICdMaWZyJywgJ1RnZmJyMicpCgojIGNyZWF0ZSBEb3RQbG90cyBmb3IgZ2VuZXMgZnJvbSBwYXBlcgpmaWcxZ19zY3RfZG90X3Bsb3QgPSBEb3RQbG90KGdlbzJfc28sIGZlYXR1cmVzID0gZmlnMWdfbWFya2VycywgYXNzYXkgPSAnU0NUJykKZmlnMWhfc2N0X2RvdF9wbG90ID0gRG90UGxvdChnZW8yX3NvLCBmZWF0dXJlcyA9IGZpZzFoX21hcmtlcnMsIGFzc2F5ID0gJ1NDVCcpCmZpZzFoX3NjdF9kb3RfcGxvdAoKIyBydW4gY2VsbCB0eXBlIHByZWRpY3Rpb25zIGZvciBjdXJyZW50IGNsdXN0ZXJpbmcgcmVzdWx0cwpsaWJyYXJ5KHNjQ0FUQ0gpCgojIGNyZWF0ZSBzY0NBVENIIG9iamVjdCwgdXNpbmcgY291bnQgZGF0YQpnZW8yX2NhdGNoID0gY3JlYXRlc2NDQVRDSChkYXRhID0gZ2VvMl9zb0Bhc3NheXMkU0NUQGNvdW50cywgY2x1c3RlciA9IGFzLmNoYXJhY3RlcihJZGVudHMoZ2VvMl9zbykpKQoKIyBhZGQgbWFya2VyIGdlbmVzIHRvIHVzZSBmb3IgcHJlZGljdGlvbnMKY2F0Y2hfbWFya2VycyA9IGdlbzJfbWFya2VycyAlPiUgcmVuYW1lKCdsb2dmYycgPSAnYXZnX2xvZzJGQycpCmdlbzJfY2F0Y2hAbWFya2VyZ2VuZSA9IGdlbzJfbWFya2VycwoKIyBzcGVjaWZ5IHRpc3N1ZXMvY2VsbC10eXBlcyBmcm9tIHRoZSBzY0NBVENIIHJlZmVyZW5jZQpnZW8yX2NhdGNoQG1hcmtlciA9IGNlbGxtYXRjaFtjZWxsbWF0Y2gkc3BlY2llcyA9PSAnTW91c2UnICYgY2VsbG1hdGNoJHRpc3N1ZSAlaW4lIGMoJ0Jsb29kJywgJ1BlcmlwaGVyYWwgQmxvb2QnLCAnTXVzY2xlJywgJ1NrZWxldGFsIG11c2NsZScsICdFcGlkZXJtaXMnLCAnU2tpbicpLCBdCgojIHJ1biBzY0NBVENIIHRvIGdlbmVyYXRlIHByZWRpY3Rpb25zCmdlbzJfY2F0Y2ggPSBmaW5kY2VsbHR5cGUoZ2VvMl9jYXRjaCkKCiMgbG9vayBhdCB0aGUgcHJlZGljdGlvbnMKZ2VvMl9jYXRjaEBjZWxsdHlwZSAlPiUgc2VsZWN0KGNsdXN0ZXIsIGNlbGxfdHlwZSwgY2VsbHR5cGVfc2NvcmUpCgojIyBhbm5vdGF0ZSBjbHVzdGVycwojIEV4dHJhY3QgdGhlIGNlbGwgdHlwZXMgb25seSB0byBtZXJnZSBpbnRvIHRoZSBtZXRhLmRhdGEKY2F0Y2hfY2VsbHR5cGVzID0gZ2VvMl9jYXRjaEBjZWxsdHlwZSAlPiUgc2VsZWN0KGNsdXN0ZXIsIGNlbGxfdHlwZSkKCiMgTWVyZ2UgY2VsbCB0eXBlcyBpbiBidXQgYXMgYSBuZXcgdGFibGUgdG8gc2xpZGUgaW50byBAbWV0YS5kYXRhCm5ld19tZXRhZGF0YSA9IGdlbzJfc29AbWV0YS5kYXRhICU+JSBsZWZ0X2pvaW4oY2F0Y2hfY2VsbHR5cGVzLCAKICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIGJ5ID0gYygnaW50ZWdyYXRlZC5zY3QucnBjYS5jbHVzdGVycycgPSAnY2x1c3RlcicpKQpyb3duYW1lcyhuZXdfbWV0YWRhdGEpID0gcm93bmFtZXMoZ2VvMl9zb0BtZXRhLmRhdGEpICMgIFdlIGFyZSBpbXBsaWNpdGx5IHJlbHlpbmcgb24gdGhlIHNhbWUgcm93IG9yZGVyIQoKIyBSZXBsYWNlIHRoZSBtZXRhLmRhdGEKZ2VvMl9zb0BtZXRhLmRhdGEgPSBuZXdfbWV0YWRhdGEgCmhlYWQoZ2VvMl9zb0BtZXRhLmRhdGEpCgpjYXRjaF91bWFwX3Bsb3QgPSBEaW1QbG90KGdlbzJfc28sIGdyb3VwLmJ5ID0gJ2NlbGxfdHlwZScsIAogICAgICAgICAgICAgICAgICAgICAgICAgIGxhYmVsID0gVFJVRSwgcmVkdWN0aW9uID0gJ3VtYXAuaW50ZWdyYXRlZC5zY3QucnBjYScpCmNhdGNoX3VtYXBfcGxvdAoKCgojIyMjIyMjIyMKCiMjIEV4dGVuc2lvbiAtIGhvdyBtaWdodCB5b3UgaW50ZXJhdGUgdG8gZ2VuZXJhdGUgREUgY29tcGFyaXNvbnMgYmV0d2VlbiBEMjEgYW5kIEQ3IGZvciBhbGwgYW5ub3RhdGVkIGNsdXN0ZXJzPwojIE5vdGUgLSB3b3VsZCB3YW50IHRvIHJlLWxvYWQgb3VyIGxhc3Qgb2JqZWN0IApybShnZW8yX3NvKQpnZW9fc28gPSByZWFkUkRTKCcvaG9tZS93b3Jrc2hvcC9kYW1raS9JU0NfUi9yZXN1bHRzL3JkYXRhL2dlb19zb19zY3RfaW50ZWdyYXRlZF9maW5hbC5yZHMnKQoKYGBgCgoKCi0tLS0KClRoZXNlIG1hdGVyaWFscyBoYXZlIGJlZW4gYWRhcHRlZCBhbmQgZXh0ZW5kZWQgZnJvbSBtYXRlcmlhbHMgbGlzdGVkIGFib3ZlLiBUaGVzZSBhcmUgb3BlbiBhY2Nlc3MgbWF0ZXJpYWxzIGRpc3RyaWJ1dGVkIHVuZGVyIHRoZSB0ZXJtcyBvZiB0aGUgW0NyZWF0aXZlIENvbW1vbnMgQXR0cmlidXRpb24gbGljZW5zZSAoQ0MgQlkgNC4wKV0oaHR0cDovL2NyZWF0aXZlY29tbW9ucy5vcmcvbGljZW5zZXMvYnkvNC4wLyksIHdoaWNoIHBlcm1pdHMgdW5yZXN0cmljdGVkIHVzZSwgZGlzdHJpYnV0aW9uLCBhbmQgcmVwcm9kdWN0aW9uIGluIGFueSBtZWRpdW0sIHByb3ZpZGVkIHRoZSBvcmlnaW5hbCBhdXRob3IgYW5kIHNvdXJjZSBhcmUgY3JlZGl0ZWQuCgo8YnIvPgo8YnIvPgo8aHIvPgp8IFtQcmV2aW91cyBsZXNzb25dKDA4LURpZmZlcmVudGlhbEV4cHJlc3Npb24uaHRtbCkgfCBbVG9wIG9mIHRoaXMgbGVzc29uXSgjdG9wKSB8IFtXb3Jrc2hvcCBXcmFwLXVwXSh3b3Jrc2hvcF93cmFwX3VwLmh0bWwpIHwKfCA6LS0tIHwgOi0tLS06IHwgLS0tOiB8Cgo=</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("09-IndependentExercise.Rmd");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,992 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core" />
+
+<meta name="date" content="2024-10-22" />
+
+<title>Secondary Quality Control and Filtering</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<!--
+Favicon dervied from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<link rel="manifest" href="site.webmanifest">
+<link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+    </li>
+    <li>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+    </li>
+    <li>
+      <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
+    </li>
+    <li>
+      <a href="03-Normalization.html">Normalization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
+    </li>
+    <li>
+      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="06-MarkerVisualization.html">Marker identification and visualization</a>
+    </li>
+    <li>
+      <a href="07-CellTypeAnnos.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="08-DifferentialExpression.html">Differential expression analysis</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Secondary Quality Control and
+Filtering</h1>
+<h4 class="author">UM Bioinformatics Core</h4>
+<h4 class="date">2024-10-22</h4>
+
+</div>
+
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+
+table.fig, th.fig, td.fig {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 15px;
+}
+
+table{
+   width:100%;
+}
+</style>
+<script>
+  addClassKlippyTo("pre.r, pre.markdown, pre.bash");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<div id="workflow-overview" class="section level1 unlisted unnumbered">
+<h1 class="unlisted unnumbered">Workflow Overview</h1>
+<p><br/>
+<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<br/> <br/></p>
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>As discussed at the start of the workshop, single-cell experiments
+using 10x Chromium instrument aim to have droplets with one cell plus
+one bead. However this is an inherently imperfect process and there are
+other important considerations like how healthy or intact the cell was
+at the time of measurement.</p>
+<p>In this section, our goal is to use filtering thresholds to remove
+“cells” that were poorly measured, not cells at all, or included more
+than one cell.</p>
+<table class="fig">
+<tr>
+<td class="fig">
+<img
+src="images/graphical_abstracts/graphical_abstract_QC_and_filtering.png" />
+</td>
+</tr>
+<tr>
+<td class="fig">
+The Cell Ranger barcode feature matrix outputs (A) is a mix of good and
+poor quality cells (B). We can use expression patterns to further
+visualize and filter to the subset of putative healthy cells (C) to
+improve downstream analysis.
+</td>
+</tr>
+</table>
+<p><br/> Similar to many other areas of research, there are often gaps
+between how single-cell data is presented versus the reality of running
+an analysis. For example, only the final filtering thresholds might be
+reported in a paper but our process for choosing those is likely to be
+more iterative and include some trial and error.</p>
+<div id="objectives" class="section level2">
+<h2>Objectives</h2>
+<ul>
+<li>Discuss QC measures and learn how to calculate and plot them.</li>
+<li>Discuss cell-filtering approaches and apply them to our
+dataset.</li>
+</ul>
+<!-- Challenge for instructors: Every vignette uses different filters, how to harmonize/give guidance? Related, how much to discuss arbitrary cutoffs and continued maturation of field?-->
+<!-- Add links to relevant resources throughout -->
+<!-- General guidance - likely to be moved to earlier section:
+- Note with each function call what gets added to the Seurat object.
+- Adding checks to ensure object is updated by learners since want to avoid generating copied objects
+- Note what layers should be used for what, for example, counts used for FeaturePlots. RNA vs SCT assay. -->
+<hr />
+</div>
+</div>
+<div id="adding-metadata" class="section level1">
+<h1>Adding metadata</h1>
+<p>We’re going to alter and add some columns to <code>meta.data</code>
+to ease some downstream analysis and plotting steps. This will often be
+necessary, as sample names contain combined information about
+phenotypes. Let’s take a look at the first few rows again, to reacquaint
+ourselves.</p>
+<pre class="r"><code>##### Day 1 - Secondary QC and filtering
+
+# Examine Seurat metdata  ----------------------------------------------
+head(geo_so@meta.data)</code></pre>
+<pre><code>                                          orig.ident nCount_RNA nFeature_RNA
+HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1      10234         3226
+HODay0replicate1_AAACCTGGTCATGCAT-1 HODay0replicate1       3158         1499
+HODay0replicate1_AAACCTGTCAGAGCTT-1 HODay0replicate1      13464         4102
+HODay0replicate1_AAACGGGAGAGACTTA-1 HODay0replicate1        577          346
+HODay0replicate1_AAACGGGAGGCCCGTT-1 HODay0replicate1       1189          629
+HODay0replicate1_AAACGGGCAACTGGCC-1 HODay0replicate1       7726         2602</code></pre>
+<p>We can add arbitrary per-cell information to this table such as:</p>
+<ul>
+<li>Summary statistics, such as percent mitochondrial reads for each
+cell.</li>
+<li>Batch, condition, etc. for each cell.</li>
+<li>Cluster membership for each cell.</li>
+<li>Cell cycle phase for each cell.</li>
+<li>Other custom annotations for each cell.</li>
+</ul>
+<p>The following code chunk will create new columns from the
+<code>orig.ident</code> column, one for the <code>day</code> and one for
+the <code>replicate</code>. We’ll also use factors to make the days
+appear in the correct order (by default R will order them Day0, Day21,
+Day7).</p>
+<pre class="r"><code># Make metadata more granular ------------------------------------------
+# (So it&#39;s easier for us to understand)  
+orig.ident_levels = apply(
+    expand.grid(c(&#39;HO&#39;), c(&#39;replicate1&#39;, &#39;replicate2&#39;, &#39;replicate3&#39;, &#39;replicate4&#39;), c(&#39;Day0&#39;,&#39;Day7&#39;,&#39;Day21&#39;)), 
+    MARGIN = 1, FUN = function(row){paste(row[1], row[3], row[2], sep = &#39;.&#39;)})
+
+tmp_meta = geo_so@meta.data
+
+tmp_meta$orig.ident = gsub(&#39;HO&#39;, &#39;HO.&#39;, tmp_meta$orig.ident)
+tmp_meta$orig.ident = gsub(&#39;rep&#39;, &#39;.rep&#39;, tmp_meta$orig.ident)
+
+tmp_meta$orig.ident = factor(tmp_meta$orig.ident, levels = orig.ident_levels)
+
+# Add day information
+tmp_meta$day = factor(str_split(tmp_meta$orig.ident, pattern = &#39;[.]&#39;, simplify = TRUE)[,2], levels = c(&#39;Day0&#39;, &#39;Day7&#39;, &#39;Day21&#39;))
+
+# Add replicate column
+tmp_meta$replicate = str_split(tmp_meta$orig.ident, pattern = &#39;[.]&#39;, simplify = TRUE)[,3]
+
+# Assign the updated metadata to that in the Seurat object
+geo_so@meta.data = tmp_meta
+
+# Set the Idents(geo_so) to the new orig.ident
+Idents(geo_so) = &#39;orig.ident&#39;</code></pre>
+<p>Taking a look at the result, we see <code>orig.ident</code> looks a
+little different, and we have new <code>day</code> and
+<code>replicate</code> columns. Note that there are many ways to have
+accomplished this, the above code is just one route.</p>
+<pre class="r"><code># Re-examine Seurat metdata  -------------------------------------------
+head(geo_so@meta.data)</code></pre>
+<pre><code>                                            orig.ident nCount_RNA nFeature_RNA  day  replicate
+HODay0replicate1_AAACCTGAGAGAACAG-1 HO.Day0.replicate1      10234         3226 Day0 replicate1
+HODay0replicate1_AAACCTGGTCATGCAT-1 HO.Day0.replicate1       3158         1499 Day0 replicate1
+HODay0replicate1_AAACCTGTCAGAGCTT-1 HO.Day0.replicate1      13464         4102 Day0 replicate1
+HODay0replicate1_AAACGGGAGAGACTTA-1 HO.Day0.replicate1        577          346 Day0 replicate1
+HODay0replicate1_AAACGGGAGGCCCGTT-1 HO.Day0.replicate1       1189          629 Day0 replicate1
+HODay0replicate1_AAACGGGCAACTGGCC-1 HO.Day0.replicate1       7726         2602 Day0 replicate1</code></pre>
+<div id="percent-mitochondrial-reads" class="section level2">
+<h2>Percent mitochondrial reads</h2>
+<p>The <code>PercentageFeatureSet()</code> function enables us to
+quickly determine the counts belonging to a subset of the possible
+features for each cell. Since mitochondrial transcripts in mouse begin
+with “mt”, we will use that pattern to count the percentage of reads
+coming from mitochondrial transcripts.</p>
+<pre class="r"><code># Consider mitochondrial transcripts  ----------------------------------
+# We use &quot;mt&quot; because this is mouse, depending on the organism, this might need to be changed
+geo_so$percent.mt = PercentageFeatureSet(geo_so, pattern = &#39;^mt-&#39;)
+
+# Use summary() to quickly check the range of values
+summary(geo_so$percent.mt)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  0.000   1.817   2.582   5.281   3.865  98.244 </code></pre>
+<p>Just looking at the summary, we can see that there are some cells
+with a high percentage of mitochondrial reads.</p>
+<div class="float">
+<img src="images/seurat_schematic/Slide3.png"
+alt="Image: Schematic after altering some meta data columns." />
+<div class="figcaption">Image: Schematic after altering some meta data
+columns.</div>
+</div>
+</div>
+</div>
+<div id="quality-metrics" class="section level1">
+<h1>Quality Metrics</h1>
+<p>Cell Ranger is a first-pass filter to determine what is a “cell” and
+what is not. It only considers one sample at a time, and does not
+consider the cells relative to one another.</p>
+<p>Let’s dig deeper to determine when a droplet might contain two cells,
+a very stressed cell, or some technical issue in the library
+preparation. We will use three metrics to determine low-quality cells
+based on their expression profiles (<a
+href="https://bioconductor.org/books/3.12/OSCA/quality-control.html#choice-of-qc-metrics">reference</a>).</p>
+<ol style="list-style-type: decimal">
+<li>The total number of UMIs detected. Cells with a small number of UMIs
+detected may indicate loss of RNA during library preparation via cell
+lysis or inefficient cDNA capture / amplification. Cells with relatively
+high number of UMIs detected may indicate a doublet.</li>
+<li>The number of expressed features, defined as number of genes with
+non-zero counts. Cells with very few measured genes are likely to be of
+low-quality, and may distort downstream variance estimation or dimension
+reduction steps.</li>
+<li>The proportion of reads mapped to the mitochondrial genome. High
+proportions of mitochondrial transcripts may indicate a damaged cell,
+the measure of which may also distort downstream analysis steps.</li>
+</ol>
+<p>The number of UMIs detected (<code>nCount</code>) and number of
+expressed features (<code>nFeature</code>) are already given in the meta
+data table.</p>
+<blockquote>
+<p><strong>Why total UMIs instead of total reads?</strong></p>
+<p>Since a single-cell inherently contains a limited amount of RNA
+molecules, a higher amount of PCR amplification is required to generate
+the final sequencing library.</p>
+<p>Since PCR can skew proportions of initial input materials, specific
+sequences are included in the initial capture probes called unique
+molecule identifiers (UMIs). As each initial probe has a different UMI
+sequence, each RNA captured will be tagged with a different UMI, which
+allows those initial RNAs and subsequent PCR duplicates to be identified
+and duplicates collapsed as part of the initial processing by
+CellRanger.</p>
+</blockquote>
+<blockquote>
+<p><strong>Other meanings of <code>nFeatures</code></strong></p>
+<p>For other single-cell data types, <code>nFeatures</code> would
+represent what’s being measured in that experiment. For single-cell
+ATAC-seq, <code>nFeatures</code> would represents the total number of
+peaks (e.g. accessible areas of DNA) per cell.</p>
+</blockquote>
+<!-- Matt may have discussed UMIs as part of CellRanger processing and Liv/Tricia may touch on as part of library generation at end of Day 2 -->
+<div id="cell-counts" class="section level2">
+<h2>Cell counts</h2>
+<p>Cell counts per sample (based on the numbrer of unique cellular
+barcodes detected by Cell Ranger) can indicate if an entire sample was
+of poor quality. The table below is the number of cells called by Cell
+Ranger, with the added filter from <code>CreateSeurateObject()</code> in
+the previous lesson: <code>min.cells = 1, min.features = 50</code>.
+Recall, this means a gene is removed if it is expressed in 1 or fewer
+cells, and a cell is removed if it contains reads for 50 or fewer
+genes.</p>
+<pre class="r"><code># Assign overall cell counts  ------------------------------------------
+cell_counts_pre_tbl = geo_so@meta.data %&gt;% count(orig.ident, name = &#39;prefilter_cells&#39;)
+cell_counts_pre_tbl</code></pre>
+<pre><code>            orig.ident prefilter_cells
+1   HO.Day0.replicate1            1183
+2   HO.Day0.replicate2             689
+3   HO.Day0.replicate3            1310
+4   HO.Day0.replicate4            1053
+5   HO.Day7.replicate1            5765
+6   HO.Day7.replicate2            6020
+7   HO.Day7.replicate3            6285
+8   HO.Day7.replicate4            5166
+9  HO.Day21.replicate1            2321
+10 HO.Day21.replicate2            1322
+11 HO.Day21.replicate3            1275
+12 HO.Day21.replicate4            2827</code></pre>
+<p>It appears that the Day 7 samples have systematically more cells than
+the other days. If you had an idea of how many cells you expected to see
+per sample, this table can help you check that expectation and determine
+if a sample failed and should be dropped.</p>
+</div>
+<div id="visualizing-quality-metrics" class="section level2">
+<h2>Visualizing quality metrics</h2>
+<p>A violin plot shows the distribution of a quantity among the cells in
+a single sample, or across many samples. Seurat has a built-in function,
+<code>VlnPlot()</code> for this purpose. Let’s orient with a violin plot
+of <code>nFeature_RNA</code> for only one sample,
+<code>HO.Day21.replicate1</code>:</p>
+<p><img src="images/curriculum/02-QCandFiltering/02-single_violin_plot-1.png" width="816" style="display: block; margin: auto;" /></p>
+<p>A violin plot is similar to a box plot, but it shows the density of
+the data at different values. Here the individual points are the cells
+from <code>HO.Day21.replicate1</code> and the y-axis is the value of
+<code>nFeature_RNA</code> for that cell. The violin part of the function
+is essentially showing the density of the cells at different values of
+<code>nFeature_RNA</code>.</p>
+<div id="genes-per-cell" class="section level3">
+<h3>Genes per cell</h3>
+<p>Let’s look at the <code>nFeature_RNA</code> violin plot across all
+the samples. Again, this is the number of genes detected per cell.</p>
+<pre class="r"><code># Review feature violin plots   ----------------------------------------
+VlnPlot(geo_so, features = &#39;nFeature_RNA&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + NoLegend() + geom_hline(yintercept = 500) + geom_hline(yintercept = 400) + geom_hline(yintercept = 300) + geom_hline(yintercept = 200)
+ggsave(filename = &#39;results/figures/qc_nFeature_violin.png&#39;, width = 12, height = 6, units = &#39;in&#39;)</code></pre>
+<p><img src="images/curriculum/02-QCandFiltering/02-feature_plot-1.png" width="816" style="display: block; margin: auto;" /></p>
+<p>We observe that samples behave similarly within a day, but have
+different distributions across days. We also note that many cells appear
+to have a low number of genes detected (&lt; 500).</p>
+</div>
+<div id="umi-counts-per-cell" class="section level3">
+<h3>UMI counts per cell</h3>
+<p>Now let’s look at <code>nCount_RNA</code> plot, the total number of
+UMIs detected.</p>
+<pre class="r"><code># Review count violin plots   ------------------------------------------
+VlnPlot(geo_so, features = &#39;nCount_RNA&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + NoLegend()
+ggsave(filename = &#39;results/figures/qc_nCount_violin.png&#39;, width = 12, height = 6, units = &#39;in&#39;)</code></pre>
+<p><img src="images/curriculum/02-QCandFiltering/02-count_plot-1.png" width="816" style="display: block; margin: auto;" /></p>
+<p>We observe a similar within-and-across day behavior among the
+samples. Overall it appears that the Day 0 samples have fewer UMIs
+detected per cell than Day 7 and Day 21. Also of note is the outlier
+cell in HO.Day0.replicate1, with around 100K UMIs detected. This cell
+might be a doublet.</p>
+</div>
+<div id="percent-mitochondrial-reads-1" class="section level3">
+<h3>Percent mitochondrial reads</h3>
+<p>Finally, lets plot the percent mitochondrial reads,
+<code>percent.mt</code>.</p>
+<pre class="r"><code># Review mitochondrial violin plots   ----------------------------------
+VlnPlot(geo_so, features = &#39;percent.mt&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + NoLegend() + geom_hline(yintercept = 25) + geom_hline(yintercept = 20) + geom_hline(yintercept = 15) + geom_hline(yintercept = 10)
+ggsave(filename = &#39;results/figures/qc_mito_violin.png&#39;, width = 12, height = 6, units = &#39;in&#39;)</code></pre>
+<p><img src="images/curriculum/02-QCandFiltering/02-mito_plot-1.png" width="816" style="display: block; margin: auto;" /></p>
+<p>We observe the majority of cells seem to have &lt; 25% mitochondrial
+reads, but there are many cells with &gt; 25% that we may want to
+remove.</p>
+<p>Generally, many tutorials use a cutoff of 5 - 10% mitochondrial
+reads. However, for some experiments, high mitochondrial reads would be
+expected (such as in cases where the condition/treatment or genotype
+increases cell death). In this case, a relaxed threshold would help
+preserve biologically relevant cells. In our case, the cells were
+collected as part of an injury model, perhaps justifying a more lenient
+percent mitochondrial read filter.</p>
+</div>
+</div>
+</div>
+<div id="filtering-approaches" class="section level1">
+<h1>Filtering approaches</h1>
+<div id="fixed-thresholds" class="section level2">
+<h2>Fixed thresholds</h2>
+<p>Fixed thresholds for any combination of <code>nFeature_RNA</code>,
+<code>nCount_RNA</code>, and <code>percent.mt</code> can be selected to
+remove low quality cells. In general, selecting very stringent
+thresholds for each of the metrics may lead to removing informative
+cells. As per the HBC training materials (<a
+href="https://hbctraining.github.io/scRNA-seq_online/lessons/04_SC_quality_control.html">link</a>),
+we recommend setting individual thresholds to err on the permissive
+side.</p>
+<p><a
+href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7002453/">Sorkin et
+al.</a> chose these thresholds:</p>
+<blockquote>
+<p>We filtered out cells with less than 500 genes per cell and with more
+than 25% mitochondrial read content.</p>
+</blockquote>
+<p>In other words, cells with &gt; 500 <code>nFeature_RNA</code> and
+&lt; 25% <code>percent.mt</code> were retained by the authors. We could
+preview what the resulting cell counts would be with these
+thresholds:</p>
+<pre class="r"><code># Consider excluding suspect cells -------------------------------------
+subset(geo_so, subset = nFeature_RNA &gt; 500 &amp; percent.mt &lt; 25)@meta.data %&gt;% 
+    count(orig.ident, name = &#39;postfilter_cells&#39;)</code></pre>
+<pre><code>            orig.ident postfilter_cells
+1   HO.Day0.replicate1             1049
+2   HO.Day0.replicate2              615
+3   HO.Day0.replicate3             1191
+4   HO.Day0.replicate4              943
+5   HO.Day7.replicate1             4928
+6   HO.Day7.replicate2             4932
+7   HO.Day7.replicate3             4897
+8   HO.Day7.replicate4             4242
+9  HO.Day21.replicate1             2000
+10 HO.Day21.replicate2             1182
+11 HO.Day21.replicate3             1166
+12 HO.Day21.replicate4             2470</code></pre>
+</div>
+<div id="adaptive-thresholds" class="section level2">
+<h2>Adaptive thresholds</h2>
+<p>For this workshop we will use fixed thresholds, but another option is
+to remove low-quality cells adaptively. This approach assumes that most
+of the cells are of acceptable quality. For more information see the
+relevant section in Bioconductor’s online book: Orchestrating
+Single-Cell Analysis (<a
+href="https://bioconductor.org/books/3.12/OSCA/quality-control.html#quality-control-outlier">link</a>).</p>
+</div>
+</div>
+<div id="removing-low-quality-cells" class="section level1">
+<h1>Removing low-quality cells</h1>
+<p>We will deviate from the publication slightly and retain the cells
+with <code>nFeature_RNA &gt; 300</code> and
+<code>percent.mt &lt; 15</code>. Noting that the
+<code>nFeature_RNA</code> plot had a gap around 300, and that we want to
+be more lenient than the usual 5-10% cutoff for mitochondrial reads.</p>
+<pre class="r"><code># Filter to exclude suspect cells and assign to new Seurat object ------
+geo_so = subset(geo_so, subset = nFeature_RNA &gt; 300 &amp; percent.mt &lt; 15)
+geo_so</code></pre>
+<pre><code>An object of class Seurat 
+26489 features across 31560 samples within 1 assay 
+Active assay: RNA (26489 features, 0 variable features)
+ 1 layer present: counts</code></pre>
+<p>And let’s record the number of cells remaining after filtering:</p>
+<pre class="r"><code># Examine remaining cell counts ----------------------------------------
+cell_counts_post_tbl = geo_so@meta.data %&gt;% count(orig.ident, name = &#39;postfilter_cells&#39;)
+cell_counts_post_tbl</code></pre>
+<pre><code>            orig.ident postfilter_cells
+1   HO.Day0.replicate1             1053
+2   HO.Day0.replicate2              629
+3   HO.Day0.replicate3             1222
+4   HO.Day0.replicate4              971
+5   HO.Day7.replicate1             5215
+6   HO.Day7.replicate2             5324
+7   HO.Day7.replicate3             5626
+8   HO.Day7.replicate4             4690
+9  HO.Day21.replicate1             2004
+10 HO.Day21.replicate2             1186
+11 HO.Day21.replicate3             1178
+12 HO.Day21.replicate4             2462</code></pre>
+<p>Let’s combine the pre and post tables:</p>
+<pre class="r"><code># Show cell counts before and after filtering --------------------------
+cell_counts_tbl = cell_counts_pre_tbl %&gt;% left_join(cell_counts_post_tbl, by = &#39;orig.ident&#39;)
+cell_counts_tbl</code></pre>
+<pre><code>            orig.ident prefilter_cells postfilter_cells
+1   HO.Day0.replicate1            1183             1053
+2   HO.Day0.replicate2             689              629
+3   HO.Day0.replicate3            1310             1222
+4   HO.Day0.replicate4            1053              971
+5   HO.Day7.replicate1            5765             5215
+6   HO.Day7.replicate2            6020             5324
+7   HO.Day7.replicate3            6285             5626
+8   HO.Day7.replicate4            5166             4690
+9  HO.Day21.replicate1            2321             2004
+10 HO.Day21.replicate2            1322             1186
+11 HO.Day21.replicate3            1275             1178
+12 HO.Day21.replicate4            2827             2462</code></pre>
+<p>We can now easily see how many cells we started with, and how many we
+retained for downstream analysis. Let’s write this table to a file.</p>
+<pre class="r"><code>write_csv(cell_counts_tbl, file = &#39;results/tables/cell_filtering_counts.csv&#39;)</code></pre>
+<!--What thresholds would we start with based on the plots alone? How does that compare to the thresholds reported in paper?-->
+<!--Other “advanced” methods: out of scope for this workshop but there are packages  specifically developed to detect "doublets", e.g. droplets that contained more than one cell, such as DoubleFinder-->
+<!--Additional aside - For single-nuclei experiments removing background/ambient RNA with CellBlender OR DecontX is an important additional step since nuclei are both sticky and porous-->
+</div>
+<div id="revising-thresholds" class="section level1">
+<h1>Revising thresholds</h1>
+<p>It is important to recognize that thresholds for retaining cells are
+not set in stone. It may happen that the downstream analysis suggests
+that thresholds should be more or less stringent. In which case, you may
+experiment with the thresholds and observe the downstream effects.</p>
+</div>
+<div id="save-our-progress" class="section level1">
+<h1>Save our progress</h1>
+<p>Let’s save this filtered form of our Seurat object. It will also
+include our changes to the <code>meta.data</code>:</p>
+<pre class="r"><code># Save the current Seurat object ---------------------------------------
+saveRDS(geo_so, file = &#39;results/rdata/geo_so_filtered.rds&#39;)</code></pre>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>In this section we:</p>
+<ul>
+<li>Discussed the big three quality metrics: <code>nFeature</code>s,
+<code>nCount</code>s, and <code>percent.mt</code>.</li>
+<li>Visualized these metrics across cells / samples to help identify
+low-quality cells.</li>
+<li>Filtered low-quality cells using fixed thresholds.</li>
+</ul>
+<p>Next steps: Normalization</p>
+<hr />
+<p>These materials have been adapted and extended from materials listed
+above. These are open access materials distributed under the terms of
+the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
+Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
+use, distribution, and reproduction in any medium, provided the original
+author and source are credited.</p>
+<p><br/> <br/></p>
+<hr />
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="00B-CellRangerInAction.html">Previous
+lesson</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="03-Normalization.html">Next lesson</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiU2Vjb25kYXJ5IFF1YWxpdHkgQ29udHJvbCBhbmQgRmlsdGVyaW5nIgphdXRob3I6ICJVTSBCaW9pbmZvcm1hdGljcyBDb3JlIgpkYXRlOiAiYHIgU3lzLkRhdGUoKWAiCm91dHB1dDoKICAgICAgICBodG1sX2RvY3VtZW50OgogICAgICAgICAgICBpbmNsdWRlczoKICAgICAgICAgICAgICAgIGluX2hlYWRlcjogaGVhZGVyLmh0bWwKICAgICAgICAgICAgdGhlbWU6IHBhcGVyCiAgICAgICAgICAgIHRvYzogdHJ1ZQogICAgICAgICAgICB0b2NfZGVwdGg6IDQKICAgICAgICAgICAgdG9jX2Zsb2F0OiB0cnVlCiAgICAgICAgICAgIG51bWJlcl9zZWN0aW9uczogZmFsc2UKICAgICAgICAgICAgZmlnX2NhcHRpb246IHRydWUKICAgICAgICAgICAgbWFya2Rvd246IEdGTQogICAgICAgICAgICBjb2RlX2Rvd25sb2FkOiB0cnVlCi0tLQoKPHN0eWxlIHR5cGU9InRleHQvY3NzIj4KYm9keSwgdGQgewogICBmb250LXNpemU6IDE4cHg7Cn0KY29kZS5yewogIGZvbnQtc2l6ZTogMTJweDsKfQpwcmUgewogIGZvbnQtc2l6ZTogMTJweAp9Cgp0YWJsZS5maWcsIHRoLmZpZywgdGQuZmlnIHsKICBib3JkZXI6IDFweCBzb2xpZCBibGFjazsKICBib3JkZXItY29sbGFwc2U6IGNvbGxhcHNlOwogIHBhZGRpbmc6IDE1cHg7Cn0KCnRhYmxlewogICB3aWR0aDoxMDAlOwp9Cjwvc3R5bGU+CgpgYGB7ciBrbGlwcHksIGVjaG89RkFMU0UsIGluY2x1ZGU9VFJVRX0Ka2xpcHB5OjprbGlwcHkobGFuZyA9IGMoInIiLCAibWFya2Rvd24iLCAiYmFzaCIpLCBwb3NpdGlvbiA9IGMoInRvcCIsICJyaWdodCIpKQpgYGAKCmBgYHtyLCBpbmNsdWRlID0gRkFMU0V9CnNvdXJjZSgiLi4vYmluL2NodW5rLW9wdGlvbnMuUiIpCmtuaXRyX2ZpZ19wYXRoKCIwMi1RQ2FuZEZpbHRlcmluZy8wMi0iKQpgYGAKCiMgV29ya2Zsb3cgT3ZlcnZpZXcgey51bmxpc3RlZCAudW5udW1iZXJlZH0KCjxici8+CjxpbWcgc3JjPSJpbWFnZXMvd2F5ZmluZGVyL3dheWZpbmRlci5wbmciIGFsdD0id2F5ZmluZGVyIiBzdHlsZT0iaGVpZ2h0OiA0MDBweDsiLz4KPGJyLz4KPGJyLz4KCiMgSW50cm9kdWN0aW9uCgpBcyBkaXNjdXNzZWQgYXQgdGhlIHN0YXJ0IG9mIHRoZSB3b3Jrc2hvcCwgc2luZ2xlLWNlbGwgZXhwZXJpbWVudHMgdXNpbmcgMTB4IENocm9taXVtIGluc3RydW1lbnQgYWltIHRvIGhhdmUgZHJvcGxldHMgd2l0aCBvbmUgY2VsbCBwbHVzIG9uZSBiZWFkLiBIb3dldmVyIHRoaXMgaXMgYW4gaW5oZXJlbnRseSBpbXBlcmZlY3QgcHJvY2VzcyBhbmQgdGhlcmUgYXJlIG90aGVyIGltcG9ydGFudCBjb25zaWRlcmF0aW9ucyBsaWtlIGhvdyBoZWFsdGh5IG9yIGludGFjdCB0aGUgY2VsbCB3YXMgYXQgdGhlIHRpbWUgb2YgbWVhc3VyZW1lbnQuCgpJbiB0aGlzIHNlY3Rpb24sIG91ciBnb2FsIGlzIHRvIHVzZSBmaWx0ZXJpbmcgdGhyZXNob2xkcyB0byByZW1vdmUgImNlbGxzIiB0aGF0IHdlcmUgcG9vcmx5IG1lYXN1cmVkLCBub3QgY2VsbHMgYXQgYWxsLCBvciBpbmNsdWRlZCBtb3JlIHRoYW4gb25lIGNlbGwuCgo8dGFibGUgY2xhc3M9J2ZpZyc+PHRyPjx0ZCBjbGFzcz0nZmlnJz4KIVtdKGltYWdlcy9ncmFwaGljYWxfYWJzdHJhY3RzL2dyYXBoaWNhbF9hYnN0cmFjdF9RQ19hbmRfZmlsdGVyaW5nLnBuZykKPC90ZD48L3RyPjx0cj48dGQgY2xhc3M9J2ZpZyc+VGhlIENlbGwgUmFuZ2VyIGJhcmNvZGUgZmVhdHVyZSBtYXRyaXggb3V0cHV0cyAoQSkgaXMgYSBtaXggb2YgZ29vZCBhbmQgcG9vciBxdWFsaXR5IGNlbGxzIChCKS4gV2UgY2FuIHVzZSBleHByZXNzaW9uIHBhdHRlcm5zIHRvIGZ1cnRoZXIgdmlzdWFsaXplIGFuZCBmaWx0ZXIgdG8gdGhlIHN1YnNldCBvZiBwdXRhdGl2ZSBoZWFsdGh5IGNlbGxzIChDKSB0byBpbXByb3ZlIGRvd25zdHJlYW0gYW5hbHlzaXMuCjwvdGQ+PC90cj48L3RhYmxlPgo8YnIvPgpTaW1pbGFyIHRvIG1hbnkgb3RoZXIgYXJlYXMgb2YgcmVzZWFyY2gsIHRoZXJlIGFyZSBvZnRlbiBnYXBzIGJldHdlZW4gaG93IHNpbmdsZS1jZWxsIGRhdGEgaXMgcHJlc2VudGVkIHZlcnN1cyB0aGUgcmVhbGl0eSBvZiBydW5uaW5nIGFuIGFuYWx5c2lzLiBGb3IgZXhhbXBsZSwgb25seSB0aGUgZmluYWwgZmlsdGVyaW5nIHRocmVzaG9sZHMgbWlnaHQgYmUgcmVwb3J0ZWQgaW4gYSBwYXBlciBidXQgb3VyIHByb2Nlc3MgZm9yIGNob29zaW5nIHRob3NlIGlzIGxpa2VseSB0byBiZSBtb3JlIGl0ZXJhdGl2ZSBhbmQgaW5jbHVkZSBzb21lIHRyaWFsIGFuZCBlcnJvci4KCgojIyBPYmplY3RpdmVzCgotIERpc2N1c3MgUUMgbWVhc3VyZXMgYW5kIGxlYXJuIGhvdyB0byBjYWxjdWxhdGUgYW5kIHBsb3QgdGhlbS4KLSBEaXNjdXNzIGNlbGwtZmlsdGVyaW5nIGFwcHJvYWNoZXMgYW5kIGFwcGx5IHRoZW0gdG8gb3VyIGRhdGFzZXQuCgo8IS0tIENoYWxsZW5nZSBmb3IgaW5zdHJ1Y3RvcnM6IEV2ZXJ5IHZpZ25ldHRlIHVzZXMgZGlmZmVyZW50IGZpbHRlcnMsIGhvdyB0byBoYXJtb25pemUvZ2l2ZSBndWlkYW5jZT8gUmVsYXRlZCwgaG93IG11Y2ggdG8gZGlzY3VzcyBhcmJpdHJhcnkgY3V0b2ZmcyBhbmQgY29udGludWVkIG1hdHVyYXRpb24gb2YgZmllbGQ/LS0+IAo8IS0tIEFkZCBsaW5rcyB0byByZWxldmFudCByZXNvdXJjZXMgdGhyb3VnaG91dCAtLT4gCgo8IS0tIEdlbmVyYWwgZ3VpZGFuY2UgLSBsaWtlbHkgdG8gYmUgbW92ZWQgdG8gZWFybGllciBzZWN0aW9uOgotIE5vdGUgd2l0aCBlYWNoIGZ1bmN0aW9uIGNhbGwgd2hhdCBnZXRzIGFkZGVkIHRvIHRoZSBTZXVyYXQgb2JqZWN0LgotIEFkZGluZyBjaGVja3MgdG8gZW5zdXJlIG9iamVjdCBpcyB1cGRhdGVkIGJ5IGxlYXJuZXJzIHNpbmNlIHdhbnQgdG8gYXZvaWQgZ2VuZXJhdGluZyBjb3BpZWQgb2JqZWN0cwotIE5vdGUgd2hhdCBsYXllcnMgc2hvdWxkIGJlIHVzZWQgZm9yIHdoYXQsIGZvciBleGFtcGxlLCBjb3VudHMgdXNlZCBmb3IgRmVhdHVyZVBsb3RzLiBSTkEgdnMgU0NUIGFzc2F5LiAtLT4KCi0tLQoKYGBge3IsIHJlYWRfcmRzX2hpZGRlbiwgZWNobyA9IEZBTFNFLCB3YXJuaW5nID0gRkFMU0UsIG1lc3NhZ2UgPSBGQUxTRX0KaWYoIWV4aXN0cygnZ2VvX3NvJykpIHsKICBsaWJyYXJ5KFNldXJhdCkKICBsaWJyYXJ5KEJQQ2VsbHMpCiAgbGlicmFyeSh0aWR5dmVyc2UpCgogIG9wdGlvbnMoZnV0dXJlLmdsb2JhbHMubWF4U2l6ZSA9IDFlOSkKCiAgZ2VvX3NvID0gcmVhZFJEUygncmVzdWx0cy9yZGF0YS9nZW9fc29fdW5maWx0ZXJlZC5yZHMnKQp9CmBgYAoKIyBBZGRpbmcgbWV0YWRhdGEKCldlJ3JlIGdvaW5nIHRvIGFsdGVyIGFuZCBhZGQgc29tZSBjb2x1bW5zIHRvIGBtZXRhLmRhdGFgIHRvIGVhc2Ugc29tZSBkb3duc3RyZWFtIGFuYWx5c2lzIGFuZCBwbG90dGluZyBzdGVwcy4gVGhpcyB3aWxsIG9mdGVuIGJlIG5lY2Vzc2FyeSwgYXMgc2FtcGxlIG5hbWVzIGNvbnRhaW4gY29tYmluZWQgaW5mb3JtYXRpb24gYWJvdXQgcGhlbm90eXBlcy4gTGV0J3MgdGFrZSBhIGxvb2sgYXQgdGhlIGZpcnN0IGZldyByb3dzIGFnYWluLCB0byByZWFjcXVhaW50IG91cnNlbHZlcy4KCmBgYHtyLCBwcmV2aWV3X21ldGFkYXRhMX0KIyMjIyMgRGF5IDEgLSBTZWNvbmRhcnkgUUMgYW5kIGZpbHRlcmluZwoKIyBFeGFtaW5lIFNldXJhdCBtZXRkYXRhICAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCmhlYWQoZ2VvX3NvQG1ldGEuZGF0YSkKYGBgCgpXZSBjYW4gYWRkIGFyYml0cmFyeSBwZXItY2VsbCBpbmZvcm1hdGlvbiB0byB0aGlzIHRhYmxlIHN1Y2ggYXM6CgotIFN1bW1hcnkgc3RhdGlzdGljcywgc3VjaCBhcyBwZXJjZW50IG1pdG9jaG9uZHJpYWwgcmVhZHMgZm9yIGVhY2ggY2VsbC4KLSBCYXRjaCwgY29uZGl0aW9uLCBldGMuIGZvciBlYWNoIGNlbGwuCi0gQ2x1c3RlciBtZW1iZXJzaGlwIGZvciBlYWNoIGNlbGwuCi0gQ2VsbCBjeWNsZSBwaGFzZSBmb3IgZWFjaCBjZWxsLgotIE90aGVyIGN1c3RvbSBhbm5vdGF0aW9ucyBmb3IgZWFjaCBjZWxsLgoKVGhlIGZvbGxvd2luZyBjb2RlIGNodW5rIHdpbGwgY3JlYXRlIG5ldyBjb2x1bW5zIGZyb20gdGhlIGBvcmlnLmlkZW50YCBjb2x1bW4sIG9uZSBmb3IgdGhlIGBkYXlgIGFuZCBvbmUgZm9yIHRoZSBgcmVwbGljYXRlYC4gV2UnbGwgYWxzbyB1c2UgZmFjdG9ycyB0byBtYWtlIHRoZSBkYXlzIGFwcGVhciBpbiB0aGUgY29ycmVjdCBvcmRlciAoYnkgZGVmYXVsdCBSIHdpbGwgb3JkZXIgdGhlbSBEYXkwLCBEYXkyMSwgRGF5NykuCgpgYGB7ciwgYWx0ZXJfbWV0YWRhdGF9CiMgTWFrZSBtZXRhZGF0YSBtb3JlIGdyYW51bGFyIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQojIChTbyBpdCdzIGVhc2llciBmb3IgdXMgdG8gdW5kZXJzdGFuZCkgIApvcmlnLmlkZW50X2xldmVscyA9IGFwcGx5KAogICAgZXhwYW5kLmdyaWQoYygnSE8nKSwgYygncmVwbGljYXRlMScsICdyZXBsaWNhdGUyJywgJ3JlcGxpY2F0ZTMnLCAncmVwbGljYXRlNCcpLCBjKCdEYXkwJywnRGF5NycsJ0RheTIxJykpLCAKICAgIE1BUkdJTiA9IDEsIEZVTiA9IGZ1bmN0aW9uKHJvdyl7cGFzdGUocm93WzFdLCByb3dbM10sIHJvd1syXSwgc2VwID0gJy4nKX0pCgp0bXBfbWV0YSA9IGdlb19zb0BtZXRhLmRhdGEKCnRtcF9tZXRhJG9yaWcuaWRlbnQgPSBnc3ViKCdITycsICdITy4nLCB0bXBfbWV0YSRvcmlnLmlkZW50KQp0bXBfbWV0YSRvcmlnLmlkZW50ID0gZ3N1YigncmVwJywgJy5yZXAnLCB0bXBfbWV0YSRvcmlnLmlkZW50KQoKdG1wX21ldGEkb3JpZy5pZGVudCA9IGZhY3Rvcih0bXBfbWV0YSRvcmlnLmlkZW50LCBsZXZlbHMgPSBvcmlnLmlkZW50X2xldmVscykKCiMgQWRkIGRheSBpbmZvcm1hdGlvbgp0bXBfbWV0YSRkYXkgPSBmYWN0b3Ioc3RyX3NwbGl0KHRtcF9tZXRhJG9yaWcuaWRlbnQsIHBhdHRlcm4gPSAnWy5dJywgc2ltcGxpZnkgPSBUUlVFKVssMl0sIGxldmVscyA9IGMoJ0RheTAnLCAnRGF5NycsICdEYXkyMScpKQoKIyBBZGQgcmVwbGljYXRlIGNvbHVtbgp0bXBfbWV0YSRyZXBsaWNhdGUgPSBzdHJfc3BsaXQodG1wX21ldGEkb3JpZy5pZGVudCwgcGF0dGVybiA9ICdbLl0nLCBzaW1wbGlmeSA9IFRSVUUpWywzXQoKIyBBc3NpZ24gdGhlIHVwZGF0ZWQgbWV0YWRhdGEgdG8gdGhhdCBpbiB0aGUgU2V1cmF0IG9iamVjdApnZW9fc29AbWV0YS5kYXRhID0gdG1wX21ldGEKCiMgU2V0IHRoZSBJZGVudHMoZ2VvX3NvKSB0byB0aGUgbmV3IG9yaWcuaWRlbnQKSWRlbnRzKGdlb19zbykgPSAnb3JpZy5pZGVudCcKYGBgCgpUYWtpbmcgYSBsb29rIGF0IHRoZSByZXN1bHQsIHdlIHNlZSBgb3JpZy5pZGVudGAgbG9va3MgYSBsaXR0bGUgZGlmZmVyZW50LCBhbmQgd2UgaGF2ZSBuZXcgYGRheWAgYW5kIGByZXBsaWNhdGVgIGNvbHVtbnMuIE5vdGUgdGhhdCB0aGVyZSBhcmUgbWFueSB3YXlzIHRvIGhhdmUgYWNjb21wbGlzaGVkIHRoaXMsIHRoZSBhYm92ZSBjb2RlIGlzIGp1c3Qgb25lIHJvdXRlLgoKYGBge3IsIHByZXZpZXdfbWV0YWRhdGEzfQojIFJlLWV4YW1pbmUgU2V1cmF0IG1ldGRhdGEgIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KaGVhZChnZW9fc29AbWV0YS5kYXRhKQpgYGAKCiMjIFBlcmNlbnQgbWl0b2Nob25kcmlhbCByZWFkcwoKVGhlIGBQZXJjZW50YWdlRmVhdHVyZVNldCgpYCBmdW5jdGlvbiBlbmFibGVzIHVzIHRvIHF1aWNrbHkgZGV0ZXJtaW5lIHRoZSBjb3VudHMgYmVsb25naW5nIHRvIGEgc3Vic2V0IG9mIHRoZSBwb3NzaWJsZSBmZWF0dXJlcyBmb3IgZWFjaCBjZWxsLiBTaW5jZSBtaXRvY2hvbmRyaWFsIHRyYW5zY3JpcHRzIGluIG1vdXNlIGJlZ2luIHdpdGggIm10Iiwgd2Ugd2lsbCB1c2UgdGhhdCBwYXR0ZXJuIHRvIGNvdW50IHRoZSBwZXJjZW50YWdlIG9mIHJlYWRzIGNvbWluZyBmcm9tIG1pdG9jaG9uZHJpYWwgdHJhbnNjcmlwdHMuCgpgYGB7ciwgYXNzaWduX3BlcmNlbnRfbXR9CiMgQ29uc2lkZXIgbWl0b2Nob25kcmlhbCB0cmFuc2NyaXB0cyAgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQojIFdlIHVzZSAibXQiIGJlY2F1c2UgdGhpcyBpcyBtb3VzZSwgZGVwZW5kaW5nIG9uIHRoZSBvcmdhbmlzbSwgdGhpcyBtaWdodCBuZWVkIHRvIGJlIGNoYW5nZWQKZ2VvX3NvJHBlcmNlbnQubXQgPSBQZXJjZW50YWdlRmVhdHVyZVNldChnZW9fc28sIHBhdHRlcm4gPSAnXm10LScpCgojIFVzZSBzdW1tYXJ5KCkgdG8gcXVpY2tseSBjaGVjayB0aGUgcmFuZ2Ugb2YgdmFsdWVzCnN1bW1hcnkoZ2VvX3NvJHBlcmNlbnQubXQpCmBgYAoKSnVzdCBsb29raW5nIGF0IHRoZSBzdW1tYXJ5LCB3ZSBjYW4gc2VlIHRoYXQgdGhlcmUgYXJlIHNvbWUgY2VsbHMgd2l0aCBhIGhpZ2ggcGVyY2VudGFnZSBvZiBtaXRvY2hvbmRyaWFsIHJlYWRzLgoKIVtJbWFnZTogU2NoZW1hdGljIGFmdGVyIGFsdGVyaW5nIHNvbWUgbWV0YSBkYXRhIGNvbHVtbnMuXShpbWFnZXMvc2V1cmF0X3NjaGVtYXRpYy9TbGlkZTMucG5nKQoKIyBRdWFsaXR5IE1ldHJpY3MKCkNlbGwgUmFuZ2VyIGlzIGEgZmlyc3QtcGFzcyBmaWx0ZXIgdG8gZGV0ZXJtaW5lIHdoYXQgaXMgYSAiY2VsbCIgYW5kIHdoYXQgaXMgbm90LiBJdCBvbmx5IGNvbnNpZGVycyBvbmUgc2FtcGxlIGF0IGEgdGltZSwgYW5kIGRvZXMgbm90IGNvbnNpZGVyIHRoZSBjZWxscyByZWxhdGl2ZSB0byBvbmUgYW5vdGhlci4gCgpMZXQncyBkaWcgZGVlcGVyIHRvIGRldGVybWluZSB3aGVuIGEgZHJvcGxldCBtaWdodCBjb250YWluIHR3byBjZWxscywgYSB2ZXJ5IHN0cmVzc2VkIGNlbGwsIG9yIHNvbWUgdGVjaG5pY2FsIGlzc3VlIGluIHRoZSBsaWJyYXJ5IHByZXBhcmF0aW9uLiBXZSB3aWxsIHVzZSB0aHJlZSBtZXRyaWNzIHRvIGRldGVybWluZSBsb3ctcXVhbGl0eSBjZWxscyBiYXNlZCBvbiB0aGVpciBleHByZXNzaW9uIHByb2ZpbGVzIChbcmVmZXJlbmNlXShodHRwczovL2Jpb2NvbmR1Y3Rvci5vcmcvYm9va3MvMy4xMi9PU0NBL3F1YWxpdHktY29udHJvbC5odG1sI2Nob2ljZS1vZi1xYy1tZXRyaWNzKSkuCgoxLiBUaGUgdG90YWwgbnVtYmVyIG9mIFVNSXMgZGV0ZWN0ZWQuIENlbGxzIHdpdGggYSBzbWFsbCBudW1iZXIgb2YgVU1JcyBkZXRlY3RlZCBtYXkgaW5kaWNhdGUgbG9zcyBvZiBSTkEgZHVyaW5nIGxpYnJhcnkgcHJlcGFyYXRpb24gdmlhIGNlbGwgbHlzaXMgb3IgaW5lZmZpY2llbnQgY0ROQSBjYXB0dXJlIC8gYW1wbGlmaWNhdGlvbi4gQ2VsbHMgd2l0aCByZWxhdGl2ZWx5IGhpZ2ggbnVtYmVyIG9mIFVNSXMgZGV0ZWN0ZWQgbWF5IGluZGljYXRlIGEgZG91YmxldC4KMi4gVGhlIG51bWJlciBvZiBleHByZXNzZWQgZmVhdHVyZXMsIGRlZmluZWQgYXMgbnVtYmVyIG9mIGdlbmVzIHdpdGggbm9uLXplcm8gY291bnRzLiBDZWxscyB3aXRoIHZlcnkgZmV3IG1lYXN1cmVkIGdlbmVzIGFyZSBsaWtlbHkgdG8gYmUgb2YgbG93LXF1YWxpdHksIGFuZCBtYXkgZGlzdG9ydCBkb3duc3RyZWFtIHZhcmlhbmNlIGVzdGltYXRpb24gb3IgZGltZW5zaW9uIHJlZHVjdGlvbiBzdGVwcy4KMy4gVGhlIHByb3BvcnRpb24gb2YgcmVhZHMgbWFwcGVkIHRvIHRoZSBtaXRvY2hvbmRyaWFsIGdlbm9tZS4gSGlnaCBwcm9wb3J0aW9ucyBvZiBtaXRvY2hvbmRyaWFsIHRyYW5zY3JpcHRzIG1heSBpbmRpY2F0ZSBhIGRhbWFnZWQgY2VsbCwgdGhlIG1lYXN1cmUgb2Ygd2hpY2ggbWF5IGFsc28gZGlzdG9ydCBkb3duc3RyZWFtIGFuYWx5c2lzIHN0ZXBzLgoKVGhlIG51bWJlciBvZiBVTUlzIGRldGVjdGVkIChgbkNvdW50YCkgYW5kIG51bWJlciBvZiBleHByZXNzZWQgZmVhdHVyZXMgKGBuRmVhdHVyZWApIGFyZSBhbHJlYWR5IGdpdmVuIGluIHRoZSBtZXRhIGRhdGEgdGFibGUuCgo+ICoqV2h5IHRvdGFsIFVNSXMgaW5zdGVhZCBvZiB0b3RhbCByZWFkcz8qKgo+IAo+IFNpbmNlIGEgc2luZ2xlLWNlbGwgaW5oZXJlbnRseSBjb250YWlucyBhIGxpbWl0ZWQgYW1vdW50IG9mIFJOQSBtb2xlY3VsZXMsIGEgaGlnaGVyIGFtb3VudCBvZiBQQ1IgYW1wbGlmaWNhdGlvbiBpcyByZXF1aXJlZCB0byBnZW5lcmF0ZSB0aGUgZmluYWwgc2VxdWVuY2luZyBsaWJyYXJ5Lgo+IAo+IFNpbmNlIFBDUiBjYW4gc2tldyBwcm9wb3J0aW9ucyBvZiBpbml0aWFsIGlucHV0IG1hdGVyaWFscywgc3BlY2lmaWMgc2VxdWVuY2VzIGFyZSBpbmNsdWRlZCBpbiB0aGUgaW5pdGlhbCBjYXB0dXJlIHByb2JlcyBjYWxsZWQgdW5pcXVlIG1vbGVjdWxlIGlkZW50aWZpZXJzIChVTUlzKS4gQXMgZWFjaCBpbml0aWFsIHByb2JlIGhhcyBhIGRpZmZlcmVudCBVTUkgc2VxdWVuY2UsIGVhY2ggUk5BIGNhcHR1cmVkIHdpbGwgYmUgdGFnZ2VkIHdpdGggYSBkaWZmZXJlbnQgVU1JLCB3aGljaCBhbGxvd3MgdGhvc2UgaW5pdGlhbCBSTkFzIGFuZCBzdWJzZXF1ZW50IFBDUiBkdXBsaWNhdGVzIHRvIGJlIGlkZW50aWZpZWQgYW5kIGR1cGxpY2F0ZXMgY29sbGFwc2VkIGFzIHBhcnQgb2YgdGhlIGluaXRpYWwgcHJvY2Vzc2luZyBieSBDZWxsUmFuZ2VyLiAgCj4KCj4gKipPdGhlciBtZWFuaW5ncyBvZiBgbkZlYXR1cmVzYCoqCj4gCj4gRm9yIG90aGVyIHNpbmdsZS1jZWxsIGRhdGEgdHlwZXMsIGBuRmVhdHVyZXNgIHdvdWxkIHJlcHJlc2VudCB3aGF0J3MgYmVpbmcgbWVhc3VyZWQgaW4gdGhhdCBleHBlcmltZW50LiBGb3Igc2luZ2xlLWNlbGwgQVRBQy1zZXEsIGBuRmVhdHVyZXNgIHdvdWxkIHJlcHJlc2VudHMgdGhlIHRvdGFsIG51bWJlciBvZiBwZWFrcyAoZS5nLiBhY2Nlc3NpYmxlIGFyZWFzIG9mIEROQSkgcGVyIGNlbGwuCj4KCjwhLS0gTWF0dCBtYXkgaGF2ZSBkaXNjdXNzZWQgVU1JcyBhcyBwYXJ0IG9mIENlbGxSYW5nZXIgcHJvY2Vzc2luZyBhbmQgTGl2L1RyaWNpYSBtYXkgdG91Y2ggb24gYXMgcGFydCBvZiBsaWJyYXJ5IGdlbmVyYXRpb24gYXQgZW5kIG9mIERheSAyIC0tPgoKIyMgQ2VsbCBjb3VudHMKCkNlbGwgY291bnRzIHBlciBzYW1wbGUgKGJhc2VkIG9uIHRoZSBudW1icmVyIG9mIHVuaXF1ZSBjZWxsdWxhciBiYXJjb2RlcyBkZXRlY3RlZCBieSBDZWxsIFJhbmdlcikgY2FuIGluZGljYXRlIGlmIGFuIGVudGlyZSBzYW1wbGUgd2FzIG9mIHBvb3IgcXVhbGl0eS4gVGhlIHRhYmxlIGJlbG93IGlzIHRoZSBudW1iZXIgb2YgY2VsbHMgY2FsbGVkIGJ5IENlbGwgUmFuZ2VyLCB3aXRoIHRoZSBhZGRlZCBmaWx0ZXIgZnJvbSBgQ3JlYXRlU2V1cmF0ZU9iamVjdCgpYCBpbiB0aGUgcHJldmlvdXMgbGVzc29uOiBgbWluLmNlbGxzID0gMSwgbWluLmZlYXR1cmVzID0gNTBgLiBSZWNhbGwsIHRoaXMgbWVhbnMgYSBnZW5lIGlzIHJlbW92ZWQgaWYgaXQgaXMgZXhwcmVzc2VkIGluIDEgb3IgZmV3ZXIgY2VsbHMsIGFuZCBhIGNlbGwgaXMgcmVtb3ZlZCBpZiBpdCBjb250YWlucyByZWFkcyBmb3IgNTAgb3IgZmV3ZXIgZ2VuZXMuCgpgYGB7ciwgcHJlZmlsdGVyX2NlbGxfY291bnRzfQojIEFzc2lnbiBvdmVyYWxsIGNlbGwgY291bnRzICAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KY2VsbF9jb3VudHNfcHJlX3RibCA9IGdlb19zb0BtZXRhLmRhdGEgJT4lIGNvdW50KG9yaWcuaWRlbnQsIG5hbWUgPSAncHJlZmlsdGVyX2NlbGxzJykKY2VsbF9jb3VudHNfcHJlX3RibApgYGAKCkl0IGFwcGVhcnMgdGhhdCB0aGUgRGF5IDcgc2FtcGxlcyBoYXZlIHN5c3RlbWF0aWNhbGx5IG1vcmUgY2VsbHMgdGhhbiB0aGUgb3RoZXIgZGF5cy4gSWYgeW91IGhhZCBhbiBpZGVhIG9mIGhvdyBtYW55IGNlbGxzIHlvdSBleHBlY3RlZCB0byBzZWUgcGVyIHNhbXBsZSwgdGhpcyB0YWJsZSBjYW4gaGVscCB5b3UgY2hlY2sgdGhhdCBleHBlY3RhdGlvbiBhbmQgZGV0ZXJtaW5lIGlmIGEgc2FtcGxlIGZhaWxlZCBhbmQgc2hvdWxkIGJlIGRyb3BwZWQuCgojIyBWaXN1YWxpemluZyBxdWFsaXR5IG1ldHJpY3MKCkEgdmlvbGluIHBsb3Qgc2hvd3MgdGhlIGRpc3RyaWJ1dGlvbiBvZiBhIHF1YW50aXR5IGFtb25nIHRoZSBjZWxscyBpbiBhIHNpbmdsZSBzYW1wbGUsIG9yIGFjcm9zcyBtYW55IHNhbXBsZXMuIFNldXJhdCBoYXMgYSBidWlsdC1pbiBmdW5jdGlvbiwgYFZsblBsb3QoKWAgZm9yIHRoaXMgcHVycG9zZS4gTGV0J3Mgb3JpZW50IHdpdGggYSB2aW9saW4gcGxvdCBvZiBgbkZlYXR1cmVfUk5BYCBmb3Igb25seSBvbmUgc2FtcGxlLCBgSE8uRGF5MjEucmVwbGljYXRlMWA6CgpgYGB7ciwgc2luZ2xlX3Zpb2xpbl9wbG90LCBlY2hvID0gRkFMU0V9ClZsblBsb3Qoc3Vic2V0KGdlb19zbywgb3JpZy5pZGVudCA9PSAnSE8uRGF5MjEucmVwbGljYXRlMScpLCBmZWF0dXJlcyA9ICduRmVhdHVyZV9STkEnLCBhc3NheSA9ICdSTkEnLCBsYXllciA9ICdjb3VudHMnKSArIE5vTGVnZW5kKCkKYGBgCgpBIHZpb2xpbiBwbG90IGlzIHNpbWlsYXIgdG8gYSBib3ggcGxvdCwgYnV0IGl0IHNob3dzIHRoZSBkZW5zaXR5IG9mIHRoZSBkYXRhIGF0IGRpZmZlcmVudCB2YWx1ZXMuIEhlcmUgdGhlIGluZGl2aWR1YWwgcG9pbnRzIGFyZSB0aGUgY2VsbHMgZnJvbSBgSE8uRGF5MjEucmVwbGljYXRlMWAgYW5kIHRoZSB5LWF4aXMgaXMgdGhlIHZhbHVlIG9mIGBuRmVhdHVyZV9STkFgIGZvciB0aGF0IGNlbGwuIFRoZSB2aW9saW4gcGFydCBvZiB0aGUgZnVuY3Rpb24gaXMgZXNzZW50aWFsbHkgc2hvd2luZyB0aGUgZGVuc2l0eSBvZiB0aGUgY2VsbHMgYXQgZGlmZmVyZW50IHZhbHVlcyBvZiBgbkZlYXR1cmVfUk5BYC4KCiMjIyBHZW5lcyBwZXIgY2VsbAoKTGV0J3MgbG9vayBhdCB0aGUgYG5GZWF0dXJlX1JOQWAgdmlvbGluIHBsb3QgYWNyb3NzIGFsbCB0aGUgc2FtcGxlcy4gQWdhaW4sIHRoaXMgaXMgdGhlIG51bWJlciBvZiBnZW5lcyBkZXRlY3RlZCBwZXIgY2VsbC4KCmBgYHtyLCBmZWF0dXJlX3Bsb3QsIGZpZy5zaG93ID0gJ2hvbGQnfQojIFJldmlldyBmZWF0dXJlIHZpb2xpbiBwbG90cyAgIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVmxuUGxvdChnZW9fc28sIGZlYXR1cmVzID0gJ25GZWF0dXJlX1JOQScsIGFzc2F5ID0gJ1JOQScsIGxheWVyID0gJ2NvdW50cycpICsgTm9MZWdlbmQoKSArIGdlb21faGxpbmUoeWludGVyY2VwdCA9IDUwMCkgKyBnZW9tX2hsaW5lKHlpbnRlcmNlcHQgPSA0MDApICsgZ2VvbV9obGluZSh5aW50ZXJjZXB0ID0gMzAwKSArIGdlb21faGxpbmUoeWludGVyY2VwdCA9IDIwMCkKZ2dzYXZlKGZpbGVuYW1lID0gJ3Jlc3VsdHMvZmlndXJlcy9xY19uRmVhdHVyZV92aW9saW4ucG5nJywgd2lkdGggPSAxMiwgaGVpZ2h0ID0gNiwgdW5pdHMgPSAnaW4nKQpgYGAKCldlIG9ic2VydmUgdGhhdCBzYW1wbGVzIGJlaGF2ZSBzaW1pbGFybHkgd2l0aGluIGEgZGF5LCBidXQgaGF2ZSBkaWZmZXJlbnQgZGlzdHJpYnV0aW9ucyBhY3Jvc3MgZGF5cy4gV2UgYWxzbyBub3RlIHRoYXQgbWFueSBjZWxscyBhcHBlYXIgdG8gaGF2ZSBhIGxvdyBudW1iZXIgb2YgZ2VuZXMgZGV0ZWN0ZWQgKDwgNTAwKS4KCiMjIyBVTUkgY291bnRzIHBlciBjZWxsCgpOb3cgbGV0J3MgbG9vayBhdCBgbkNvdW50X1JOQWAgcGxvdCwgdGhlIHRvdGFsIG51bWJlciBvZiBVTUlzIGRldGVjdGVkLgoKYGBge3IsIGNvdW50X3Bsb3QsIGZpZy5zaG93ID0gJ2hvbGQnfQojIFJldmlldyBjb3VudCB2aW9saW4gcGxvdHMgICAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVmxuUGxvdChnZW9fc28sIGZlYXR1cmVzID0gJ25Db3VudF9STkEnLCBhc3NheSA9ICdSTkEnLCBsYXllciA9ICdjb3VudHMnKSArIE5vTGVnZW5kKCkKZ2dzYXZlKGZpbGVuYW1lID0gJ3Jlc3VsdHMvZmlndXJlcy9xY19uQ291bnRfdmlvbGluLnBuZycsIHdpZHRoID0gMTIsIGhlaWdodCA9IDYsIHVuaXRzID0gJ2luJykKYGBgCgpXZSBvYnNlcnZlIGEgc2ltaWxhciB3aXRoaW4tYW5kLWFjcm9zcyBkYXkgYmVoYXZpb3IgYW1vbmcgdGhlIHNhbXBsZXMuIE92ZXJhbGwgaXQgYXBwZWFycyB0aGF0IHRoZSBEYXkgMCBzYW1wbGVzIGhhdmUgZmV3ZXIgVU1JcyBkZXRlY3RlZCBwZXIgY2VsbCB0aGFuIERheSA3IGFuZCBEYXkgMjEuIEFsc28gb2Ygbm90ZSBpcyB0aGUgb3V0bGllciBjZWxsIGluIEhPLkRheTAucmVwbGljYXRlMSwgd2l0aCBhcm91bmQgMTAwSyBVTUlzIGRldGVjdGVkLiBUaGlzIGNlbGwgbWlnaHQgYmUgYSBkb3VibGV0LgoKIyMjIFBlcmNlbnQgbWl0b2Nob25kcmlhbCByZWFkcwoKRmluYWxseSwgbGV0cyBwbG90IHRoZSBwZXJjZW50IG1pdG9jaG9uZHJpYWwgcmVhZHMsIGBwZXJjZW50Lm10YC4KCmBgYHtyLCBtaXRvX3Bsb3QsIGZpZy5zaG93ID0gJ2hvbGQnfQojIFJldmlldyBtaXRvY2hvbmRyaWFsIHZpb2xpbiBwbG90cyAgIC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KVmxuUGxvdChnZW9fc28sIGZlYXR1cmVzID0gJ3BlcmNlbnQubXQnLCBhc3NheSA9ICdSTkEnLCBsYXllciA9ICdjb3VudHMnKSArIE5vTGVnZW5kKCkgKyBnZW9tX2hsaW5lKHlpbnRlcmNlcHQgPSAyNSkgKyBnZW9tX2hsaW5lKHlpbnRlcmNlcHQgPSAyMCkgKyBnZW9tX2hsaW5lKHlpbnRlcmNlcHQgPSAxNSkgKyBnZW9tX2hsaW5lKHlpbnRlcmNlcHQgPSAxMCkKZ2dzYXZlKGZpbGVuYW1lID0gJ3Jlc3VsdHMvZmlndXJlcy9xY19taXRvX3Zpb2xpbi5wbmcnLCB3aWR0aCA9IDEyLCBoZWlnaHQgPSA2LCB1bml0cyA9ICdpbicpCmBgYAoKV2Ugb2JzZXJ2ZSB0aGUgbWFqb3JpdHkgb2YgY2VsbHMgc2VlbSB0byBoYXZlIDwgMjUlIG1pdG9jaG9uZHJpYWwgcmVhZHMsIGJ1dCB0aGVyZSBhcmUgbWFueSBjZWxscyB3aXRoID4gMjUlIHRoYXQgd2UgbWF5IHdhbnQgdG8gcmVtb3ZlLgoKR2VuZXJhbGx5LCBtYW55IHR1dG9yaWFscyB1c2UgYSBjdXRvZmYgb2YgNSAtIDEwJSBtaXRvY2hvbmRyaWFsIHJlYWRzLiBIb3dldmVyLCBmb3Igc29tZSBleHBlcmltZW50cywgaGlnaCBtaXRvY2hvbmRyaWFsIHJlYWRzIHdvdWxkIGJlIGV4cGVjdGVkIChzdWNoIGFzIGluIGNhc2VzIHdoZXJlIHRoZSBjb25kaXRpb24vdHJlYXRtZW50IG9yIGdlbm90eXBlIGluY3JlYXNlcyBjZWxsIGRlYXRoKS4gSW4gdGhpcyBjYXNlLCBhIHJlbGF4ZWQgdGhyZXNob2xkIHdvdWxkIGhlbHAgcHJlc2VydmUgYmlvbG9naWNhbGx5IHJlbGV2YW50IGNlbGxzLiBJbiBvdXIgY2FzZSwgdGhlIGNlbGxzIHdlcmUgY29sbGVjdGVkIGFzIHBhcnQgb2YgYW4gaW5qdXJ5IG1vZGVsLCBwZXJoYXBzIGp1c3RpZnlpbmcgYSBtb3JlIGxlbmllbnQgcGVyY2VudCBtaXRvY2hvbmRyaWFsIHJlYWQgZmlsdGVyLgoKIyBGaWx0ZXJpbmcgYXBwcm9hY2hlcwoKIyMgRml4ZWQgdGhyZXNob2xkcwoKRml4ZWQgdGhyZXNob2xkcyBmb3IgYW55IGNvbWJpbmF0aW9uIG9mIGBuRmVhdHVyZV9STkFgLCBgbkNvdW50X1JOQWAsIGFuZCBgcGVyY2VudC5tdGAgY2FuIGJlIHNlbGVjdGVkIHRvIHJlbW92ZSBsb3cgcXVhbGl0eSBjZWxscy4gSW4gZ2VuZXJhbCwgc2VsZWN0aW5nIHZlcnkgc3RyaW5nZW50IHRocmVzaG9sZHMgZm9yIGVhY2ggb2YgdGhlIG1ldHJpY3MgbWF5IGxlYWQgdG8gcmVtb3ZpbmcgaW5mb3JtYXRpdmUgY2VsbHMuIEFzIHBlciB0aGUgSEJDIHRyYWluaW5nIG1hdGVyaWFscyAoW2xpbmtdKGh0dHBzOi8vaGJjdHJhaW5pbmcuZ2l0aHViLmlvL3NjUk5BLXNlcV9vbmxpbmUvbGVzc29ucy8wNF9TQ19xdWFsaXR5X2NvbnRyb2wuaHRtbCkpLCB3ZSByZWNvbW1lbmQgc2V0dGluZyBpbmRpdmlkdWFsIHRocmVzaG9sZHMgdG8gZXJyIG9uIHRoZSBwZXJtaXNzaXZlIHNpZGUuCgpbU29ya2luIGV0IGFsLl0oaHR0cHM6Ly93d3cubmNiaS5ubG0ubmloLmdvdi9wbWMvYXJ0aWNsZXMvUE1DNzAwMjQ1My8pIGNob3NlIHRoZXNlIHRocmVzaG9sZHM6Cgo+IFdlIGZpbHRlcmVkIG91dCBjZWxscyB3aXRoIGxlc3MgdGhhbiA1MDAgZ2VuZXMgcGVyIGNlbGwgYW5kIHdpdGggbW9yZSB0aGFuIDI1JSBtaXRvY2hvbmRyaWFsIHJlYWQgY29udGVudC4KCkluIG90aGVyIHdvcmRzLCBjZWxscyB3aXRoID4gNTAwIGBuRmVhdHVyZV9STkFgIGFuZCA8IDI1JSBgcGVyY2VudC5tdGAgd2VyZSByZXRhaW5lZCBieSB0aGUgYXV0aG9ycy4gV2UgY291bGQgcHJldmlldyB3aGF0IHRoZSByZXN1bHRpbmcgY2VsbCBjb3VudHMgd291bGQgYmUgd2l0aCB0aGVzZSB0aHJlc2hvbGRzOgoKYGBge3IsIHByZXZpZXdfcG9zdGZpbHRlcl9jZWxsX2NvdW50c30KIyBDb25zaWRlciBleGNsdWRpbmcgc3VzcGVjdCBjZWxscyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCnN1YnNldChnZW9fc28sIHN1YnNldCA9IG5GZWF0dXJlX1JOQSA+IDUwMCAmIHBlcmNlbnQubXQgPCAyNSlAbWV0YS5kYXRhICU+JSAKICAgIGNvdW50KG9yaWcuaWRlbnQsIG5hbWUgPSAncG9zdGZpbHRlcl9jZWxscycpCmBgYAoKIyMgQWRhcHRpdmUgdGhyZXNob2xkcwoKRm9yIHRoaXMgd29ya3Nob3Agd2Ugd2lsbCB1c2UgZml4ZWQgdGhyZXNob2xkcywgYnV0IGFub3RoZXIgb3B0aW9uIGlzIHRvIHJlbW92ZSBsb3ctcXVhbGl0eSBjZWxscyBhZGFwdGl2ZWx5LiBUaGlzIGFwcHJvYWNoIGFzc3VtZXMgdGhhdCBtb3N0IG9mIHRoZSBjZWxscyBhcmUgb2YgYWNjZXB0YWJsZSBxdWFsaXR5LiBGb3IgbW9yZSBpbmZvcm1hdGlvbiBzZWUgdGhlIHJlbGV2YW50IHNlY3Rpb24gaW4gQmlvY29uZHVjdG9yJ3Mgb25saW5lIGJvb2s6IE9yY2hlc3RyYXRpbmcgU2luZ2xlLUNlbGwgQW5hbHlzaXMgKFtsaW5rXShodHRwczovL2Jpb2NvbmR1Y3Rvci5vcmcvYm9va3MvMy4xMi9PU0NBL3F1YWxpdHktY29udHJvbC5odG1sI3F1YWxpdHktY29udHJvbC1vdXRsaWVyKSkuCgojIFJlbW92aW5nIGxvdy1xdWFsaXR5IGNlbGxzCgpXZSB3aWxsIGRldmlhdGUgZnJvbSB0aGUgcHVibGljYXRpb24gc2xpZ2h0bHkgYW5kIHJldGFpbiB0aGUgY2VsbHMgd2l0aCBgbkZlYXR1cmVfUk5BID4gMzAwYCBhbmQgYHBlcmNlbnQubXQgPCAxNWAuIE5vdGluZyB0aGF0IHRoZSBgbkZlYXR1cmVfUk5BYCBwbG90IGhhZCBhIGdhcCBhcm91bmQgMzAwLCBhbmQgdGhhdCB3ZSB3YW50IHRvIGJlIG1vcmUgbGVuaWVudCB0aGFuIHRoZSB1c3VhbCA1LTEwJSBjdXRvZmYgZm9yIG1pdG9jaG9uZHJpYWwgcmVhZHMuCgpgYGB7ciwgZmlsdGVyX3NldXJhdH0KIyBGaWx0ZXIgdG8gZXhjbHVkZSBzdXNwZWN0IGNlbGxzIGFuZCBhc3NpZ24gdG8gbmV3IFNldXJhdCBvYmplY3QgLS0tLS0tCmdlb19zbyA9IHN1YnNldChnZW9fc28sIHN1YnNldCA9IG5GZWF0dXJlX1JOQSA+IDMwMCAmIHBlcmNlbnQubXQgPCAxNSkKZ2VvX3NvCmBgYAoKQW5kIGxldCdzIHJlY29yZCB0aGUgbnVtYmVyIG9mIGNlbGxzIHJlbWFpbmluZyBhZnRlciBmaWx0ZXJpbmc6CgpgYGB7ciwgcG9zdGZpbHRlcl9jZWxsX2NvdW50c30KIyBFeGFtaW5lIHJlbWFpbmluZyBjZWxsIGNvdW50cyAtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCmNlbGxfY291bnRzX3Bvc3RfdGJsID0gZ2VvX3NvQG1ldGEuZGF0YSAlPiUgY291bnQob3JpZy5pZGVudCwgbmFtZSA9ICdwb3N0ZmlsdGVyX2NlbGxzJykKY2VsbF9jb3VudHNfcG9zdF90YmwKYGBgCgpMZXQncyBjb21iaW5lIHRoZSBwcmUgYW5kIHBvc3QgdGFibGVzOgoKYGBge3IsIGNlbGxfY291bnRzfQojIFNob3cgY2VsbCBjb3VudHMgYmVmb3JlIGFuZCBhZnRlciBmaWx0ZXJpbmcgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0KY2VsbF9jb3VudHNfdGJsID0gY2VsbF9jb3VudHNfcHJlX3RibCAlPiUgbGVmdF9qb2luKGNlbGxfY291bnRzX3Bvc3RfdGJsLCBieSA9ICdvcmlnLmlkZW50JykKY2VsbF9jb3VudHNfdGJsCmBgYAoKV2UgY2FuIG5vdyBlYXNpbHkgc2VlIGhvdyBtYW55IGNlbGxzIHdlIHN0YXJ0ZWQgd2l0aCwgYW5kIGhvdyBtYW55IHdlIHJldGFpbmVkIGZvciBkb3duc3RyZWFtIGFuYWx5c2lzLiBMZXQncyB3cml0ZSB0aGlzIHRhYmxlIHRvIGEgZmlsZS4KCmBgYHtyLCB3cml0ZV9jZWxsX2NvdW50c30Kd3JpdGVfY3N2KGNlbGxfY291bnRzX3RibCwgZmlsZSA9ICdyZXN1bHRzL3RhYmxlcy9jZWxsX2ZpbHRlcmluZ19jb3VudHMuY3N2JykKYGBgCgo8IS0tV2hhdCB0aHJlc2hvbGRzIHdvdWxkIHdlIHN0YXJ0IHdpdGggYmFzZWQgb24gdGhlIHBsb3RzIGFsb25lPyBIb3cgZG9lcyB0aGF0IGNvbXBhcmUgdG8gdGhlIHRocmVzaG9sZHMgcmVwb3J0ZWQgaW4gcGFwZXI/LS0+Cgo8IS0tT3RoZXIg4oCcYWR2YW5jZWTigJ0gbWV0aG9kczogb3V0IG9mIHNjb3BlIGZvciB0aGlzIHdvcmtzaG9wIGJ1dCB0aGVyZSBhcmUgcGFja2FnZXMgIHNwZWNpZmljYWxseSBkZXZlbG9wZWQgdG8gZGV0ZWN0ICJkb3VibGV0cyIsIGUuZy4gZHJvcGxldHMgdGhhdCBjb250YWluZWQgbW9yZSB0aGFuIG9uZSBjZWxsLCBzdWNoIGFzIERvdWJsZUZpbmRlci0tPgoKPCEtLUFkZGl0aW9uYWwgYXNpZGUgLSBGb3Igc2luZ2xlLW51Y2xlaSBleHBlcmltZW50cyByZW1vdmluZyBiYWNrZ3JvdW5kL2FtYmllbnQgUk5BIHdpdGggQ2VsbEJsZW5kZXIgT1IgRGVjb250WCBpcyBhbiBpbXBvcnRhbnQgYWRkaXRpb25hbCBzdGVwIHNpbmNlIG51Y2xlaSBhcmUgYm90aCBzdGlja3kgYW5kIHBvcm91cy0tPgoKIyBSZXZpc2luZyB0aHJlc2hvbGRzCgpJdCBpcyBpbXBvcnRhbnQgdG8gcmVjb2duaXplIHRoYXQgdGhyZXNob2xkcyBmb3IgcmV0YWluaW5nIGNlbGxzIGFyZSBub3Qgc2V0IGluIHN0b25lLiBJdCBtYXkgaGFwcGVuIHRoYXQgdGhlIGRvd25zdHJlYW0gYW5hbHlzaXMgc3VnZ2VzdHMgdGhhdCB0aHJlc2hvbGRzIHNob3VsZCBiZSBtb3JlIG9yIGxlc3Mgc3RyaW5nZW50LiBJbiB3aGljaCBjYXNlLCB5b3UgbWF5IGV4cGVyaW1lbnQgd2l0aCB0aGUgdGhyZXNob2xkcyBhbmQgb2JzZXJ2ZSB0aGUgZG93bnN0cmVhbSBlZmZlY3RzLgoKIyBTYXZlIG91ciBwcm9ncmVzcwoKTGV0J3Mgc2F2ZSB0aGlzIGZpbHRlcmVkIGZvcm0gb2Ygb3VyIFNldXJhdCBvYmplY3QuIEl0IHdpbGwgYWxzbyBpbmNsdWRlIG91ciBjaGFuZ2VzIHRvIHRoZSBgbWV0YS5kYXRhYDoKCmBgYHtyLCBzYXZlX3Jkc19oaWRkZW4sIGVjaG8gPSBGQUxTRX0KaWYoIWZpbGUuZXhpc3RzKCdyZXN1bHRzL3JkYXRhL2dlb19zb19maWx0ZXJlZC5yZHMnKSkgewogIHNhdmVSRFMoZ2VvX3NvLCBmaWxlID0gJ3Jlc3VsdHMvcmRhdGEvZ2VvX3NvX2ZpbHRlcmVkLnJkcycpCn0KYGBgCgpgYGB7ciwgc2F2ZV9yZHMsIGV2YWwgPSBGQUxTRX0KIyBTYXZlIHRoZSBjdXJyZW50IFNldXJhdCBvYmplY3QgLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tCnNhdmVSRFMoZ2VvX3NvLCBmaWxlID0gJ3Jlc3VsdHMvcmRhdGEvZ2VvX3NvX2ZpbHRlcmVkLnJkcycpCmBgYAoKIyBTdW1tYXJ5CgpJbiB0aGlzIHNlY3Rpb24gd2U6CgotIERpc2N1c3NlZCB0aGUgYmlnIHRocmVlIHF1YWxpdHkgbWV0cmljczogYG5GZWF0dXJlYHMsIGBuQ291bnRgcywgYW5kIGBwZXJjZW50Lm10YC4KLSBWaXN1YWxpemVkIHRoZXNlIG1ldHJpY3MgYWNyb3NzIGNlbGxzIC8gc2FtcGxlcyB0byBoZWxwIGlkZW50aWZ5IGxvdy1xdWFsaXR5IGNlbGxzLgotIEZpbHRlcmVkIGxvdy1xdWFsaXR5IGNlbGxzIHVzaW5nIGZpeGVkIHRocmVzaG9sZHMuCgpOZXh0IHN0ZXBzOiBOb3JtYWxpemF0aW9uCgotLS0tCgpUaGVzZSBtYXRlcmlhbHMgaGF2ZSBiZWVuIGFkYXB0ZWQgYW5kIGV4dGVuZGVkIGZyb20gbWF0ZXJpYWxzIGxpc3RlZCBhYm92ZS4gVGhlc2UgYXJlIG9wZW4gYWNjZXNzIG1hdGVyaWFscyBkaXN0cmlidXRlZCB1bmRlciB0aGUgdGVybXMgb2YgdGhlIFtDcmVhdGl2ZSBDb21tb25zIEF0dHJpYnV0aW9uIGxpY2Vuc2UgKENDIEJZIDQuMCldKGh0dHA6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LzQuMC8pLCB3aGljaCBwZXJtaXRzIHVucmVzdHJpY3RlZCB1c2UsIGRpc3RyaWJ1dGlvbiwgYW5kIHJlcHJvZHVjdGlvbiBpbiBhbnkgbWVkaXVtLCBwcm92aWRlZCB0aGUgb3JpZ2luYWwgYXV0aG9yIGFuZCBzb3VyY2UgYXJlIGNyZWRpdGVkLgoKPGJyLz4KPGJyLz4KCi0tLS0tLS0KCnwgW1ByZXZpb3VzIGxlc3Nvbl0oMDBCLUNlbGxSYW5nZXJJbkFjdGlvbi5odG1sKSB8IFtUb3Agb2YgdGhpcyBsZXNzb25dKCN0b3ApIHwgW05leHQgbGVzc29uXSgwMy1Ob3JtYWxpemF0aW9uLmh0bWwpIHwKfCA6LS0tIHwgOi0tLS06IHwgLS0tOiB8Cg==</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("02-QCandFiltering.Rmd");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
