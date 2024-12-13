@@ -1,6 +1,7 @@
 ---
 title: "Intro to Single Cell RNA-Seq Workshop"
 author: "UM Bioinformatics Core Workshop Team"
+lang: "en"
 output:
         html_document:
             includes:
