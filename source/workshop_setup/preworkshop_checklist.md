@@ -24,7 +24,7 @@ A separate email with the subject **"UM BioinfCore Workshop Login"** will detail
 2. Join the UM BioinfCore Workshops Slack channel<br/>
 You will receive an email invite soon; please accept that to set up your Slack account.
 
-3. (optional) Take the [pre-workshop survey](https://forms.gle/TXiweYcC5LJU1K4F8){target="_blank"}<br/>
+3. (optional) Take the [pre-workshop survey](https://michmed.org/qq87m){target="_blank"}<br/>
 To help us better understand your collective background, we invite you to take an optional, anonymous pre-workshop survey.
 
 4. (optional) Brush up your R/RStudio skills!<br/>
