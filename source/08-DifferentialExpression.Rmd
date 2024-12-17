@@ -256,6 +256,14 @@ if(!file.exists('results/rdata/geo_so_sct_integrated_with_final.rds')) {
 saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated_final.rds')
 ```
 
+```{r}
+# Discard all ggplot objects currently in environment ---------------------
+# Ok since we saved the plots as we went along
+rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
+gc()
+```
+
+
 ---
 
 # Downstream approaches

@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2024-12-13" />
+<meta name="date" content="2024-12-16" />
 
 <title>Getting Started with Seurat</title>
 
@@ -414,7 +414,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Getting Started with Seurat</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2024-12-13</h4>
+<h4 class="date">2024-12-16</h4>
 
 </div>
 
@@ -758,6 +758,72 @@ gc()
 # ========================================================================</code></pre>
 </details>
 <p><br></p>
+</div>
+<div id="barcodes-features-matrix.mtx-vs.-molecule_info.h5"
+class="section level3">
+<h3>“barcodes, features, matrix.mtx” vs. “molecule_info.h5”?</h3>
+<details>
+<summary>
+<em>H5 (aka HDF5) is an alternative file format</em>
+</summary>
+<p>Some programs (like Seurat) need only the <strong>barcodes, features,
+and matrix (counts)</strong> so those are conveniently provided as three
+separate files for each sample. Other programs (like CellRanger) need to
+store more information (e.g.  probe info about certain library preps or
+the chip or channel that cell ran on). Instead of adding more files to
+complement the three base files above, 10x provides a single binary
+file, <strong>molecule_info.h5</strong>, which contains all information
+for all molecules. (Strictly only the molecules with valid barcode/UMI
+assigned to a gene.)</p>
+<ul>
+<li>molecule_info.h5 is a single file, but with really acts like basket
+of related files for a single sample.</li>
+<li>The “h5” stands for <a
+href="https://www.hdfgroup.org/solutions/hdf5/"
+target="_blank">HDF5</a>, a broadly adopted, platform agnostic,
+scalable, high-performance file format for storing complex data.</li>
+<li>You can view the data within the .h5 file with special tools like <a
+href="https://www.hdfgroup.org/downloads/hdfview"
+target="_blank">HDF5View</a> or <a
+href="https://support.hdfgroup.org/documentation/hdf5/latest/_h5_t_o_o_l__d_p__u_g.html"
+target="_blank">h5dump</a>. Here is an excerpt of the structure:</li>
+</ul>
+<pre><code>molecule_info.h5
+    ├─ barcodes [HDF5 group]
+    ├─ count
+    ├─ features [HDF5 group]
+    ├─ gem_group
+    ├─ library_info
+    ├─ metrics_json
+    ├─ probes [HDF5 group]
+    ├─ ...
+    └─ umi</code></pre>
+<p>You can see the first three files inside are barcodes, features, and
+counts. So <em>if you have the hdf5 libraries installed</em>, you can
+use the .h5 as input to Seurat like so:</p>
+<pre class="r_no_klippy"><code># ==========================================================================
+### DO NOT RUN ###
+# To load data from raw .h5 file
+### DO NOT RUN ###
+
+HODay0replicate1 = &quot;~/ISC_Shell/cellranger_outputs/count_run_HODay0replicate1/outs/molecule_info.h5&quot;
+get_mat = Read10X_h5(filename = HODay0replicate1)
+geo_so = CreateSeuratObject(counts = geo_mat, min.cells = 1, min.features = 50)
+</code></pre>
+<p>If you want to load multiple samples from .h5 files, see the function
+<a
+href="https://samuel-marsh.github.io/scCustomize/reference/Read10X_h5_Multi_Directory.html"
+target="_blank">Read10X_h5_Multi_Directory</a> in the <a
+href="https://samuel-marsh.github.io/scCustomize/index.html"
+target="_blank">scCustomize</a> R library.</p>
+<p>FYI, you can review the full contents of molecule_info.h5 and more
+information at <a
+href="https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-molecule-info"
+target="_blank">10x Genomics</a>. For more information about HDF5
+checkout the <a
+href="https://support.hdfgroup.org/documentation/hdf5/latest/_getting_started.html"
+target="_blank">HDF5 reference docs</a>.</p>
+</details>
 </div>
 <div id="structure-of-a-seurat-object" class="section level2">
 <h2>Structure of a Seurat object</h2>

@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2024-12-13" />
+<meta name="date" content="2024-12-16" />
 
 <title>Marker identification and visualization</title>
 
@@ -415,7 +415,7 @@ div.tocify {
 <h1 class="title toc-ignore">Marker identification and
 visualization</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2024-12-13</h4>
+<h4 class="date">2024-12-16</h4>
 
 </div>
 
@@ -736,6 +736,15 @@ percent_mito_plot</code></pre>
 <p><img src="images/curriculum/06-MarkerVisualization/06-unnamed-chunk-2-1.png" width="816" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># save to file
 ggsave(filename = &#39;results/figures/percent_umap_mito_plot.png&#39;, plot = percent_mito_plot, width = 6, height = 6, units = &#39;in&#39;)</code></pre>
+<pre class="r"><code># Remove the plot variables from the environment to avoid excessive memory usage
+rm(top_5_sct_dot_plot) 
+rm(top_5_rna_dot_plot) </code></pre>
+<pre><code>Warning in rm(top_5_rna_dot_plot): object &#39;top_5_rna_dot_plot&#39; not found</code></pre>
+<pre class="r"><code>rm(percent_mito_plot) 
+gc()</code></pre>
+<pre><code>             used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells    6879796  367.5   11691802   624.5   11691802   624.5
+Vcells 1062638599 8107.3 2145708358 16370.5 1897170431 14474.3</code></pre>
 <p>We see that a higher % seem to be somewhat concentrated in a few
 places, but if cell death might be of interest for the research
 question, we’d want to consider investigating this pattern further by
