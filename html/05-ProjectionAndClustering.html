@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2024-12-13" />
+<meta name="date" content="2024-12-16" />
 
 <title>Clustering and Projection</title>
 
@@ -414,7 +414,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Clustering and Projection</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2024-12-13</h4>
+<h4 class="date">2024-12-16</h4>
 
 </div>
 
@@ -760,6 +760,31 @@ post_integration_umap_plot_day
 
 ggsave(filename = &#39;results/figures/umap_integrated_sct_day.png&#39;, plot = post_integration_umap_plot_day, width = 8, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_clusters-1.png" width="816" style="display: block; margin: auto;" /><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_clusters-2.png" width="816" style="display: block; margin: auto;" /><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_clusters-3.png" width="816" style="display: block; margin: auto;" /></p>
+<div id="remove-plot-variables-once-they-are-saved"
+class="section level3">
+<h3>Remove plot variables once they are saved</h3>
+<p>ggplots are terrific for visualizing data and we use them liberally
+in our analysis and the workshop. Interestingly, ggplots save a
+reference to the source dataset - in our case a rather large Seurat
+object. That’s ok in most cases, BUT if you save your RStudio
+environment (or RStudio temporarily suspends your session), RStudio will
+save a <strong>separate copy</strong> of the Seurat object for each
+ggplot object; RStudio’s simplistic approach avoids a lot of complexity,
+but can drastically increase your load time and memory usage.</p>
+<p>Since (a) we have the script to recreate the plots and (b) we
+explicitly saved them as graphic objects - we can simply remove them
+from memory.</p>
+<pre class="r"><code># Remove the plot variables from the environment to avoid excessive memory usage
+rm(post_integration_umap_plot_clusters) 
+rm(post_integration_umap_plot_split_clusters)
+rm(post_integration_umap_plot_day)
+gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells   6733965  359.7   11691802   624.5   11691802   624.5
+Vcells 739173140 5639.5 1752318246 13369.2 1502619437 11464.1</code></pre>
+</div>
+<div id="why-are" class="section level3">
+<h3>Why are</h3>
 <p>Similar to the PCA plots, the <code>day</code> labeled UMAP can tell
 us if technical sources of variation might be driving or stratifying the
 clusters, which would suggest that the normalization and integration
@@ -775,49 +800,31 @@ table(geo_so@meta.data$day, geo_so@meta.data$integrated.sct.rpca.clusters)
 # cells per cluster per sample
 table(geo_so@meta.data$orig.ident, geo_so@meta.data$integrated.sct.rpca.clusters)</code></pre>
 <pre><code>       
-           0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18
-  Day0   119  946   25  213   44  190  240  789  186   92  121   71   30  270    1   76  138  161  133
-  Day7  3561 1325 2919 2443 2693 1684 1237  133  597  552  542  684  650  351  570  334   97  285   93
-  Day21 1502 1320   39  325  148  484  375  449  453  452  266  166   68  123    2  135  271   40  194
-       
-          19
-  Day0    30
-  Day7   105
-  Day21   18</code></pre>
+           0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19
+  Day0   119  946   25  213   44  190  240  789  186   92  121   71   30  270    1   76  138  161  133   30
+  Day7  3561 1325 2919 2443 2693 1684 1237  133  597  552  542  684  650  351  570  334   97  285   93  105
+  Day21 1502 1320   39  325  148  484  375  449  453  452  266  166   68  123    2  135  271   40  194   18</code></pre>
 <pre><code>                     
-                         0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15
-  HO.Day0.replicate1    31  279   10   72   20   58   64  196   50   18   23   22   11   71    0   14
-  HO.Day0.replicate2    15  132    8   33    7   35   24  165   29   24   20    8    7   52    1   15
-  HO.Day0.replicate3    48  329    2   66    4   56   90  221   64   26   36   20    5   75    0   25
-  HO.Day0.replicate4    25  206    5   42   13   41   62  207   43   24   42   21    7   72    0   22
-  HO.Day7.replicate1   521  343 1089  572  898  446  307   49  208  106    0  191  214   29    0   76
-  HO.Day7.replicate2  1269  285  600  658  552  522  276   12  153  163    0  197  159  242    0  101
-  HO.Day7.replicate3   990  530  767  759  565  454  422   63  145  187    0  194  158   57    0  129
-  HO.Day7.replicate4   781  167  463  454  678  262  232    9   91   96  542  102  119   23  570   28
-  HO.Day21.replicate1  382  415   13   85   50  152  140  131  134  131   68   56   16   47    0   40
-  HO.Day21.replicate2  198  233    7   64   25   85   51  140   71   68   56   25   14   24    1   33
-  HO.Day21.replicate3  218  199    4   65   23   97   57  117   85   78   44   24   18   20    0   22
-  HO.Day21.replicate4  704  473   15  111   50  150  127   61  163  175   98   61   20   32    1   40
-                     
-                        16   17   18   19
-  HO.Day0.replicate1    22   48   34   10
-  HO.Day0.replicate2    25   13   13    3
-  HO.Day0.replicate3    41   59   52    3
-  HO.Day0.replicate4    50   41   34   14
-  HO.Day7.replicate1    41   57   29   39
-  HO.Day7.replicate2    18   87   15   15
-  HO.Day7.replicate3    28   96   37   45
-  HO.Day7.replicate4    10   45   12    6
-  HO.Day21.replicate1   71   13   58    2
-  HO.Day21.replicate2   53    5   28    5
-  HO.Day21.replicate3   56    7   38    6
-  HO.Day21.replicate4   91   15   70    5</code></pre>
+                         0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19
+  HO.Day0.replicate1    31  279   10   72   20   58   64  196   50   18   23   22   11   71    0   14   22   48   34   10
+  HO.Day0.replicate2    15  132    8   33    7   35   24  165   29   24   20    8    7   52    1   15   25   13   13    3
+  HO.Day0.replicate3    48  329    2   66    4   56   90  221   64   26   36   20    5   75    0   25   41   59   52    3
+  HO.Day0.replicate4    25  206    5   42   13   41   62  207   43   24   42   21    7   72    0   22   50   41   34   14
+  HO.Day7.replicate1   521  343 1089  572  898  446  307   49  208  106    0  191  214   29    0   76   41   57   29   39
+  HO.Day7.replicate2  1269  285  600  658  552  522  276   12  153  163    0  197  159  242    0  101   18   87   15   15
+  HO.Day7.replicate3   990  530  767  759  565  454  422   63  145  187    0  194  158   57    0  129   28   96   37   45
+  HO.Day7.replicate4   781  167  463  454  678  262  232    9   91   96  542  102  119   23  570   28   10   45   12    6
+  HO.Day21.replicate1  382  415   13   85   50  152  140  131  134  131   68   56   16   47    0   40   71   13   58    2
+  HO.Day21.replicate2  198  233    7   64   25   85   51  140   71   68   56   25   14   24    1   33   53    5   28    5
+  HO.Day21.replicate3  218  199    4   65   23   97   57  117   85   78   44   24   18   20    0   22   56    7   38    6
+  HO.Day21.replicate4  704  473   15  111   50  150  127   61  163  175   98   61   20   32    1   40   91   15   70    5</code></pre>
 <!-- consider adding later 
 Add DimPlot for % mitochondria to see if high % are across dataset or limited to one/few clusters (related to what Olivia talked about during Day 1)
 
 # Other approaches for visualizing scRNA-sq data
 e.g. code for tSNE visualization 
 -->
+</div>
 </div>
 <div id="comparing-to-unintegrated-data" class="section level1">
 <h1>Comparing to unintegrated data</h1>
@@ -861,6 +868,10 @@ ggsave(filename = &#39;results/figures/umap_unintegrated_sct_orig.ident.png&#39;
 
 pre_integration_umap_plot_day = DimPlot(geo_so, group.by = &#39;day&#39;, label = FALSE, reduction = &#39;umap.unintegrated.sct.pca&#39;)
 ggsave(filename = &#39;results/figures/umap_unintegrated_sct_day.png&#39;, plot = pre_integration_umap_plot_day, width = 8, height = 6, units = &#39;in&#39;)</code></pre>
+<pre class="r"><code># Remove the plot variables from the environment to avoid excessive memory usage
+rm(pre_integration_umap_plot_orig.ident) 
+rm(pre_integration_umap_plot_day)
+gc()</code></pre>
 </details>
 <p><br> <br></p>
 <details>

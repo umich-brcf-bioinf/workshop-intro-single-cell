@@ -208,6 +208,7 @@ top_5_rna_dot_plot = DotPlot(geo_so, features = unique(top_5_by_log2FC$gene), as
 ggsave(filename = 'results/figures/markers_top_5_rna_dot_plot.png', plot = top_5_rna_dot_plot, width = 8, height = 18, units = 'in') 
 ```
 
+
 </details>
 <br>
 <br>
@@ -221,6 +222,16 @@ percent_mito_plot
 # save to file
 ggsave(filename = 'results/figures/percent_umap_mito_plot.png', plot = percent_mito_plot, width = 6, height = 6, units = 'in')
 ```
+
+
+```{r}
+# Remove the plot variables from the environment to avoid excessive memory usage
+rm(top_5_sct_dot_plot) 
+rm(top_5_rna_dot_plot) 
+rm(percent_mito_plot) 
+gc()
+```
+
 
 We see that a higher % seem to be somewhat concentrated in a few places, but if cell death might be of interest for the research question, we'd want to consider investigating this pattern further by splitting up the plots by day and/or waiting until after running initial differential expression analysis to determine if these cell populations are interesting biology or not.
 
