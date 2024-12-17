@@ -210,7 +210,7 @@ We have specified some parameters to remove genes and cells which do not contain
 
 Above, we've demonstrated how to read data that was already arranged in the `BPCells` manner. We have done this for the workshop to reduce our memory footprint from the start, but when you get data back from AGC, you will have to follow the steps below.
 
-```{r, eval = FALSE}
+```{verbatim, eval = FALSE}
 # ==========================================================================
 ### DO NOT RUN ###
 # To load data from raw files without BPCells
@@ -284,32 +284,33 @@ gc()
 
 # ========================================================================
 ```
-
+<hr/>
 </details>
-<br>
+<br/>
 
-### "barcodes, features, matrix.mtx" vs.  "molecule_info.h5"?
+### molecule_info.h5 as an alternative input to Seurat
 <details>
 <summary>*H5 (aka HDF5) is an alternative file format*</summary>
 
+
 Some programs (like Seurat) need only the **barcodes, features, and matrix 
-(counts)** so those are conveniently provided as three separate files for each
-sample. Other programs (like CellRanger) need to store more information (e.g. 
+(counts)** and those data are conveniently provided as three separate files for each
+sample. Other programs (like Cell Ranger) need to store more information (e.g. 
 probe info about certain library preps or the chip or channel that cell ran on).
 Instead of adding more files to complement the three base files above, 
-10x provides a single binary file, **molecule_info.h5**, which contains all
-information for all molecules. (Strictly only the molecules with valid 
+10x provides a single binary file, **molecule_info.h5**, which contains *all
+information* for all molecules. (Strictly only the molecules with valid 
 barcode/UMI assigned to a gene.) 
 
 - molecule_info.h5 is a single file, but with really acts like basket of 
-related files for a single sample.
-- The "h5" stands for [HDF5](https://www.hdfgroup.org/solutions/hdf5/){target="_blank"},
+related structures (think tables) for a single sample.
+- The ".h5" extension stands for [HDF5](https://www.hdfgroup.org/solutions/hdf5/){target="_blank"},
 a broadly adopted, platform agnostic, scalable, high-performance file format for 
 storing complex data.
 - You can view the data within the .h5 file with special tools 
 like [HDF5View](https://www.hdfgroup.org/downloads/hdfview){target="_blank"} 
 or [h5dump](https://support.hdfgroup.org/documentation/hdf5/latest/_h5_t_o_o_l__d_p__u_g.html){target="_blank"}.
-Here is an excerpt of the structure:
+Here is an excerpt of the structures inside that file:
 ```
 molecule_info.h5
     ├─ barcodes [HDF5 group]
@@ -323,11 +324,10 @@ molecule_info.h5
     └─ umi
 ```
 
-You can see the first three files inside are barcodes, features, and counts. So 
-*if you have the hdf5 libraries installed*, you can use the .h5 as input to 
-Seurat like so:
+You can see the first structures above are barcodes, features, and counts. So 
+*if you have the [hdf5 libraries installed](https://github.com/hhoeflin/hdf5r){target="_blank"}*, you can use the .h5 as input to Seurat like so:
 
-```{r_no_klippy, eval=FALSE}
+```{verbatim, eval=FALSE}
 # ==========================================================================
 ### DO NOT RUN ###
 # To load data from raw .h5 file
@@ -343,7 +343,8 @@ If you want to load multiple samples from .h5 files, see the function
 [Read10X_h5_Multi_Directory](https://samuel-marsh.github.io/scCustomize/reference/Read10X_h5_Multi_Directory.html){target="_blank"} in the [scCustomize](https://samuel-marsh.github.io/scCustomize/index.html){target="_blank"} R library.
 
 FYI
-- Be aware, installing HDF5 support requires the hdf5 library which entails a 
+
+- Be aware, using HDF5 file=s from R support requires the hdf5 library which entails a 
 few more steps to install than a typical library. Brew a nice cup of (decaf) tea
 and review how to [install hdf5](https://github.com/hhoeflin/hdf5r){target="_blank"}.
 - See the Seurat function [Read10X](https://satijalab.org/seurat/reference/read10x){target="_blank"}.
@@ -351,7 +352,9 @@ and review how to [install hdf5](https://github.com/hhoeflin/hdf5r){target="_bla
 - [10x Genomics](https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-molecule-info){target="_blank"} details the full contents of molecule_info.h5. 
 - Checkout the [HDF5 reference docs](https://support.hdfgroup.org/documentation/hdf5/latest/_getting_started.html){target="_blank"} for more information about the HDF5 format.
 
+<hr/>
 </details>
+<br/>
 
 ## Structure of a Seurat object
 
