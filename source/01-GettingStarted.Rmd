@@ -342,7 +342,14 @@ geo_so = CreateSeuratObject(counts = geo_mat, min.cells = 1, min.features = 50)
 If you want to load multiple samples from .h5 files, see the function
 [Read10X_h5_Multi_Directory](https://samuel-marsh.github.io/scCustomize/reference/Read10X_h5_Multi_Directory.html){target="_blank"} in the [scCustomize](https://samuel-marsh.github.io/scCustomize/index.html){target="_blank"} R library.
 
-FYI, you can review the full contents of molecule_info.h5 and more information at [10x Genomics](https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-molecule-info){target="_blank"}. For more information about HDF5 checkout the [HDF5 reference docs](https://support.hdfgroup.org/documentation/hdf5/latest/_getting_started.html){target="_blank"}.
+FYI
+- Be aware, installing HDF5 support requires the hdf5 library which entails a 
+few more steps to install than a typical library. Brew a nice cup of (decaf) tea
+and review how to [install hdf5](https://github.com/hhoeflin/hdf5r){target="_blank"}.
+- See the Seurat function [Read10X](https://satijalab.org/seurat/reference/read10x){target="_blank"}.
+- See [BPCells](https://satijalab.org/seurat/articles/seurat5_bpcells_interaction_vignette#load-data-from-one-h5-file){target="_blank"} docs for details on loading from h5 to a BPCells directory.
+- [10x Genomics](https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-molecule-info){target="_blank"} details the full contents of molecule_info.h5. 
+- Checkout the [HDF5 reference docs](https://support.hdfgroup.org/documentation/hdf5/latest/_getting_started.html){target="_blank"} for more information about the HDF5 format.
 
 </details>
 

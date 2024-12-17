@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2024-12-16" />
+<meta name="date" content="2024-12-17" />
 
 <title>Getting Started with Seurat</title>
 
@@ -414,7 +414,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Getting Started with Seurat</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2024-12-16</h4>
+<h4 class="date">2024-12-17</h4>
 
 </div>
 
@@ -816,13 +816,22 @@ href="https://samuel-marsh.github.io/scCustomize/reference/Read10X_h5_Multi_Dire
 target="_blank">Read10X_h5_Multi_Directory</a> in the <a
 href="https://samuel-marsh.github.io/scCustomize/index.html"
 target="_blank">scCustomize</a> R library.</p>
-<p>FYI, you can review the full contents of molecule_info.h5 and more
-information at <a
+<p>FYI - Be aware, installing HDF5 support requires the hdf5 library
+which entails a few more steps to install than a typical library. Brew a
+nice cup of (decaf) tea and review how to <a
+href="https://github.com/hhoeflin/hdf5r" target="_blank">install
+hdf5</a>. - See the Seurat function <a
+href="https://satijalab.org/seurat/reference/read10x"
+target="_blank">Read10X</a>. - See <a
+href="https://satijalab.org/seurat/articles/seurat5_bpcells_interaction_vignette#load-data-from-one-h5-file"
+target="_blank">BPCells</a> docs for details on loading from h5 to a
+BPCells directory. - <a
 href="https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-molecule-info"
-target="_blank">10x Genomics</a>. For more information about HDF5
-checkout the <a
+target="_blank">10x Genomics</a> details the full contents of
+molecule_info.h5. - Checkout the <a
 href="https://support.hdfgroup.org/documentation/hdf5/latest/_getting_started.html"
-target="_blank">HDF5 reference docs</a>.</p>
+target="_blank">HDF5 reference docs</a> for more information about the
+HDF5 format.</p>
 </details>
 </div>
 <div id="structure-of-a-seurat-object" class="section level2">
