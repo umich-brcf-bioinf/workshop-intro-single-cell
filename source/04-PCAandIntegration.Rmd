@@ -84,14 +84,18 @@ Similar to the previous sections, the process of parameter selection after PCA i
 ---
 
 ```{r, read_rds_hidden, echo = FALSE, warning = FALSE, message = FALSE}
-if(!exists('geo_so')) {
+primed = FALSE
+if(exists('geo_so')) {
+  primed = 'scale.data' %in% Layers(geo_so)
+}
+if (!primed) { 
   library(Seurat)
   library(BPCells)
   library(tidyverse)
 
   options(future.globals.maxSize = 1e9)
 
-  geo_so = readRDS('results/rdata/geo_so_sct_normalized.rds')
+  geo_so = loadObj('results/rdata/geo_so_sct_normalized.rds')
 }
 ```
 
@@ -412,7 +416,7 @@ geo_so = IntegrateLayers(
   new.reduction = 'integrated.sct.rpca')
 ```
 
-```{r_no_klippy, integrate_layers_do_not_run, eval=FALSE, include=TRUE}
+```{verbatim, integrate_layers_do_not_run, eval=FALSE, include=TRUE}
 ### DO NOT RUN ###
 geo_so = IntegrateLayers(
   object = geo_so, 
@@ -482,7 +486,7 @@ saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated.rds')
 > 
 > After normalizing the data with `SCTransform()` and performed the dimension reduction with `RunPCA()`, alternatively we could also use the `CCA` integration method with:
 > 
-> ```{r_no_klippy, eval = FALSE}
+> ```{verbatim, eval = FALSE}
 > ### DO NOT RUN ###
 > geo_so = IntegrateLayers(
 >     object = geo_so, 
