@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2024-12-13" />
+<meta name="date" content="2024-12-16" />
 
 <title>Cell Type Annotation</title>
 
@@ -414,7 +414,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Cell Type Annotation</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2024-12-13</h4>
+<h4 class="date">2024-12-16</h4>
 
 </div>
 
@@ -837,27 +837,27 @@ rownames(new_metadata) = rownames(geo_so@meta.data) #  We are implicitly relying
 geo_so@meta.data = new_metadata 
 
 head(geo_so@meta.data)</code></pre>
-<pre><code>                                            orig.ident nCount_RNA nFeature_RNA  day  replicate
-HODay0replicate1_AAACCTGAGAGAACAG-1 HO.Day0.replicate1      10234         3226 Day0 replicate1
-HODay0replicate1_AAACCTGGTCATGCAT-1 HO.Day0.replicate1       3158         1499 Day0 replicate1
-HODay0replicate1_AAACCTGTCAGAGCTT-1 HO.Day0.replicate1      13464         4102 Day0 replicate1
-HODay0replicate1_AAACGGGAGAGACTTA-1 HO.Day0.replicate1        577          346 Day0 replicate1
-HODay0replicate1_AAACGGGAGGCCCGTT-1 HO.Day0.replicate1       1189          629 Day0 replicate1
-HODay0replicate1_AAACGGGCAACTGGCC-1 HO.Day0.replicate1       7726         2602 Day0 replicate1
-                                    percent.mt nCount_SCT nFeature_SCT integrated.sct.rpca.clusters
-HODay0replicate1_AAACCTGAGAGAACAG-1   1.240962       6062         2867                            1
-HODay0replicate1_AAACCTGGTCATGCAT-1   7.536415       4607         1509                            1
-HODay0replicate1_AAACCTGTCAGAGCTT-1   3.112002       5314         2370                            6
-HODay0replicate1_AAACGGGAGAGACTTA-1   1.559792       3877         1031                           10
-HODay0replicate1_AAACGGGAGGCCCGTT-1   3.700589       4166          915                            0
-HODay0replicate1_AAACGGGCAACTGGCC-1   2.938131       5865         2588                            1
-                                    seurat_clusters unintegrated.sct.pca.clusters  cell_type
-HODay0replicate1_AAACCTGAGAGAACAG-1               2                             2 Fibroblast
-HODay0replicate1_AAACCTGGTCATGCAT-1               2                             2 Fibroblast
-HODay0replicate1_AAACCTGTCAGAGCTT-1               2                             2  Stem Cell
-HODay0replicate1_AAACGGGAGAGACTTA-1               9                             9 Macrophage
-HODay0replicate1_AAACGGGAGGCCCGTT-1               2                             2   Pericyte
-HODay0replicate1_AAACGGGCAACTGGCC-1               2                             2 Fibroblast</code></pre>
+<pre><code>                                            orig.ident nCount_RNA nFeature_RNA  day  replicate percent.mt nCount_SCT
+HODay0replicate1_AAACCTGAGAGAACAG-1 HO.Day0.replicate1      10234         3226 Day0 replicate1   1.240962       6062
+HODay0replicate1_AAACCTGGTCATGCAT-1 HO.Day0.replicate1       3158         1499 Day0 replicate1   7.536415       4607
+HODay0replicate1_AAACCTGTCAGAGCTT-1 HO.Day0.replicate1      13464         4102 Day0 replicate1   3.112002       5314
+HODay0replicate1_AAACGGGAGAGACTTA-1 HO.Day0.replicate1        577          346 Day0 replicate1   1.559792       3877
+HODay0replicate1_AAACGGGAGGCCCGTT-1 HO.Day0.replicate1       1189          629 Day0 replicate1   3.700589       4166
+HODay0replicate1_AAACGGGCAACTGGCC-1 HO.Day0.replicate1       7726         2602 Day0 replicate1   2.938131       5865
+                                    nFeature_SCT integrated.sct.rpca.clusters seurat_clusters unintegrated.sct.pca.clusters
+HODay0replicate1_AAACCTGAGAGAACAG-1         2867                            1               2                             2
+HODay0replicate1_AAACCTGGTCATGCAT-1         1509                            1               2                             2
+HODay0replicate1_AAACCTGTCAGAGCTT-1         2370                            6               2                             2
+HODay0replicate1_AAACGGGAGAGACTTA-1         1031                           10               9                             9
+HODay0replicate1_AAACGGGAGGCCCGTT-1          915                            0               2                             2
+HODay0replicate1_AAACGGGCAACTGGCC-1         2588                            1               2                             2
+                                     cell_type
+HODay0replicate1_AAACCTGAGAGAACAG-1 Fibroblast
+HODay0replicate1_AAACCTGGTCATGCAT-1 Fibroblast
+HODay0replicate1_AAACCTGTCAGAGCTT-1  Stem Cell
+HODay0replicate1_AAACGGGAGAGACTTA-1 Macrophage
+HODay0replicate1_AAACGGGAGGCCCGTT-1   Pericyte
+HODay0replicate1_AAACGGGCAACTGGCC-1 Fibroblast</code></pre>
 <p><strong>Checkpoint</strong> : Has the metadata for your
 <code>geo_so</code> object been updated?</p>
 <p>We have now added a “cell_type” column to the <code>meta.data</code>
@@ -894,6 +894,13 @@ in this module.</p>
 <pre class="r"><code># Save Seurat object and annotations --------------------------------------
 saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_integrated_with_catch.rds&#39;)
 saveRDS(geo_catch, file = &#39;results/rdata/geo_catch.rds&#39;)</code></pre>
+<pre class="r"><code># Discard all ggplot objects currently in environment ---------------------
+# Ok since we saved the plots as we went along
+rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
+gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells   6905370  368.8   11691802   624.5   11691802   624.5
+Vcells 696513808 5314.0 2145708358 16370.5 1897170431 14474.3</code></pre>
 </div>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
