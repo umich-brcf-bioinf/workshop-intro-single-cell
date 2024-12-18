@@ -39,6 +39,13 @@ table.fig, th.fig, td.fig {
 klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
 ```
 
+
+```{css, echo=FALSE}
+.doNotRun {
+background-color: CornSilk;
+}
+```
+
 ```{r, include = FALSE}
 source("../bin/chunk-options.R")
 knitr_fig_path("04-PCAandIntegration/04-")
@@ -95,7 +102,7 @@ if (!primed) {
 
   options(future.globals.maxSize = 1e9)
 
-  geo_so = loadObj('results/rdata/geo_so_sct_normalized.rds')
+  geo_so = readRDS('results/rdata/geo_so_sct_normalized.rds')
 }
 ```
 
@@ -416,7 +423,7 @@ geo_so = IntegrateLayers(
   new.reduction = 'integrated.sct.rpca')
 ```
 
-```{verbatim, integrate_layers_do_not_run, eval=FALSE, include=TRUE}
+```{verbatim, integrate_layers_do_not_run, eval=FALSE, include=TRUE, class.source="doNotRun"}
 ### DO NOT RUN ###
 geo_so = IntegrateLayers(
   object = geo_so, 
@@ -486,7 +493,7 @@ saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated.rds')
 > 
 > After normalizing the data with `SCTransform()` and performed the dimension reduction with `RunPCA()`, alternatively we could also use the `CCA` integration method with:
 > 
-> ```{verbatim, eval = FALSE}
+> ```{verbatim, eval = FALSE, class.source="doNotRun"}
 > ### DO NOT RUN ###
 > geo_so = IntegrateLayers(
 >     object = geo_so, 
