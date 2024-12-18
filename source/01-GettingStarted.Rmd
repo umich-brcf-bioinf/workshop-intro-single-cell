@@ -37,6 +37,12 @@ table{
 klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
 ```
 
+```{css, echo=FALSE}
+.doNotRun {
+background-color: CornSilk;
+}
+```
+
 ```{r, include = FALSE}
 source("../bin/chunk-options.R")
 knitr_fig_path("01-GettingStarted/01-")
@@ -210,7 +216,7 @@ We have specified some parameters to remove genes and cells which do not contain
 
 Above, we've demonstrated how to read data that was already arranged in the `BPCells` manner. We have done this for the workshop to reduce our memory footprint from the start, but when you get data back from AGC, you will have to follow the steps below.
 
-```{verbatim, eval = FALSE}
+```{verbatim, eval = FALSE, class.source="doNotRun"}
 # ==========================================================================
 ### DO NOT RUN ###
 # To load data from raw files without BPCells
@@ -327,7 +333,7 @@ molecule_info.h5
 You can see the first structures above are barcodes, features, and counts. So 
 *if you have the [hdf5 libraries installed](https://github.com/hhoeflin/hdf5r){target="_blank"}*, you can use the .h5 as input to Seurat like so:
 
-```{verbatim, eval=FALSE}
+```{verbatim, eval=FALSE, class.source="doNotRun"}
 # ==========================================================================
 ### DO NOT RUN ###
 # To load data from raw .h5 file
