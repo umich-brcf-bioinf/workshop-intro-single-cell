@@ -21,8 +21,8 @@ body{ /* Normal  */
 1. Follow this link for [instructions to set up your computer](setup_instructions.html){target="_blank"}<br/>
 A separate email with the subject **"UM BioinfCore Workshop Login"** will detail your individual username and password to access the shared server. (Note that this email is sometimes flagged as spam, so if you don't see it in your Inbox please check your spam folder.)
 
-2. Join the UM BioinfCore Workshops Slack channel<br/>
-You will receive an email invite soon; please accept that to set up your Slack account.
+2. Join the Workshop Slack channel<br/>
+You will receive an email invite soon; please accept that to set up your Slack account. (Please note that this is a standalone Slack workspace and **not** connected to U-M or any other Slack accounts.)
 
 3. (optional) Take the [pre-workshop survey](https://michmed.org/qq87m){target="_blank"}<br/>
 To help us better understand your collective background, we invite you to take an optional, anonymous pre-workshop survey.
