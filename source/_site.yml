@@ -8,7 +8,7 @@
 
 name: "Intro to scRNA-Seq Workshop"
 output_dir: ../html
-exclude: ["Example.md"]
+exclude: ["results", "inputs"]
 navbar:
   title: "Intro to scRNA-Seq"
   type: inverse

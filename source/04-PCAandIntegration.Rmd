@@ -1,7 +1,8 @@
 ---
 title: "PCA and Integration"
-author: "UM Bioinformatics Core"
+author: "UM Bioinformatics Core Workshop Team"
 date: "`r Sys.Date()`"
+lang: "en"
 output:
         html_document:
             includes:
@@ -13,7 +14,7 @@ output:
             number_sections: false
             fig_caption: true
             markdown: GFM
-            code_download: true
+            code_download: false
 ---
 
 <style type="text/css">
@@ -36,6 +37,13 @@ table.fig, th.fig, td.fig {
 
 ```{r klippy, echo=FALSE, include=TRUE}
 klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
+```
+
+
+```{css, echo=FALSE}
+.doNotRun {
+background-color: CornSilk;
+}
 ```
 
 ```{r, include = FALSE}
@@ -83,7 +91,11 @@ Similar to the previous sections, the process of parameter selection after PCA i
 ---
 
 ```{r, read_rds_hidden, echo = FALSE, warning = FALSE, message = FALSE}
-if(!exists('geo_so')) {
+primed = FALSE
+if(exists('geo_so')) {
+  primed = 'scale.data' %in% Layers(geo_so)
+}
+if (!primed) { 
   library(Seurat)
   library(BPCells)
   library(tidyverse)
@@ -174,7 +186,8 @@ Since PCA is sensitive to scale, we will run it on the SCT normalized assay ([re
 
 
 ```{r, run_pca, warning = FALSE, message = FALSE}
-##### Day 2 - PCA and Integration
+# Day 2 - PCA and Integration
+# =========================================================================
 
 # Build a PCA and add it to the Seurat object  ----------------------------
 geo_so = RunPCA(geo_so, reduction.name = 'unintegrated.sct.pca')
@@ -197,12 +210,15 @@ DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = 'unintegrate
 png(filename = 'results/figures/qc_pca_heatmap.png', width = 12, height = 40, units = 'in', res = 300)
   DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca')
 dev.off()
+
+#  =========================================================================
 ```
 
 ```{r, pca_heatmap_one, echo=FALSE, message = FALSE, out.width='50%', fig.cap='DimHeatmap for PC1 alone'}
-# look at first PC alone first
+# look at first PC alone first ---------------------------------------------
 DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca') 
 
+#  =========================================================================
 ```
 
 
@@ -210,6 +226,8 @@ DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, reduction = 'unintegrated.s
 # Plot cell by gene heatmaps for first several PCs  -----------------------
 # first 18 PCs
 DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca') 
+
+#  =========================================================================
 ```
 
 As we scroll down in this plot, we see less and less structure in our plots indicating that no only is less variation is being represented by larger PCs overall but also that those PCs are less likely to correspond to variation of interest, e.g. corresponding to cell types/subtypes.
@@ -226,6 +244,7 @@ As we scroll down in this plot, we see less and less structure in our plots indi
 VizDimLoadings(geo_so, dims = 1:2, reduction = 'unintegrated.sct.pca')
 ggsave(filename = 'results/figures/qc_pca_loadings.png', width = 12, height = 6, units = 'in')
 
+#  =========================================================================
 ```
 </details>
 <br>
@@ -247,6 +266,8 @@ One way to evaluate the PCs to include is by looking at an elbow plot, which sho
 # Visualize how many PCs to include using an elbow plot -------------------
 ElbowPlot(geo_so, ndims = 50, reduction = 'unintegrated.sct.pca')
 ggsave(filename = 'results/figures/qc_sct_elbow_plot.png', width = 8, height = 8, units = 'in')
+
+#  =========================================================================
 ```
 
 In this plot, we could arbitrarily choose a number along the x-axis that looks like a sharp change in the variance from one PC to the next, that is, an elbow. Of course, while that's often the recommendation in tutorials, the choice of where the point of the "elbow" is, is not always obvious, and this plot is no different. We could also try to quantify our choice.
@@ -265,29 +286,92 @@ Related - how important is that decision to the downstream impact (e.g. how much
 --> 
 
 
-### Using a (crude) optimization to select a starting point
+### An algorithmic approach to estimate an optimal number of PCs
 
-Instead of choosing based on the elbow plot by sight alone, we can try to quantify our choice. Here we create a function to return a minimum PCs based on two possible metrics (cumulative variation or above a minium step size) and then we'll apply that function to our data:
+Instead of choosing based on the elbow plot by sight alone, we can try to quantify our choice. Here we create a function to return a minimum PCs based on two possible metrics (cumulative variation or above a minimum step size) and then we'll apply that function to our data:
 
-```{r, optimal_pcs}
-# Estimate optimal PCs for clustering with a function -------------------------
-optimal_pcs = function(so, reduction) {
-    # quantitative check for number of PCs to include
-    pct = so@reductions[[reduction]]@stdev / sum(so@reductions[[reduction]]@stdev) * 100
-    cum = cumsum(pct)
-    co1 = which(cum > 90 & pct < 5)[1]
-    co2 = sort(which((pct[1:length(pct)-1] - pct[2:length(pct)]) > .1), decreasing = T)[1] + 1
-    pcs = min(co1, co2) 
-    
-    return(pcs)
+```{r, estimate_optimal_pcs_fn}
+# Define a function to estimate optimal PCs for clustering ----------------
+estimate_optimal_pcs = function(so, reduction, verbose=TRUE) {
+  # quantitative check for number of PCs to include
+  threshold_var_cum_min = 90
+  threshold_var_pct_max = 5
+  threshold_step_min = 0.1
+  pct = so@reductions[[reduction]]@stdev / sum(so@reductions[[reduction]]@stdev) * 100
+  cum = cumsum(pct)
+  co1 = which(cum > threshold_var_cum_min & pct < threshold_var_pct_max)[1]
+  co2 = sort(which((pct[1:length(pct)-1] - pct[2:length(pct)]) > threshold_step_min), decreasing = T)[1] + 1
+  pcs = min(co1, co2) 
+  
+  plot_df <- data.frame(pc = 1:length(pct),
+                        pct_var = pct, 
+                        cum_var = cum)
+  plot_df$labels = ''
+  co1_label = paste0('PC ', co1)
+  co2_label = paste0('PC ', co2)
+  if (co1 == co2) {
+    plot_df$labels[plot_df$pc == co1] = paste0(co1_label, '\n', co2_label)
+  } else {
+    plot_df$labels[plot_df$pc == co1] = co1_label
+    plot_df$labels[plot_df$pc == co2] = co2_label
+  }
+  
+  
+  p = ggplot(plot_df, aes(x=pc, y=cum_var, label=labels)) +
+    geom_point(color="grey", alpha=1) +
+    geom_text(hjust = 0, vjust=1, nudge_x=2, nudge_y=-5) +
+    geom_step(data=filter(plot_df, pc<=co2), color="blue", alpha=0.6, direction='vh') +
+    geom_step(data=filter(plot_df, pc>=co2), color="grey", alpha=0.6, direction='hv') +
+    geom_hline(yintercept = 90, color = "red", alpha=0.6, linetype = 'dashed') +
+    geom_point(data=filter(plot_df, pc==co1), aes(x=pc,y=cum_var), color='red') + 
+    geom_point(data=filter(plot_df, pc==co2), aes(x=pc,y=cum_var), color='blue') +
+    scale_y_continuous(breaks = c(0,25,50,75,100, threshold_var_cum_min)) +
+    theme_bw() +
+    labs(title = 'Optimal num of PCs',
+         x = 'Principal Component', 
+         y = 'Cumulative percent variance')
+
+  if (verbose) {
+     results = paste(
+                sprintf('Reduction %s: %s PCs (total var = %s)', 
+                     reduction,
+                     nrow(plot_df),
+                     plot_df[plot_df$pc==nrow(plot_df), 'cum_var']),
+                sprintf("\t%s (total var = %s) : Smallest PC that explains at least %s%% total variance", 
+                     co1_label,
+                     round(plot_df[plot_df$pc==co1, 'cum_var'], 2),
+                     threshold_var_cum_min),
+                sprintf("\t%s (total var = %s) : Largest PC with incremental variance step at least %s%%", 
+                      co2_label,
+                      round(plot_df[plot_df$pc==co2, 'cum_var'],2),
+                      threshold_step_min),
+                sprintf('\tRecommended num of PCs: %s', pcs),
+                sep='\n')
+      message(results)
+      print(p)
+  }
+  
+  return(list(recommended_pcs=pcs, plot=p, co1=co1, co2=co2, df=plot_df))
 }
 
-# Apply function to our data
-pcs = optimal_pcs(geo_so, 'unintegrated.sct.pca')
-pcs
+# =========================================================================
+```
 
-# Based on the heatmap, we'll modify to 13 PCs
+```{r, apply_estimate_optimal_pcs}
+# Apply function to our data ----------------------------------------------
+optimal_pcs = estimate_optimal_pcs(geo_so, 'unintegrated.sct.pca')
+```
+
+```{r, set_pcs}
+# Save plot of PCs --------------------------------------------------------
+ggsave(filename = 'results/figures/optimal_pcs.png',
+       plot=optimal_pcs$plot,
+       width = 8, height = 8, units = 'in')
+
+# Based on the heatmaps above, we'll cluster on 13 PCs
 pcs = 13
+
+# =========================================================================
 ```
 
 
@@ -311,6 +395,8 @@ In addition to selecting a reduced number of PCs to represent our data, we can a
 DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'orig.ident') # first label by sample
 DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'day') # then label by day
 ggsave(filename = 'results/figures/qc_pca_plot_unintegrated_sct_day.png', width = 7, height = 6, units = 'in') # save 
+
+#  =========================================================================
 ```
 
 In the first plot with each cell labeled by the original sample name, it looks like there might be some batches but it's hard to distinguish. From the second by `day`, we can see that even after normalization there seems to be variation that corresponds more to a batch effect related to the day status than interesting biological variation. This suggests that clustering our data using our selected number of PCs, integration should be performed to mitigate these differences and better align our data.
@@ -337,7 +423,7 @@ geo_so = IntegrateLayers(
   new.reduction = 'integrated.sct.rpca')
 ```
 
-```{r_no_klippy, integrate_layers_do_not_run, eval=FALSE, include=TRUE}
+```{verbatim, integrate_layers_do_not_run, eval=FALSE, include=TRUE, class.source="doNotRun"}
 ### DO NOT RUN ###
 geo_so = IntegrateLayers(
   object = geo_so, 
@@ -345,6 +431,9 @@ geo_so = IntegrateLayers(
   orig.reduction = 'unintegrated.sct.pca',
   normalization.method = 'SCT',
   new.reduction = 'integrated.sct.rpca')
+### DO NOT RUN ###
+#  =========================================================================
+
 ```
 
 
@@ -377,6 +466,8 @@ We can also confirm that our integration method has helped to correct the `Day` 
 # Visualize PCA (PC1 and PC2, integrated) ---------------------------------
 DimPlot(geo_so, reduction = 'integrated.sct.rpca', group.by = 'day')
 ggsave(filename = 'results/figures/qc_pca_plot_integrated_sct_day.png', width = 7, height = 6, units = 'in')
+
+#  =========================================================================
 ```
 
 <!--- confirmed in testing that PCA plot is updated if run on catched geo_so object --->
@@ -394,13 +485,15 @@ if(!file.exists('results/rdata/geo_so_sct_integrated.rds')) {
 ```{r, save_rds, eval = FALSE}
 # Save updated seurat object to file  -------------------------------------
 saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated.rds')
+
+#  =========================================================================
 ```
 
 > **Other integration methods**
 > 
 > After normalizing the data with `SCTransform()` and performed the dimension reduction with `RunPCA()`, alternatively we could also use the `CCA` integration method with:
 > 
-> ```{r_no_klippy, eval = FALSE}
+> ```{verbatim, eval = FALSE, class.source="doNotRun"}
 > ### DO NOT RUN ###
 > geo_so = IntegrateLayers(
 >     object = geo_so, 
@@ -408,6 +501,7 @@ saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated.rds')
 >     orig.reduction = 'unintegrated.sct.pca',
 >     normalization.method = 'SCT',
 >     new.reduction = 'integrated.sct.cca')
+> ### DO NOT RUN ###
 > ```
 >
 
@@ -431,3 +525,4 @@ These materials have been adapted and extended from materials listed above. Thes
 <hr/>
 | [Previous lesson](03-Normalization.html) | [Top of this lesson](#top) | [Next lesson](05-ProjectionAndClustering.html) |
 | :--- | :----: | ---: |
+

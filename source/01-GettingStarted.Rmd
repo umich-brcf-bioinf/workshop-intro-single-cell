@@ -1,7 +1,8 @@
 ---
 title: "Getting Started with Seurat"
-author: "UM Bioinformatics Core"
+author: "UM Bioinformatics Core Workshop Team"
 date: "`r Sys.Date()`"
+lang: "en"
 output:
         html_document:
             includes:
@@ -13,7 +14,7 @@ output:
             number_sections: false
             fig_caption: true
             markdown: GFM
-            code_download: true
+            code_download: false
 ---
 
 <style type="text/css">
@@ -34,6 +35,12 @@ table{
 
 ```{r klippy, echo=FALSE, include=TRUE}
 klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
+```
+
+```{css, echo=FALSE}
+.doNotRun {
+background-color: CornSilk;
+}
 ```
 
 ```{r, include = FALSE}
@@ -209,37 +216,151 @@ We have specified some parameters to remove genes and cells which do not contain
 
 Above, we've demonstrated how to read data that was already arranged in the `BPCells` manner. We have done this for the workshop to reduce our memory footprint from the start, but when you get data back from AGC, you will have to follow the steps below.
 
-```
-# To load data from raw files ----------------------------------------------
+```{verbatim, eval = FALSE, class.source="doNotRun"}
+# ==========================================================================
+### DO NOT RUN ###
+# To load data from raw files without BPCells
 ### DO NOT RUN ###
 
-# Collect the directories containing the 3 files:
-# barcodes.tsv.gz, features.tsv.gz, matrix.mtx.gz
-# The [-1] drops the parent directory inputs/10x_analysis
-sample_dirs = list.dirs('inputs/10x_analysis')[-1]
-
-# Extract the sample names. NOTE, this will differ depending
-# on the form the folder names take, this works for this data.
-# We create a named vector 
-samples = str_split(basename(sample_dirs), pattern = '_', simplify = TRUE)[,2]
-
+# Collect the input directories ---------------------------------------
+# Each sample dir contains barcodes.tsv.gz, features.tsv.gz, matrix.mtx.gz.
 # Naming the sample_dirs vector makes Seurat name the
 # samples in the corresponding manner, which is nice for us.
-names(sample_dirs) = samples
 
-# Create the expression matrix
+sample_dirs = list(
+    HODay0replicate1 = "inputs/10x_analysis/GSM3589975_HODay0replicate1", 
+    HODay0replicate2 = "inputs/10x_analysis/GSM3589976_HODay0replicate2",
+    HODay0replicate3 = "inputs/10x_analysis/GSM3589977_HODay0replicate3",
+    HODay0replicate4 = "inputs/10x_analysis/GSM4141558_HODay0replicate4", 
+    HODay7replicate1 = "inputs/10x_analysis/GSM3589981_HODay7replicate1", 
+    HODay7replicate2 = "inputs/10x_analysis/GSM3589982_HODay7replicate2", 
+    HODay7replicate3 = "inputs/10x_analysis/GSM3589983_HODay7replicate3", 
+    HODay7replicate4 = "inputs/10x_analysis/GSM4141559_HODay7replicate4", 
+    HODay21replicate1 = "inputs/10x_analysis/GSM3589984_HODay21replicate1", 
+    HODay21replicate2 = "inputs/10x_analysis/GSM3589985_HODay21replicate2", 
+    HODay21replicate3 = "inputs/10x_analysis/GSM3589986_HODay21replicate3", 
+    HODay21replicate4 = "inputs/10x_analysis/GSM4141560_HODay21replicate4")
+
+# Create the expression matrix from sample dirs ----------------------- 
 geo_mat = Read10X(data.dir = sample_dirs)
-```
 
-This will generate the expression matrix that is the input to `CreateSeuratObject()`, as above. If you wanted to write this expression matrix using `BPCells` so that it could be used in the more memory-efficient manner, you would do:
+# Create a Seurat object from expression matrix -----------------------
+geo_so = CreateSeuratObject(counts = geo_mat, min.cells = 1, min.features = 50)
+geo_so
 
-```
+# Save the Seurat object ----------------------------------------------
+saveRDS(geo_so, file = 'results/rdata/geo_so_unfiltered.rds')
+
+
+# Optional: Build BPCells input dir -----------------------------------
+# If you *wanted* to use BPCells (to save some memory), you can transform 
+# the expression matrix data structure above into BPCells files.
+# BPCells uses these files for processing, but you typically never look at 
+# their contents directly
 write_matrix_dir(mat = geo_mat, dir = 'inputs/10x_mat_filtered')
+
+# What files did that command above create?
+as.matrix(list.files('inputs/10x_mat_filtered'))
+      [,1]               
+ [1,] "col_names"        
+ [2,] "idxptr"           
+ [3,] "index_data"       
+ [4,] "index_idx"        
+ [5,] "index_idx_offsets"
+ [6,] "index_starts"     
+ [7,] "row_names"        
+ [8,] "shape"            
+ [9,] "storage_order"    
+[10,] "val"              
+[11,] "version" 
+
+
+# Create expression matrix and Seurat object from BPCells files ---------
+geo_mat = open_matrix_dir(dir = 'inputs/10x_mat_filtered')
+geo_so = CreateSeuratObject(counts = geo_mat, min.cells = 1, min.features = 50)
+geo_so
+
+
+# Cleanup ---------------------------------------------------------------
+# Since we have a Seurat object, we no longer need the geo_mat matrix.
+# We will remove from the environment and then prompt RStudio to run a 
+# "garbage collection" to free up unused memory
+rm(geo_mat)
+gc()
+
+# ========================================================================
+```
+<hr/>
+</details>
+<br/>
+
+### molecule_info.h5 as an alternative input to Seurat
+<details>
+<summary>*H5 (aka HDF5) is an alternative file format*</summary>
+
+
+Some programs (like Seurat) need only the **barcodes, features, and matrix 
+(counts)** and those data are conveniently provided as three separate files for each
+sample. Other programs (like Cell Ranger) need to store more information (e.g. 
+probe info about certain library preps or the chip or channel that cell ran on).
+Instead of adding more files to complement the three base files above, 
+10x provides a single binary file, **molecule_info.h5**, which contains *all
+information* for all molecules. (Strictly only the molecules with valid 
+barcode/UMI assigned to a gene.) 
+
+- molecule_info.h5 is a single file, but with really acts like basket of 
+related structures (think tables) for a single sample.
+- The ".h5" extension stands for [HDF5](https://www.hdfgroup.org/solutions/hdf5/){target="_blank"},
+a broadly adopted, platform agnostic, scalable, high-performance file format for 
+storing complex data.
+- You can view the data within the .h5 file with special tools 
+like [HDF5View](https://www.hdfgroup.org/downloads/hdfview){target="_blank"} 
+or [h5dump](https://support.hdfgroup.org/documentation/hdf5/latest/_h5_t_o_o_l__d_p__u_g.html){target="_blank"}.
+Here is an excerpt of the structures inside that file:
+```
+molecule_info.h5
+    ├─ barcodes [HDF5 group]
+    ├─ count
+    ├─ features	[HDF5 group]
+    ├─ gem_group
+    ├─ library_info
+    ├─ metrics_json
+    ├─ probes [HDF5 group]
+    ├─ ...
+    └─ umi
 ```
 
-You'd then have the items needed to run the code we've already run.
+You can see the first structures above are barcodes, features, and counts. So 
+*if you have the [hdf5 libraries installed](https://github.com/hhoeflin/hdf5r){target="_blank"}*, you can use the .h5 as input to Seurat like so:
+
+```{verbatim, eval=FALSE, class.source="doNotRun"}
+# ==========================================================================
+### DO NOT RUN ###
+# To load data from raw .h5 file
+### DO NOT RUN ###
+
+HODay0replicate1 = "~/ISC_Shell/cellranger_outputs/count_run_HODay0replicate1/outs/molecule_info.h5"
+get_mat = Read10X_h5(filename = HODay0replicate1)
+geo_so = CreateSeuratObject(counts = geo_mat, min.cells = 1, min.features = 50)
+
+```
+
+If you want to load multiple samples from .h5 files, see the function
+[Read10X_h5_Multi_Directory](https://samuel-marsh.github.io/scCustomize/reference/Read10X_h5_Multi_Directory.html){target="_blank"} in the [scCustomize](https://samuel-marsh.github.io/scCustomize/index.html){target="_blank"} R library.
+
+FYI
+
+- Be aware, using HDF5 file=s from R support requires the hdf5 library which entails a 
+few more steps to install than a typical library. Brew a nice cup of (decaf) tea
+and review how to [install hdf5](https://github.com/hhoeflin/hdf5r){target="_blank"}.
+- See the Seurat function [Read10X](https://satijalab.org/seurat/reference/read10x){target="_blank"}.
+- See [BPCells](https://satijalab.org/seurat/articles/seurat5_bpcells_interaction_vignette#load-data-from-one-h5-file){target="_blank"} docs for details on loading from h5 to a BPCells directory.
+- [10x Genomics](https://www.10xgenomics.com/support/software/cell-ranger/latest/analysis/outputs/cr-outputs-molecule-info){target="_blank"} details the full contents of molecule_info.h5. 
+- Checkout the [HDF5 reference docs](https://support.hdfgroup.org/documentation/hdf5/latest/_getting_started.html){target="_blank"} for more information about the HDF5 format.
+
+<hr/>
 </details>
-<br>
+<br/>
 
 ## Structure of a Seurat object
 

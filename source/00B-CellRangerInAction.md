@@ -1,6 +1,7 @@
 ---
 title: "Cell Ranger in Action"
 author: "UM Bioinformatics Core Workshop Team"
+lang: "en"
 output:
         html_document:
             includes:

@@ -1,6 +1,7 @@
 ---
 title: "Intro to Single Cell RNA-Seq Workshop"
-author: "UM Bioinformatics Core"
+author: "UM Bioinformatics Core Workshop Team"
+lang: "en"
 output:
         html_document:
             includes:
@@ -264,7 +265,7 @@ devtools::session_info()
 
 ## Housekeeping
 
-- Please take our optional [post-workshop survey](https://forms.gle/St5D6b6mQMg5rmEk9){target="_blank"} (5-10 minutes).
+- Please take our optional [post-workshop survey](https://michmed.org/7k9Zr){target="_blank"} (5-10 minutes).
 
 - We will email you a link to the final session recordings next week.
 
@@ -277,7 +278,7 @@ devtools::session_info()
 ## Looking ahead
 
 #### Workshop environment
-- RStudio workshop compute environment will be available until **10/22/2024**.
+- RStudio workshop compute environment will be available until **3/7/2025**.
   - _Please save all your R scripts now_ so that we can "right-size" the compute environment immediately following today's workshop session.
 - You can download files from the workshop environment from your terminal/command line window as below. 
   (You will need to substitute your actual workshop username and type workshop password when prompted.)

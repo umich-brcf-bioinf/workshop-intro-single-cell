@@ -1,7 +1,8 @@
 ---
 title: "Cell Type Annotation"
-author: "UM Bioinformatics Core"
+author: "UM Bioinformatics Core Workshop Team"
 date: "`r Sys.Date()`"
+lang: "en"
 output:
         html_document:
             includes:
@@ -13,7 +14,7 @@ output:
             number_sections: false
             fig_caption: true
             markdown: GFM
-            code_download: true
+            code_download: false
 ---
 
 <style type="text/css">
@@ -323,6 +324,14 @@ if(!file.exists('results/rdata/geo_catch.rds')) {
 saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated_with_catch.rds')
 saveRDS(geo_catch, file = 'results/rdata/geo_catch.rds')
 ```
+
+```{r}
+# Discard all ggplot objects currently in environment ---------------------
+# Ok since we saved the plots as we went along
+rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
+gc()
+```
+
 
 # Summary
 

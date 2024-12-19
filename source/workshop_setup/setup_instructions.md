@@ -36,8 +36,8 @@ this setup, you will need:
     workstation/laptop should have a microphone, camera, and reliable
     internet access. While not required, for laptop users we recommend using a
     larger monitor for the optimal workshop experience.
--   The workshop will use Slack for group messaging. Messages posted to the
-    general channel will be visible to all participants in the workshop.
+-   The workshop will use Slack for group messaging. Messages will be visible to 
+    all participants in the workshop.
 -   For simplicity, participants will log in to a pre-built server which
     has the necessary data, software, and configuration already installed.
 -   While not required or recommended, advanced users may elect to install some software
@@ -45,7 +45,7 @@ this setup, you will need:
 
 ## How to get help
 
-While we have endeavored to make this setup process work robust and
+While we have endeavored to make this setup process robust and
 comprehensive, installing bioinformatics software is tricky and we would
 be happy to lend a hand to get things working.
 
@@ -88,6 +88,9 @@ be happy to lend a hand to get things working.
       1.3.  Close and relaunch Zoom client.
 
 ### **Slack**
+
+Please note that this is a standalone Slack workspace and **not** connected to 
+U-M or any other Slack accounts.
 
    2.1. In the Slack email invitation from the hosts, click the link to join the Slack workspace.
 
