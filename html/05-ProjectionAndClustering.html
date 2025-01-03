@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2024-12-16" />
+<meta name="date" content="2025-01-03" />
 
 <title>Clustering and Projection</title>
 
@@ -414,7 +414,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Clustering and Projection</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2024-12-16</h4>
+<h4 class="date">2025-01-03</h4>
 
 </div>
 
@@ -607,7 +607,9 @@ have been added for each cell:</p>
 geo_so = FindNeighbors(geo_so, dims = 1:pcs, reduction = &#39;integrated.sct.rpca&#39;)
 
 # generate clusters
-geo_so = FindClusters(geo_so, resolution = 0.4, cluster.name = &#39;integrated.sct.rpca.clusters&#39;)
+geo_so = FindClusters(geo_so,
+                      resolution = 0.4,
+                      cluster.name = &#39;integrated.sct.rpca.clusters&#39;)
 
 # look at meta.data to see cluster labels
 head(geo_so@meta.data)</code></pre>
@@ -779,9 +781,9 @@ rm(post_integration_umap_plot_clusters)
 rm(post_integration_umap_plot_split_clusters)
 rm(post_integration_umap_plot_day)
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells   6733965  359.7   11691802   624.5   11691802   624.5
-Vcells 739173140 5639.5 1752318246 13369.2 1502619437 11464.1</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells   6688015  357.2   10179320  543.7  10179320  543.7
+Vcells 379124849 2892.5  885591660 6756.6 879547516 6710.5</code></pre>
 </div>
 <div id="why-are" class="section level3">
 <h3>Why are</h3>
