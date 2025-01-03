@@ -44,14 +44,14 @@ If you can provide the syntax for at least 3 of the above tasks off the top of y
 
 ## How can I brush up?
 
-- Attend a workshop:
+- **Attend a workshop:**
   - *UMich folks only*: 1/21-23 Workshop: Analyzing Data with R’s tidyverse hosted by Pat Schloss ($250 via shortcode or credit card). Curriculum notes [here](https://riffomonas.org/generalR/){target="_blank"}. Workshop registration [here](https://umich.irisregistration.com/?code=2025RsTidyverseWKSH){target="_blank"}.
   
-- Work through a self-guided tutorial:
+- **Work through a self-guided tutorial:**
   - Self-guided [R training from the Software Carpentry Institute](https://software-carpentry.org/lessons/){target="_blank"}
   - Peruse the first section of [R for Data Science](https://r4ds.hadley.nz/data-visualize){target="_blank"} (Hadley Wickham et al.).
   
-- Watch a video
+- **Watch a video:**
   - [An introduction to the R programming language for Bioinformatics students](https://www.youtube.com/watch?v=bekFrlW0gww){target="_blank"}. (Sample data [here](https://drive.google.com/drive/folders/1mOCELXFb-b91C9mvfb2zD9nUTvNqqihO?usp=share_link){target="_blank"}.)
 
 - Also, if you need a practice R/R-Studio environment, [PositCloud](https://posit.cloud/){target="_blank"} allows you to run R-Studio over the web for free. Click here to [login to PositCloud](https://posit.cloud/content/9492713){target="_blank"} and launch an R session.
