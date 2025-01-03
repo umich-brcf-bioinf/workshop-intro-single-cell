@@ -94,6 +94,8 @@ if(!exists('geo_so')) {
   options(future.globals.maxSize = 1e9)
 
   geo_so = readRDS('results/rdata/geo_so_sct_integrated.rds')
+  
+  pcs=13
 }
 ```
 
@@ -148,7 +150,9 @@ Then, when we look at the meta data we should see that cluster labels have been 
 geo_so = FindNeighbors(geo_so, dims = 1:pcs, reduction = 'integrated.sct.rpca')
 
 # generate clusters
-geo_so = FindClusters(geo_so, resolution = 0.4, cluster.name = 'integrated.sct.rpca.clusters')
+geo_so = FindClusters(geo_so,
+                      resolution = 0.4,
+                      cluster.name = 'integrated.sct.rpca.clusters')
 
 # look at meta.data to see cluster labels
 head(geo_so@meta.data)
