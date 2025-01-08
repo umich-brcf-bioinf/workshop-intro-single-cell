@@ -77,22 +77,29 @@ output:
     left pane shows the **Console** tab and will show some text followed
     by a command prompt (\>):
 
-> R version 4.3.2 (2023-10-31) -- "Eye Holes"
-  Copyright (C) 2023 The R Foundation for Statistical Computing
-  Platform: x86_64-pc-linux-gnu (64-bit)
-  \
-  R is free software and comes with ABSOLUTELY NO WARRANTY.
-  You are welcome to redistribute it under certain conditions.
-  Type 'license()' or 'licence()' for distribution details.
-  \
-  R is a collaborative project with many contributors.
-  Type 'contributors()' for more information and
-  'citation()' on how to cite R or R packages in publications.
-  \
-  Type 'demo()' for some demos, 'help()' for on-line help, or
-  'help.start()' for an HTML browser interface to help.
-  Type 'q()' to quit R.
-  \
+```
+R version 4.4.2 (2024-10-31 ucrt) -- "Pile of Leaves"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+
+```
+
 
 
 7.  The workshop exercises requires the installation of special R
@@ -172,13 +179,13 @@ sessionInfo()$otherPkgs$Seurat$Version
 ### Installing R/RStudio (Macintosh)
 
 1.  RStudio depends on the R programming environment, so we have to
-    install that first. In a web browser, open:
-
--   <https://cran.rstudio.com/bin/macosx/>
-
-    and click the link "R-4.3.2.pkg" (the version may be slightly
-    different). Open the downloaded executable to launch the R
-    installer.
+    install that first. In a web browser, open: 
+    [https://cran.rstudio.com/bin/macosx](https://cran.rstudio.com/bin/macosx){target="_blank"}. 
+    - Note that newer Macs will use Silicon build, older Macs (pre 2020) will use Intel builds. 
+      (You can confirm your architecture under About this Mac: Chip; "Apple M" indicates Silicon. )
+    - Right-click to download the latest version (e.g. "R-4.4.2"", though the 
+    specific version may be slightly different). 
+    - Open the downloaded executable to launch the R installer.
 
 2.  The installer will walk through several options; accept all the
     defaults (by repeatedly clicking **Continue**) and when prompted,
@@ -211,24 +218,29 @@ sessionInfo()$otherPkgs$Seurat$Version
     into several panes. The lower left pane shows the **Console** tab and
     will show some text followed by a command prompt (\>):
 
-> R version 4.3.2 (2023-10-31) -- "Eye Holes"
-  Copyright (C) 2023 The R Foundation for Statistical Computing
-  Platform: x86_64-pc-linux-gnu (64-bit)
-  \
-  R is free software and comes with ABSOLUTELY NO WARRANTY.
-  You are welcome to redistribute it under certain conditions.
-  Type 'license()' or 'licence()' for distribution details.
-  \
-  R is a collaborative project with many contributors.
-  Type 'contributors()' for more information and
-  'citation()' on how to cite R or R packages in publications.
-  \
-  Type 'demo()' for some demos, 'help()' for on-line help, or
-  'help.start()' for an HTML browser interface to help.
-  Type 'q()' to quit R.
-  \
 
+```
+R version 4.4.2 (2024-10-31) -- "Pile of Leaves"
+Copyright (C) 2024 The R Foundation for Statistical Computing
+Platform: aarch64-apple-darwin20
 
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+    Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> 
+
+```
 7.  The workshop exercises requires the installation of special R
     libraries. To install them into RStudio: 
     

@@ -1,7 +1,8 @@
 ---
 title: "Secondary Quality Control and Filtering"
-author: "UM Bioinformatics Core"
+author: "UM Bioinformatics Core Workshop Team"
 date: "`r Sys.Date()`"
+lang: "en"
 output:
         html_document:
             includes:
@@ -13,7 +14,7 @@ output:
             number_sections: false
             fig_caption: true
             markdown: GFM
-            code_download: true
+            code_download: false
 ---
 
 <style type="text/css">
@@ -37,6 +38,10 @@ table{
    width:100%;
 }
 </style>
+
+```{r klippy, echo=FALSE, include=TRUE}
+klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
+```
 
 ```{r, include = FALSE}
 source("../bin/chunk-options.R")

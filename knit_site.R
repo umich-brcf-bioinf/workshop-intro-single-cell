@@ -5,12 +5,16 @@
 # remove.packages('klippy');remotes::install_github("umich-brcf-bioinf/workshop-klippy"); library(klippy)
 library(rmarkdown)
 
+# IF KNITTING ON AWS:
+# setwd("~/workshop-intro-single-cell")
+
 # The html from the files below don't have the nav bar
 
 render('source/workshop_setup/preregistration_info.md', output_dir='html/workshop_setup/')
 render('source/workshop_setup/preworkshop_checklist.md', output_dir='html/workshop_setup/')
 render('source/workshop_setup/setup_instructions.md', output_dir='html/workshop_setup/')
 render('source/workshop_setup/setup_instructions_advanced.md', output_dir='html/workshop_setup/')
+render('source/workshop_setup/prereq_check.md', output_dir='html/workshop_setup/')
 
 # The html from the files below do have the nav bar, so if you make changes 
 # that impact the navbar (e.g. file name changes or reordering) you should 
@@ -35,7 +39,7 @@ render_site('source/09-IndependentExercise.Rmd')
 render_site('source/00-ResourcesAndExtendedContent.Rmd')
 
 render_site('source/workshop_wrap_up.Rmd')
-rm(list=ls())
+rm(list=ls(all.names = TRUE))
 gc(verbose=TRUE, full=TRUE)
 #clean_site(preview=TRUE)
 

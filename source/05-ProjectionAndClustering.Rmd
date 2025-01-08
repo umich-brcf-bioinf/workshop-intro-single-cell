@@ -1,7 +1,8 @@
 ---
 title: "Clustering and Projection"
-author: "UM Bioinformatics Core"
+author: "UM Bioinformatics Core Workshop Team"
 date: "`r Sys.Date()`"
+lang: "en"
 output:
         html_document:
             includes:
@@ -13,7 +14,7 @@ output:
             number_sections: false
             fig_caption: true
             markdown: GFM
-            code_download: true
+            code_download: false
 ---
 
 <style type="text/css">
@@ -93,6 +94,8 @@ if(!exists('geo_so')) {
   options(future.globals.maxSize = 1e9)
 
   geo_so = readRDS('results/rdata/geo_so_sct_integrated.rds')
+  
+  pcs=13
 }
 ```
 
@@ -147,7 +150,9 @@ Then, when we look at the meta data we should see that cluster labels have been 
 geo_so = FindNeighbors(geo_so, dims = 1:pcs, reduction = 'integrated.sct.rpca')
 
 # generate clusters
-geo_so = FindClusters(geo_so, resolution = 0.4, cluster.name = 'integrated.sct.rpca.clusters')
+geo_so = FindClusters(geo_so,
+                      resolution = 0.4,
+                      cluster.name = 'integrated.sct.rpca.clusters')
 
 # look at meta.data to see cluster labels
 head(geo_so@meta.data)
@@ -233,7 +238,33 @@ post_integration_umap_plot_day = DimPlot(geo_so, group.by = 'day', label = FALSE
 post_integration_umap_plot_day
 
 ggsave(filename = 'results/figures/umap_integrated_sct_day.png', plot = post_integration_umap_plot_day, width = 8, height = 6, units = 'in')
+
 ```
+
+### Remove plot variables once they are saved
+
+ggplots are terrific for visualizing data and we use them liberally in our
+analysis and the workshop. Interestingly, ggplots save a reference to the source
+dataset - in our case a rather large Seurat object. That's ok in most cases, BUT
+if you save your RStudio environment (or RStudio temporarily suspends your
+session), RStudio will save a **separate copy** of the Seurat object for each
+ggplot object; RStudio's simplistic approach avoids a lot of complexity, but can
+drastically increase your load time and memory usage.
+
+Since (a) we have the script to recreate the plots and (b) we explicitly saved 
+them as graphic objects - we can simply remove them from memory.
+
+```{r, umap_by_clusters_clear}
+# Remove the plot variables from the environment to avoid excessive memory usage
+rm(post_integration_umap_plot_clusters) 
+rm(post_integration_umap_plot_split_clusters)
+rm(post_integration_umap_plot_day)
+gc()
+```
+
+### Why are 
+
+
 
 Similar to the PCA plots, the `day` labeled UMAP can tell us if technical sources of variation might be driving or stratifying the clusters, which would suggest that the normalization and integration steps should be revisted before proceeding.
 
@@ -307,6 +338,14 @@ ggsave(filename = 'results/figures/umap_unintegrated_sct_orig.ident.png', plot =
 
 pre_integration_umap_plot_day = DimPlot(geo_so, group.by = 'day', label = FALSE, reduction = 'umap.unintegrated.sct.pca')
 ggsave(filename = 'results/figures/umap_unintegrated_sct_day.png', plot = pre_integration_umap_plot_day, width = 8, height = 6, units = 'in')
+
+```
+
+```{r, eval=FALSE}
+# Remove the plot variables from the environment to avoid excessive memory usage
+rm(pre_integration_umap_plot_orig.ident) 
+rm(pre_integration_umap_plot_day)
+gc()
 ```
 </details>
 <br>
