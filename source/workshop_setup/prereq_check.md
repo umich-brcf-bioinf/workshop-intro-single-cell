@@ -44,12 +44,11 @@ If you can provide the syntax for at least 3 of the above tasks off the top of y
 
 ## How can I brush up?
 
-- **Attend a workshop:**
-  - *UMich folks only*: 1/21-23 Workshop: Analyzing Data with R’s tidyverse hosted by Pat Schloss ($250 via shortcode or credit card). Curriculum notes [here](https://riffomonas.org/generalR/){target="_blank"}. Workshop registration [here](https://umich.irisregistration.com/?code=2025RsTidyverseWKSH){target="_blank"}.
-  
 - **Work through a self-guided tutorial:**
+  - Checkout our workshop lesson on [Computational Foundations: Intro to R ](https://umich-brcf-bioinf.github.io/workshop-computational-foundations/main/html/r-01-introduction.html){target="_blank"}
   - Self-guided [R training from the Software Carpentry Institute](https://software-carpentry.org/lessons/){target="_blank"}
   - Peruse the first section of [R for Data Science](https://r4ds.hadley.nz/data-visualize){target="_blank"} (Hadley Wickham et al.).
+
   
 - **Watch a video:**
   - [An introduction to the R programming language for Bioinformatics students](https://www.youtube.com/watch?v=bekFrlW0gww){target="_blank"}. (Sample data [here](https://drive.google.com/drive/folders/1mOCELXFb-b91C9mvfb2zD9nUTvNqqihO?usp=share_link){target="_blank"}.)
