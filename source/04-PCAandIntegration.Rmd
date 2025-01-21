@@ -286,13 +286,56 @@ Related - how important is that decision to the downstream impact (e.g. how much
 --> 
 
 
-### An algorithmic approach to estimate an optimal number of PCs
+### An algorithmic approach
 
-Instead of choosing based on the elbow plot by sight alone, we can try to quantify our choice. Here we create a function to return a minimum PCs based on two possible metrics (cumulative variation or above a minimum step size) and then we'll apply that function to our data:
+Instead of choosing based on the elbow plot by sight alone, we can try to 
+quantify our choice algorithmically. Here we create a function to return a 
+recommended PC based on two possible metrics ( (A) cumulative variation or (B) 
+above a minimum step size). We can apply that function to our data to get a good
+starting point for number of PCs to include.
+
+
+```{r, optimal_pcs}
+# Estimate optimal PCs for clustering with a function -------------------------
+optimal_pcs = function(so, reduction) {
+    # quantitative check for number of PCs to include
+    pct = so@reductions[[reduction]]@stdev / sum(so@reductions[[reduction]]@stdev) * 100
+    cum = cumsum(pct)
+    co1 = which(cum > 90 & pct < 5)[1]
+    co2 = sort(which((pct[1:length(pct)-1] - pct[2:length(pct)]) > .1), decreasing = T)[1] + 1
+    pcs = min(co1, co2) 
+    
+    return(pcs)
+}
+
+# Apply function to our data
+pcs = optimal_pcs(geo_so, 'unintegrated.sct.pca')
+pcs
+
+# Based on the heatmap, we'll modify to 13 PCs
+pcs = 13
+
+# =========================================================================
+```
+
+
+Again, this number is likely a starting point and may need to be revised depending on the outcome of the downstream steps. 
+
+<summary>Optional: A more advanced function for picking PCs</summary>
+<details>
+
+This function is derived from the function above; it's useful for understanding
+the overall variance of the PCs as well as visualizing the two kinds of cutoffs. 
+It returns the same recommended PCs as the original function, but also:
+
+- prints more details 
+- prints a plot of the PC variance with key PCs highlighted 
+- returns a named list of detailed results
+
 
 ```{r, estimate_optimal_pcs_fn}
 # Define a function to estimate optimal PCs for clustering ----------------
-estimate_optimal_pcs = function(so, reduction, verbose=TRUE) {
+optimal_pcs_advanced = function(so, reduction, print_plot=TRUE, verbose=TRUE) {
   # quantitative check for number of PCs to include
   threshold_var_cum_min = 90
   threshold_var_pct_max = 5
@@ -331,6 +374,10 @@ estimate_optimal_pcs = function(so, reduction, verbose=TRUE) {
          x = 'Principal Component', 
          y = 'Cumulative percent variance')
 
+  if (print_plot) {
+          print(p)
+  }
+  
   if (verbose) {
      results = paste(
                 sprintf('Reduction %s: %s PCs (total var = %s)', 
@@ -348,7 +395,6 @@ estimate_optimal_pcs = function(so, reduction, verbose=TRUE) {
                 sprintf('\tRecommended num of PCs: %s', pcs),
                 sep='\n')
       message(results)
-      print(p)
   }
   
   return(list(recommended_pcs=pcs, plot=p, co1=co1, co2=co2, df=plot_df))
@@ -359,7 +405,7 @@ estimate_optimal_pcs = function(so, reduction, verbose=TRUE) {
 
 ```{r, apply_estimate_optimal_pcs}
 # Apply function to our data ----------------------------------------------
-optimal_pcs = estimate_optimal_pcs(geo_so, 'unintegrated.sct.pca')
+optimal_pcs = optimal_pcs_advanced(geo_so, 'unintegrated.sct.pca')
 ```
 
 ```{r, set_pcs}
@@ -377,10 +423,18 @@ pcs = 13
 
 Again, this number is likely a starting point and may need to be revised depending on the outcome of the downstream steps. 
 
-> #### Other more quanitative parameter selection options {.unlisted .unnumbered}
-> 
-> While outside the scope of this workshop, there are community efforts to develop more sophisticated methods to select an appropriate number of PCs, like the [chooseR package](https://github.com/rbpatt2019/chooseR) [findPC package](https://academic.oup.com/bioinformatics/article/38/10/2949/6565314) or [using clustering trees](https://lazappi.id.au/posts/2017-07-19-building-a-clustering-tree/) to evaluate the stability of parameter choices.
+While outside the scope of this workshop, there are community efforts to develop 
+more sophisticated methods to select an appropriate number of PCs; here are a 
+few popular approaches:
 
+- [chooseR package](https://github.com/rbpatt2019/chooseR)
+- [findPC package](https://academic.oup.com/bioinformatics/article/38/10/2949/6565314)
+- [using clustering trees](https://lazappi.id.au/posts/2017-07-19-building-a-clustering-tree/)
+
+<br/>
+<hr/>
+</details>
+<br/>
 
 ### Visualizing our PC results
 
