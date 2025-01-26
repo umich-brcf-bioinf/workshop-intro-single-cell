@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2024-12-18" />
+<meta name="date" content="2025-01-24" />
 
 <title>PCA and Integration</title>
 
@@ -414,7 +414,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">PCA and Integration</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2024-12-18</h4>
+<h4 class="date">2025-01-24</h4>
 
 </div>
 
@@ -671,11 +671,11 @@ with those PCs.</p>
 geo_so = RunPCA(geo_so, reduction.name = &#39;unintegrated.sct.pca&#39;)
 geo_so</code></pre>
 <pre><code>An object of class Seurat 
-46955 features across 31560 samples within 2 assays 
-Active assay: SCT (20466 features, 3000 variable features)
+46957 features across 31559 samples within 2 assays 
+Active assay: SCT (20468 features, 3000 variable features)
  3 layers present: counts, data, scale.data
  1 other assay present: RNA
- 2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca</code></pre>
+ 1 dimensional reduction calculated: unintegrated.sct.pca</code></pre>
 <p>After running the command in the console, we should see that the
 <code>geo_so</code> Seurat object has a new reduction. Viewed in our
 running schematic:</p>
@@ -792,15 +792,51 @@ for further iterations than a final decision.</p>
 <!-- Section may need more editing
 Related - how important is that decision to the downstream impact (e.g. how much does changing the number of PCs change the clustering)?
 -->
-<div id="an-algorithmic-approach-to-estimate-an-optimal-number-of-pcs"
-class="section level3">
-<h3>An algorithmic approach to estimate an optimal number of PCs</h3>
+<div id="an-algorithmic-approach" class="section level3">
+<h3>An algorithmic approach</h3>
 <p>Instead of choosing based on the elbow plot by sight alone, we can
-try to quantify our choice. Here we create a function to return a
-minimum PCs based on two possible metrics (cumulative variation or above
-a minimum step size) and then we’ll apply that function to our data:</p>
+try to quantify our choice algorithmically. Here we create a function to
+return a recommended PC based on two possible metrics ( (A) cumulative
+variation or (B) above a minimum step size). We can apply that function
+to our data to get a good starting point for number of PCs to
+include.</p>
+<pre class="r"><code># Estimate optimal PCs for clustering with a function -------------------------
+optimal_pcs = function(so, reduction) {
+    # quantitative check for number of PCs to include
+    pct = so@reductions[[reduction]]@stdev / sum(so@reductions[[reduction]]@stdev) * 100
+    cum = cumsum(pct)
+    co1 = which(cum &gt; 90 &amp; pct &lt; 5)[1]
+    co2 = sort(which((pct[1:length(pct)-1] - pct[2:length(pct)]) &gt; .1), decreasing = T)[1] + 1
+    pcs = min(co1, co2) 
+    
+    return(pcs)
+}
+
+# Apply function to our data
+pcs = optimal_pcs(geo_so, &#39;unintegrated.sct.pca&#39;)
+pcs</code></pre>
+<pre><code>[1] 16</code></pre>
+<pre class="r"><code># Based on the heatmap, we&#39;ll modify to 13 PCs
+pcs = 13
+
+# =========================================================================</code></pre>
+<p>Again, this number is likely a starting point and may need to be
+revised depending on the outcome of the downstream steps.</p>
+<summary>
+Optional: A more advanced function for picking PCs
+</summary>
+<details>
+<p>This function is derived from the function above; it’s useful for
+understanding the overall variance of the PCs as well as visualizing the
+two kinds of cutoffs. It returns the same recommended PCs as the
+original function, but also:</p>
+<ul>
+<li>prints more details</li>
+<li>prints a plot of the PC variance with key PCs highlighted</li>
+<li>returns a named list of detailed results</li>
+</ul>
 <pre class="r"><code># Define a function to estimate optimal PCs for clustering ----------------
-estimate_optimal_pcs = function(so, reduction, verbose=TRUE) {
+optimal_pcs_advanced = function(so, reduction, print_plot=TRUE, verbose=TRUE) {
   # quantitative check for number of PCs to include
   threshold_var_cum_min = 90
   threshold_var_pct_max = 5
@@ -839,6 +875,10 @@ estimate_optimal_pcs = function(so, reduction, verbose=TRUE) {
          x = &#39;Principal Component&#39;, 
          y = &#39;Cumulative percent variance&#39;)
 
+  if (print_plot) {
+          print(p)
+  }
+  
   if (verbose) {
      results = paste(
                 sprintf(&#39;Reduction %s: %s PCs (total var = %s)&#39;, 
@@ -856,7 +896,6 @@ estimate_optimal_pcs = function(so, reduction, verbose=TRUE) {
                 sprintf(&#39;\tRecommended num of PCs: %s&#39;, pcs),
                 sep=&#39;\n&#39;)
       message(results)
-      print(p)
   }
   
   return(list(recommended_pcs=pcs, plot=p, co1=co1, co2=co2, df=plot_df))
@@ -864,10 +903,10 @@ estimate_optimal_pcs = function(so, reduction, verbose=TRUE) {
 
 # =========================================================================</code></pre>
 <pre class="r"><code># Apply function to our data ----------------------------------------------
-optimal_pcs = estimate_optimal_pcs(geo_so, &#39;unintegrated.sct.pca&#39;)</code></pre>
+optimal_pcs = optimal_pcs_advanced(geo_so, &#39;unintegrated.sct.pca&#39;)</code></pre>
 <pre><code>Reduction unintegrated.sct.pca: 50 PCs (total var = 100)
-    PC 42 (total var = 90.99) : Smallest PC that explains at least 90% total variance
-    PC 16 (total var = 53.17) : Largest PC with incremental variance step at least 0.1%
+    PC 42 (total var = 90.98) : Smallest PC that explains at least 90% total variance
+    PC 16 (total var = 53.21) : Largest PC with incremental variance step at least 0.1%
     Recommended num of PCs: 16</code></pre>
 <p><img src="images/curriculum/04-PCAandIntegration/04-apply_estimate_optimal_pcs-1.png" width="816" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># Save plot of PCs --------------------------------------------------------
@@ -881,19 +920,23 @@ pcs = 13
 # =========================================================================</code></pre>
 <p>Again, this number is likely a starting point and may need to be
 revised depending on the outcome of the downstream steps.</p>
-<blockquote>
-<h4 id="other-more-quanitative-parameter-selection-options"
-class="unlisted unnumbered">Other more quanitative parameter selection
-options</h4>
 <p>While outside the scope of this workshop, there are community efforts
 to develop more sophisticated methods to select an appropriate number of
-PCs, like the <a href="https://github.com/rbpatt2019/chooseR">chooseR
-package</a> <a
+PCs; here are a few popular approaches:</p>
+<ul>
+<li><a href="https://github.com/rbpatt2019/chooseR">chooseR
+package</a></li>
+<li><a
 href="https://academic.oup.com/bioinformatics/article/38/10/2949/6565314">findPC
-package</a> or <a
+package</a></li>
+<li><a
 href="https://lazappi.id.au/posts/2017-07-19-building-a-clustering-tree/">using
-clustering trees</a> to evaluate the stability of parameter choices.</p>
-</blockquote>
+clustering trees</a></li>
+</ul>
+<br/>
+<hr/>
+</details>
+<p><br/></p>
 </div>
 <div id="visualizing-our-pc-results" class="section level3">
 <h3>Visualizing our PC results</h3>
@@ -991,8 +1034,8 @@ from a file we have previously generated.</p>
 # Observe that we now have a new reduction, `integrated.sct.rpca`
 geo_so </code></pre>
 <pre><code>An object of class Seurat 
-46955 features across 31560 samples within 2 assays 
-Active assay: SCT (20466 features, 3000 variable features)
+46957 features across 31559 samples within 2 assays 
+Active assay: SCT (20468 features, 3000 variable features)
  3 layers present: counts, data, scale.data
  1 other assay present: RNA
  2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca</code></pre>

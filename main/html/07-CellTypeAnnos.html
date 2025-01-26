@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2024-12-16" />
+<meta name="date" content="2025-01-26" />
 
 <title>Cell Type Annotation</title>
 
@@ -41,6 +41,8 @@
 <link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
 <link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
 <script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <!--
 Favicon dervied from
 https://twemoji.twitter.com/
@@ -414,15 +416,16 @@ div.tocify {
 
 <h1 class="title toc-ignore">Cell Type Annotation</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2024-12-16</h4>
+<h4 class="date">2025-01-26</h4>
 
 </div>
 
 
 <style type="text/css">
-body, td {
+body {
    font-size: 18px;
 }
+
 code.r{
   font-size: 12px;
 }
@@ -593,13 +596,15 @@ href="https://github.com/ZJUFanLab/scCATCH/wiki">scCATCH wiki</a> to
 select tissues from the species) before we run the tool:</p>
 <pre class="r"><code>##### Day 3 - Cell Type Annotation
 
-# Annotate clusters using scCATCH  ----------------------------------------
+# Load scCATCH  -----------------------------------------------------------
 library(scCATCH)
 
 # check that cell identities are set to expected resolution 
 all(Idents(geo_so) == geo_so$integrated.sct.rpca.clusters)</code></pre>
 <pre><code>[1] TRUE</code></pre>
-<pre class="r"><code># create scCATCH object, using count data
+<pre class="r"><code># Annotate clusters using scCATCH  ----------------------------------------
+
+# create scCATCH object, using count data
 geo_catch = createscCATCH(data = geo_so@assays$SCT@counts, cluster = as.character(Idents(geo_so)))
 
 # add marker genes to use for predictions
@@ -613,27 +618,30 @@ geo_catch = findcelltype(geo_catch)
 
 # look at the predictions
 geo_catch@celltype %&gt;% select(cluster, cell_type, celltype_score)</code></pre>
-<pre><code>   cluster                                 cell_type   celltype_score
-1        0                                  Pericyte             0.75
-2        1                   Hematopoietic Stem Cell             0.86
-3        2                    Muscle Progenitor Cell             0.71
-4        3                                Macrophage             0.82
-5        4                                  Monocyte             0.82
-6        5                            Dendritic Cell             0.86
-7        6                                 Stem Cell             0.88
-8        7                   Hematopoietic Stem Cell              0.9
-9        8                   Hematopoietic Stem Cell             0.91
-10       9                   Hematopoietic Stem Cell             0.86
-11      10                            Dendritic Cell             0.84
-12      11                         Regulatory T Cell              0.9
-13      12                            Dendritic Cell             0.85
-14      13                     Muscle Satellite Cell             0.94
-15      14 Dendritic Cell, Monocyte, Progenitor Cell 0.71, 0.71, 0.71
-16      15                   Hematopoietic Stem Cell             0.87
-17      16                                 Stem Cell             0.84
-18      17                               CD8+ T Cell             0.88
-19      18                   Hematopoietic Stem Cell             0.87
-20      19                               Muscle Cell             0.69</code></pre>
+<pre><code>   cluster                       cell_type celltype_score
+1        0                        Pericyte           0.75
+2        1         Hematopoietic Stem Cell           0.86
+3        2                        Monocyte           0.82
+4        3          Muscle Progenitor Cell           0.71
+5        4                      Macrophage           0.82
+6        5                  Dendritic Cell           0.86
+7        6         Hematopoietic Stem Cell            0.9
+8        7                       Stem Cell           0.88
+9        8         Hematopoietic Stem Cell           0.91
+10       9         Hematopoietic Stem Cell           0.86
+11      10        Dendritic Cell, Monocyte     0.82, 0.82
+12      11               Regulatory T Cell            0.9
+13      12                  Dendritic Cell           0.85
+14      13 Dendritic Cell, Progenitor Cell     0.71, 0.71
+15      14           Muscle Satellite Cell           0.94
+16      15                     CD8+ T Cell           0.88
+17      16                       Stem Cell           0.84
+18      17         Hematopoietic Stem Cell           0.87
+19      18                    Stromal Cell           0.66
+20      19         Hematopoietic Stem Cell           0.88
+21      20                     Muscle Cell           0.69
+22      21                        Basophil           0.73
+23      22                       Stem Cell            0.8</code></pre>
 <p>When we look at our results we can see the cell type score, which
 gives us an idea of the confidence of that prediction. Not shown here
 but the full <code>celltype</code> table also includes marker genes and
@@ -672,19 +680,15 @@ immune_markers[[&#39;B-cell&#39;]] = c( &#39;Ly6d&#39;, &#39;Cd19&#39;, &#39;Cd7
 immune_markers[[&#39;T-cell&#39;]] = c( &#39;Cd3d&#39;,&#39;Cd3e&#39;,&#39;Cd3g&#39;) # also Thy1
 
 immune_markers_plot = DotPlot(geo_so, features = immune_markers, assay = &#39;SCT&#39;)  +
-  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))</code></pre>
-<pre><code>Warning: The `facets` argument of `facet_grid()` is deprecated as of ggplot2 2.2.0.
-ℹ Please use the `rows` argument instead.
-ℹ The deprecated feature was likely used in the Seurat package.
-  Please report the issue at &lt;https://github.com/satijalab/seurat/issues&gt;.
-This warning is displayed once every 8 hours.
-Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
-<pre class="r"><code>immune_markers_plot
+  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
 
 # save to file
-ggsave(filename = &#39;results/figures/immune_markers_sct_dot_plot.png&#39;, plot = immune_markers_plot, width = 10, height = 5, units = &#39;in&#39;)
+ggsave(filename = &#39;results/figures/immune_markers_sct_dot_plot.png&#39;, 
+       plot = immune_markers_plot, width = 10, height = 5, units = &#39;in&#39;)
 
-# plot some known cell-type markers 
+immune_markers_plot</code></pre>
+<p><img src="images/curriculum/07-CellTypeAnnotation/07-marker_gene_check-1.png" width="816" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Plot some known cell-type markers ---------------------------------------
 other_markers = list()
 other_markers[[&#39;Pericyte&#39;]] = c(&#39;Acan&#39;,&#39;Sox9&#39;)
 other_markers[[&#39;SMC&#39;]] = c(&#39;Acta2&#39;, &#39;Myh11&#39;) # SMC = mesenchymal smooth-muscle cell/mesenchymal lineage
@@ -697,11 +701,13 @@ other_markers[[&#39;Erythroid&#39;]] = c(&#39;Hba-a1&#39;)
 
 other_markers_dot_plot = DotPlot(geo_so, features = other_markers, assay = &#39;SCT&#39;) +
   theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
-other_markers_dot_plot
 
 # save to file
-ggsave(filename = &#39;results/figures/other_markers_sct_dot_plot.png&#39;, plot = other_markers_dot_plot, width = 12, height = 5, units = &#39;in&#39;)</code></pre>
-<p><img src="images/curriculum/07-CellTypeAnnotation/07-marker_gene_check-1.png" width="816" style="display: block; margin: auto;" /><img src="images/curriculum/07-CellTypeAnnotation/07-marker_gene_check-2.png" width="816" style="display: block; margin: auto;" />
+ggsave(filename = &#39;results/figures/other_markers_sct_dot_plot.png&#39;, 
+       plot = other_markers_dot_plot, width = 12, height = 5, units = &#39;in&#39;)
+
+other_markers_dot_plot</code></pre>
+<p><img src="images/curriculum/07-CellTypeAnnotation/07-marker_gene_check_known_markers-1.png" width="816" style="display: block; margin: auto;" />
 In the first plot, B-cell and T-cell markers seem to line up with the
 predictions and are limited to single clusters. However, macrophage and
 dendrocyte markers match to multiple clusters including some annotated
@@ -740,12 +746,14 @@ fig1g_sct_dot_plot = DotPlot(geo_so, features = fig1g_markers, assay = &#39;SCT&
 <pre><code>Warning: The following requested variables were not found: Il6b</code></pre>
 <pre class="r"><code>fig1h_sct_dot_plot = DotPlot(geo_so, features = fig1h_markers, assay = &#39;SCT&#39;)
 
-fig1g_sct_dot_plot
-fig1h_sct_dot_plot
-
 # save plots to file
-ggsave(filename = &#39;results/figures/markers_fig1g_sct_dot_plot.png&#39;, plot = fig1g_sct_dot_plot, width = 8, height = 6, units = &#39;in&#39;)
-ggsave(filename = &#39;results/figures/markers_fig1h_sct_dot_plot.png&#39;, plot = fig1h_sct_dot_plot, width = 8, height = 6, units = &#39;in&#39;)</code></pre>
+ggsave(filename = &#39;results/figures/markers_fig1g_sct_dot_plot.png&#39;, 
+       plot = fig1g_sct_dot_plot, width = 8, height = 6, units = &#39;in&#39;)
+ggsave(filename = &#39;results/figures/markers_fig1h_sct_dot_plot.png&#39;, 
+       plot = fig1h_sct_dot_plot, width = 8, height = 6, units = &#39;in&#39;)
+
+fig1g_sct_dot_plot
+fig1h_sct_dot_plot</code></pre>
 <p><img src="images/curriculum/07-CellTypeAnnotation/07-known_dot_plots_sct-1.png" width="816" style="display: block; margin: auto;" /><img src="images/curriculum/07-CellTypeAnnotation/07-known_dot_plots_sct-2.png" width="816" style="display: block; margin: auto;" />
 For known marker genes, it’s important to note that since scRNA-seq is
 only measuring transcriptional signals that markers at the protein level
@@ -795,27 +803,30 @@ so we have to add them back.
 celltype_annos = geo_catch@celltype %&gt;% select(cluster, cell_type) %&gt;% 
   mutate(cluster = factor(cluster, levels = c(0:19))) %&gt;% arrange(cluster)
 celltype_annos</code></pre>
-<pre><code>   cluster                                 cell_type
-1        0                                  Pericyte
-2        1                   Hematopoietic Stem Cell
-3        2                    Muscle Progenitor Cell
-4        3                                Macrophage
-5        4                                  Monocyte
-6        5                            Dendritic Cell
-7        6                                 Stem Cell
-8        7                   Hematopoietic Stem Cell
-9        8                   Hematopoietic Stem Cell
-10       9                   Hematopoietic Stem Cell
-11      10                            Dendritic Cell
-12      11                         Regulatory T Cell
-13      12                            Dendritic Cell
-14      13                     Muscle Satellite Cell
-15      14 Dendritic Cell, Monocyte, Progenitor Cell
-16      15                   Hematopoietic Stem Cell
-17      16                                 Stem Cell
-18      17                               CD8+ T Cell
-19      18                   Hematopoietic Stem Cell
-20      19                               Muscle Cell</code></pre>
+<pre><code>   cluster                       cell_type
+1        0                        Pericyte
+2        1         Hematopoietic Stem Cell
+3        2                        Monocyte
+4        3          Muscle Progenitor Cell
+5        4                      Macrophage
+6        5                  Dendritic Cell
+7        6         Hematopoietic Stem Cell
+8        7                       Stem Cell
+9        8         Hematopoietic Stem Cell
+10       9         Hematopoietic Stem Cell
+11      10        Dendritic Cell, Monocyte
+12      11               Regulatory T Cell
+13      12                  Dendritic Cell
+14      13 Dendritic Cell, Progenitor Cell
+15      14           Muscle Satellite Cell
+16      15                     CD8+ T Cell
+17      16                       Stem Cell
+18      17         Hematopoietic Stem Cell
+19      18                    Stromal Cell
+20      19         Hematopoietic Stem Cell
+21    &lt;NA&gt;                     Muscle Cell
+22    &lt;NA&gt;                        Basophil
+23    &lt;NA&gt;                       Stem Cell</code></pre>
 <pre class="r"><code># Customize annotations, remembering that cluster 0 = row 1 in table
 celltype_annos$cell_type[c(3,15)] &lt;- &quot;Inflammatory macrophage&quot; # resolves cluster 2 and 14
 celltype_annos$cell_type[c(11)] &lt;- &quot;Macrophage&quot;
@@ -837,27 +848,301 @@ rownames(new_metadata) = rownames(geo_so@meta.data) #  We are implicitly relying
 geo_so@meta.data = new_metadata 
 
 head(geo_so@meta.data)</code></pre>
-<pre><code>                                            orig.ident nCount_RNA nFeature_RNA  day  replicate percent.mt nCount_SCT
-HODay0replicate1_AAACCTGAGAGAACAG-1 HO.Day0.replicate1      10234         3226 Day0 replicate1   1.240962       6062
-HODay0replicate1_AAACCTGGTCATGCAT-1 HO.Day0.replicate1       3158         1499 Day0 replicate1   7.536415       4607
-HODay0replicate1_AAACCTGTCAGAGCTT-1 HO.Day0.replicate1      13464         4102 Day0 replicate1   3.112002       5314
-HODay0replicate1_AAACGGGAGAGACTTA-1 HO.Day0.replicate1        577          346 Day0 replicate1   1.559792       3877
-HODay0replicate1_AAACGGGAGGCCCGTT-1 HO.Day0.replicate1       1189          629 Day0 replicate1   3.700589       4166
-HODay0replicate1_AAACGGGCAACTGGCC-1 HO.Day0.replicate1       7726         2602 Day0 replicate1   2.938131       5865
-                                    nFeature_SCT integrated.sct.rpca.clusters seurat_clusters unintegrated.sct.pca.clusters
-HODay0replicate1_AAACCTGAGAGAACAG-1         2867                            1               2                             2
-HODay0replicate1_AAACCTGGTCATGCAT-1         1509                            1               2                             2
-HODay0replicate1_AAACCTGTCAGAGCTT-1         2370                            6               2                             2
-HODay0replicate1_AAACGGGAGAGACTTA-1         1031                           10               9                             9
-HODay0replicate1_AAACGGGAGGCCCGTT-1          915                            0               2                             2
-HODay0replicate1_AAACGGGCAACTGGCC-1         2588                            1               2                             2
-                                     cell_type
-HODay0replicate1_AAACCTGAGAGAACAG-1 Fibroblast
-HODay0replicate1_AAACCTGGTCATGCAT-1 Fibroblast
-HODay0replicate1_AAACCTGTCAGAGCTT-1  Stem Cell
-HODay0replicate1_AAACGGGAGAGACTTA-1 Macrophage
-HODay0replicate1_AAACGGGAGGCCCGTT-1   Pericyte
-HODay0replicate1_AAACGGGCAACTGGCC-1 Fibroblast</code></pre>
+<div
+style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:100%; overflow-x: scroll; width:1000px; ">
+<table class="table table-condensed" style="font-size: 12px; font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+orig.ident
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+nCount_RNA
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+nFeature_RNA
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+day
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+replicate
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+percent.mt
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+nCount_SCT
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+nFeature_SCT
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+integrated.sct.rpca.clusters
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+seurat_clusters
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+unintegrated.sct.pca.clusters
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+cell_type
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACCTGAGAGAACAG-1
+</td>
+<td style="text-align:left;">
+HO.Day0.replicate1
+</td>
+<td style="text-align:right;">
+10234
+</td>
+<td style="text-align:right;">
+3226
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+<td style="text-align:right;">
+1.240962
+</td>
+<td style="text-align:right;">
+6062
+</td>
+<td style="text-align:right;">
+2867
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+Fibroblast
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACCTGGTCATGCAT-1
+</td>
+<td style="text-align:left;">
+HO.Day0.replicate1
+</td>
+<td style="text-align:right;">
+3158
+</td>
+<td style="text-align:right;">
+1499
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+<td style="text-align:right;">
+7.536416
+</td>
+<td style="text-align:right;">
+4607
+</td>
+<td style="text-align:right;">
+1509
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+Fibroblast
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACCTGTCAGAGCTT-1
+</td>
+<td style="text-align:left;">
+HO.Day0.replicate1
+</td>
+<td style="text-align:right;">
+13464
+</td>
+<td style="text-align:right;">
+4102
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+<td style="text-align:right;">
+3.112002
+</td>
+<td style="text-align:right;">
+5314
+</td>
+<td style="text-align:right;">
+2370
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+Fibroblast
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACGGGAGAGACTTA-1
+</td>
+<td style="text-align:left;">
+HO.Day0.replicate1
+</td>
+<td style="text-align:right;">
+577
+</td>
+<td style="text-align:right;">
+346
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+<td style="text-align:right;">
+1.559792
+</td>
+<td style="text-align:right;">
+3877
+</td>
+<td style="text-align:right;">
+1031
+</td>
+<td style="text-align:left;">
+10
+</td>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:left;">
+Macrophage
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACGGGAGGCCCGTT-1
+</td>
+<td style="text-align:left;">
+HO.Day0.replicate1
+</td>
+<td style="text-align:right;">
+1189
+</td>
+<td style="text-align:right;">
+629
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+<td style="text-align:right;">
+3.700589
+</td>
+<td style="text-align:right;">
+4166
+</td>
+<td style="text-align:right;">
+915
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+Fibroblast
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACGGGCAACTGGCC-1
+</td>
+<td style="text-align:left;">
+HO.Day0.replicate1
+</td>
+<td style="text-align:right;">
+7726
+</td>
+<td style="text-align:right;">
+2602
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+<td style="text-align:right;">
+2.938131
+</td>
+<td style="text-align:right;">
+5865
+</td>
+<td style="text-align:right;">
+2588
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+Fibroblast
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <p><strong>Checkpoint</strong> : Has the metadata for your
 <code>geo_so</code> object been updated?</p>
 <p>We have now added a “cell_type” column to the <code>meta.data</code>
@@ -880,27 +1165,30 @@ catch_umap_plot
 ggsave(filename = &#39;results/figures/umap_integrated_catch.png&#39;, plot = catch_umap_plot, width = 10, height = 8, units = &#39;in&#39;)
 
 catch_umap_condition_plot = DimPlot(geo_so, group.by = &#39;cell_type&#39;, split.by = &#39;day&#39;, label = TRUE, reduction = &#39;umap.integrated.sct.rpca&#39;)
-catch_umap_condition_plot
 
-ggsave(filename = &#39;results/figures/umap_integrated_catch_byCondition.png&#39;, plot = catch_umap_plot, width = 10, height = 8, units = &#39;in&#39;)</code></pre>
+ggsave(filename = &#39;results/figures/umap_integrated_catch_byCondition.png&#39;, 
+       plot = catch_umap_plot, width = 10, height = 8, units = &#39;in&#39;)
+
+catch_umap_condition_plot</code></pre>
+<pre><code>Warning: Removed 13 rows containing missing values or values outside the scale range (`geom_text()`).</code></pre>
 <p><img src="images/curriculum/07-CellTypeAnnotation/07-catch_umap_plot-1.png" width="960" style="display: block; margin: auto;" /><img src="images/curriculum/07-CellTypeAnnotation/07-catch_umap_plot-2.png" width="960" style="display: block; margin: auto;" /></p>
 <!-- to add - number of cells per cluster and condition/replicate after annotation --->
 </div>
 </div>
 <div id="save-our-progress" class="section level1">
 <h1>Save our progress</h1>
+<pre class="r"><code># Discard all ggplot objects currently in environment ---------------------
+# Ok since we saved the plots as we went along
+rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
+gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
+Ncells   6843658  365.5   12542252  669.9   12542252  669.9
+Vcells 336184384 2564.9  887440625 6770.7 1109299665 8463.3</code></pre>
 <p>We’ll save the scCATCH object. The Seurat object has not been changed
 in this module.</p>
 <pre class="r"><code># Save Seurat object and annotations --------------------------------------
 saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_integrated_with_catch.rds&#39;)
 saveRDS(geo_catch, file = &#39;results/rdata/geo_catch.rds&#39;)</code></pre>
-<pre class="r"><code># Discard all ggplot objects currently in environment ---------------------
-# Ok since we saved the plots as we went along
-rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
-gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells   6905370  368.8   11691802   624.5   11691802   624.5
-Vcells 696513808 5314.0 2145708358 16370.5 1897170431 14474.3</code></pre>
 </div>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
