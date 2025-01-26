@@ -18,9 +18,10 @@ output:
 ---
 
 <style type="text/css">
-body, td {
+body {
    font-size: 18px;
 }
+
 code.r{
   font-size: 12px;
 }
@@ -131,11 +132,16 @@ To increase the speed and accuracy of our predictions, we'll create query of rel
 ```{r, sccatch, message = FALSE, warning = FALSE}
 ##### Day 3 - Cell Type Annotation
 
-# Annotate clusters using scCATCH  ----------------------------------------
+# Load scCATCH  -----------------------------------------------------------
 library(scCATCH)
 
 # check that cell identities are set to expected resolution 
 all(Idents(geo_so) == geo_so$integrated.sct.rpca.clusters)
+
+```
+
+```{r, sccatch_annotate, message = FALSE, warning = FALSE}
+# Annotate clusters using scCATCH  ----------------------------------------
 
 # create scCATCH object, using count data
 geo_catch = createscCATCH(data = geo_so@assays$SCT@counts, cluster = as.character(Idents(geo_so)))
@@ -151,6 +157,7 @@ geo_catch = findcelltype(geo_catch)
 
 # look at the predictions
 geo_catch@celltype %>% select(cluster, cell_type, celltype_score)
+
 ```
 
 When we look at our results we can see the cell type score, which gives us an idea of the confidence of that prediction. Not shown here but the full `celltype` table also includes marker genes and PMIDs for relevant literature for each prediction.
@@ -173,12 +180,16 @@ immune_markers[['T-cell']] = c( 'Cd3d','Cd3e','Cd3g') # also Thy1
 
 immune_markers_plot = DotPlot(geo_so, features = immune_markers, assay = 'SCT')  +
   theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
-immune_markers_plot
 
 # save to file
-ggsave(filename = 'results/figures/immune_markers_sct_dot_plot.png', plot = immune_markers_plot, width = 10, height = 5, units = 'in')
+ggsave(filename = 'results/figures/immune_markers_sct_dot_plot.png', 
+       plot = immune_markers_plot, width = 10, height = 5, units = 'in')
 
-# plot some known cell-type markers 
+immune_markers_plot
+```
+
+```{r, marker_gene_check_known_markers, fig.show='hold'}
+# Plot some known cell-type markers ---------------------------------------
 other_markers = list()
 other_markers[['Pericyte']] = c('Acan','Sox9')
 other_markers[['SMC']] = c('Acta2', 'Myh11') # SMC = mesenchymal smooth-muscle cell/mesenchymal lineage
@@ -191,10 +202,12 @@ other_markers[['Erythroid']] = c('Hba-a1')
 
 other_markers_dot_plot = DotPlot(geo_so, features = other_markers, assay = 'SCT') +
   theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
-other_markers_dot_plot
 
 # save to file
-ggsave(filename = 'results/figures/other_markers_sct_dot_plot.png', plot = other_markers_dot_plot, width = 12, height = 5, units = 'in')
+ggsave(filename = 'results/figures/other_markers_sct_dot_plot.png', 
+       plot = other_markers_dot_plot, width = 12, height = 5, units = 'in')
+
+other_markers_dot_plot
 
 ```
 In the first plot, B-cell and T-cell markers seem to line up with the predictions and are limited to single clusters. However, macrophage and dendrocyte markers match to multiple clusters including some annotated with different cell types, so we can consider modifying those cluster labels. 
@@ -218,12 +231,15 @@ fig1h_markers = c('Cxcr2', 'Csf1r', 'Csf3r', 'Tgfbr1', 'Tgfbr3', 'Il1r1', 'Il6ra
 fig1g_sct_dot_plot = DotPlot(geo_so, features = fig1g_markers, assay = 'SCT')
 fig1h_sct_dot_plot = DotPlot(geo_so, features = fig1h_markers, assay = 'SCT')
 
+# save plots to file
+ggsave(filename = 'results/figures/markers_fig1g_sct_dot_plot.png', 
+       plot = fig1g_sct_dot_plot, width = 8, height = 6, units = 'in')
+ggsave(filename = 'results/figures/markers_fig1h_sct_dot_plot.png', 
+       plot = fig1h_sct_dot_plot, width = 8, height = 6, units = 'in')
+
 fig1g_sct_dot_plot
 fig1h_sct_dot_plot
 
-# save plots to file
-ggsave(filename = 'results/figures/markers_fig1g_sct_dot_plot.png', plot = fig1g_sct_dot_plot, width = 8, height = 6, units = 'in')
-ggsave(filename = 'results/figures/markers_fig1h_sct_dot_plot.png', plot = fig1h_sct_dot_plot, width = 8, height = 6, units = 'in')
 ```
 For known marker genes, it's important to note that since scRNA-seq is only measuring transcriptional signals that markers at the protein level (e.g used for approaches like FACS) may be less effective. An alternative or complement to using marker genes could be methods like using gene set enrichment (GSEA) [as demonstrated in the OSCA book](https://bioconductor.org/books/3.15/OSCA.basic/cell-type-annotation.html#computing-gene-set-activities) to aid in annotations. However, the book ["Best practices for single-cell analysis across modalities" by Heumos, Schaar, Lance, et al. ](https://www.sc-best-practices.org/cellular_structure/annotation.html) points out that "it is often useful to work together with experts ... [like a] biologist who has more extensive knowledge of the tissue, the biology, the expected cell types and markers etc.". In our experience, we find that experience and knowledge of the researchers we work with is invaluable. 
 
@@ -257,6 +273,9 @@ celltype_annos = geo_catch@celltype %>% select(cluster, cell_type) %>%
   mutate(cluster = factor(cluster, levels = c(0:19))) %>% arrange(cluster)
 celltype_annos
 
+```
+
+```{r, annotate_clusters_customize, eval=FALSE}
 # Customize annotations, remembering that cluster 0 = row 1 in table
 celltype_annos$cell_type[c(3,15)] <- "Inflammatory macrophage" # resolves cluster 2 and 14
 celltype_annos$cell_type[c(11)] <- "Macrophage"
@@ -278,7 +297,38 @@ rownames(new_metadata) = rownames(geo_so@meta.data) #  We are implicitly relying
 geo_so@meta.data = new_metadata 
 
 head(geo_so@meta.data)
+
 ```
+
+```{r, annotate_clusters_customize_hidden, echo = FALSE, warning = FALSE, message = FALSE}
+# Customize annotations, remembering that cluster 0 = row 1 in table
+celltype_annos$cell_type[c(3,15)] <- "Inflammatory macrophage" # resolves cluster 2 and 14
+celltype_annos$cell_type[c(11)] <- "Macrophage"
+
+celltype_annos$cell_type[c(2)] <- "Fibroblast" # revise clusters 1,6 based on markers
+celltype_annos$cell_type[c(6)] <- "Myofibroblast"
+celltype_annos$cell_type[c(8,9)] <- "Endothelial" # revise cluster 7,8; also have weaker mast cell signal
+celltype_annos$cell_type[c(6,13)] <- "Hematopoietic stem cell" # based on markers but could further revise
+celltype_annos$cell_type[c(10,19)] <- "Mesenchymal stem/stromal cell" # based on Acta2 signal
+celltype_annos$cell_type[c(16)] <- "Erythroid" # cluster 15, less confident but not near other dendritic cells
+celltype_annos$cell_type[c(20, 17)] <- "Unknown" # since such small populations, reset cluster 16 & 19 as unknown for now
+
+
+# Merge cell types in but as a new table to slide into @meta.data
+new_metadata = geo_so@meta.data %>% left_join(celltype_annos, by = c('integrated.sct.rpca.clusters' = 'cluster'))
+rownames(new_metadata) = rownames(geo_so@meta.data) #  We are implicitly relying on the same row order!
+
+# Replace the meta.data
+geo_so@meta.data = new_metadata 
+
+head(geo_so@meta.data) %>%
+  kable("html") %>%
+  kable_styling(font_size=12,
+                bootstrap_options='condensed',
+                html_font = '"Arial Narrow", arial, helvetica, sans-serif') %>%
+  scroll_box(height='100%', width='1000px')
+```
+
 
 **Checkpoint** : Has the metadata for your `geo_so` object been updated?
 
@@ -298,14 +348,25 @@ catch_umap_plot
 ggsave(filename = 'results/figures/umap_integrated_catch.png', plot = catch_umap_plot, width = 10, height = 8, units = 'in')
 
 catch_umap_condition_plot = DimPlot(geo_so, group.by = 'cell_type', split.by = 'day', label = TRUE, reduction = 'umap.integrated.sct.rpca')
+
+ggsave(filename = 'results/figures/umap_integrated_catch_byCondition.png', 
+       plot = catch_umap_plot, width = 10, height = 8, units = 'in')
+
 catch_umap_condition_plot
 
-ggsave(filename = 'results/figures/umap_integrated_catch_byCondition.png', plot = catch_umap_plot, width = 10, height = 8, units = 'in')
 ```
 
 <!-- to add - number of cells per cluster and condition/replicate after annotation --->
 
 # Save our progress
+
+```{r}
+# Discard all ggplot objects currently in environment ---------------------
+# Ok since we saved the plots as we went along
+rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
+gc()
+
+```
 
 We'll save the scCATCH object. The Seurat object has not been changed in this module.
 
@@ -319,18 +380,13 @@ if(!file.exists('results/rdata/geo_catch.rds')) {
 }
 ```
 
+
 ```{r, save_rds, eval=FALSE}
 # Save Seurat object and annotations --------------------------------------
 saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated_with_catch.rds')
 saveRDS(geo_catch, file = 'results/rdata/geo_catch.rds')
 ```
 
-```{r}
-# Discard all ggplot objects currently in environment ---------------------
-# Ok since we saved the plots as we went along
-rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
-gc()
-```
 
 
 # Summary

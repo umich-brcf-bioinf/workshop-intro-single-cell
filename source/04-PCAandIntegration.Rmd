@@ -446,9 +446,12 @@ In addition to selecting a reduced number of PCs to represent our data, we can a
 
 ```{r, pca_loading_plots, message=FALSE, fig.show='hold'}
 # Visualize PCA (PC1 and PC2, unintegrated) -------------------------------
-DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'orig.ident') # first label by sample
-DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'day') # then label by day
-ggsave(filename = 'results/figures/qc_pca_plot_unintegrated_sct_day.png', width = 7, height = 6, units = 'in') # save 
+# first label by sample
+DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'orig.ident') 
+ # then label by day
+DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'day')
+ # save 
+ggsave(filename = 'results/figures/qc_pca_plot_unintegrated_sct_day.png', width = 7, height = 6, units = 'in')
 
 #  =========================================================================
 ```
@@ -467,7 +470,7 @@ The details of how integration works depends on the method, but for the RPCA app
 
 New to Seurat v5 are improvements that make selecting different integration methods much easier. The results of each alternative integration method are stored within the same `Seurat` object, which makes comparing downstream effects much easier.  So, if we wanted to run the `RPCAIntegration` method, we would run (**but we won't here**):
 
-```{r, integrate_layers, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE, echo=FALSE, include=FALSE}
+```{r, integrate_layers_hidden, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE, echo=FALSE, include=FALSE}
 ### Hidden code block to generate integrated data
 geo_so = IntegrateLayers(
   object = geo_so, 

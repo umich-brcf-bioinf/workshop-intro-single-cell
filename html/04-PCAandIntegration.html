@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-01-21" />
+<meta name="date" content="2025-01-24" />
 
 <title>PCA and Integration</title>
 
@@ -414,7 +414,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">PCA and Integration</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-01-21</h4>
+<h4 class="date">2025-01-24</h4>
 
 </div>
 
@@ -671,11 +671,11 @@ with those PCs.</p>
 geo_so = RunPCA(geo_so, reduction.name = &#39;unintegrated.sct.pca&#39;)
 geo_so</code></pre>
 <pre><code>An object of class Seurat 
-46955 features across 31560 samples within 2 assays 
-Active assay: SCT (20466 features, 3000 variable features)
+46957 features across 31559 samples within 2 assays 
+Active assay: SCT (20468 features, 3000 variable features)
  3 layers present: counts, data, scale.data
  1 other assay present: RNA
- 2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca</code></pre>
+ 1 dimensional reduction calculated: unintegrated.sct.pca</code></pre>
 <p>After running the command in the console, we should see that the
 <code>geo_so</code> Seurat object has a new reduction. Viewed in our
 running schematic:</p>
@@ -905,8 +905,8 @@ optimal_pcs_advanced = function(so, reduction, print_plot=TRUE, verbose=TRUE) {
 <pre class="r"><code># Apply function to our data ----------------------------------------------
 optimal_pcs = optimal_pcs_advanced(geo_so, &#39;unintegrated.sct.pca&#39;)</code></pre>
 <pre><code>Reduction unintegrated.sct.pca: 50 PCs (total var = 100)
-    PC 42 (total var = 90.99) : Smallest PC that explains at least 90% total variance
-    PC 16 (total var = 53.17) : Largest PC with incremental variance step at least 0.1%
+    PC 42 (total var = 90.98) : Smallest PC that explains at least 90% total variance
+    PC 16 (total var = 53.21) : Largest PC with incremental variance step at least 0.1%
     Recommended num of PCs: 16</code></pre>
 <p><img src="images/curriculum/04-PCAandIntegration/04-apply_estimate_optimal_pcs-1.png" width="816" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># Save plot of PCs --------------------------------------------------------
@@ -1034,8 +1034,8 @@ from a file we have previously generated.</p>
 # Observe that we now have a new reduction, `integrated.sct.rpca`
 geo_so </code></pre>
 <pre><code>An object of class Seurat 
-46955 features across 31560 samples within 2 assays 
-Active assay: SCT (20466 features, 3000 variable features)
+46957 features across 31559 samples within 2 assays 
+Active assay: SCT (20468 features, 3000 variable features)
  3 layers present: counts, data, scale.data
  1 other assay present: RNA
  2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca</code></pre>
