@@ -421,8 +421,12 @@ div.tocify {
 </div>
 
 
-<p>body { font-size: 18px; }</p>
 <style type="text/css">
+
+body {
+   font-size: 18px;
+}
+
 code.r{
   font-size: 12px;
 }
@@ -436,11 +440,6 @@ table.fig, th.fig, td.fig {
   padding: 15px;
 }
 
-table.fig, th.fig, td.fig {
-  border: 1px solid black;
-  border-collapse: collapse;
-  padding: 15px;
-}
 </style>
 <script>
   addClassKlippyTo("pre.r, pre.markdown, pre.bash");
@@ -2390,9 +2389,9 @@ plots = c(&quot;pre_integration_umap_plot_day&quot;,
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger    (Mb)   max used   (Mb)
-Ncells   6502228  347.3   10692914   571.1   10692914  571.1
-Vcells 744427019 5679.6 1326722786 10122.1 1112382295 8486.9</code></pre>
+<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells   6525427  348.5   11463498   612.3   11463498   612.3
+Vcells 744475448 5679.9 1592146655 12147.2 1582422421 12073.0</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">

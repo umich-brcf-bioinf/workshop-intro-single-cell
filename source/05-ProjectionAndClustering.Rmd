@@ -16,11 +16,13 @@ output:
             markdown: GFM
             code_download: false
 ---
+
+<style type="text/css">
+
 body {
    font-size: 18px;
 }
 
-<style type="text/css">
 code.r{
   font-size: 12px;
 }
@@ -34,11 +36,6 @@ table.fig, th.fig, td.fig {
   padding: 15px;
 }
 
-table.fig, th.fig, td.fig {
-  border: 1px solid black;
-  border-collapse: collapse;
-  padding: 15px;
-}
 </style>
 
 ```{r klippy, include=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
