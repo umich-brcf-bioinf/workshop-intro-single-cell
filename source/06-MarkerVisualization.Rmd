@@ -35,8 +35,9 @@ table.fig, th.fig, td.fig {
 }
 </style>
 
-```{r klippy, echo=FALSE, include=TRUE}
+```{r klippy, include=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
 klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
+library(kableExtra)
 ```
 
 ```{r, include = FALSE}
@@ -126,11 +127,12 @@ geo_so = PrepSCTFindMarkers(geo_so)
 # Run comparisons for each cluster to generate markers
 geo_markers = FindAllMarkers(geo_so, only.pos = TRUE, min.pct = 0.05)
 
+# Write out full cluster marker results to file
+write_csv(geo_markers, file = 'results/tables/marker_genes_0.4res.csv')
+
 # Take a look at the first few rows of the result
 head(geo_markers)
 
-# Write out full cluster marker results to file
-write_csv(geo_markers, file = 'results/tables/marker_genes_0.4res.csv')
 ```
 
 
@@ -158,11 +160,16 @@ top_5 = geo_markers %>% filter(p_val_adj < 0.01) %>% group_by(cluster) %>% slice
 # Look at results
 head(top_5, n = 10)
 
-# Optional - Create table of top 5 markers per cluster (ranked by logFC)
+```
+
+```{r, top_5_cluster_markers_rankedfc}
+# Optional - Create table of top 5 markers per cluster (ranked by logFC) -------
 top_5_by_log2FC = geo_markers %>% group_by(cluster) %>% arrange(p_val_adj, desc(avg_log2FC)) %>% slice_head(n = 5)
 
 # Look at results after ranking
-head(top_5_by_log2FC, n = 10) # notice difference in pct.1 column between tables
+# Note difference in pct.1 column between tables
+head(top_5_by_log2FC, n = 10) 
+
 ```
 
 We expect to see several columns:
@@ -189,8 +196,13 @@ top_5_sct_dot_plot = DotPlot(geo_so, features = unique(top_5$gene)) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
     labs(title = 'Top 5 Cluster Genes by FDR and avg_log2FC') + coord_flip()
 top_5_sct_dot_plot
+```
 
-ggsave(filename = 'results/figures/markers_top_5_sct_dot_plot.png', plot = top_5_sct_dot_plot, width = 8, height = 18, units = 'in') 
+```{r, top_5_dot_plot_sct_save}
+# Save dot plot of top marker genes ---------------------------------------
+ggsave(filename = 'results/figures/markers_top_5_sct_dot_plot.png', 
+       plot = top_5_sct_dot_plot, 
+       width = 8, height = 18, units = 'in') 
 ```
 
 In the dotplot we can see that the color indicates the expression of the gene while the size of the dot indicates the proportion of cells expressing that gene in each cluster ([source](https://ouyanglab.com/singlecell/clust.html#visualising-marker-genes)). 
@@ -217,23 +229,30 @@ Before proceeding with cluster annotations, we'll also check the percentage of m
 ```{r, echo=TRUE, eval= TRUE}
 # Check mitochondrial gene expression -------------------------------------
 percent_mito_plot = FeaturePlot(geo_so, features='percent.mt')
-percent_mito_plot
 
 # save to file
-ggsave(filename = 'results/figures/percent_umap_mito_plot.png', plot = percent_mito_plot, width = 6, height = 6, units = 'in')
-```
+ggsave(filename = 'results/figures/percent_umap_mito_plot.png', 
+       plot = percent_mito_plot, 
+       width = 6, height = 6, units = 'in')
 
+percent_mito_plot
 
-```{r}
-# Remove the plot variables from the environment to avoid excessive memory usage
-rm(top_5_sct_dot_plot) 
-rm(top_5_rna_dot_plot) 
-rm(percent_mito_plot) 
-gc()
 ```
 
 
 We see that a higher % seem to be somewhat concentrated in a few places, but if cell death might be of interest for the research question, we'd want to consider investigating this pattern further by splitting up the plots by day and/or waiting until after running initial differential expression analysis to determine if these cell populations are interesting biology or not.
+
+
+```{r}
+# Remove the plot variables from the environment to avoid excessive memory usage
+plots = c("top_5_sct_dot_plot", 
+          "top_5_rna_dot_plot", 
+          "percent_mito_plot")
+
+# Only remove plots that actually exist in the environment
+rm(list=Filter(exists, plots))
+gc()
+```
 
 
 
