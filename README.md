@@ -8,7 +8,7 @@ This is the custom curriculum for the UM Bioinformatics Core Intro to Single Cel
   
   - [Main](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/main/html/)
   - [2/12/2025](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/2025-02-12/html/)
-  - [10/22/2024](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/2024-10-22/html/)
+  - [10/23/2024](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/2024-10-23/html/)
 
 __For site knitting:___
 
