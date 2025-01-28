@@ -505,9 +505,10 @@ cycles for Read 1, Index and Read 2, respectively.
 <strong>Data analysis</strong>
 </summary>
 <p>University of Michigan Biomedical Research Core Facilities Advanced
-Genomics Core executed 10x Genomics Cell Ranger (v7.2.0) to perform
+Genomics Core executed 10x Genomics Cell Ranger (v9.0.0) to perform
 sample de-multiplexing, barcode processing, and single cell gene
-counting (Alignment, Barcoding and UMI Count). The Cell Ranger filtered
+counting (Alignment, Barcoding and UMI Count); alignments were against
+mm10-2020-A and included intronic sequence. The Cell Ranger filtered
 barcode feature matrix was used as input to downstream analysis.</p>
 <p>All analysis and graphics were generated in R (v4.4.1) [1]. Analysis
 was performed primarily using the Seurat package (v5.0.1) [2]. Cells
@@ -770,8 +771,8 @@ workshop session.</li>
 terminal/command line window as below. (You will need to substitute your
 actual workshop username and type workshop password when prompted.)</p>
 <pre class="bash"><code># download workshop files -------------------------------------------------
-mkdir intro_scrnaseq-workshop
-cd intro_scrnaseq-workshop
+mkdir intro_scrnaseq_workshop
+cd intro_scrnaseq_workshop
 scp -r YOUR_USERNAME@bfx-workshop01.med.umich.edu:&quot;ISC_R*&quot; .</code></pre>
 <ul>
 <li>Note that the full download of the R data is about 8Gb, so depending
@@ -783,21 +784,30 @@ download the full set of Cell Ranger outputs.)</li>
 <div id="installing-software-locally" class="section level4">
 <h4>Installing software locally</h4>
 <ul>
-<li>You can install necessary programs to run programs locally. Note
+<li><p>You can install necessary programs to run programs locally. Note
 that for typical data, Cell Ranger steps (reviewed Day 1) assume your
 computer has powerful compute (many CPUs and lots of RAM) and sizable
 storage capacity. (i.e. it’s impractical to run these on your
-laptop.)</li>
-<li>Installing bioinformatics software is non-trivial and comprehensive
-instructions to setup a complete compute environment are outside the
-scope of this workshop. (For University of Michigan learners, we are
-planning to host a Computational Reproducibility workshop later this
-year that would cover this installation and other related tasks in more
-detail.) For the intrepid, see relevant links below:
+laptop.)</p></li>
+<li><p>Installing bioinformatics software is non-trivial and
+comprehensive instructions to setup a complete compute environment are
+outside the scope of this workshop. (For University of Michigan
+learners, we are planning to host a Computational Reproducibility
+workshop later this year that would cover this installation and other
+related tasks in more detail.) For the intrepid, see relevant links
+below:</p>
 <ul>
 <li><a href="workshop_setup/setup_instructions_advanced.html">Setting up
 R/R-Studio</a></li>
 </ul></li>
+<li><p>The Seurat inputs (cellranger triples and dbcells) for this
+workshop can be installed locally like so:</p>
+<pre class="bash"><code>mkdir -p intro_scrnaseq_workshop/ISC_R
+cd intro_scrnaseq_workshop/ISC_R
+# Curl download a ~500Mb tarball
+curl -o workshop_isc_inputs-20250212.tgz https://umich-brcf-bioinf-workshop-intro-single-cell.s3.us-east-1.amazonaws.com/workshop_isc_inputs-20250212.tgz 
+# tar unpacks the tarball into directories and then removes the tarball
+tar xzvf workshop_isc_inputs-20250212.tgz || rm workshop_isc_inputs-20250212.tgz</code></pre></li>
 </ul>
 <details>
 <summary>
