@@ -784,25 +784,25 @@ download the full set of Cell Ranger outputs.)</li>
 <div id="installing-software-locally" class="section level4">
 <h4>Installing software locally</h4>
 <ul>
-<li><p>You can install necessary programs to run programs locally. Note
+<li>You can install necessary programs to run programs locally. Note
 that for typical data, Cell Ranger steps (reviewed Day 1) assume your
 computer has powerful compute (many CPUs and lots of RAM) and sizable
-storage capacity. (i.e. it’s impractical to run these on your
-laptop.)</p></li>
-<li><p>Installing bioinformatics software is non-trivial and
-comprehensive instructions to setup a complete compute environment are
-outside the scope of this workshop. (For University of Michigan
-learners, we are planning to host a Computational Reproducibility
-workshop later this year that would cover this installation and other
-related tasks in more detail.) For the intrepid, see relevant links
-below:</p>
+storage capacity. (i.e. it’s impractical to run these on your laptop.)
 <ul>
 <li><a href="workshop_setup/setup_instructions_advanced.html">Setting up
 R/R-Studio</a></li>
 </ul></li>
-<li><p>The Seurat inputs (cellranger triples and dbcells) for this
-workshop can be installed locally like so:</p>
-<pre class="bash"><code>mkdir -p intro_scrnaseq_workshop/ISC_R
+<li>Note that installing bioinformatics software is often
+non-trivial.</li>
+</ul>
+</div>
+<div id="downloading-seurat-inputs" class="section level4">
+<h4>Downloading Seurat inputs</h4>
+<ul>
+<li><p>The Seurat inputs (cellranger triples and dbcells files) used in
+this workshop can be installed locally like so:</p>
+<pre class="bash"><code># download Seurat inputs --------------------------------------------------
+mkdir -p intro_scrnaseq_workshop/ISC_R
 cd intro_scrnaseq_workshop/ISC_R
 # Curl download a ~500Mb tarball
 curl -o workshop_isc_inputs-20250212.tgz https://umich-brcf-bioinf-workshop-intro-single-cell.s3.us-east-1.amazonaws.com/workshop_isc_inputs-20250212.tgz 
