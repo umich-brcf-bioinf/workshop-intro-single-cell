@@ -35,7 +35,7 @@ table.fig, th.fig, td.fig {
 }
 </style>
 
-```{r klippy, echo=FALSE, include=TRUE}
+```{r klippy, include=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
 klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
 ```
 

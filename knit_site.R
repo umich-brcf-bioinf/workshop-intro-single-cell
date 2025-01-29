@@ -2,8 +2,16 @@
 # singularity exec /nfs/mm-isilon/bioinfcore/Common/singularity/single_cell_0.11.0.sif R
 
 # install.packages('remotes'); library(remotes)
-# remove.packages('klippy');remotes::install_github("umich-brcf-bioinf/workshop-klippy"); library(klippy)
+# remove.packages('klippy');
+# remotes::install_github("umich-brcf-bioinf/workshop-klippy"); 
+# library(klippy)
+
+
+# install.packages("kable")
+# devtools::install_github("haozhu233/kableExtra")
+
 library(rmarkdown)
+
 
 # IF KNITTING ON AWS:
 # setwd("~/workshop-intro-single-cell")
@@ -23,7 +31,6 @@ render('source/workshop_setup/prereq_check.md', output_dir='html/workshop_setup/
 render_site('source/index.md')
 render_site('source/workshop_intro.md')
 
-
 ## add content pages
 render_site('source/00A-OrientingOnScRNASeq.Rmd')
 render_site('source/01-GettingStarted.Rmd')
@@ -42,6 +49,8 @@ render_site('source/workshop_wrap_up.Rmd')
 rm(list=ls(all.names = TRUE))
 gc(verbose=TRUE, full=TRUE)
 #clean_site(preview=TRUE)
+
+
 
 
 

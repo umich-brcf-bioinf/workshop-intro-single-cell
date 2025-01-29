@@ -18,9 +18,11 @@ output:
 ---
 
 <style type="text/css">
-body, td {
+
+body {
    font-size: 18px;
 }
+
 code.r{
   font-size: 12px;
 }
@@ -34,15 +36,11 @@ table.fig, th.fig, td.fig {
   padding: 15px;
 }
 
-table.fig, th.fig, td.fig {
-  border: 1px solid black;
-  border-collapse: collapse;
-  padding: 15px;
-}
 </style>
 
-```{r klippy, echo=FALSE, include=TRUE}
+```{r klippy, include=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
 klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
+library(kableExtra)
 ```
 
 ```{r, include = FALSE}
@@ -165,6 +163,40 @@ geo_so = FindNeighbors(geo_so, dims = 1:pcs, reduction = 'integrated.sct.rpca')
 
 # generate clusters
 geo_so = FindClusters(geo_so, resolution = 0.4, cluster.name = 'integrated.sct.rpca.clusters')
+```
+
+```{r, find_neighbors_head_geo_hidden, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE, echo=FALSE}
+# look at meta.data to see cluster labels
+head(geo_so@meta.data) %>%
+  kable("html") %>%
+  kable_styling(font_size = 12,
+                bootstrap_options='condensed',
+                html_font = '"Arial Narrow", arial, helvetica, sans-serif') %>%
+  scroll_box(height='100%', width='1000px')
+```
+
+
+```{r, cluster_leiden_hidden, eval = FALSE, warning = FALSE, message = FALSE, echo=FALSE}
+# Instructor notes on how Leiden clustering would work --------------------
+
+# Setup python dependencies (leidenalg is implemented in python)
+library(reticulate)
+options(reticulate.conda_binary = "/efs/workshop/conda/base/condabin/conda")
+use_condaenv('/efs/workshop/conda/isc1.1')
+py_config()
+
+
+# Cluster PCAs ------------------------------------------------------------
+# Create KNN graph with `FindNeighbors()`
+geo_so = FindNeighbors(geo_so, dims = 1:pcs, reduction = 'integrated.sct.rpca')
+
+# generate clusters
+# algorithm 4 = Leiden; using method igraph to reduces memory footprint and speed things up 
+geo_so = FindClusters(geo_so,
+                      resolution = 0.4,
+                      cluster.name = 'integrated.sct.rpca.clusters',
+                      algorithm = 4,
+                      method="igraph")
 
 # look at meta.data to see cluster labels
 head(geo_so@meta.data)
@@ -200,7 +232,10 @@ To start this process, we'll use the `RunUMAP()` [function](https://satijalab.or
 ```{r, run_umap, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
 # Create UMAP reduction ---------------------------------------------------
 geo_so = RunUMAP(geo_so, dims = 1:pcs, reduction = 'integrated.sct.rpca', reduction.name = 'umap.integrated.sct.rpca')
-geo_so # Notice a third reduction has been added: `umap.integrated.sct.rpca`
+
+# Note a third reduction has been added: `umap.integrated.sct.rpca`
+geo_so 
+
 ```
 
 The resulting Seurat object now has an additional `umap.integrated.sct.rpca` in the `reduction` slot:
@@ -241,31 +276,6 @@ ggsave(filename = 'results/figures/umap_integrated_sct_day.png', plot = post_int
 
 ```
 
-### Remove plot variables once they are saved
-
-ggplots are terrific for visualizing data and we use them liberally in our
-analysis and the workshop. Interestingly, ggplots save a reference to the source
-dataset - in our case a rather large Seurat object. That's ok in most cases, BUT
-if you save your RStudio environment (or RStudio temporarily suspends your
-session), RStudio will save a **separate copy** of the Seurat object for each
-ggplot object; RStudio's simplistic approach avoids a lot of complexity, but can
-drastically increase your load time and memory usage.
-
-Since (a) we have the script to recreate the plots and (b) we explicitly saved 
-them as graphic objects - we can simply remove them from memory.
-
-```{r, umap_by_clusters_clear}
-# Remove the plot variables from the environment to avoid excessive memory usage
-rm(post_integration_umap_plot_clusters) 
-rm(post_integration_umap_plot_split_clusters)
-rm(post_integration_umap_plot_day)
-gc()
-```
-
-### Why are 
-
-
-
 Similar to the PCA plots, the `day` labeled UMAP can tell us if technical sources of variation might be driving or stratifying the clusters, which would suggest that the normalization and integration steps should be revisted before proceeding.
 
 Another approach is to evaluate the number of cells per cluster using the `table()` function, split by `day` or split by `orig.ident` to see if the individual samples are driving any of the UMAP structure:
@@ -277,16 +287,34 @@ table(geo_so@meta.data$day, geo_so@meta.data$integrated.sct.rpca.clusters)
 
 # cells per cluster per sample
 table(geo_so@meta.data$orig.ident, geo_so@meta.data$integrated.sct.rpca.clusters)
+  
 ```
 
 ```{r, table_by_day_hidden, echo = FALSE}
 # Make tables of cell counts ----------------------------------------------
 # cells per cluster, split by condition
-table(geo_so@meta.data$day, geo_so@meta.data$integrated.sct.rpca.clusters)
-
-# cells per cluster per sample
-table(geo_so@meta.data$orig.ident, geo_so@meta.data$integrated.sct.rpca.clusters)
+table(geo_so@meta.data$day, geo_so@meta.data$integrated.sct.rpca.clusters) %>%
+  kable("html") %>%
+  kable_styling(font_size = 12,
+                bootstrap_options='condensed',
+                html_font = '"Arial Narrow", arial, helvetica, sans-serif') %>%
+  scroll_box(width = "825px", height = "100%")
 ```
+
+<br/>
+
+```{r, table_by_ident_hidden, echo = FALSE}
+# cells per cluster per sample
+table(geo_so@meta.data$orig.ident, geo_so@meta.data$integrated.sct.rpca.clusters) %>%
+  kable("html") %>%
+  kable_styling(font_size = 12,
+                bootstrap_options='condensed',
+                html_font = '"Arial Narrow", arial, helvetica, sans-serif') %>%
+  scroll_box(width = "825px", height = "100%")
+```
+
+<br/>
+<br/>
 
 <!-- consider adding later 
 Add DimPlot for % mitochondria to see if high % are across dataset or limited to one/few clusters (related to what Olivia talked about during Day 1)
@@ -380,6 +408,33 @@ head(geo_so@meta.data)
 <br>
 <br>
 
+
+### Remove plot variables once they are saved
+
+ggplots are terrific for visualizing data and we use them liberally in our
+analysis and the workshop. Interestingly, ggplots save a reference to the source
+dataset - in our case a rather large Seurat object. That's ok in most cases, BUT
+if you save your RStudio environment (or RStudio temporarily suspends your
+session), RStudio will save a **separate copy** of the Seurat object for each
+ggplot object; RStudio's simplistic approach avoids a lot of complexity, but can
+drastically increase your load time and memory usage.
+
+Since (a) we have the script to recreate the plots and (b) we explicitly saved 
+them as graphic objects - we can simply remove them from memory.
+
+```{r, umap_by_clusters_clear}
+# Remove plot variables from the environment to avoid excessive memory usage
+
+plots = c("pre_integration_umap_plot_day", 
+          "post_integration_umap_plot_clusters", 
+          "post_integration_umap_plot_split_clusters", 
+          "post_integration_umap_plot_day")
+
+# Only remove plots that actually exist in the environment
+rm(list=Filter(exists, plots))
+gc()
+```
+
 # Save our progress
 
 Before moving on to our next section, we will output our updated Seurat object to file:
@@ -394,6 +449,7 @@ if(!file.exists('results/rdata/geo_so_sct_clustered.rds')) {
 # Save Seurat object ------------------------------------------------------
 saveRDS(geo_so, file = 'results/rdata/geo_so_sct_clustered.rds')
 ```
+
 
 # Summary
 

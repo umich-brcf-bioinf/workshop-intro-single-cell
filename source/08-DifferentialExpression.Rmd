@@ -18,7 +18,7 @@ output:
 ---
 
 <style type="text/css">
-body, td {
+body {
    font-size: 18px;
 }
 code.r{
@@ -35,8 +35,9 @@ table.fig, th.fig, td.fig {
 }
 </style>
 
-```{r klippy, echo=FALSE, include=TRUE}
+```{r klippy, include=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
 klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
+library(kableExtra)
 ```
 
 ```{r, include = FALSE}
@@ -112,14 +113,36 @@ First we'll run cell-level comparisons for our data for the pericyte cluster, st
 
 <!-- add UMAP with facets by groups to show what's being compared? -->
 
-```{r, de_wilcox1, message = FALSE, warning = FALSE}
+```{r, de_make_contrast, eval = FALSE}
 ##### Day 3  - Differential Expression Analysis
 
-# Compare pericyte cluster D21 v D7 ---------------------------------------
+# Make a day-celltype contrast --------------------------------------------
+
 # set up combined label of day + celltype & assign as identities
 geo_so$day.celltype = paste(geo_so$day, geo_so$cell_type, sep = '_')
 # check labels
 unique(geo_so$day.celltype)
+
+```
+
+
+```{r, de_make_contrast_hidden, message = FALSE, warning = FALSE}
+##### Day 3  - Differential Expression Analysis
+
+# Make a day-celltype contrast --------------------------------------------
+
+# set up combined label of day + celltype & assign as identities
+geo_so$day.celltype = paste(geo_so$day, geo_so$cell_type, sep = '_')
+# check labels
+unique(geo_so$day.celltype) %>%
+  kable("html") %>%
+  kable_styling(font_size = 14,
+                html_font = '"Arial Narrow", arial, helvetica, sans-serif') %>%
+  scroll_box(height='400px', width='100%')
+```
+
+```{r, de_pericyte_d21vd7, message = FALSE, warning = FALSE}
+# Consider pericyte cluster D21 v D7 --------------------------------------
 
 # Reset cell identities to the combined condition + cluster label
 Idents(geo_so) = 'day.celltype'
@@ -132,13 +155,22 @@ de_cell_pericyte_D21_vs_D7 = FindMarkers(
 
 head(de_cell_pericyte_D21_vs_D7)
 
+```
+
+```{r, de_add_genes, message = FALSE, warning = FALSE}
+# Add gene symmbols names and save ----------------------------------------
+
 # Add rownames as a column for output
 de_cell_pericyte_D21_vs_D7$gene = rownames(de_cell_pericyte_D21_vs_D7)
 
-# summarize our results
-table(de_cell_pericyte_D21_vs_D7$p_val_adj < 0.05 & abs(de_cell_pericyte_D21_vs_D7$avg_log2FC) > 1.5)
+# save
+write_csv(de_cell_pericyte_D21_vs_D7, 
+          file = 'results/tables/de_standard_pericyte_D21_vs_D7.csv')
 
-write_csv(de_cell_pericyte_D21_vs_D7, file = 'results/tables/de_standard_pericyte_D21_vs_D7.csv')
+# summarize diffex results
+table(de_cell_pericyte_D21_vs_D7$p_val_adj < 0.05 & 
+        abs(de_cell_pericyte_D21_vs_D7$avg_log2FC) > 1.5)
+
 ```
 
 In the first 3 lines of the above code block we can see the changes to the schematic:
@@ -158,11 +190,14 @@ de_cell_pericyte_D7_vs_D0 = FindMarkers(
 
 head(de_cell_pericyte_D7_vs_D0)
 
+```
+``` {r, de_wilcox2_b, message = FALSE, warning = FALSE}
 # Add rownames as a column for output
 de_cell_pericyte_D7_vs_D0$gene = rownames(de_cell_pericyte_D7_vs_D0)
 
 # summarize results
-table(de_cell_pericyte_D7_vs_D0$p_val_adj < 0.05 & abs(de_cell_pericyte_D7_vs_D0$avg_log2FC) > 1.5)
+table(de_cell_pericyte_D7_vs_D0$p_val_adj < 0.05 & 
+        abs(de_cell_pericyte_D7_vs_D0$avg_log2FC) > 1.5)
 ```
 
 This same approach can be extended to run pairwise comparisons between conditions for each annotated cluster of interest.
@@ -198,14 +233,21 @@ de_pseudo_pericyte_D21_vs_D7 = FindMarkers(
 # Take a look at the table
 head(de_pseudo_pericyte_D21_vs_D7)
 
+```
+```{r, de_pseudobulk_b, message = FALSE, warning = FALSE}
+# Add genes and review pseudobulk results ----------------------------------
+
 # Add rownames as a column for output
 de_pseudo_pericyte_D21_vs_D7$gene = rownames(de_pseudo_pericyte_D21_vs_D7)
 
-# look at results, using the same thresholds
-table(de_pseudo_pericyte_D21_vs_D7$p_val_adj < 0.05 & abs(de_pseudo_pericyte_D21_vs_D7$avg_log2FC) > 1.5)
+# save results
+write_csv(de_pseudo_pericyte_D21_vs_D7,
+          file = 'results/tables/de_pseudo_pericyte_D21_vs_D7.csv')
 
-# output results
-write_csv(de_pseudo_pericyte_D21_vs_D7, file = 'results/tables/de_pseudo_pericyte_D21_vs_D7.csv')
+# look at results, using the same thresholds
+table(de_pseudo_pericyte_D21_vs_D7$p_val_adj < 0.05 & 
+        abs(de_pseudo_pericyte_D21_vs_D7$avg_log2FC) > 1.5)
+
 ```
 
 
@@ -214,9 +256,12 @@ Since we're working with pseudobulk data, unlike in the marker identification se
 ```{r, de_pseudobulk_volcano, warning = FALSE, message = FALSE}
 # Make a volcano plot of pseudobulk diffex results ------------------------
 pseudo_pericyte_D21_vs_D7_volcano = ggplot(de_pseudo_pericyte_D21_vs_D7, aes(x = avg_log2FC, y = -log10(p_val))) + geom_point()
+
+ggsave(filename = 'results/figures/volcano_de_pseudo_pericyte_D21_vs_D0.png', 
+       plot = pseudo_pericyte_D21_vs_D7_volcano, width = 7, height = 7, units = 'in')
+
 pseudo_pericyte_D21_vs_D7_volcano
 
-ggsave(filename = 'results/figures/volcano_de_pseudo_pericyte_D21_vs_D0.png', plot = pseudo_pericyte_D21_vs_D7_volcano, width = 7, height = 7, units = 'in')
 ```
 <!--- 
 ### Iterating over all clusters
@@ -243,6 +288,13 @@ While looking at individual genes can reveal interesting patterns like in the ca
 
 # Save our progress
 
+```{r}
+# Discard all ggplot objects currently in environment ---------------------
+# Ok since we saved the plots as we went along
+rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
+gc()
+```
+
 We'll save the scCATCH object. The Seurat object has not been changed in this module.
 
 ```{r, save_rds_hidden, echo = FALSE}
@@ -256,12 +308,6 @@ if(!file.exists('results/rdata/geo_so_sct_integrated_with_final.rds')) {
 saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated_final.rds')
 ```
 
-```{r}
-# Discard all ggplot objects currently in environment ---------------------
-# Ok since we saved the plots as we went along
-rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
-gc()
-```
 
 
 ---
