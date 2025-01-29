@@ -298,14 +298,17 @@ devtools::session_info()
     that for typical data, Cell Ranger steps (reviewed Day 1) assume your 
     computer has powerful compute (many CPUs and lots of RAM) and sizable 
     storage capacity. (i.e. it's impractical to run these on your laptop.)
-  - Installing bioinformatics software is non-trivial and comprehensive instructions
-    to setup a complete compute environment are outside the scope of this workshop.
-    (For University of Michigan learners, we are planning to host a Computational Reproducibility workshop later this year 
-    that would cover this installation and other related tasks in more detail.) For the intrepid, see relevant links below:
-    - [Setting up R/R-Studio](workshop_setup/setup_instructions_advanced.html)
-  - The Seurat inputs (cellranger triples and dbcells) for this workshop can be 
-    installed locally like so:
+      - [Setting up R/R-Studio](workshop_setup/setup_instructions_advanced.html)
+      
+  - Note that installing bioinformatics software is often non-trivial.
+
+#### Downloading Seurat inputs
+
+  - The Seurat inputs (cellranger triples and dbcells files) used in this 
+    workshop can be installed locally like so:
+
     ```{bash, eval=F, echo=T}
+    # download Seurat inputs --------------------------------------------------
     mkdir -p intro_scrnaseq_workshop/ISC_R
     cd intro_scrnaseq_workshop/ISC_R
     # Curl download a ~500Mb tarball
