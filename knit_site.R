@@ -30,6 +30,7 @@ render('source/workshop_setup/prereq_check.md', output_dir='html/workshop_setup/
 
 render_site('source/index.md');
 render_site('source/workshop_intro.md');
+render_site('source/instructor_cheatsheet.Rmd');
 
 ## add content pages
 render_site('source/00A-OrientingOnScRNASeq.Rmd');
