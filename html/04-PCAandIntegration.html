@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-01-24" />
+<meta name="date" content="2025-01-30" />
 
 <title>PCA and Integration</title>
 
-<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -414,7 +414,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">PCA and Integration</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-01-24</h4>
+<h4 class="date">2025-01-30</h4>
 
 </div>
 
@@ -431,9 +431,9 @@ pre {
 }
 
 table.fig, th.fig, td.fig {
-  border: 1px solid black;
+  border: 1px solid lightgrey;
   border-collapse: collapse;
-  padding: 15px;
+  padding: 12px;
 }
 </style>
 <script>
@@ -445,73 +445,53 @@ table.fig, th.fig, td.fig {
 background-color: CornSilk;
 }
 </style>
-<div id="workflow-overview" class="section level1 unlisted unnumbered">
-<h1 class="unlisted unnumbered">Workflow Overview</h1>
 <p><br/>
-<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<img src="images/wayfinder/04-PCAandIntegrtion-Wayfinder.png" alt="wayfinder"/>
 <br/> <br/></p>
-</div>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>In this section, we will use principal component analysis (PCA) to
-reduce the dimensionality of the data, first by grouping correlated
-features and second by excluding correlated features that are less
-likely to correspond to interesting biological variance.</p>
-<table class="fig">
-<tr class="fig">
-<td class="fig">
-<img src="images/graphical_abstracts/graphical_abstract_pca.png" />
-</td>
-</tr>
-<tr class="fig">
-<td class="fig">
-A. Clustering the expression patterns directly on the feature-barcode
-count matrix is impractical because the expression patterns in the
-counts are often weak, repetitive, and diffuse (scattered across many,
-many genes). Also clustering cells across 20k dimensions (i.e. 20k
-genes) is extremely computationally intensive.<br/> B. Principal
-Component Analysis considers (PCA) the count data from new orientations
-that maximize the variance across the data. In this way, PCA replaces
-the original count matrix with new matrix of principal component (PC)
-values for each cell.<br/> C. Because PCA ranks the PCs from most
-variance to least, the truly discriminating PCs will be a small subset
-of top-most PCs. Focusing only on the top 10-30 PCs instead of 20k genes
-tells the same story, but cuts through 99.9% of the clutter making
-clustering about 1000x faster.
-</td>
-</tr>
-</table>
-<p><br/></p>
 <p>After filtering and normalization, our next goal is to cluster the
 cells according to their expression profiles. However, even after
 filtering, we expect to have about 20,000 cells assayed with
 approximately 21,000 genes measured per cell. This means that we are
-working very “high-dimensional” data.</p>
-<p>High dimensional data presents two challenges:</p>
-<ul>
-<li>The scale of the data makes analysis steps costly and slow<br />
-</li>
-<li>There is likely uninteresting variation across our data that we want
-to exclude</li>
-</ul>
-<p>Similar to the previous sections, the process of parameter selection
-after PCA is often iterative and while we will be showing a single
-option, multiple parameter choices may need to be tested.</p>
+working very “high-dimensional” data that presents some challenges.</p>
+<table class="fig">
+<tr>
+<td class="fig">
+<img src="images/graphical_abstract/04-PCAandIntegration-Abstract.png" alt="abstract"/>
+</td>
+</tr>
+<tr>
+<td class="fig">
+Starting with filtered, normalized data [gene x cell] for all samples -
+principal component analysis (PCA) can be used to reduce the
+dimensionality while still representing the overall gene expression
+patterns for each cell
+</td>
+</tr>
+</table>
+<p><br/> <br/> <br/></p>
 <div id="objectives" class="section level2">
 <h2>Objectives</h2>
 <ul>
-<li>Understand why PCA is used to reduce high-dimensional single-cell
-data prior to integration and clustering<br />
+<li>Understand why PCA is used prior to integration and clustering for
+single-cell data<br />
 </li>
 <li>Use the <code>RunPCA()</code> function to generate principal
 components for our data<br />
 </li>
-<li>Choose an appropriate number of principal components to capture
-variance in our data<br />
+<li>Choose an appropriate number of principal components to represent
+our data<br />
 </li>
-<li>Use <code>IntegrateLayers</code> to integrate across our data prior
+<li>Use <code>IntegrateLayers</code> to integrate our sample data prior
 to clustering</li>
 </ul>
+<p><br/></p>
+<p>Similar to the previous sections, while you may see only a single
+approach in a paper and we will be showing one example of executing
+these steps here, testing multiple methods or parameters might be
+necessary</p>
+<p><br/></p>
 <hr />
 <!--Before this section - Day 1: Starting w/ Seurat, Initial QC, & Batch correction (SCtransform)-->
 <!--Instruction Note: Using integrated data here and will compare to unintegrated results in next section, similar to  [here](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-021-03957-4)?-->
@@ -524,27 +504,34 @@ to clustering</li>
 - Why do we use it 
 --->
 <!--- add PCA illustration here? --->
+<p>The high dimensionality of single-cell data present two major
+challenges for analysis:</p>
+<ul>
+<li>The scale makes analysis steps costly and slow<br />
+</li>
+<li>The sparseness means there is likely uninteresting variation that
+should be excluded</li>
+</ul>
 <p>In practical terms, Principal component analysis (PCA) creates a
 simpler, more concise version of data while preserving the same “story”.
-For example, we can think of a full single-cell data set as similar to
-the full Lord of the Rings trilogy - large and complex with quite a bit
-of detail that might be repeated and isn’t necessary to understand the
-overall plot and make running the analysis prohibitively slow and
-costly.</p>
-<p>Like a Cliff notes version or a movie pitch for the book series, the
-PCs capture correlated expression and reduce the size and complexity of
-the data, while still allowing the overall structure of the data - that
-we would expect to be related to cell-types or plot points in the
-analogy - to be represented, while also making the computation
-faster.</p>
+For example, we can think of watching football - attending a game in
+person is exciting but can take hours, especially considering the time
+that will be spent traveling and waiting. Conversely, watching a
+highlight reel of those same game might not give you the full
+experience, but by seeing the key plays you can get a good understand
+what happened in the game in a fraction of the time.</p>
+<p>Similarly to a highlight reel, running PCA allows us to select PCs
+that represent correlated gene expression to reduce the size and
+complexity of the data while still capturing the overall expression
+patterns and also reducing computation time.</p>
 <p><img
-src="images/curriculum/04-PCAandIntegration/PCA_purpose.png" /></p>
+src="images/curriculum/04-PCAandIntegration/04-PCAandIntegration_purpose.png" /></p>
 <div id="pca-example" class="section level3">
 <h3>PCA example</h3>
 <p>To understand how PCA works for single-cell data, we can consider a
 smaller dataset measuring the expression of four genes measured in just
-two cells, we could plot the expression of those four genes, with data
-from one cell plotted on the x-axis and the second cell plotted on the
+two cells and plot the expression of those four genes, with data from
+one cell plotted on the x-axis and the second cell plotted on the
 y-axis.</p>
 <p><img
 src="images/curriculum/04-PCAandIntegration/HBC-PCA_2sample_genes.png"
@@ -581,11 +568,6 @@ biological structure rather than random technical or biological noise,
 which affects each gene independently and and we can use the top several
 PCs to approximate the full data set in downstream analysis (<a
 href="https://bioconductor.org/books/3.12/OSCA/dimensionality-reduction.html#principal-components-analysis">source</a>).</p>
-<p>This reduction in dimensionality, for example from 10,000 cells x
-19,000 genes to 20 PCs, allows us to select PCs that are more likely to
-correspond to biological variation related to the expected cell
-types/subtypes and make the downstream clustering computationally
-feasible.</p>
 <blockquote>
 <h4 id="more-context-using-pca-for-single-cell-data"
 class="unlisted unnumbered">More context using PCA for single-cell
@@ -815,7 +797,7 @@ optimal_pcs = function(so, reduction) {
 # Apply function to our data
 pcs = optimal_pcs(geo_so, &#39;unintegrated.sct.pca&#39;)
 pcs</code></pre>
-<pre><code>[1] 16</code></pre>
+<pre><code>[1] 15</code></pre>
 <pre class="r"><code># Based on the heatmap, we&#39;ll modify to 13 PCs
 pcs = 13
 
@@ -904,11 +886,11 @@ optimal_pcs_advanced = function(so, reduction, print_plot=TRUE, verbose=TRUE) {
 # =========================================================================</code></pre>
 <pre class="r"><code># Apply function to our data ----------------------------------------------
 optimal_pcs = optimal_pcs_advanced(geo_so, &#39;unintegrated.sct.pca&#39;)</code></pre>
-<pre><code>Reduction unintegrated.sct.pca: 50 PCs (total var = 100)
-    PC 42 (total var = 90.98) : Smallest PC that explains at least 90% total variance
-    PC 16 (total var = 53.21) : Largest PC with incremental variance step at least 0.1%
-    Recommended num of PCs: 16</code></pre>
 <p><img src="images/curriculum/04-PCAandIntegration/04-apply_estimate_optimal_pcs-1.png" width="816" style="display: block; margin: auto;" /></p>
+<pre><code>Reduction unintegrated.sct.pca: 50 PCs (total var = 100)
+    PC 42 (total var = 90.99) : Smallest PC that explains at least 90% total variance
+    PC 15 (total var = 50.82) : Largest PC with incremental variance step at least 0.1%
+    Recommended num of PCs: 15</code></pre>
 <pre class="r"><code># Save plot of PCs --------------------------------------------------------
 ggsave(filename = &#39;results/figures/optimal_pcs.png&#39;,
        plot=optimal_pcs$plot,
@@ -947,9 +929,12 @@ cell plotted along the selected PCs and colored by a selected meta-data
 column:</p>
 <pre><code>?DimPlot # default dims = c(1,2)</code></pre>
 <pre class="r"><code># Visualize PCA (PC1 and PC2, unintegrated) -------------------------------
-DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;orig.ident&#39;) # first label by sample
-DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;day&#39;) # then label by day
-ggsave(filename = &#39;results/figures/qc_pca_plot_unintegrated_sct_day.png&#39;, width = 7, height = 6, units = &#39;in&#39;) # save 
+# first label by sample
+DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;orig.ident&#39;) 
+ # then label by day
+DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;day&#39;)
+ # save 
+ggsave(filename = &#39;results/figures/qc_pca_plot_unintegrated_sct_day.png&#39;, width = 7, height = 6, units = &#39;in&#39;)
 
 #  =========================================================================</code></pre>
 <p><img src="images/curriculum/04-PCAandIntegration/04-pca_loading_plots-1.png" width="816" style="display: block; margin: auto;" /><img src="images/curriculum/04-PCAandIntegration/04-pca_loading_plots-2.png" width="816" style="display: block; margin: auto;" /></p>
