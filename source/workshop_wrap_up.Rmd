@@ -39,7 +39,7 @@ klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
 We hope you now have more familiarity with key concepts, data types, tools, and how they all
 connect to enable single-cell gene expression analysis from RNA-Seq data.
 
-![](images/wayfinder/wayfinder_workshop_wrap_up.png)
+![](images/wayfinder/00-FullWayfinder.png){title="Wayfinder: Wrap-up"}
 
 ---
 
@@ -384,10 +384,10 @@ devtools::session_info()
 | ![](images/headshots/headshot_cgates.jpg) | ![](images/headshots/headshot_mbradenb.jpg) | ![](images/headshots/headshot_rcavalca.jpg) | 
 |:-:|:-:|:-:|
 | **Chris** | **Marci** | **Raymond** |
-| ![](images/headshots/headshot_damki.jpg) | ![](images/headshots/headshot_trsaari.jpg) | ![](images/headshots/headshot_okoues.jpg) |
-| **Dana** | **Travis** | **Olivia** |
-| ![](images/headshots/headshot_phillipa.jpg) | ![](images/headshots/headshot_ncarruth.jpg) |
-| **Tricia** | **Nick** |
+| ![](images/headshots/headshot_damki.jpg) | ![](images/headshots/headshot_dfhannum.jpg) | ![](images/headshots/headshot_trsaari.jpg) |
+| **Dana** | **Ford** | **Travis** |
+|  ![](images/headshots/headshot_okoues.jpg) | ![](images/headshots/headshot_phillipa.jpg) | ![](images/headshots/headshot_ncarruth.jpg) |
+| **Olivia** | **Tricia** | **Nick** |
 <br/>
 
 
