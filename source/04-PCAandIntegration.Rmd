@@ -52,7 +52,7 @@ knitr_fig_path("04-PCAandIntegration/04-")
 ```
 
 <br/>
-<img src="images/wayfinder/04-PCAandIntegrtion-Wayfinder.png" alt="wayfinder"/>
+![](images/wayfinder/04-PCAandIntegration-Wayfinder.png)
 <br/>
 <br/>
 
@@ -63,7 +63,7 @@ After filtering and normalization, our next goal is to cluster the cells accordi
 
 
 <table class='fig'><tr><td class='fig'>
-<img src="images/graphical_abstract/04-PCAandIntegration-Abstract.png" alt="abstract"/>
+![](images/graphical_abstracts/04-PCAandIntegration-Abstract.png)
 </td></tr><tr><td class='fig'>Starting with filtered, normalized data [gene x cell] for all samples - principal component analysis (PCA) can be used to reduce the dimensionality while still representing the overall gene expression patterns for each cell
 </td></tr></table>
 <br/>
