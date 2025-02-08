@@ -52,13 +52,13 @@ pre {
 
 
 ## About the workshop team
-| ![](images/headshots/headshot_cgates.jpg) | ![](images/headshots/headshot_mbradenb.jpg) | ![](images/headshots/headshot_rcavalca.jpg) | ![](images/headshots/headshot_damki.jpg) | 
-|:-:|:-:|:-:|:-:|
-| **Chris** | **Marci** | **Raymond** | **Dana** |
-| ![](images/headshots/headshot_trsaari.jpg) | ![](images/headshots/headshot_okoues.jpg) | ![](images/headshots/headshot_rammohan.jpg) | 
-| **Travis** | **Olivia** | **Ram** |
-| ![](images/headshots/headshot_mkdohert.jpg) | ![](images/headshots/headshot_joegrego.jpg) | ![](images/headshots/headshot_ncarruth.jpg) |
-|  **Matt** |  **Joe** | **Nick** |
+| ![](images/headshots/headshot_cgates.jpg) | ![](images/headshots/headshot_mbradenb.jpg) | ![](images/headshots/headshot_rcavalca.jpg) | 
+|:-:|:-:|:-:|
+| **Chris** | **Marci** | **Raymond** |
+| ![](images/headshots/headshot_damki.jpg) | ![](images/headshots/headshot_dfhannum.jpg) | ![](images/headshots/headshot_trsaari.jpg) |
+| **Dana** | **Ford** | **Travis** |
+|  ![](images/headshots/headshot_okoues.jpg) | ![](images/headshots/headshot_phillipa.jpg) | ![](images/headshots/headshot_ncarruth.jpg) |
+| **Olivia** | **Tricia** | **Nick** |
 <br/>
 
 # Code of Conduct
@@ -139,7 +139,7 @@ breakout room.
 
 ![Posting messages to Slack](images/workshop_intro/slack.png)
 
-  - Slack messages will be posted to the **2024-02-intro-single-cell** channel.  
+  - Slack messages will be posted to the **2025-02-intro-single-cell** channel.  
     Click on the channel in the left pane (1) to select this channel.
   - You can type in the **message field** (2); click **send** (3) to
     post your message to everyone.

@@ -39,11 +39,8 @@ table{
 }
 </style>
 
-# Workflow Overview {.unlisted .unnumbered}
-
 <br/>
-<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
-<br/>
+![](images/wayfinder/00B-CellRangerInAction-Wayfinder.png){title="Wayfinder: Cell Ranger"}
 <br/>
 
 ## Objectives
@@ -181,7 +178,7 @@ count_run_HODay0replicate1
 It is useful to look at the web_summary.html files to get an idea of how each of your samples performed in the 10x pipeline, epecially if there were errors/wanrings and/or if your research could benefit from additional sequencing. [10x provides a guide to interpreting this report](https://cdn.10xgenomics.com/image/upload/v1660261286/support-documents/CG000329_TechnicalNote_InterpretingCellRangerWebSummaryFiles_RevA.pdf){target="_blank"}.
 
 Let's traverse to the outs directory for sample HODay0replicate1 and open the `web_summary.html`.
-**[Example count\_run\_HODay0replicate1 web_summary.html](images/cellranger/HODay0replicate1_web_summary.html)**
+**[Example count\_run\_HODay0replicate1 web_summary.html](images/cellranger/HODay0replicate1_web_summary.html){target="_blank"}**
 
 
 The `cellranger count` web summary has errors/warnings at the top of the report (if any) with additional metrics in the `Summary` and `Gene Expression` tabs. 
