@@ -36,10 +36,7 @@ table.fig, th.fig, td.fig {
   
 </style>
 
-# Workflow Overview {.unlisted .unnumbered}
-
-<br/>
-<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+![](images/wayfinder/00-FullWayfinder.png){title="Wayfinder: Orienting on scRNA-Seq"}
 <br/>
 <br/>
 

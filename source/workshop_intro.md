@@ -55,10 +55,10 @@ pre {
 | ![](images/headshots/headshot_cgates.jpg) | ![](images/headshots/headshot_mbradenb.jpg) | ![](images/headshots/headshot_rcavalca.jpg) | 
 |:-:|:-:|:-:|
 | **Chris** | **Marci** | **Raymond** |
-| ![](images/headshots/headshot_damki.jpg) | ![](images/headshots/headshot_trsaari.jpg) | ![](images/headshots/headshot_okoues.jpg) |
-| **Dana** | **Travis** | **Olivia** |
-| ![](images/headshots/headshot_phillipa.jpg) | ![](images/headshots/headshot_ncarruth.jpg) |
-| **Tricia** | **Nick** |
+| ![](images/headshots/headshot_damki.jpg) | ![](images/headshots/headshot_dfhannum.jpg) | ![](images/headshots/headshot_trsaari.jpg) |
+| **Dana** | **Ford** | **Travis** |
+|  ![](images/headshots/headshot_okoues.jpg) | ![](images/headshots/headshot_phillipa.jpg) | ![](images/headshots/headshot_ncarruth.jpg) |
+| **Olivia** | **Tricia** | **Nick** |
 <br/>
 
 # Code of Conduct
