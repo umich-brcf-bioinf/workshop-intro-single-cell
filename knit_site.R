@@ -38,6 +38,7 @@ render_site('source/01-GettingStarted.Rmd');
 render_site('source/00B-CellRangerInAction.Rmd');
 render_site('source/02-QCandFiltering.Rmd');
 render_site('source/03-Normalization.Rmd');
+
 render_site('source/04-PCAandIntegration.Rmd');
 render_site('source/05-ProjectionAndClustering.Rmd');
 render_site('source/06-MarkerVisualization.Rmd');
