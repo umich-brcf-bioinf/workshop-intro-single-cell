@@ -29,9 +29,9 @@ pre {
 }
 
 table.fig, th.fig, td.fig {
-  border: 1px solid black;
+  border: 1px solid lightgray;
   border-collapse: collapse;
-  padding: 15px;
+  padding: 12px;
 }
 </style>
 
@@ -48,7 +48,7 @@ knitr_fig_path("08-DifferentialExpression/08-")
 # Workflow Overview {.unlisted .unnumbered}
 
 <br/>
-<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+![](images/wayfinder/08-DifferentialExpression-Wayfinder.png)
 <br/>
 <br/>
 
@@ -56,11 +56,9 @@ knitr_fig_path("08-DifferentialExpression/08-")
 
 Differential expression comparison is a key step to addressing the biological question at hand for the experiment, namely what genes might be contributing to the aberrant bone formation during healing that was observed in this experiment.
 
-<table class='fig'>
-<tr class='fig'><td class='fig'>![](images/graphical_abstracts/graphical_abstract_diffex.png)</td></tr>
-<tr class='fig'><td class='fig'>A. For differential expression, we consider a single cluster at a time. <br/>
-B. For the cluster of interest, the cells are partitioned into case vs control (or other appropriate groupings) and expression compared across all genes. <br/>
-C. Comparisons produce lists and visualizations of differently expressed genes across conditions.
+<table class='fig'><tr><td class='fig'>
+![](images/graphical_abstracts/08-DifferentialExpression-Abstract.png)
+</td></tr><tr><tr class='fig'><td class='fig'>Starting with labeled clustered data and considering sample and/or condition  - compare between case and control within each cluster to identify genes that are impacted by experimental perturbation(s) within that cell-type or subtype.
 </td></tr>
 </table>
 <br/>
@@ -126,7 +124,7 @@ unique(geo_so$day.celltype)
 ```
 
 
-```{r, de_make_contrast_hidden, message = FALSE, warning = FALSE}
+```{r, de_make_contrast_hidden, message = FALSE, warning = FALSE, echo=FALSE}
 ##### Day 3  - Differential Expression Analysis
 
 # Make a day-celltype contrast --------------------------------------------
@@ -191,8 +189,9 @@ de_cell_pericyte_D7_vs_D0 = FindMarkers(
 head(de_cell_pericyte_D7_vs_D0)
 
 ```
+
 ``` {r, de_wilcox2_b, message = FALSE, warning = FALSE}
-# Add rownames as a column for output
+# Add rownames for D7 v D0 results ----------------------------------------
 de_cell_pericyte_D7_vs_D0$gene = rownames(de_cell_pericyte_D7_vs_D0)
 
 # summarize results
@@ -216,15 +215,17 @@ With advances in the technology as well as decreased sequencing costs allowing f
 
 We'll run psuedobulk comparisons for our data for the monocyte cluster, starting with the D21 vs D0 conditions. We'll need to generate the aggregated counts first (ensuring that we are grouping cells by replicate labels), before labeling the cells to reflect the cluster and condition. Then we will run our comparison using `FindMarker()` but specifying DESeq2 as our method before summarizing the results:
 
-```{r, de_pseudobulk, message = FALSE, warning = FALSE}
+```{r, de_pseudobulk_a, message = FALSE, warning = FALSE}
 # Create pseudobulk object -------------------------------------------------
 pseudo_catch_so = AggregateExpression(geo_so, assays = 'RNA', return.seurat = TRUE, group.by = c('cell_type', 'day', 'replicate'))
 
 # Set up labels to use for comparisons & assign as cell identities
 pseudo_catch_so$day.celltype = paste(pseudo_catch_so$day, pseudo_catch_so$cell_type, sep = '_')
 Idents(pseudo_catch_so) = 'day.celltype'
+```
 
-# Run pseudobulk comparison between Day 21 and Day 0, using DESeq2
+```{r, de_pseudobulk_b, message = FALSE, warning = FALSE}
+# Run pseudobulk comparison between Day 21 and Day 0, using DESeq2 ----------
 de_pseudo_pericyte_D21_vs_D7 = FindMarkers(
     object = pseudo_catch_so, 
     ident.1 = 'Day21_Pericyte', ident.2 = 'Day7_Pericyte', 
@@ -234,7 +235,9 @@ de_pseudo_pericyte_D21_vs_D7 = FindMarkers(
 head(de_pseudo_pericyte_D21_vs_D7)
 
 ```
-```{r, de_pseudobulk_b, message = FALSE, warning = FALSE}
+
+
+```{r, de_pseudobulk_c, message = FALSE, warning = FALSE}
 # Add genes and review pseudobulk results ----------------------------------
 
 # Add rownames as a column for output
@@ -273,7 +276,7 @@ Add code to generate pseudobulk results for each cluster for all Day 7 vs Day 21
 
 We can also overlay the expression of interesting differentially expressed genes back onto our UMAP plots to highlight the localization and possible function, again using the `FeaturePlot` function. 
 
-```{r, show_DE_featurePlot, warning = FALSE, message = FALSE, out.height='60%'}
+```{r, show_DE_featurePlot, warning = FALSE, message = FALSE, fig.height = 4}
 # UMAP feature plot of Cd55 gene ------------------------------------------
 FeaturePlot(geo_so, features = "Cd55", split.by = "day")
 ```
