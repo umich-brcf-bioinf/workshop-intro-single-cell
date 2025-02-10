@@ -31,9 +31,9 @@ pre {
 }
 
 table.fig, th.fig, td.fig {
-  border: 1px solid black;
+  border: 1px solid lightgray;
   border-collapse: collapse;
-  padding: 15px;
+  padding: 12px;
 }
 
 </style>
@@ -60,23 +60,20 @@ knitr_fig_path("05-ProjectionAndClustering/05-")
 <!--- General goal: to generate clusters that reasonably approximate cell-types or sub-types of interest --->
 One of our goals in a single-cell analysis is to generate clusters that reasonably approximate cell-types or sub-types of interest in our samples before determining if there are differences in the proportions of these populations or differences in gene expression within these populations between experimental conditions.
 
-<table class='fig'>
-<tr class='fig'><td class='fig'>![](images/graphical_abstracts/05-ProjectionAndClustering-Abstract.png)</td></tr>
-<tr class='fig'><td class='fig'>Starting with reduced dimensionality data [PCs x cells] for all samples - cells are organized into networks and then split up to into clusters with similar expression programs, regardless of experimental condition.</td></tr>
+<table class='fig'><tr><td class='fig'>
+![](images/graphical_abstracts/05-ProjectionAndClustering-Abstract.png)
+</td></tr><tr><td class='fig'>Starting with reduced dimensionality data [PCs x cells] for all samples - cells are organized into networks and then split up to into clusters with similar expression programs, regardless of experimental condition.</td></tr>
 </table>
 <br/>
-
-
-In this section, we will demonstrate how to generate clusters using Seurat's graph based clustering approach and visualize those clustering assignments via a lower-dimensional projection of the full dataset.
-
-Like other steps in our analysis, multiple parameters may need to be tested and evaluated while we would expect that only the final would be reported. Clustering is considered part of data exploration so an iterative approach is reasonable, and often expected ([source](https://bioconductor.org/books/3.15/OSCA.basic/clustering.html)). 
 
 
 ## Objectives
 
 - Understand the clustering process and input parameters
-- Generate initial clusters using `` 
+- Generate initial clusters using `FindNeighbors` and `FindClusters`
 - Visualize our clustering results
+
+Like other steps in our analysis, multiple parameters may need to be tested and evaluated while we would expect that only the final would be reported. Clustering is considered part of data exploration so an iterative approach is reasonable, and often expected ([source](https://bioconductor.org/books/3.15/OSCA.basic/clustering.html)). 
 
 ---
 
@@ -239,6 +236,9 @@ The resulting Seurat object now has an additional `umap.integrated.sct.rpca` in 
 
 ![Image: Schematic after RunUMAP().](images/seurat_schematic/Slide10.png)
 
+<br/>
+<br/>
+
 # Visualizing and evaluating clustering
 
 <!--- How many clusters should I get and how do I adjust the number? --->
@@ -251,20 +251,26 @@ At this stage, we want to determine if the clusters look fairly well separated, 
 
 We can also look at the same UMAP labeled by `day` to visually inspect if the UMAP structure corresponds to the `day`.
 
-```{r, umap_by_clusters, fig.show='hold'}
-# Visualize UMAP cluster --------------------------------------------------
+```{r, umap_by_clusters, fig.show='hold', fig.height = 6, fig.width=6}
+# Visualize UMAP cluster 1 --------------------------------------------------
 # cluster ID labels
 post_integration_umap_plot_clusters = DimPlot(geo_so, group.by = 'seurat_clusters', label = TRUE, reduction = 'umap.integrated.sct.rpca') + NoLegend()
 post_integration_umap_plot_clusters
 
 ggsave(filename = 'results/figures/umap_integrated_sct_clusters.png', plot = post_integration_umap_plot_clusters, width = 6, height = 6, units = 'in')
+```
 
+```{r, umap_by_splitclusters, fig.show='hold', fig.height = 4}
+# Visualize UMAP cluster 2 --------------------------------------------------
 # clusters with labels, split by condition
 post_integration_umap_plot_split_clusters = DimPlot(geo_so, group.by = 'seurat_clusters', split.by = 'day', label = TRUE, reduction = 'umap.integrated.sct.rpca') + NoLegend()
 post_integration_umap_plot_split_clusters
 
 ggsave(filename = 'results/figures/umap_integrated_sct_split_clusters.png', plot = post_integration_umap_plot_clusters, width = 14, height = 6, units = 'in')
+```
 
+```{r, umap_by_dayclusters, fig.show='hold', fig.height = 6, fig.width=7}
+# Visualize UMAP cluster 3 --------------------------------------------------
 # UMAP with day labels (note - we added this column to the meta-data yesterday)
 post_integration_umap_plot_day = DimPlot(geo_so, group.by = 'day', label = FALSE, reduction = 'umap.integrated.sct.rpca')
 post_integration_umap_plot_day
@@ -326,7 +332,7 @@ If we had proceeded with our filtered data and only normalized our data without 
 
 <!--Add updated example of UMAP / sample labels for unintegrated data - need to check with Raymond regarding how best to do this in place --> 
 
-```{r, run_umap_unintegrated, echo = FALSE, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE, out.height='60%'}
+```{r, run_umap_unintegrated, echo = FALSE, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE, fig.height = 4}
 # Create KNN graph with `FindNeighbors()` for unintegrated data
 geo_so = FindNeighbors(geo_so, dims = 1:pcs, reduction = 'unintegrated.sct.pca', verbose=FALSE)
 
@@ -341,8 +347,6 @@ print(pre_integration_umap_plot_day + post_integration_umap_plot_day)
 ```
 
 In the plot at left, we see that while there are distinct clusters, those clusters seem to stratified by day. This suggests that without integration, these batch effects could skew the biological variability in our data. While on the right, we see little stratification within our clusters which means the integration seems to have removed those batch effects.
-
-<!-- Edit section to incorporate --->
 
 <details>
 <summary>**Rewind: Pre-integration evaluation clustering and visualization (code)**</summary>
