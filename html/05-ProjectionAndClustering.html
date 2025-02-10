@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-01-26" />
+<meta name="date" content="2025-02-10" />
 
 <title>Clustering and Projection</title>
 
-<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -416,7 +416,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Clustering and Projection</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-01-26</h4>
+<h4 class="date">2025-02-10</h4>
 
 </div>
 
@@ -435,9 +435,9 @@ pre {
 }
 
 table.fig, th.fig, td.fig {
-  border: 1px solid black;
+  border: 1px solid lightgray;
   border-collapse: collapse;
-  padding: 15px;
+  padding: 12px;
 }
 
 </style>
@@ -447,9 +447,9 @@ table.fig, th.fig, td.fig {
 </script>
 <div id="workflow-overview" class="section level1 unlisted unnumbered">
 <h1 class="unlisted unnumbered">Workflow Overview</h1>
-<p><br/>
-<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
-<br/> <br/></p>
+<p><br/> <img
+src="images/wayfinder/05-ProjectionAndClustering-Wayfinder.png" /> <br/>
+<br/></p>
 </div>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
@@ -460,41 +460,34 @@ samples before determining if there are differences in the proportions
 of these populations or differences in gene expression within these
 populations between experimental conditions.</p>
 <table class="fig">
-<tr class="fig">
+<tr>
 <td class="fig">
 <img
-src="images/graphical_abstracts/graphical_abstract_cluster_projection.png" />
+src="images/graphical_abstracts/05-ProjectionAndClustering-Abstract.png" />
 </td>
 </tr>
-<tr class="fig">
+<tr>
 <td class="fig">
-A. The prior step used the filtered, normalized counts as input to a
-prinicpal component analysis. The top principle components (PCs) are the
-input to the clustering step. <br/> B. Cells are plotted in a
-high-dimensional space (where the num dimesnions = num of included PCs,
-e.g. 15 dimensions); cells with similar gene expression profiles are
-closer to each other and are clustered together. <br/> C. The cells
-clusters are projected from the high-dimensional space (e.g. 15
-dimensions) down to two-dimensional space for visualization.
+Starting with reduced dimensionality data [PCs x cells] for all samples
+- cells are organized into networks and then split up to into clusters
+with similar expression programs, regardless of experimental condition.
 </td>
 </tr>
 </table>
 <p><br/></p>
-<p>In this section, we will demonstrate how to generate clusters using
-Seurat’s graph based clustering approach and visualize those clustering
-assignments via a lower-dimensional projection of the full dataset.</p>
+<div id="objectives" class="section level2">
+<h2>Objectives</h2>
+<ul>
+<li>Understand the clustering process and input parameters</li>
+<li>Generate initial clusters using <code>FindNeighbors</code> and
+<code>FindClusters</code></li>
+<li>Visualize our clustering results</li>
+</ul>
 <p>Like other steps in our analysis, multiple parameters may need to be
 tested and evaluated while we would expect that only the final would be
 reported. Clustering is considered part of data exploration so an
 iterative approach is reasonable, and often expected (<a
 href="https://bioconductor.org/books/3.15/OSCA.basic/clustering.html">source</a>).</p>
-<div id="objectives" class="section level2">
-<h2>Objectives</h2>
-<ul>
-<li>Understand the clustering process and input parameters</li>
-<li>Generate initial clusters using ``</li>
-<li>Visualize our clustering results</li>
-</ul>
 <hr />
 </div>
 </div>
@@ -615,10 +608,10 @@ head(geo_so@meta.data)</code></pre>
 <pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
 Number of nodes: 31559
-Number of edges: 1048748
+Number of edges: 1029500
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.9437
+Maximum modularity in 10 random starts: 0.9447
 Number of communities: 23
 Elapsed time: 5 seconds</code></pre>
 <div
@@ -684,16 +677,16 @@ replicate1
 1.240962
 </td>
 <td style="text-align:right;">
-6062
+6061
 </td>
 <td style="text-align:right;">
 2867
 </td>
 <td style="text-align:left;">
-1
+6
 </td>
 <td style="text-align:left;">
-1
+6
 </td>
 </tr>
 <tr>
@@ -719,16 +712,16 @@ replicate1
 7.536416
 </td>
 <td style="text-align:right;">
-4607
+4609
 </td>
 <td style="text-align:right;">
 1509
 </td>
 <td style="text-align:left;">
-1
+6
 </td>
 <td style="text-align:left;">
-1
+6
 </td>
 </tr>
 <tr>
@@ -754,10 +747,10 @@ replicate1
 3.112002
 </td>
 <td style="text-align:right;">
-5314
+5319
 </td>
 <td style="text-align:right;">
-2370
+2386
 </td>
 <td style="text-align:left;">
 1
@@ -789,16 +782,16 @@ replicate1
 1.559792
 </td>
 <td style="text-align:right;">
-3877
+3880
 </td>
 <td style="text-align:right;">
-1031
+1032
 </td>
 <td style="text-align:left;">
-10
+11
 </td>
 <td style="text-align:left;">
-10
+11
 </td>
 </tr>
 <tr>
@@ -824,7 +817,7 @@ replicate1
 3.700589
 </td>
 <td style="text-align:right;">
-4166
+4186
 </td>
 <td style="text-align:right;">
 915
@@ -859,16 +852,16 @@ replicate1
 2.938131
 </td>
 <td style="text-align:right;">
-5865
+5855
 </td>
 <td style="text-align:right;">
-2588
+2587
 </td>
 <td style="text-align:left;">
-1
+6
 </td>
 <td style="text-align:left;">
-1
+6
 </td>
 </tr>
 </tbody>
@@ -958,6 +951,7 @@ slot:</p>
 alt="Image: Schematic after RunUMAP()." />
 <div class="figcaption">Image: Schematic after RunUMAP().</div>
 </div>
+<p><br/> <br/></p>
 </div>
 <div id="visualizing-and-evaluating-clustering" class="section level1">
 <h1>Visualizing and evaluating clustering</h1>
@@ -976,25 +970,27 @@ clusters that’s not necessarily a problem.</p>
 <p>We can also look at the same UMAP labeled by <code>day</code> to
 visually inspect if the UMAP structure corresponds to the
 <code>day</code>.</p>
-<pre class="r"><code># Visualize UMAP cluster --------------------------------------------------
+<pre class="r"><code># Visualize UMAP cluster 1 --------------------------------------------------
 # cluster ID labels
 post_integration_umap_plot_clusters = DimPlot(geo_so, group.by = &#39;seurat_clusters&#39;, label = TRUE, reduction = &#39;umap.integrated.sct.rpca&#39;) + NoLegend()
 post_integration_umap_plot_clusters
 
-ggsave(filename = &#39;results/figures/umap_integrated_sct_clusters.png&#39;, plot = post_integration_umap_plot_clusters, width = 6, height = 6, units = &#39;in&#39;)
-
+ggsave(filename = &#39;results/figures/umap_integrated_sct_clusters.png&#39;, plot = post_integration_umap_plot_clusters, width = 6, height = 6, units = &#39;in&#39;)</code></pre>
+<p><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_clusters-1.png" width="576" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Visualize UMAP cluster 2 --------------------------------------------------
 # clusters with labels, split by condition
 post_integration_umap_plot_split_clusters = DimPlot(geo_so, group.by = &#39;seurat_clusters&#39;, split.by = &#39;day&#39;, label = TRUE, reduction = &#39;umap.integrated.sct.rpca&#39;) + NoLegend()
 post_integration_umap_plot_split_clusters
 
-ggsave(filename = &#39;results/figures/umap_integrated_sct_split_clusters.png&#39;, plot = post_integration_umap_plot_clusters, width = 14, height = 6, units = &#39;in&#39;)
-
+ggsave(filename = &#39;results/figures/umap_integrated_sct_split_clusters.png&#39;, plot = post_integration_umap_plot_clusters, width = 14, height = 6, units = &#39;in&#39;)</code></pre>
+<p><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_splitclusters-1.png" width="816" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Visualize UMAP cluster 3 --------------------------------------------------
 # UMAP with day labels (note - we added this column to the meta-data yesterday)
 post_integration_umap_plot_day = DimPlot(geo_so, group.by = &#39;day&#39;, label = FALSE, reduction = &#39;umap.integrated.sct.rpca&#39;)
 post_integration_umap_plot_day
 
 ggsave(filename = &#39;results/figures/umap_integrated_sct_day.png&#39;, plot = post_integration_umap_plot_day, width = 8, height = 6, units = &#39;in&#39;)</code></pre>
-<p><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_clusters-1.png" width="816" style="display: block; margin: auto;" /><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_clusters-2.png" width="816" style="display: block; margin: auto;" /><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_clusters-3.png" width="816" style="display: block; margin: auto;" /></p>
+<p><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_dayclusters-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Similar to the PCA plots, the <code>day</code> labeled UMAP can tell
 us if technical sources of variation might be driving or stratifying the
 clusters, which would suggest that the normalization and integration
@@ -1093,70 +1089,70 @@ style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:100%; ov
 Day0
 </td>
 <td style="text-align:right;">
-62
+72
 </td>
 <td style="text-align:right;">
-1019
+403
 </td>
 <td style="text-align:right;">
-45
-</td>
-<td style="text-align:right;">
-25
-</td>
-<td style="text-align:right;">
-216
-</td>
-<td style="text-align:right;">
-186
-</td>
-<td style="text-align:right;">
-862
-</td>
-<td style="text-align:right;">
-226
+988
 </td>
 <td style="text-align:right;">
 176
 </td>
 <td style="text-align:right;">
-92
+75
 </td>
 <td style="text-align:right;">
-99
+24
 </td>
 <td style="text-align:right;">
-56
+793
 </td>
 <td style="text-align:right;">
-31
+38
 </td>
 <td style="text-align:right;">
-1
+270
 </td>
 <td style="text-align:right;">
-268
+155
 </td>
 <td style="text-align:right;">
-161
+108
 </td>
 <td style="text-align:right;">
-137
+117
 </td>
 <td style="text-align:right;">
-131
+70
+</td>
+<td style="text-align:right;">
+40
 </td>
 <td style="text-align:right;">
 2
 </td>
 <td style="text-align:right;">
-35
+0
+</td>
+<td style="text-align:right;">
+151
+</td>
+<td style="text-align:right;">
+136
+</td>
+<td style="text-align:right;">
+60
+</td>
+<td style="text-align:right;">
+132
 </td>
 <td style="text-align:right;">
 30
 </td>
 <td style="text-align:right;">
-14
+34
 </td>
 <td style="text-align:right;">
 0
@@ -1167,73 +1163,73 @@ Day0
 Day7
 </td>
 <td style="text-align:right;">
-3315
+2758
 </td>
 <td style="text-align:right;">
-1873
+1949
 </td>
 <td style="text-align:right;">
-2788
+782
 </td>
 <td style="text-align:right;">
-2895
+1919
 </td>
 <td style="text-align:right;">
-2269
+2103
 </td>
 <td style="text-align:right;">
-1671
+2254
 </td>
 <td style="text-align:right;">
-347
+912
 </td>
 <td style="text-align:right;">
-881
+1849
 </td>
 <td style="text-align:right;">
-608
+818
 </td>
 <td style="text-align:right;">
-555
+909
 </td>
 <td style="text-align:right;">
-540
+554
 </td>
 <td style="text-align:right;">
-658
+543
 </td>
 <td style="text-align:right;">
-640
+663
 </td>
 <td style="text-align:right;">
-596
+646
 </td>
 <td style="text-align:right;">
-120
+628
 </td>
 <td style="text-align:right;">
-302
+612
+</td>
+<td style="text-align:right;">
+304
 </td>
 <td style="text-align:right;">
 97
 </td>
 <td style="text-align:right;">
-83
+297
 </td>
 <td style="text-align:right;">
-270
+89
 </td>
 <td style="text-align:right;">
-121
+117
 </td>
 <td style="text-align:right;">
-102
+15
 </td>
 <td style="text-align:right;">
-39
-</td>
-<td style="text-align:right;">
-84
+36
 </td>
 </tr>
 <tr>
@@ -1241,73 +1237,73 @@ Day7
 Day21
 </td>
 <td style="text-align:right;">
-1347
+1246
 </td>
 <td style="text-align:right;">
-1472
+1005
 </td>
 <td style="text-align:right;">
-145
+931
 </td>
 <td style="text-align:right;">
-43
+498
 </td>
 <td style="text-align:right;">
-316
-</td>
-<td style="text-align:right;">
-492
-</td>
-<td style="text-align:right;">
-566
-</td>
-<td style="text-align:right;">
-257
-</td>
-<td style="text-align:right;">
-442
-</td>
-<td style="text-align:right;">
-464
-</td>
-<td style="text-align:right;">
-300
-</td>
-<td style="text-align:right;">
-108
-</td>
-<td style="text-align:right;">
-64
-</td>
-<td style="text-align:right;">
-2
-</td>
-<td style="text-align:right;">
-164
-</td>
-<td style="text-align:right;">
-46
-</td>
-<td style="text-align:right;">
-265
-</td>
-<td style="text-align:right;">
-186
-</td>
-<td style="text-align:right;">
-20
+259
 </td>
 <td style="text-align:right;">
 65
 </td>
 <td style="text-align:right;">
-19
+625
 </td>
 <td style="text-align:right;">
-41
+79
 </td>
 <td style="text-align:right;">
-7
+215
+</td>
+<td style="text-align:right;">
+125
+</td>
+<td style="text-align:right;">
+452
+</td>
+<td style="text-align:right;">
+443
+</td>
+<td style="text-align:right;">
+112
+</td>
+<td style="text-align:right;">
+65
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+45
+</td>
+<td style="text-align:right;">
+255
+</td>
+<td style="text-align:right;">
+112
+</td>
+<td style="text-align:right;">
+192
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+72
+</td>
+<td style="text-align:right;">
+4
 </td>
 </tr>
 </tbody>
@@ -1398,49 +1394,52 @@ style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:100%; ov
 HO.Day0.replicate1
 </td>
 <td style="text-align:right;">
-12
+17
 </td>
 <td style="text-align:right;">
-303
+123
 </td>
 <td style="text-align:right;">
-22
+247
 </td>
 <td style="text-align:right;">
-10
+54
 </td>
 <td style="text-align:right;">
-71
+26
 </td>
 <td style="text-align:right;">
-58
+9
 </td>
 <td style="text-align:right;">
-213
-</td>
-<td style="text-align:right;">
-59
-</td>
-<td style="text-align:right;">
-47
-</td>
-<td style="text-align:right;">
-20
+229
 </td>
 <td style="text-align:right;">
 18
 </td>
 <td style="text-align:right;">
-17
+70
+</td>
+<td style="text-align:right;">
+51
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+22
 </td>
 <td style="text-align:right;">
 11
 </td>
 <td style="text-align:right;">
-0
+1
 </td>
 <td style="text-align:right;">
-70
+0
 </td>
 <td style="text-align:right;">
 48
@@ -1449,13 +1448,10 @@ HO.Day0.replicate1
 22
 </td>
 <td style="text-align:right;">
-32
+10
 </td>
 <td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-4
+33
 </td>
 <td style="text-align:right;">
 10
@@ -1475,67 +1471,67 @@ HO.Day0.replicate2
 10
 </td>
 <td style="text-align:right;">
-141
+60
 </td>
 <td style="text-align:right;">
-6
+200
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+11
 </td>
 <td style="text-align:right;">
 8
 </td>
 <td style="text-align:right;">
-35
+92
 </td>
 <td style="text-align:right;">
-34
+5
 </td>
 <td style="text-align:right;">
-186
+53
+</td>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:right;">
+23
 </td>
 <td style="text-align:right;">
 21
 </td>
 <td style="text-align:right;">
-26
-</td>
-<td style="text-align:right;">
-22
-</td>
-<td style="text-align:right;">
-13
+8
 </td>
 <td style="text-align:right;">
 8
 </td>
 <td style="text-align:right;">
-7
-</td>
-<td style="text-align:right;">
 1
-</td>
-<td style="text-align:right;">
-52
-</td>
-<td style="text-align:right;">
-13
-</td>
-<td style="text-align:right;">
-24
-</td>
-<td style="text-align:right;">
-13
 </td>
 <td style="text-align:right;">
 0
 </td>
 <td style="text-align:right;">
-6
+12
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+13
 </td>
 <td style="text-align:right;">
 3
 </td>
 <td style="text-align:right;">
-0
+8
 </td>
 <td style="text-align:right;">
 0
@@ -1546,70 +1542,70 @@ HO.Day0.replicate2
 HO.Day0.replicate3
 </td>
 <td style="text-align:right;">
-25
+28
 </td>
 <td style="text-align:right;">
-356
+134
 </td>
 <td style="text-align:right;">
-5
+290
+</td>
+<td style="text-align:right;">
+51
+</td>
+<td style="text-align:right;">
+23
 </td>
 <td style="text-align:right;">
 2
 </td>
 <td style="text-align:right;">
-66
-</td>
-<td style="text-align:right;">
-55
-</td>
-<td style="text-align:right;">
-239
-</td>
-<td style="text-align:right;">
-87
-</td>
-<td style="text-align:right;">
-61
-</td>
-<td style="text-align:right;">
-26
-</td>
-<td style="text-align:right;">
-33
-</td>
-<td style="text-align:right;">
-16
+296
 </td>
 <td style="text-align:right;">
 5
 </td>
 <td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
 74
 </td>
 <td style="text-align:right;">
-59
+47
 </td>
 <td style="text-align:right;">
-41
+31
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
 </td>
 <td style="text-align:right;">
 52
 </td>
 <td style="text-align:right;">
-0
+41
 </td>
 <td style="text-align:right;">
-13
+20
+</td>
+<td style="text-align:right;">
+52
 </td>
 <td style="text-align:right;">
 3
 </td>
 <td style="text-align:right;">
-4
+10
 </td>
 <td style="text-align:right;">
 0
@@ -1620,70 +1616,70 @@ HO.Day0.replicate3
 HO.Day0.replicate4
 </td>
 <td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+86
+</td>
+<td style="text-align:right;">
+251
+</td>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:right;">
 15
-</td>
-<td style="text-align:right;">
-219
-</td>
-<td style="text-align:right;">
-12
 </td>
 <td style="text-align:right;">
 5
 </td>
 <td style="text-align:right;">
-44
+176
 </td>
 <td style="text-align:right;">
-39
+10
 </td>
 <td style="text-align:right;">
-224
+73
 </td>
 <td style="text-align:right;">
-59
+30
 </td>
 <td style="text-align:right;">
-42
-</td>
-<td style="text-align:right;">
-24
-</td>
-<td style="text-align:right;">
-35
-</td>
-<td style="text-align:right;">
-15
-</td>
-<td style="text-align:right;">
-8
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-72
+31
 </td>
 <td style="text-align:right;">
 41
 </td>
 <td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+39
+</td>
+<td style="text-align:right;">
 50
+</td>
+<td style="text-align:right;">
+18
 </td>
 <td style="text-align:right;">
 34
 </td>
 <td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-12
-</td>
-<td style="text-align:right;">
 14
 </td>
 <td style="text-align:right;">
-5
+11
 </td>
 <td style="text-align:right;">
 0
@@ -1694,182 +1690,37 @@ HO.Day0.replicate4
 HO.Day7.replicate1
 </td>
 <td style="text-align:right;">
-445
+434
 </td>
 <td style="text-align:right;">
-482
+441
 </td>
 <td style="text-align:right;">
-921
-</td>
-<td style="text-align:right;">
-1092
+272
 </td>
 <td style="text-align:right;">
 520
 </td>
 <td style="text-align:right;">
-447
+521
 </td>
 <td style="text-align:right;">
-95
+818
 </td>
 <td style="text-align:right;">
-242
+256
 </td>
 <td style="text-align:right;">
-206
+627
+</td>
+<td style="text-align:right;">
+65
+</td>
+<td style="text-align:right;">
+243
 </td>
 <td style="text-align:right;">
 107
-</td>
-<td style="text-align:right;">
-1
-</td>
-<td style="text-align:right;">
-176
-</td>
-<td style="text-align:right;">
-209
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-24
-</td>
-<td style="text-align:right;">
-62
-</td>
-<td style="text-align:right;">
-41
-</td>
-<td style="text-align:right;">
-27
-</td>
-<td style="text-align:right;">
-6
-</td>
-<td style="text-align:right;">
-32
-</td>
-<td style="text-align:right;">
-39
-</td>
-<td style="text-align:right;">
-13
-</td>
-<td style="text-align:right;">
-26
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-HO.Day7.replicate2
-</td>
-<td style="text-align:right;">
-1207
-</td>
-<td style="text-align:right;">
-440
-</td>
-<td style="text-align:right;">
-584
-</td>
-<td style="text-align:right;">
-601
-</td>
-<td style="text-align:right;">
-611
-</td>
-<td style="text-align:right;">
-525
-</td>
-<td style="text-align:right;">
-78
-</td>
-<td style="text-align:right;">
-172
-</td>
-<td style="text-align:right;">
-152
-</td>
-<td style="text-align:right;">
-165
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-188
-</td>
-<td style="text-align:right;">
-157
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-38
-</td>
-<td style="text-align:right;">
-90
-</td>
-<td style="text-align:right;">
-18
-</td>
-<td style="text-align:right;">
-12
-</td>
-<td style="text-align:right;">
-216
-</td>
-<td style="text-align:right;">
-36
-</td>
-<td style="text-align:right;">
-15
-</td>
-<td style="text-align:right;">
-8
-</td>
-<td style="text-align:right;">
-11
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-HO.Day7.replicate3
-</td>
-<td style="text-align:right;">
-931
-</td>
-<td style="text-align:right;">
-692
-</td>
-<td style="text-align:right;">
-590
-</td>
-<td style="text-align:right;">
-768
-</td>
-<td style="text-align:right;">
-715
-</td>
-<td style="text-align:right;">
-454
-</td>
-<td style="text-align:right;">
-149
-</td>
-<td style="text-align:right;">
-301
-</td>
-<td style="text-align:right;">
-149
-</td>
-<td style="text-align:right;">
-190
 </td>
 <td style="text-align:right;">
 0
@@ -1878,37 +1729,182 @@ HO.Day7.replicate3
 178
 </td>
 <td style="text-align:right;">
-157
+202
 </td>
 <td style="text-align:right;">
 0
 </td>
 <td style="text-align:right;">
-39
+274
 </td>
 <td style="text-align:right;">
-100
+70
+</td>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+63
 </td>
 <td style="text-align:right;">
 28
 </td>
 <td style="text-align:right;">
-33
+42
 </td>
 <td style="text-align:right;">
-38
+2
 </td>
 <td style="text-align:right;">
-40
+9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HO.Day7.replicate2
 </td>
 <td style="text-align:right;">
-45
+933
+</td>
+<td style="text-align:right;">
+447
+</td>
+<td style="text-align:right;">
+173
+</td>
+<td style="text-align:right;">
+566
+</td>
+<td style="text-align:right;">
+544
+</td>
+<td style="text-align:right;">
+478
+</td>
+<td style="text-align:right;">
+201
+</td>
+<td style="text-align:right;">
+396
+</td>
+<td style="text-align:right;">
+485
+</td>
+<td style="text-align:right;">
+213
+</td>
+<td style="text-align:right;">
+165
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+189
+</td>
+<td style="text-align:right;">
+163
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+126
+</td>
+<td style="text-align:right;">
+87
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+98
 </td>
 <td style="text-align:right;">
 13
 </td>
 <td style="text-align:right;">
-16
+18
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HO.Day7.replicate3
+</td>
+<td style="text-align:right;">
+744
+</td>
+<td style="text-align:right;">
+758
+</td>
+<td style="text-align:right;">
+222
+</td>
+<td style="text-align:right;">
+518
+</td>
+<td style="text-align:right;">
+543
+</td>
+<td style="text-align:right;">
+607
+</td>
+<td style="text-align:right;">
+312
+</td>
+<td style="text-align:right;">
+424
+</td>
+<td style="text-align:right;">
+167
+</td>
+<td style="text-align:right;">
+288
+</td>
+<td style="text-align:right;">
+187
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+182
+</td>
+<td style="text-align:right;">
+160
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+160
+</td>
+<td style="text-align:right;">
+99
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+116
+</td>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:right;">
+53
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+12
 </td>
 </tr>
 <tr>
@@ -1916,73 +1912,73 @@ HO.Day7.replicate3
 HO.Day7.replicate4
 </td>
 <td style="text-align:right;">
-732
+647
 </td>
 <td style="text-align:right;">
-259
+303
 </td>
 <td style="text-align:right;">
-693
+115
 </td>
 <td style="text-align:right;">
-434
+315
 </td>
 <td style="text-align:right;">
-423
+495
 </td>
 <td style="text-align:right;">
-245
+351
 </td>
 <td style="text-align:right;">
-25
+143
 </td>
 <td style="text-align:right;">
-166
+402
 </td>
 <td style="text-align:right;">
 101
 </td>
 <td style="text-align:right;">
-93
+165
 </td>
 <td style="text-align:right;">
-539
+95
 </td>
 <td style="text-align:right;">
-116
+543
 </td>
 <td style="text-align:right;">
-117
+114
 </td>
 <td style="text-align:right;">
-596
+121
 </td>
 <td style="text-align:right;">
-19
+628
 </td>
 <td style="text-align:right;">
-50
+52
 </td>
 <td style="text-align:right;">
-10
+48
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+20
 </td>
 <td style="text-align:right;">
 11
 </td>
 <td style="text-align:right;">
-10
+4
 </td>
 <td style="text-align:right;">
-13
-</td>
-<td style="text-align:right;">
-3
+1
 </td>
 <td style="text-align:right;">
 5
-</td>
-<td style="text-align:right;">
-31
 </td>
 </tr>
 <tr>
@@ -1990,73 +1986,73 @@ HO.Day7.replicate4
 HO.Day21.replicate1
 </td>
 <td style="text-align:right;">
-345
+323
 </td>
 <td style="text-align:right;">
-458
+326
 </td>
 <td style="text-align:right;">
-49
+267
 </td>
 <td style="text-align:right;">
-13
+153
 </td>
 <td style="text-align:right;">
-83
+66
 </td>
 <td style="text-align:right;">
-150
+25
 </td>
 <td style="text-align:right;">
-171
+211
 </td>
 <td style="text-align:right;">
-104
+26
 </td>
 <td style="text-align:right;">
-129
+59
 </td>
 <td style="text-align:right;">
-136
+40
 </td>
 <td style="text-align:right;">
-65
+132
 </td>
 <td style="text-align:right;">
-38
+127
 </td>
 <td style="text-align:right;">
-13
+41
+</td>
+<td style="text-align:right;">
+12
 </td>
 <td style="text-align:right;">
 0
 </td>
 <td style="text-align:right;">
-63
+0
 </td>
 <td style="text-align:right;">
 14
 </td>
 <td style="text-align:right;">
-70
+65
 </td>
 <td style="text-align:right;">
-53
+34
 </td>
 <td style="text-align:right;">
-4
-</td>
-<td style="text-align:right;">
-22
+58
 </td>
 <td style="text-align:right;">
 3
 </td>
 <td style="text-align:right;">
-18
+21
 </td>
 <td style="text-align:right;">
-3
+1
 </td>
 </tr>
 <tr>
@@ -2064,70 +2060,70 @@ HO.Day21.replicate1
 HO.Day21.replicate2
 </td>
 <td style="text-align:right;">
-167
+171
 </td>
 <td style="text-align:right;">
-260
+142
 </td>
 <td style="text-align:right;">
-26
+225
 </td>
 <td style="text-align:right;">
-8
+88
 </td>
 <td style="text-align:right;">
-64
+46
 </td>
 <td style="text-align:right;">
-87
+10
 </td>
 <td style="text-align:right;">
-167
+135
 </td>
 <td style="text-align:right;">
-39
-</td>
-<td style="text-align:right;">
-65
-</td>
-<td style="text-align:right;">
-68
-</td>
-<td style="text-align:right;">
-61
-</td>
-<td style="text-align:right;">
-18
-</td>
-<td style="text-align:right;">
-13
-</td>
-<td style="text-align:right;">
-0
-</td>
-<td style="text-align:right;">
-33
-</td>
-<td style="text-align:right;">
-5
-</td>
-<td style="text-align:right;">
-53
+14
 </td>
 <td style="text-align:right;">
 28
 </td>
 <td style="text-align:right;">
-2
+27
 </td>
 <td style="text-align:right;">
-11
+67
 </td>
 <td style="text-align:right;">
-5
+77
 </td>
 <td style="text-align:right;">
-5
+16
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+53
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+14
 </td>
 <td style="text-align:right;">
 1
@@ -2138,37 +2134,40 @@ HO.Day21.replicate2
 HO.Day21.replicate3
 </td>
 <td style="text-align:right;">
-184
+190
 </td>
 <td style="text-align:right;">
-235
+144
 </td>
 <td style="text-align:right;">
-24
+206
 </td>
 <td style="text-align:right;">
-4
+97
 </td>
 <td style="text-align:right;">
-65
+50
 </td>
 <td style="text-align:right;">
-93
+7
 </td>
 <td style="text-align:right;">
-137
+105
 </td>
 <td style="text-align:right;">
-39
+10
 </td>
 <td style="text-align:right;">
-81
+25
 </td>
 <td style="text-align:right;">
-79
+25
 </td>
 <td style="text-align:right;">
-43
+76
+</td>
+<td style="text-align:right;">
+73
 </td>
 <td style="text-align:right;">
 17
@@ -2180,22 +2179,19 @@ HO.Day21.replicate3
 0
 </td>
 <td style="text-align:right;">
-28
+0
 </td>
 <td style="text-align:right;">
-9
+10
 </td>
 <td style="text-align:right;">
 54
 </td>
 <td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
 38
-</td>
-<td style="text-align:right;">
-3
-</td>
-<td style="text-align:right;">
-14
 </td>
 <td style="text-align:right;">
 6
@@ -2212,73 +2208,73 @@ HO.Day21.replicate3
 HO.Day21.replicate4
 </td>
 <td style="text-align:right;">
-651
+562
 </td>
 <td style="text-align:right;">
-519
+393
 </td>
 <td style="text-align:right;">
-46
+233
 </td>
 <td style="text-align:right;">
-18
+160
 </td>
 <td style="text-align:right;">
-104
+97
 </td>
 <td style="text-align:right;">
-162
+23
 </td>
 <td style="text-align:right;">
-91
+174
 </td>
 <td style="text-align:right;">
-75
+29
 </td>
 <td style="text-align:right;">
-167
+103
 </td>
 <td style="text-align:right;">
-181
+33
 </td>
 <td style="text-align:right;">
-131
+177
 </td>
 <td style="text-align:right;">
-35
+166
+</td>
+<td style="text-align:right;">
+38
 </td>
 <td style="text-align:right;">
 20
 </td>
 <td style="text-align:right;">
-2
+4
 </td>
 <td style="text-align:right;">
-40
+3
 </td>
 <td style="text-align:right;">
-18
+17
 </td>
 <td style="text-align:right;">
-88
+83
 </td>
 <td style="text-align:right;">
-67
+41
 </td>
 <td style="text-align:right;">
-11
+68
 </td>
 <td style="text-align:right;">
-18
+7
 </td>
 <td style="text-align:right;">
-5
+31
 </td>
 <td style="text-align:right;">
-12
-</td>
-<td style="text-align:right;">
-2
+1
 </td>
 </tr>
 </tbody>
@@ -2302,20 +2298,19 @@ sample of origin, then we would see the following for our data:</p>
 <pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
 Number of nodes: 31559
-Number of edges: 997072
+Number of edges: 998702
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.9488
-Number of communities: 25
+Maximum modularity in 10 random starts: 0.9514
+Number of communities: 24
 Elapsed time: 5 seconds</code></pre>
-<p><img src="images/curriculum/05-ProjectionAndClustering/05-run_umap_unintegrated-1.png" width="816" height="60%" style="display: block; margin: auto;" /></p>
+<p><img src="images/curriculum/05-ProjectionAndClustering/05-run_umap_unintegrated-1.png" width="816" style="display: block; margin: auto;" /></p>
 <p>In the plot at left, we see that while there are distinct clusters,
 those clusters seem to stratified by day. This suggests that without
 integration, these batch effects could skew the biological variability
 in our data. While on the right, we see little stratification within our
 clusters which means the integration seems to have removed those batch
 effects.</p>
-<!-- Edit section to incorporate --->
 <details>
 <summary>
 <strong>Rewind: Pre-integration evaluation clustering and visualization
@@ -2390,8 +2385,8 @@ plots = c(&quot;pre_integration_umap_plot_day&quot;,
 rm(list=Filter(exists, plots))
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells   6525427  348.5   11463498   612.3   11463498   612.3
-Vcells 744475448 5679.9 1592146655 12147.2 1582422421 12073.0</code></pre>
+Ncells   6656902  355.6   11382044   607.9   11382044   607.9
+Vcells 742925769 5668.1 2110648647 16103.0 2059012342 15709.1</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">
