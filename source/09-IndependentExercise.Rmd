@@ -109,14 +109,6 @@ geo2_so = PrepSCTFindMarkers(geo2_so)
 # run comparisons for each cluster to generate markers
 geo2_markers = FindAllMarkers(geo2_so, only.pos = TRUE)
 
-# manually create lists of genes from paper
-fig1g_markers = c('Cxcl1', 'Cxcl2', 'Ccl2', 'Ccl3', 'Ccl4', 'Il1b', 'Il6b', 'Tnf', 'Tgfb1', 'Tgfb2', 'Tgfb3', 'Cxcl5')
-fig1h_markers = c('Cxcr2', 'Csf1r', 'Csf3r', 'Tgfbr1', 'Tgfbr3', 'Il1r1', 'Il6ra', 'Lifr', 'Tgfbr2')
-
-# create DotPlots for genes from paper
-fig1g_sct_dot_plot = DotPlot(geo2_so, features = fig1g_markers, assay = 'SCT')
-fig1h_sct_dot_plot = DotPlot(geo2_so, features = fig1h_markers, assay = 'SCT')
-fig1h_sct_dot_plot
 
 # run cell type predictions for current clustering results
 library(scCATCH)
@@ -158,8 +150,8 @@ catch_umap_plot
 
 #########
 
-## Extension - how might you interate to generate DE comparisons between D21 and D7 for all annotated clusters?
-# Note - would want to re-load our last object 
+## Extension - how might you generate DE comparisons between D21 and D7 for all annotated clusters?
+# Note - to do this, we would want to re-load our original results with the cluster labels 
 rm(geo2_so)
 geo_so = readRDS('/home/workshop/damki/ISC_R/results/rdata/geo_so_sct_integrated_final.rds')
 

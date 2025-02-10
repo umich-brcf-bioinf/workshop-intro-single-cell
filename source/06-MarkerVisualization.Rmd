@@ -29,9 +29,9 @@ pre {
 }
 
 table.fig, th.fig, td.fig {
-  border: 1px solid black;
+  border: 1px solid lightgray;
   border-collapse: collapse;
-  padding: 15px;
+  padding: 12px;
 }
 </style>
 
@@ -48,17 +48,18 @@ knitr_fig_path("06-MarkerVisualization/06-")
 # Workflow Overview {.unlisted .unnumbered}
 
 <br/>
-<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+![](images/wayfinder/06-MarkerVisualization-Wayfinder.png)
 <br/>
 <br/>
 
 # Introduction
 
 To interpret our initial clustering results for all cells in our experiment, we'll need to characterize the gene expression driving separation between the clusters. 
+<br/>
 
-<table class='fig'>
-<tr class='fig'><td class='fig'>![](images/graphical_abstracts/graphical_abstract_marker_id.png)</td></tr>
-<tr class='fig'><td class='fig'>Expression profiles (A) for for each cell cluster are evaluated against all other clusters (B) to identify marker genes, i.e. genes useful for segregating the cells into clusters (C). 
+<table class='fig'><tr><td class='fig'>
+![](images/graphical_abstracts/06-MarkerVisualization-Abstract.png)
+</td></tr><tr><tr class='fig'><td class='fig'>Starting with clustered data and ignoring sample/condition - the gene expression in cells in one cluster is compared to expression in cells from all other clusters to characterize the similarities and differences between clusters and to aid in identifying what cell-types might be present.
 </td></tr>
 </table>
 <br/>
