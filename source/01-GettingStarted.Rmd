@@ -48,26 +48,22 @@ source("../bin/chunk-options.R")
 knitr_fig_path("01-GettingStarted/01-")
 ```
 
-# Workflow Overview {.unlisted .unnumbered}
-
 <br/>
-<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+![](source/images/wayfinder/01-GettingStart-Wayfinder.png)
 <br/>
 <br/>
 
 # Introduction
 
-The field of single-cell expression measurements is still relatively new <!-- add links to early publications & information regarding 10x commercialization --> and therefore  best practices for analysis and standards for publication are continuing to evolve. 
+The field of single-cell expression measurements is new, and best practices for analysis and standard for publication are still fluid to some extent. One of the goals of this workshop is to work through an example from start to end, and to highlight some of the decision points and the rationale behind the decisions. The first step is to read in the data from Cell Ranger into R for analysis.
 
-One of the goals of this workshop is to not only provide an example of a start to end single-cell workflow but also explore some of the relatively arbitrary decision points and the rationale for the choices we included in our analysis.
-
-## Sample information
-
-In this workshop, we will be working with single-cell RNA-seq data from mice where the goal is to understand misregulation in wound healing that can lead to bone formation in soft tissue. Of interest are the cell types and genes that are involved in that misregulation. Essentially, "Why might bone form at the injury sight when it shouldn't?"
-
-To investigate this, cells from day 0 (prior to injury), and days 3, 7, and 21 post-injury were subjected to scRNA-seq in quadruplicate for each day. In the interest of computational constraints in this workshop, we have omitted day 3.
-
-![](./images/curriculum/experimental_design.jpg)
+<table class='fig'><tr><td class='fig'>
+![](source/images/graphical_abstracts/01-GettingStarted-Abstract.png)
+</td></tr><tr><td class='fig'>Data can be read from Cell Ranger outputs, or from BPCells files to be more memory efficient.
+</td></tr></table>
+<br/>
+<br/>
+<br/>
 
 ## Objectives
 

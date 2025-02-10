@@ -44,16 +44,21 @@ source("../bin/chunk-options.R")
 knitr_fig_path("03-Normalization/03-")
 ```
 
-# Workflow Overview {.unlisted .unnumbered}
-
 <br/>
-<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+![](source/images/wayfinder/03-Normalization-Wayfinder.png)
 <br/>
-<br/> 
+<br/>
 
 # Introduction 
 
 After removing low-quality cells from the data, the next task is the normalization and variance stabilization of the counts for downstream analysis. 
+
+<br/>
+<table class='fig'>
+<tr class='fig'><td class='fig'>![](source/images/graphical_abstracts/03-Normalization-Abstract.png)</td></tr>
+<tr class='fig'><td class='fig'>The counts in the feature barcode matrix are a blend of technical and biological effects. Technical effects can distort or mask the biological effects of interest, confounding downstream analyses. Seurat can model the technical effects based on overall patterns in expression across all cells. Once these technical effects are minimized, the remaining signal is primarily due to biological variance.</td></tr>
+</table>
+<br/>
 
 Variation in scRNA-seq data comes from biological sources:
 
@@ -66,17 +71,7 @@ And from technical sources:
 - Efficiency in lysis and reverse transcription
 - Stochastic sampling during sequencing
 
-<br/>
-<table class='fig'>
-<tr class='fig'><td class='fig'>![](images/graphical_abstracts/graphical_abstract_normalization.png)</td></tr>
-<tr class='fig'><td class='fig'>A. The counts in the feature barcode matrix are a blend of technical and biological effects. <br/>
-B. Technical effects can distort or mask the biological effects of interest; this can confound downstream analyses. <br/>
-C. Seurat can model the technical effects based on overall patterns in expression across all cells. <br/>
-D. Once these technical effects are minimized, the remaining signal is primarily biological variance.</td></tr>
-</table>
-<br/>
-
-It is important to control for the technical sources of variation without removing the biological sources of variation. A key driver of technical variation is cellular sequencing depth (that is, the number of UMIs sequenced per cell). In the figure below, Sample A (left, red reads) is more deeply sequenced than Sample B (right, green reads). In a test for differential expression, we want to account for the difference in sequencing depth to avoid erroneously calling a gene differentially expressed.
+A key driver of technical variation is cellular sequencing depth (that is, the number of UMIs sequenced per cell). In the figure below, Sample A (left, red reads) is more deeply sequenced than Sample B (right, green reads). In a test for differential expression, we want to account for the difference in sequencing depth to avoid erroneously calling a gene differentially expressed.
 
 ![Image: Different sequencing depths can erroneously imply differential expression. Source: [HBC training materials](https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html).](images/curriculum/03-Normalization/normalization_depth.png)
 
