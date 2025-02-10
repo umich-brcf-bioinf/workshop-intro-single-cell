@@ -435,6 +435,13 @@ pre {
 table{
    width:100%;
 }
+
+table.fig, th.fig, td.fig {
+  border: 1px solid lightgray;
+  border-collapse: collapse;
+  padding: 12px;
+}
+
 </style>
 <script>
   addClassKlippyTo("pre.r, pre.markdown, pre.bash");
@@ -445,36 +452,30 @@ table{
 background-color: CornSilk;
 }
 </style>
-<div id="workflow-overview" class="section level1 unlisted unnumbered">
-<h1 class="unlisted unnumbered">Workflow Overview</h1>
-<p><br/>
-<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<p><br/> <img src="images/wayfinder/01-GettingStart-Wayfinder.png" />
 <br/> <br/></p>
-</div>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>The field of single-cell expression measurements is still relatively
-new
-<!-- add links to early publications & information regarding 10x commercialization -->
-and therefore best practices for analysis and standards for publication
-are continuing to evolve.</p>
-<p>One of the goals of this workshop is to not only provide an example
-of a start to end single-cell workflow but also explore some of the
-relatively arbitrary decision points and the rationale for the choices
-we included in our analysis.</p>
-<div id="sample-information" class="section level2">
-<h2>Sample information</h2>
-<p>In this workshop, we will be working with single-cell RNA-seq data
-from mice where the goal is to understand misregulation in wound healing
-that can lead to bone formation in soft tissue. Of interest are the cell
-types and genes that are involved in that misregulation. Essentially,
-“Why might bone form at the injury sight when it shouldn’t?”</p>
-<p>To investigate this, cells from day 0 (prior to injury), and days 3,
-7, and 21 post-injury were subjected to scRNA-seq in quadruplicate for
-each day. In the interest of computational constraints in this workshop,
-we have omitted day 3.</p>
-<p><img src="images/curriculum/experimental_design.jpg" /></p>
-</div>
+<p>The field of single-cell expression measurements is new, and best
+practices for analysis and standard for publication are still fluid to
+some extent. One of the goals of this workshop is to work through an
+example from start to end, and to highlight some of the decision points
+and the rationale behind the decisions. The first step is to read in the
+data from Cell Ranger into R for analysis.</p>
+<table class="fig">
+<tr>
+<td class="fig">
+<img src="images/graphical_abstracts/01-GettingStarted-Abstract.png" />
+</td>
+</tr>
+<tr>
+<td class="fig">
+Data can be read from Cell Ranger outputs, or from BPCells files to be
+more memory efficient.
+</td>
+</tr>
+</table>
+<p><br/> <br/> <br/></p>
 <div id="objectives" class="section level2">
 <h2>Objectives</h2>
 <ul>
