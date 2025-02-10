@@ -317,6 +317,10 @@ devtools::session_info()
     tar xzvf workshop_isc_inputs-20250212.tgz || rm workshop_isc_inputs-20250212.tgz
     ```
 
+#### [An independent exercise](09-IndependentExercise.html)
+
+  - A variation on the workshop workflow that considers different clustering parameters and their downstream effects.
+
 <details>
 <summary>*University of Michigan Resources*</summary>
 - [UM CoderSpaces "office hours"](https://datascience.isr.umich.edu/events/coderspaces/){target="_blank"} and UM CoderSpaces Slack workspace. _(See "Useful Resources" section of the CoderSpaces page for instructions on how to join the CoderSpaces Slack workspace.)_
@@ -386,8 +390,8 @@ devtools::session_info()
 | **Chris** | **Marci** | **Raymond** |
 | ![](images/headshots/headshot_damki.jpg) | ![](images/headshots/headshot_dfhannum.jpg) | ![](images/headshots/headshot_trsaari.jpg) |
 | **Dana** | **Ford** | **Travis** |
-|  ![](images/headshots/headshot_okoues.jpg) | ![](images/headshots/headshot_phillipa.jpg) | ![](images/headshots/headshot_ncarruth.jpg) |
-| **Olivia** | **Tricia** | **Nick** |
+| ![](images/headshots/headshot_phillipa.jpg) | ![](images/headshots/headshot_ncarruth.jpg) |
+| **Tricia** | **Nick** |
 <br/>
 
 
