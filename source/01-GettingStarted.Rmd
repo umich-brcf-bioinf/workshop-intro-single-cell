@@ -49,7 +49,7 @@ knitr_fig_path("01-GettingStarted/01-")
 ```
 
 <br/>
-![](source/images/wayfinder/01-GettingStart-Wayfinder.png)
+![](images/wayfinder/01-GettingStart-Wayfinder.png)
 <br/>
 <br/>
 
@@ -58,7 +58,7 @@ knitr_fig_path("01-GettingStarted/01-")
 The field of single-cell expression measurements is new, and best practices for analysis and standard for publication are still fluid to some extent. One of the goals of this workshop is to work through an example from start to end, and to highlight some of the decision points and the rationale behind the decisions. The first step is to read in the data from Cell Ranger into R for analysis.
 
 <table class='fig'><tr><td class='fig'>
-![](source/images/graphical_abstracts/01-GettingStarted-Abstract.png)
+![](images/graphical_abstracts/01-GettingStarted-Abstract.png)
 </td></tr><tr><td class='fig'>Data can be read from Cell Ranger outputs, or from BPCells files to be more memory efficient.
 </td></tr></table>
 <br/>

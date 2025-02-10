@@ -49,7 +49,7 @@ knitr_fig_path("02-QCandFiltering/02-")
 ```
 
 <br/>
-![](source/images/wayfinder/02-QCandFiltering-Wayfinder.png)
+![](images/wayfinder/02-QCandFiltering-Wayfinder.png)
 <br/>
 <br/>
 
@@ -58,7 +58,7 @@ knitr_fig_path("02-QCandFiltering/02-")
 Single-cell experiments using the 10x Chromium instrument are supposed to have one cell and one bead in the droplet. However this is an inherently imperfect process and there are other important considerations like how healthy or intact the cell was at the time of measurement. In this section, our goal is to use filtering thresholds to remove "cells" that were poorly measured, aren't actually cells, or had more than one cell.
 
 <table class='fig'><tr><td class='fig'>
-![](source/images/graphical_abstracts/02-QCandFiltering-Abstract.png)
+![](images/graphical_abstracts/02-QCandFiltering-Abstract.png)
 </td></tr><tr><td class='fig'>The Cell Ranger barcode feature matrix is a mix of good and poor quality cells. We can use different metrics to visualize and filter to a subset of putatively healthy cells to improve downstream analysis.
 </td></tr></table>
 <br/>

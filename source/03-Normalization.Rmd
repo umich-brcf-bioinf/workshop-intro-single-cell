@@ -45,7 +45,7 @@ knitr_fig_path("03-Normalization/03-")
 ```
 
 <br/>
-![](source/images/wayfinder/03-Normalization-Wayfinder.png)
+![](images/wayfinder/03-Normalization-Wayfinder.png)
 <br/>
 <br/>
 
@@ -55,7 +55,9 @@ After removing low-quality cells from the data, the next task is the normalizati
 
 <br/>
 <table class='fig'>
-<tr class='fig'><td class='fig'>![](source/images/graphical_abstracts/03-Normalization-Abstract.png)</td></tr>
+<tr class='fig'><td class='fig'>
+![](images/graphical_abstracts/03-Normalization-Abstract.png)
+</td></tr>
 <tr class='fig'><td class='fig'>The counts in the feature barcode matrix are a blend of technical and biological effects. Technical effects can distort or mask the biological effects of interest, confounding downstream analyses. Seurat can model the technical effects based on overall patterns in expression across all cells. Once these technical effects are minimized, the remaining signal is primarily due to biological variance.</td></tr>
 </table>
 <br/>
