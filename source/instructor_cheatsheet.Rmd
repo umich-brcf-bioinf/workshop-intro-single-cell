@@ -36,10 +36,23 @@ klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
 
 ## Day 2 startup
 
-```{r daily_startup, eval = FALSE}
+Following login to R/Studio confirm that R/Studio is set to the **ISC_R** project.
+If it shows **Project: (None)**, you can either:
 
+- select **ISC_R** from the Project dropdown, or alternatively
+- Click on **Home** and **ISC_R** in the **Files** tab and then click **ISC_R.Rproj**
+
+![](images/curriculum/instructor_cheatsheet/rstudio_project_selector.png)
+```{r day_2_wd, eval = FALSE}
 # Day 2
 # ==============================================================
+getwd()
+setwd("~/ISC_R")
+```
+
+
+```{r day_2_startup, eval = FALSE}
+
 # Load libraries  ----------------------------------------------
 library(Seurat)
 library(BPCells)
@@ -56,10 +69,23 @@ geo_so = readRDS('~/ISC_R/results/rdata/geo_so_sct_normalized.rds')
 ```
 
 ## Day 3 startup
+Following login to R/Studio confirm that R/Studio is set to the **ISC_R** project.
+If it shows **Project: (None)**, you can either;
 
-```{r day_3_startup, eval = FALSE}
+- select **ISC_R** from the Project dropdown, or alternatively
+- Click on **Home** and **ISC_R** in the **Files** tab and then click **ISC_R.Rproj**
+
+![](images/curriculum/instructor_cheatsheet/rstudio_project_selector.png)
+
+
+```{r day_3_wd, eval = FALSE}
 # Day 3
 # ==============================================================
+getwd()
+setwd("~/ISC_R")
+```
+
+```{r day_3_startup, eval = FALSE}
 # Load libraries  ----------------------------------------------
 library(Seurat)
 library(BPCells)
