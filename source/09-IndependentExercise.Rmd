@@ -38,11 +38,8 @@ source("../bin/chunk-options.R")
 knitr_fig_path("XX")
 ```
 
-# Workflow Overview {.unlisted .unnumbered}
-
 <br/>
-<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
-<br/>
+![](images/wayfinder/09-IndependentExercise-Wayfinder.png){title="Wayfinder: Independent Exercise"}
 <br/>
 
 # Introduction
