@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2024-12-16" />
+<meta name="date" content="2025-02-10" />
 
 <title>Marker identification and visualization</title>
 
-<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -415,7 +415,7 @@ div.tocify {
 <h1 class="title toc-ignore">Marker identification and
 visualization</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2024-12-16</h4>
+<h4 class="date">2025-02-10</h4>
 
 </div>
 
@@ -432,9 +432,9 @@ pre {
 }
 
 table.fig, th.fig, td.fig {
-  border: 1px solid black;
+  border: 1px solid lightgray;
   border-collapse: collapse;
-  padding: 15px;
+  padding: 12px;
 }
 </style>
 <script>
@@ -443,27 +443,30 @@ table.fig, th.fig, td.fig {
 </script>
 <div id="workflow-overview" class="section level1 unlisted unnumbered">
 <h1 class="unlisted unnumbered">Workflow Overview</h1>
-<p><br/>
-<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
-<br/> <br/></p>
+<p><br/> <img
+src="images/wayfinder/06-MarkerVisualization-Wayfinder.png" /> <br/>
+<br/></p>
 </div>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
 <p>To interpret our initial clustering results for all cells in our
 experiment, we’ll need to characterize the gene expression driving
-separation between the clusters.</p>
-<table class="fig">
-<tr class="fig">
+separation between the clusters. <br/></p>
+<table class='fig'>
+<tr>
 <td class="fig">
 <img
-src="images/graphical_abstracts/graphical_abstract_marker_id.png" />
+src="images/graphical_abstracts/06-MarkerVisualization-Abstract.png" />
 </td>
 </tr>
+<tr>
 <tr class="fig">
 <td class="fig">
-Expression profiles (A) for for each cell cluster are evaluated against
-all other clusters (B) to identify marker genes, i.e. genes useful for
-segregating the cells into clusters (C).
+Starting with clustered data and ignoring sample/condition - the gene
+expression in cells in one cluster is compared to expression in cells
+from all other clusters to characterize the similarities and differences
+between clusters and to aid in identifying what cell-types might be
+present.
 </td>
 </tr>
 </table>
@@ -583,17 +586,18 @@ geo_so = PrepSCTFindMarkers(geo_so)
 # Run comparisons for each cluster to generate markers
 geo_markers = FindAllMarkers(geo_so, only.pos = TRUE, min.pct = 0.05)
 
+# Write out full cluster marker results to file
+write_csv(geo_markers, file = &#39;results/tables/marker_genes_0.4res.csv&#39;)
+
 # Take a look at the first few rows of the result
 head(geo_markers)</code></pre>
 <pre><code>        p_val avg_log2FC pct.1 pct.2 p_val_adj cluster    gene
-Col12a1     0   4.223843 0.915 0.132         0       0 Col12a1
-Thbs2       0   3.851482 0.896 0.151         0       0   Thbs2
-Lox         0   3.026665 0.904 0.163         0       0     Lox
-Tnc         0   3.936619 0.823 0.098         0       0     Tnc
-Col11a1     0   4.996025 0.753 0.062         0       0 Col11a1
-Aebp1       0   2.294299 0.972 0.295         0       0   Aebp1</code></pre>
-<pre class="r"><code># Write out full cluster marker results to file
-write_csv(geo_markers, file = &#39;results/tables/marker_genes_0.4res.csv&#39;)</code></pre>
+Col12a1     0   4.064165 0.966 0.156         0       0 Col12a1
+Thbs2       0   3.757858 0.935 0.175         0       0   Thbs2
+Col11a1     0   4.825144 0.832 0.078         0       0 Col11a1
+Tnc         0   3.571279 0.868 0.121         0       0     Tnc
+Lox         0   2.799087 0.923 0.190         0       0     Lox
+C1qtnf3     0   5.206444 0.811 0.098         0       0 C1qtnf3</code></pre>
 <div class="float">
 <img src="images/seurat_schematic/Slide11.png"
 alt="Image: Schematic after SetIdent()." />
@@ -633,35 +637,36 @@ head(top_5, n = 10)</code></pre>
 # Groups:   cluster [2]
    p_val avg_log2FC pct.1 pct.2 p_val_adj cluster gene    
    &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;   
- 1     0       4.22 0.915 0.132         0 0       Col12a1 
- 2     0       3.85 0.896 0.151         0 0       Thbs2   
- 3     0       3.03 0.904 0.163         0 0       Lox     
- 4     0       3.94 0.823 0.098         0 0       Tnc     
- 5     0       5.00 0.753 0.062         0 0       Col11a1 
- 6     0       4.28 0.883 0.108         0 1       Clec3b  
- 7     0       2.83 0.953 0.29          0 1       Serping1
- 8     0       3.38 0.903 0.242         0 1       Igfbp6  
- 9     0       4.07 0.725 0.07          0 1       Tnxb    
-10     0       2.91 0.764 0.147         0 1       Rarres2 </code></pre>
-<pre class="r"><code># Optional - Create table of top 5 markers per cluster (ranked by logFC)
+ 1     0       4.06 0.966 0.156         0 0       Col12a1 
+ 2     0       3.76 0.935 0.175         0 0       Thbs2   
+ 3     0       4.83 0.832 0.078         0 0       Col11a1 
+ 4     0       3.57 0.868 0.121         0 0       Tnc     
+ 5     0       2.80 0.923 0.19          0 0       Lox     
+ 6     0       2.16 0.835 0.217         0 1       Dpt     
+ 7     0       2.58 0.779 0.165         0 1       Col14a1 
+ 8     0       1.86 0.914 0.301         0 1       Serping1
+ 9     0       2.55 0.819 0.208         0 1       Bicc1   
+10     0       2.50 0.786 0.189         0 1       Gas1    </code></pre>
+<pre class="r"><code># Optional - Create table of top 5 markers per cluster (ranked by logFC) -------
 top_5_by_log2FC = geo_markers %&gt;% group_by(cluster) %&gt;% arrange(p_val_adj, desc(avg_log2FC)) %&gt;% slice_head(n = 5)
 
 # Look at results after ranking
-head(top_5_by_log2FC, n = 10) # notice difference in pct.1 column between tables</code></pre>
+# Note difference in pct.1 column between tables
+head(top_5_by_log2FC, n = 10) </code></pre>
 <pre><code># A tibble: 10 × 7
 # Groups:   cluster [2]
-   p_val avg_log2FC pct.1 pct.2 p_val_adj cluster gene 
-   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;
- 1     0       6.32 0.127 0.004         0 0       Cilp2
- 2     0       5.84 0.418 0.013         0 0       Scx  
- 3     0       5.68 0.133 0.005         0 0       Kera 
- 4     0       5.66 0.083 0.003         0 0       Ucma 
- 5     0       5.66 0.08  0.003         0 0       Matn3
- 6     0       5.22 0.347 0.018         0 1       Myoc 
- 7     0       5.18 0.153 0.006         0 1       Inmt 
- 8     0       5.15 0.213 0.008         0 1       C7   
- 9     0       4.97 0.096 0.006         0 1       Dact2
-10     0       4.86 0.162 0.006         0 1       Lvrn </code></pre>
+   p_val avg_log2FC pct.1 pct.2 p_val_adj cluster gene  
+   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt; 
+ 1     0       6.17 0.153 0.005         0 0       Cilp2 
+ 2     0       5.58 0.497 0.018         0 0       Scx   
+ 3     0       5.55 0.101 0.004         0 0       Ucma  
+ 4     0       5.35 0.686 0.053         0 0       Fmod  
+ 5     0       5.24 0.092 0.004         0 0       Matn3 
+ 6     0       4.17 0.183 0.015         0 1       Brinp1
+ 7     0       4.00 0.099 0.007         0 1       Agtr2 
+ 8     0       3.68 0.458 0.063         0 1       Slc1a3
+ 9     0       3.09 0.406 0.07          0 1       Ccn5  
+10     0       3.07 0.54  0.141         0 1       Sfrp2 </code></pre>
 <p>We expect to see several columns:</p>
 <ul>
 <li><code>gene</code>: gene symbol</li>
@@ -707,7 +712,10 @@ top_5_sct_dot_plot = DotPlot(geo_so, features = unique(top_5$gene)) +
     labs(title = &#39;Top 5 Cluster Genes by FDR and avg_log2FC&#39;) + coord_flip()
 top_5_sct_dot_plot</code></pre>
 <p><img src="images/curriculum/06-MarkerVisualization/06-top_5_dot_plot_sct-1.png" width="768" style="display: block; margin: auto;" /></p>
-<pre class="r"><code>ggsave(filename = &#39;results/figures/markers_top_5_sct_dot_plot.png&#39;, plot = top_5_sct_dot_plot, width = 8, height = 18, units = &#39;in&#39;) </code></pre>
+<pre class="r"><code># Save dot plot of top marker genes ---------------------------------------
+ggsave(filename = &#39;results/figures/markers_top_5_sct_dot_plot.png&#39;, 
+       plot = top_5_sct_dot_plot, 
+       width = 8, height = 18, units = &#39;in&#39;) </code></pre>
 <p>In the dotplot we can see that the color indicates the expression of
 the gene while the size of the dot indicates the proportion of cells
 expressing that gene in each cluster (<a
@@ -732,25 +740,31 @@ percentage of mitochondrial genes to determine if there are any clusters
 patterns (or might indicate further filtering is needed):</p>
 <pre class="r"><code># Check mitochondrial gene expression -------------------------------------
 percent_mito_plot = FeaturePlot(geo_so, features=&#39;percent.mt&#39;)
+
+# save to file
+ggsave(filename = &#39;results/figures/percent_umap_mito_plot.png&#39;, 
+       plot = percent_mito_plot, 
+       width = 6, height = 6, units = &#39;in&#39;)
+
 percent_mito_plot</code></pre>
 <p><img src="images/curriculum/06-MarkerVisualization/06-unnamed-chunk-2-1.png" width="816" style="display: block; margin: auto;" /></p>
-<pre class="r"><code># save to file
-ggsave(filename = &#39;results/figures/percent_umap_mito_plot.png&#39;, plot = percent_mito_plot, width = 6, height = 6, units = &#39;in&#39;)</code></pre>
-<pre class="r"><code># Remove the plot variables from the environment to avoid excessive memory usage
-rm(top_5_sct_dot_plot) 
-rm(top_5_rna_dot_plot) </code></pre>
-<pre><code>Warning in rm(top_5_rna_dot_plot): object &#39;top_5_rna_dot_plot&#39; not found</code></pre>
-<pre class="r"><code>rm(percent_mito_plot) 
-gc()</code></pre>
-<pre><code>             used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells    6879796  367.5   11691802   624.5   11691802   624.5
-Vcells 1062638599 8107.3 2145708358 16370.5 1897170431 14474.3</code></pre>
 <p>We see that a higher % seem to be somewhat concentrated in a few
 places, but if cell death might be of interest for the research
 question, we’d want to consider investigating this pattern further by
 splitting up the plots by day and/or waiting until after running initial
 differential expression analysis to determine if these cell populations
 are interesting biology or not.</p>
+<pre class="r"><code># Remove the plot variables from the environment to avoid excessive memory usage
+plots = c(&quot;top_5_sct_dot_plot&quot;, 
+          &quot;top_5_rna_dot_plot&quot;, 
+          &quot;percent_mito_plot&quot;)
+
+# Only remove plots that actually exist in the environment
+rm(list=Filter(exists, plots))
+gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells   6884990  367.7   11382044   607.9   11382044   607.9
+Vcells 695066460 5303.0 2110648647 16103.0 2110191873 16099.5</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">

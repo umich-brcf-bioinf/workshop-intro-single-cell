@@ -439,7 +439,8 @@ pre {
 <p>We hope you now have more familiarity with key concepts, data types,
 tools, and how they all connect to enable single-cell gene expression
 analysis from RNA-Seq data.</p>
-<p><img src="images/wayfinder/wayfinder_workshop_wrap_up.png" /></p>
+<p><img src="images/wayfinder/00-FullWayfinder.png"
+title="Wayfinder: Wrap-up" /></p>
 <hr />
 </div>
 <div id="example-methods" class="section level2">
@@ -505,9 +506,10 @@ cycles for Read 1, Index and Read 2, respectively.
 <strong>Data analysis</strong>
 </summary>
 <p>University of Michigan Biomedical Research Core Facilities Advanced
-Genomics Core executed 10x Genomics Cell Ranger (v7.2.0) to perform
+Genomics Core executed 10x Genomics Cell Ranger (v9.0.0) to perform
 sample de-multiplexing, barcode processing, and single cell gene
-counting (Alignment, Barcoding and UMI Count). The Cell Ranger filtered
+counting (Alignment, Barcoding and UMI Count); alignments were against
+mm10-2020-A and included intronic sequence. The Cell Ranger filtered
 barcode feature matrix was used as input to downstream analysis.</p>
 <p>All analysis and graphics were generated in R (v4.4.1) [1]. Analysis
 was performed primarily using the Seurat package (v5.0.1) [2]. Cells
@@ -575,7 +577,7 @@ generally not included in main body of a paper, but serious
 reproducibility street-cred if it shows up in supplemental.<br/> Hear me
 now, believe me later.</em></p>
 <pre><code>devtools::session_info()
-─ Session info ───────────────────────────────────────────────────────────────────────────────────
+─ Session info ────────────────────────────────────────────────────────────────
  setting  value
  version  R version 4.4.1 (2024-06-14)
  os       Ubuntu 22.04.5 LTS
@@ -585,11 +587,11 @@ now, believe me later.</em></p>
  collate  C.UTF-8
  ctype    C.UTF-8
  tz       America/Detroit
- date     2024-10-21
+ date     2025-02-04
  rstudio  2023.12.0+369 Ocean Storm (server)
- pandoc   3.1.1 @ /usr/lib/rstudio-server/bin/quarto/bin/tools/ (via rmarkdown)
+ pandoc   3.4 @ /usr/lib/rstudio-server/bin/quarto/bin/tools/x86_64/ (via rmarkdown)
 
-─ Packages ───────────────────────────────────────────────────────────────────────────────────────
+─ Packages ──────────────────────────────────────────────────────────────────────────────────────────────────────────
  package          * version    date (UTC) lib source
  abind              1.4-8      2024-09-12 [2] CRAN (R 4.4.1)
  assertthat         0.2.1      2019-03-21 [2] CRAN (R 4.4.1)
@@ -642,7 +644,6 @@ now, believe me later.</em></p>
  irlba              2.3.5.1    2022-10-03 [2] CRAN (R 4.4.1)
  jsonlite           1.8.8      2023-12-04 [2] CRAN (R 4.4.1)
  KernSmooth         2.23-24    2024-05-17 [2] CRAN (R 4.4.1)
- klippy             0.0.0.9500 2024-10-02 [1] Github (umich-brcf-bioinf/workshop-klippy@a1be090)
  knitr              1.48       2024-07-07 [2] CRAN (R 4.4.1)
  later              1.3.2      2023-12-06 [2] CRAN (R 4.4.1)
  lattice            0.22-6     2024-03-20 [2] CRAN (R 4.4.1)
@@ -736,7 +737,8 @@ now, believe me later.</em></p>
  XVector            0.44.0     2024-04-30 [2] Bioconductor 3.19 (R 4.4.1)
  yaml               2.3.10     2024-07-26 [2] CRAN (R 4.4.1)
  zlibbioc           1.50.0     2024-04-30 [2] Bioconductor 3.19 (R 4.4.1)
- zoo                1.8-12     2023-04-13 [2] CRAN (R 4.4.1)</code></pre>
+ zoo                1.8-12     2023-04-13 [2] CRAN (R 4.4.1)
+</code></pre>
 </details>
 <hr />
 </div>
@@ -770,8 +772,8 @@ workshop session.</li>
 terminal/command line window as below. (You will need to substitute your
 actual workshop username and type workshop password when prompted.)</p>
 <pre class="bash"><code># download workshop files -------------------------------------------------
-mkdir intro_scrnaseq-workshop
-cd intro_scrnaseq-workshop
+mkdir intro_scrnaseq_workshop
+cd intro_scrnaseq_workshop
 scp -r YOUR_USERNAME@bfx-workshop01.med.umich.edu:&quot;ISC_R*&quot; .</code></pre>
 <ul>
 <li>Note that the full download of the R data is about 8Gb, so depending
@@ -786,18 +788,35 @@ download the full set of Cell Ranger outputs.)</li>
 <li>You can install necessary programs to run programs locally. Note
 that for typical data, Cell Ranger steps (reviewed Day 1) assume your
 computer has powerful compute (many CPUs and lots of RAM) and sizable
-storage capacity. (i.e. it’s impractical to run these on your
-laptop.)</li>
-<li>Installing bioinformatics software is non-trivial and comprehensive
-instructions to setup a complete compute environment are outside the
-scope of this workshop. (For University of Michigan learners, we are
-planning to host a Computational Reproducibility workshop later this
-year that would cover this installation and other related tasks in more
-detail.) For the intrepid, see relevant links below:
+storage capacity. (i.e. it’s impractical to run these on your laptop.)
 <ul>
 <li><a href="workshop_setup/setup_instructions_advanced.html">Setting up
 R/R-Studio</a></li>
 </ul></li>
+<li>Note that installing bioinformatics software is often
+non-trivial.</li>
+</ul>
+</div>
+<div id="downloading-seurat-inputs" class="section level4">
+<h4>Downloading Seurat inputs</h4>
+<ul>
+<li><p>The Seurat inputs (cellranger triples and dbcells files) used in
+this workshop can be installed locally like so:</p>
+<pre class="bash"><code># download Seurat inputs --------------------------------------------------
+mkdir -p intro_scrnaseq_workshop/ISC_R
+cd intro_scrnaseq_workshop/ISC_R
+# Curl download a ~500Mb tarball
+curl -o workshop_isc_inputs-20250212.tgz https://umich-brcf-bioinf-workshop-intro-single-cell.s3.us-east-1.amazonaws.com/workshop_isc_inputs-20250212.tgz 
+# tar unpacks the tarball into directories and then removes the tarball
+tar xzvf workshop_isc_inputs-20250212.tgz || rm workshop_isc_inputs-20250212.tgz</code></pre></li>
+</ul>
+</div>
+<div id="an-independent-exercise" class="section level4">
+<h4><a href="09-IndependentExercise.html">An independent
+exercise</a></h4>
+<ul>
+<li>A variation on the workshop workflow that considers different
+clustering parameters and their downstream effects.</li>
 </ul>
 <details>
 <summary>
@@ -912,10 +931,9 @@ vol. 11,1 722. 5 Feb. 2020.<br/>
 <h2>Thank you to/from the workshop team</h2>
 <table>
 <colgroup>
-<col width="25%" />
-<col width="25%" />
-<col width="25%" />
-<col width="25%" />
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -925,8 +943,6 @@ src="images/headshots/headshot_cgates.jpg" /></th>
 src="images/headshots/headshot_mbradenb.jpg" /></th>
 <th align="center"><img
 src="images/headshots/headshot_rcavalca.jpg" /></th>
-<th align="center"><img
-src="images/headshots/headshot_damki.jpg" /></th>
 </tr>
 </thead>
 <tbody>
@@ -934,35 +950,29 @@ src="images/headshots/headshot_damki.jpg" /></th>
 <td align="center"><strong>Chris</strong></td>
 <td align="center"><strong>Marci</strong></td>
 <td align="center"><strong>Raymond</strong></td>
-<td align="center"><strong>Dana</strong></td>
 </tr>
 <tr class="even">
+<td align="center"><img
+src="images/headshots/headshot_damki.jpg" /></td>
+<td align="center"><img
+src="images/headshots/headshot_dfhannum.jpg" /></td>
 <td align="center"><img
 src="images/headshots/headshot_trsaari.jpg" /></td>
-<td align="center"><img
-src="images/headshots/headshot_okoues.jpg" /></td>
-<td align="center"><img
-src="images/headshots/headshot_rammohan.jpg" /></td>
-<td align="center"></td>
 </tr>
 <tr class="odd">
+<td align="center"><strong>Dana</strong></td>
+<td align="center"><strong>Ford</strong></td>
 <td align="center"><strong>Travis</strong></td>
-<td align="center"><strong>Olivia</strong></td>
-<td align="center"><strong>Ram</strong></td>
-<td align="center"></td>
 </tr>
 <tr class="even">
 <td align="center"><img
-src="images/headshots/headshot_mkdohert.jpg" /></td>
-<td align="center"><img
-src="images/headshots/headshot_joegrego.jpg" /></td>
+src="images/headshots/headshot_phillipa.jpg" /></td>
 <td align="center"><img
 src="images/headshots/headshot_ncarruth.jpg" /></td>
 <td align="center"></td>
 </tr>
 <tr class="odd">
-<td align="center"><strong>Matt</strong></td>
-<td align="center"><strong>Joe</strong></td>
+<td align="center"><strong>Tricia</strong></td>
 <td align="center"><strong>Nick</strong></td>
 <td align="center"></td>
 </tr>

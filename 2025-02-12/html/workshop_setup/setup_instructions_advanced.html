@@ -1535,39 +1535,42 @@ and installing Cell Ranger can be found here: <a href="https://www.10xgenomics.c
 <li>Installing R/RStudio</li>
 <li>Notes</li>
 </ul></li>
+<li>Installing required libraries
+<ul>
+<li>Conda &amp; Conda packages</li>
+<li>R packages</li>
+</ul></li>
 </ul></li>
 </ul>
 <div id="windows-setup" class="section level2">
 <h2>Windows setup</h2>
 <div id="installing-rrstudio-windows" class="section level3">
 <h3>Installing R/RStudio (Windows)</h3>
-<ol style="list-style-type: decimal">
-<li><p>RStudio depends on the R programming environment, so we have to
+<p>1.1. RStudio depends on the R programming environment, so we have to
 install that first. In a web browser, open: <a href="https://cran.rstudio.com/bin/windows/base/" class="uri">https://cran.rstudio.com/bin/windows/base/</a> and click
 “Download R 4.3.2 for Windows” (the version may be slightly different).
-Open the downloaded executable to launch the R installer.</p></li>
-<li><p>The installer will walk through several options; accept all the
+Open the downloaded executable to launch the R installer.</p>
+<p>1.2. The installer will walk through several options; accept all the
 defaults (by repeatedly clicking <strong>Next</strong>) and when
 prompted, click <strong>Install</strong>. The installer will show a
 progress bar; the process takes about 2 minutes; click
-<strong>Finish</strong> when prompted to close the installer.</p></li>
-<li><p>To install RStudio, in a web-browser, open: <a href="https://rstudio.com/products/rstudio/download/#download" class="uri">https://rstudio.com/products/rstudio/download/#download</a>
+<strong>Finish</strong> when prompted to close the installer.</p>
+<p>1.3. To install RStudio, in a web-browser, open: <a href="https://rstudio.com/products/rstudio/download/#download" class="uri">https://rstudio.com/products/rstudio/download/#download</a>
 and click on <strong>Download RStudio Desktop for Windows</strong>. Open
-the downloaded executable to launch the installer.</p></li>
-<li><p>The installer will either prompt you to login as an Admin user or
-(if your current account has Admin privileges) simply ask you to allow
-it to make changes. Click <strong>Yes</strong></p></li>
-<li><p>The installer will walk through several options; accept all the
+the downloaded executable to launch the installer.</p>
+<p>1.4. The installer will either prompt you to login as an Admin user
+or (if your current account has Admin privileges) simply ask you to
+allow it to make changes. Click <strong>Yes</strong></p>
+<p>1.5. The installer will walk through several options; accept all the
 defaults (by repeatedly clicking <strong>Next</strong>) and when
 prompted, click <strong>Install</strong>. The installer will show a
 progress bar; the process takes less than one minute; click
-<strong>Finish</strong> when prompted to close the installer.</p></li>
-<li><p>Press Windows+R keys to open the <strong>Run</strong> dialog;
+<strong>Finish</strong> when prompted to close the installer.</p>
+<p>1.6. Press Windows+R keys to open the <strong>Run</strong> dialog;
 type <strong>“RStudio”</strong> in the text box and hit enter. This will
 launch a new RStudio window. The RStudio window is divided into several
 panes. The lower left pane shows the <strong>Console</strong> tab and
-will show some text followed by a command prompt (&gt;):</p></li>
-</ol>
+will show some text followed by a command prompt (&gt;):</p>
 <pre><code>R version 4.4.2 (2024-10-31 ucrt) -- &quot;Pile of Leaves&quot;
 Copyright (C) 2024 The R Foundation for Statistical Computing
 Platform: x86_64-w64-mingw32/x64
@@ -1588,122 +1591,47 @@ Type &#39;q()&#39; to quit R.
 
 &gt; 
 </code></pre>
-<ol start="7" style="list-style-type: decimal">
-<li><p>The workshop exercises requires the installation of special R
-libraries. To install them into RStudio:</p>
-<ul>
-<li>one at a time, copy the blocks of code below and paste into the
-RStudio <strong>Console</strong> tab</li>
-<li>make sure the block you just pasted is highlighted and press
-<strong>Enter</strong> to execute.</li>
-<li>as the installation progresses, you might see red text flash by and
-that’s ok (typically an informative blurb or minor warning that has no
-downstream impact).</li>
-</ul></li>
-</ol>
-<pre><code>if (!requireNamespace(\&quot;BiocManager\&quot;, quietly = TRUE)) {\
-    install.packages(\&quot;BiocManager\&quot;)\
-    requireNamespace(\&quot;BiocManager\&quot;, quietly = TRUE)
-}
-install.packages(&quot;devtools&quot;)
-install.packages(&quot;remotes&quot;)</code></pre>
-<pre><code>remotes::install_github(&quot;satijalab/seurat&quot;, &quot;seurat5&quot;)
-remotes::install_github(&quot;satijalab/seurat-data&quot;, &quot;seurat5&quot;)
-remotes::install_github(&quot;satijalab/seurat-wrappers&quot;, &quot;seurat5&quot;)</code></pre>
-<pre><code>devtools::install_github(&quot;immunogenomics/presto&quot;)
-BiocManager::install(&quot;glmGamPoi&quot;)</code></pre>
-<ol start="8" style="list-style-type: decimal">
-<li><p>Note: These installations automatically trigger the installation
-of a litany of dependent libraries so you will see repeated progress
-bars and code flying by in the Console window. The large set of
-dependencies mean that if you are installing from scratch <strong>it can
-take several hours</strong>. So now is a good time to make some
-coffee/tea (or a loaf of bread) while RStudio cooks.</p></li>
-<li><p>If there was a problem during the installation, R will display a
-block like this:</p></li>
-</ol>
-<blockquote>
-<p>Warning in install.packages: Installation of package ‘xxx’ has
-non-zero exit status.</p>
-</blockquote>
-<p>If this comes up, you will need to troubleshoot the install based on
-the error or the specific package that failed.</p>
-<ol start="10" style="list-style-type: decimal">
-<li>If you don’t see the above warning, and the output ends like below
-then you the libraries were successfully installed:</li>
-</ol>
-<blockquote>
-<p>The downloaded binary packages are in
-C:\Users\some\path\Temp\downloaded_packages</p>
-</blockquote>
-<p>You can check this with the following code block:</p>
-<pre><code># Quietly load Seurat and print the version
-# It should be version 5 or later
-suppressPackageStartupMessages(library(Seurat))
-sessionInfo()$otherPkgs$Seurat$Version</code></pre>
-<ol start="11" style="list-style-type: decimal">
-<li>Press <strong>Control-Q</strong> close RStudio; when prompted to
-<em>Save workspace image…</em>, click <strong>Don’t Save</strong>.</li>
-</ol>
-<div id="your-windows-workstation-is-ready-for-the-workshop.-thank-you-for-your-patience-and-fortitude." class="section level4">
-<h4>Your Windows workstation is ready for the workshop. Thank you for
-your patience and fortitude.</h4>
-</div>
-</div>
-<div id="notes-windows" class="section level3">
-<h3>Notes (Windows)</h3>
-<ul>
-<li>Following the workshop, you can remove R and RStudio. As an Admin
-user, go Start &gt; Settings &gt; Apps &amp; Features. Click on the
-program to remove and click Uninstall.</li>
-</ul>
+<p>1.7. Following the workshop, you can remove R and RStudio. As an
+Admin user, go Start &gt; Settings &gt; Apps &amp; Features. Click on
+the program to remove and click Uninstall.</p>
 </div>
 </div>
 <div id="macintosh-setup" class="section level2">
 <h2>Macintosh setup</h2>
 <div id="installing-rrstudio-macintosh" class="section level3">
 <h3>Installing R/RStudio (Macintosh)</h3>
-<ol style="list-style-type: decimal">
-<li><p>RStudio depends on the R programming environment, so we have to
-install that first. In a web browser, open: <a href="https://cran.rstudio.com/bin/macosx" target="_blank">https://cran.rstudio.com/bin/macosx</a>.</p>
-<ul>
-<li>Note that newer Macs will use Silicon build, older Macs (pre 2020)
-will use Intel builds. (You can confirm your architecture under About
-this Mac: Chip; “Apple M” indicates Silicon. )</li>
-<li>Right-click to download the latest version (e.g. “R-4.4.2”“, though
-the specific version may be slightly different).</li>
-<li>Open the downloaded executable to launch the R installer.</li>
-</ul></li>
-<li><p>The installer will walk through several options; accept all the
+<p>1.1. RStudio depends on the R programming environment, so we have to
+install that first. In a web browser, open: <a href="https://cran.rstudio.com/bin/macosx" target="_blank">https://cran.rstudio.com/bin/macosx</a>. - Note that
+newer Macs will use Silicon build, older Macs (pre 2020) will use Intel
+builds. (You can confirm your architecture under About this Mac: Chip;
+“Apple M” indicates Silicon. ) - Right-click to download the latest
+version (e.g. “R-4.4.2”“, though the specific version may be slightly
+different). - Open the downloaded executable to launch the R
+installer.</p>
+<p>1.2. The installer will walk through several options; accept all the
 defaults (by repeatedly clicking <strong>Continue</strong>) and when
 prompted, click <strong>Install</strong>. The installer will prompt you
 to confirm your username/password. The installer will show a progress
 bar; the process takes about 1 minutes; click <strong>Finish</strong>
-when prompted to close the installer.</p></li>
-<li><p>To install RStudio, in a web-browser, open:</p></li>
-</ol>
-<ul>
-<li><a href="https://rstudio.com/products/rstudio/download/#download" class="uri">https://rstudio.com/products/rstudio/download/#download</a>
-and click on <strong>Download RStudio Desktop for Mac</strong>.</li>
-</ul>
-<ol start="4" style="list-style-type: decimal">
-<li><p>Opening the downloaded executable opens a window with “RStudio”
+when prompted to close the installer.</p>
+<p>1.3. To install RStudio, in a web-browser, open: - <a href="https://rstudio.com/products/rstudio/download/#download" class="uri">https://rstudio.com/products/rstudio/download/#download</a>
+and click on <strong>Download RStudio Desktop for Mac</strong>.</p>
+<p>1.4. Opening the downloaded executable opens a window with “RStudio”
 and your Applications folder icons. Drag the RStudio into the
 Applications folder. (If you see a dialog that claims RStudio already
 exists, click <strong>Keep Both</strong>.) The installer will prompt you
-to confirm your username/password.</p></li>
-<li><p>The installer will walk through several options; accept all the
+to confirm your username/password.</p>
+<p>1.5. The installer will walk through several options; accept all the
 defaults (by repeatedly clicking <strong>Next</strong>) and when
 prompted, click <strong>Install</strong>. The installer will show a
-progress bar; the process takes less than one minute.</p></li>
-<li><p>When completed, open the Applications folder and double-click on
+progress bar; the process takes less than one minute.</p>
+<p>1.6. When completed, open the Applications folder and double-click on
 the RStudio application. You will see a dialog “<em>RStudio.app is an
 app downloaded from Internet. Are you sure you want to open it?</em>”
 Click <strong>Open</strong>. This will launch a new RStudio window. The
 RStudio window is divided into several panes. The lower left pane shows
 the <strong>Console</strong> tab and will show some text followed by a
-command prompt (&gt;):</p></li>
-</ol>
+command prompt (&gt;):</p>
 <pre><code>R version 4.4.2 (2024-10-31) -- &quot;Pile of Leaves&quot;
 Copyright (C) 2024 The R Foundation for Statistical Computing
 Platform: aarch64-apple-darwin20
@@ -1724,50 +1652,103 @@ Type &#39;q()&#39; to quit R.
 
 &gt; 
 </code></pre>
-<ol start="7" style="list-style-type: decimal">
-<li><p>The workshop exercises requires the installation of special R
-libraries. To install them into RStudio:</p>
-<ul>
-<li>one at a time, copy the blocks of code below and paste into the
-RStudio <strong>Console</strong> tab</li>
-<li>make sure the block you just pasted is highlighted and press
-<strong>Enter</strong> to execute.</li>
-<li>as the installation progresses, you might see red text flash by and
-that’s ok (typically an informative blurb or minor warning that has no
-downstream impact).</li>
-</ul></li>
-</ol>
+<p>1.7. Following the workshop, you can remove R and RStudio. Open your
+Applications directory, and drag the R and RStudio application into the
+Trash.</p>
+</div>
+<div id="installing-required-libraries" class="section level3">
+<h3>Installing required libraries</h3>
+<div id="install-software-dependencies" class="section level4">
+<h4>Install software dependencies</h4>
+<p>A few R libraries depend on external software programs.</p>
+<p>2.1 Install the Miniconda package manager as detailed <a href="https://docs.anaconda.com/miniconda/install/" target="blank">here</a></p>
+<p>2.2 Open a command/teminal window and create and activate a new Conda
+environment</p>
+<pre><code>conda create -n isc
+conda activate isc</code></pre>
+<p>2.3 Install required software using Conda:</p>
+<pre><code># Required by BPCells
+conda install -y conda-forge::hdf5 
+
+# Optional: used by Leiden clustering algorithm
+conda install -y conda-forge::leidenalg
+
+# Optional: used to convert Illumina BCLs to FASTQs
+conda install -y bioconda::bcl2fastq-nextseq
+</code></pre>
+<p>2.4 Optional: Install Cell Ranger (Useful only if you have to rerun
+Cell Ranger on data you received from a sequencing facility.) See
+detailed <a href="https://www.10xgenomics.com/support/software/cell-ranger/latest/tutorials/cr-tutorial-in" target="blank">installation instructions</a> at 10x Genomics</p>
+</div>
+<div id="install-r-packages" class="section level4">
+<h4>Install R packages</h4>
+<p>3.1 The workshop exercises requires the installation of special R
+packages. To install them into RStudio:</p>
+<pre><code>- one at a time, copy the blocks of code below and paste into the RStudio 
+  **Console** tab
+- make sure the block you just pasted is highlighted and press **Enter** 
+  to execute.
+- as the installation progresses, you might see red text flash by 
+  and that&#39;s ok (typically an informative blurb or minor warning that has
+  no downstream impact). 
+  </code></pre>
 <pre><code>if (!requireNamespace(\&quot;BiocManager\&quot;, quietly = TRUE)) {\
     install.packages(\&quot;BiocManager\&quot;)\
     requireNamespace(\&quot;BiocManager\&quot;, quietly = TRUE)
 }
+
 install.packages(&quot;devtools&quot;)
-install.packages(&quot;remotes&quot;)</code></pre>
-<pre><code>remotes::install_github(&quot;satijalab/seurat&quot;, &quot;seurat5&quot;)
+install.packages(&quot;remotes&quot;)
+
+remotes::install_github(&quot;satijalab/seurat&quot;, &quot;seurat5&quot;)
 remotes::install_github(&quot;satijalab/seurat-data&quot;, &quot;seurat5&quot;)
-remotes::install_github(&quot;satijalab/seurat-wrappers&quot;, &quot;seurat5&quot;)</code></pre>
-<pre><code>devtools::install_github(&quot;immunogenomics/presto&quot;)
-BiocManager::install(&quot;glmGamPoi&quot;)</code></pre>
-<ol start="8" style="list-style-type: decimal">
-<li><p>Note: These installations automatically trigger the installation
+remotes::install_github(&quot;satijalab/seurat-wrappers&quot;, &quot;seurat5&quot;)
+
+# Allows data to live on disk instead of in RAM
+# https://github.com/bnprks/BPCells
+remotes::install_github(&quot;bnprks/BPCells/r&quot;)
+
+
+# Automatic Annotation on Cell Types of Clusters from Single-Cell RNA Sequencing Data
+# https://github.com/ZJUFanLab/scCATCH
+install.packages(&quot;scCATCH&quot;)
+
+
+# -----------------------------------------------------------------------------
+# OPTIONAL libraries
+# Some of the libraries make the code execute faster and some enable some off-menu options (e.g. Leiden clustering)
+# The workshop notes will work fine without these libraries below but may be slower.
+# -----------------------------------------------------------------------------
+
+# Presto makes it fast and easy to run Wilcoxon rank sum test and auROC analysis on large datasets
+# https://github.com/immunogenomics/presto
+devtools::install_github(&quot;immunogenomics/presto&quot;)
+
+
+# Accelerates DESeq2 diffex analysis by fiting Gamma-Poisson Generalized Linear Models Reliably
+# https://github.com/const-ae/glmGamPoi
+BiocManager::install(&quot;glmGamPoi&quot;)
+
+
+# An alternative to Louvain clustering algorithm
+# https://cran.r-project.org/package=leiden ; https://github.com/TomKellyGenetics/leiden
+install.packages(&quot;leiden&quot;)</code></pre>
+<p>3.2 Note: These installations automatically trigger the installation
 of a litany of dependent libraries so you will see repeated progress
 bars and code flying by in the Console window. The large set of
 dependencies mean that if you are installing from scratch <strong>it can
 take several hours</strong>. So now is a good time to make some
-coffee/tea (or a loaf of bread) while RStudio cooks.</p></li>
-<li><p>If there was a problem during the installation, R will display a
-block like this:</p></li>
-</ol>
+coffee/tea (or a loaf of bread) while RStudio cooks.</p>
+<p>3.3. If there was a problem during the installation, R will display a
+block like this:</p>
 <blockquote>
 <p>Warning in install.packages: Installation of package ‘xxx’ has
 non-zero exit status.</p>
 </blockquote>
 <p>If this comes up, you will need to troubleshoot the install based on
 the error or the specific package that failed.</p>
-<ol start="10" style="list-style-type: decimal">
-<li>If you don’t see the above warning, and the output ends like below
-then you the libraries were successfully installed:</li>
-</ol>
+<p>3.4. If you don’t see the above warning, and the output ends like
+below then you the libraries were successfully installed:</p>
 <blockquote>
 <p>The downloaded binary packages are in
 C:\Users\some\path\Temp\downloaded_packages</p>
@@ -1777,22 +1758,13 @@ C:\Users\some\path\Temp\downloaded_packages</p>
 # It should be version 5 or later
 suppressPackageStartupMessages(library(Seurat))
 sessionInfo()$otherPkgs$Seurat$Version</code></pre>
-<ol start="11" style="list-style-type: decimal">
-<li>Press <strong>Control-Q</strong> close RStudio; when prompted to
-<em>Save workspace image…</em>, click <strong>Don’t Save</strong>.</li>
-</ol>
-<div id="your-macintosh-workstation-is-ready-for-the-workshop.-thank-you-for-your-patience-and-fortitude." class="section level4">
-<h4>Your Macintosh workstation is ready for the workshop. Thank you for
-your patience and fortitude.</h4>
+<p>3.5. Press <strong>Control-Q</strong> close RStudio; when prompted to
+<em>Save workspace image…</em>, click <strong>Don’t Save</strong>.</p>
 </div>
+<div id="your-workstation-is-ready-for-the-workshop.-thank-you-for-your-patience-and-fortitude." class="section level4">
+<h4>Your workstation is ready for the workshop. Thank you for your
+patience and fortitude.</h4>
 </div>
-<div id="notes-macintosh" class="section level3">
-<h3>Notes (Macintosh)</h3>
-<ul>
-<li>Following the workshop, you can remove R and RStudio. Open your
-Applications directory, and drag the R and RStudio application into the
-Trash.</li>
-</ul>
 </div>
 </div>
 
