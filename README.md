@@ -8,11 +8,12 @@ This is the custom curriculum for the UM Bioinformatics Core Intro to Single Cel
   
   - [Main](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/main/html/)
   - [2/12/2025](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/2025-02-12/html/)
-  - [10/22/2024](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/2024-10-22/html/)
+  - [10/23/2024](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/2024-10-23/html/)
 
 __For site knitting:___
 
 * For repo setup, run `repo_setup.sh` script to ensure that untracked input files are copied to individual/local copy
+	* Note that when working on LH/GL
 * Before making changes, run `repo_clean.sh` to clear out the object caches and .RData files that are manually writen
 	* This will remove `geo_so` files within `rdata` folder so the hidden code blocks are executed
 	* Note that `cache` folders and `inputs` and `results` are not tracked as part of the github repo
@@ -22,3 +23,4 @@ __For site knitting:___
 		* Execute first two lines of `knit_site.R` on command line (on comps/Lighthouse or AWS) OR
 		* Open remote desktop and activate environment with rstudio 
 * Run knitting of pages in order - a hidden starting block will read in Robject modified in the previous module
+	* Note: table formatting has been updated to use kable styling so knitting will require installing both kable and klippy

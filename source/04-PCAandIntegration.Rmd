@@ -29,9 +29,9 @@ pre {
 }
 
 table.fig, th.fig, td.fig {
-  border: 1px solid black;
+  border: 1px solid lightgray;
   border-collapse: collapse;
-  padding: 15px;
+  padding: 12px;
 }
 </style>
 
@@ -50,43 +50,38 @@ background-color: CornSilk;
 source("../bin/chunk-options.R")
 knitr_fig_path("04-PCAandIntegration/04-")
 ```
-# Workflow Overview {.unlisted .unnumbered}
 
 <br/>
-<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+![](images/wayfinder/04-PCAandIntegration-Wayfinder.png)
 <br/>
 <br/>
 
 # Introduction 
 
-In this section, we will use principal component analysis (PCA) to reduce the dimensionality of the data, first by grouping correlated features and second by excluding correlated features that are less likely to correspond to interesting biological variance.
-
-<table class='fig'>
-<tr class='fig'><td class='fig'>![](images/graphical_abstracts/graphical_abstract_pca.png)</td></tr>
-<tr class='fig'><td class='fig'>A. Clustering the expression patterns directly on the feature-barcode count matrix is impractical because the expression patterns in the counts are often weak, repetitive, and diffuse (scattered across many, many genes). Also clustering cells across 20k dimensions (i.e. 20k genes) is extremely computationally intensive.<br/>
-B. Principal Component Analysis considers (PCA) the count data from new orientations that maximize the variance across the data. In this way, PCA replaces the original count matrix with new matrix of principal component (PC) values for each cell.<br/>
-C. Because PCA ranks the PCs from most variance to least, the truly discriminating PCs will be a small subset of top-most PCs. Focusing only on the top 10-30 PCs instead of 20k genes tells the same story, but cuts through 99.9% of the clutter making clustering about 1000x faster.
-</td></tr>
-</table>
+After filtering and normalization, our next goal is to cluster the cells according to their expression profiles. However, even after filtering, we expect to have about 20,000 cells assayed with approximately 21,000 genes measured per cell. This means that we are working very "high-dimensional" data that presents some challenges. 
 <br/>
 
-After filtering and normalization, our next goal is to cluster the cells according to their expression profiles. However, even after filtering, we expect to have about 20,000 cells assayed with approximately 21,000 genes measured per cell. This means that we are working very "high-dimensional" data. 
-
-High dimensional data presents two challenges:
-
-- The scale of the data makes analysis steps costly and slow     
-- There is likely uninteresting variation across our data that we want to exclude    
-
-
-Similar to the previous sections, the process of parameter selection after PCA is often iterative and while we will be showing a single option, multiple parameter choices may need to be tested.  
+<table class='fig'><tr><td class='fig'>
+![](images/graphical_abstracts/04-PCAandIntegration-Abstract.png)
+</td></tr><tr><td class='fig'>Starting with filtered, normalized data [gene x cell] for all samples - principal component analysis (PCA) can be used to reduce the dimensionality while still representing the overall gene expression patterns for each cell
+</td></tr></table>
+<br/>
+<br/>
+<br/>
 
 
 ## Objectives
 
-- Understand why PCA is used to reduce high-dimensional single-cell data prior to integration and clustering   
+- Understand why PCA is used prior to integration and clustering for single-cell data   
 - Use the `RunPCA()` function to generate principal components for our data    
-- Choose an appropriate number of principal components to capture variance in our data   
-- Use `IntegrateLayers` to integrate across our data prior to clustering   
+- Choose an appropriate number of principal components to represent our data   
+- Use `IntegrateLayers` to integrate our sample data prior to clustering   
+
+<br/>
+
+Similar to the previous sections, while you may see only a single approach in a paper and we will be showing one example of executing these steps here, testing multiple methods or parameters might be necessary 
+
+<br/>
 
 ---
 
@@ -121,36 +116,55 @@ if (!primed) {
 --->
 
 <!--- add PCA illustration here? --->
-In practical terms, Principal component analysis (PCA) creates a simpler, more concise version of data while preserving the same "story". For example, we can think of a full single-cell data set as similar to the full Lord of the Rings trilogy - large and complex with quite a bit of detail that might be repeated and isn't necessary to understand the overall plot and make running the analysis prohibitively slow and costly. 
+The high dimensionality of single-cell data present two major challenges for analysis:
 
-Like a Cliff notes version or a movie pitch for the book series, the PCs capture correlated expression and reduce the size and complexity of the data, while still allowing the overall structure of the data - that we would expect to be related to cell-types or plot points in the analogy - to be represented, while also making the computation faster.
+- The scale makes analysis steps costly and slow     
+- The sparseness means there is likely uninteresting variation that should be excluded    
 
-![](./images/curriculum/04-PCAandIntegration/PCA_purpose.png)
+
+In practical terms, Principal component analysis (PCA) creates a simpler, more concise version of data while preserving the same "story". For example, we can think of watching football - attending a game in person is exciting but can take hours, especially considering the time that will be spent traveling and waiting. Conversely, watching a highlight reel of those same game might not give you the full experience, but by seeing the key plays you can get a good understand what happened in the game in a fraction of the time. 
+
+Similarly to a highlight reel, running PCA allows us to select PCs that represent correlated gene expression to reduce the size and complexity of the data while still capturing the overall expression patterns and also reducing computation time.
+
+![](./images/curriculum/04-PCAandIntegration/04-PCAandIntegration_purpose.png)
 
 ### PCA example
 
-To understand how PCA works for single-cell data, we can consider a smaller dataset measuring the expression of four genes measured in just two cells, we could plot the expression of those four genes, with data from one cell plotted on the x-axis and the second cell plotted on the y-axis.
+To understand how PCA works for single-cell data, we can consider a smaller dataset measuring the expression of four genes measured in just two cells and plot the expression of those four genes, with data from one cell plotted on the x-axis and the second cell plotted on the y-axis.
 
-![A simple PCA example (from HBC)](./images/curriculum/04-PCAandIntegration/HBC-PCA_2sample_genes.png)
-<!--- Update plot to replace "Sample" with "cell" in figure and table --->
+![A simple PCA example (from HBC)](./images/curriculum/04-PCAandIntegration/HBC-PCA_2cell_genes.png)
 
-If we wanted to represent the most variation across the data, we would draw a diagonal line between gene B and gene C - this would represent the first principal component (PC). However, this line doesn't capture all the variance in this data as the genes also vary above and below the line, so we could draw another line (at a right angle to the first) representing the second most variation in the data - which would represent the second principal component (PC). 
+If we wanted to represent the most variation across the data, we would draw a diagonal line between gene B and gene C - this would represent the first principal component (PC). However, this line doesn't capture all the variance in this data as the genes also vary above and below the line, so we could draw another line (at a right angle to the first) representing the second most variation in the data - which would represent the second PC. 
 
-![PCA gene loadings (from HBC)](./images/curriculum/04-PCAandIntegration/HBC-PCA_2sample_variation3.png)
-<!--- Update plot to replace "Sample" with "cell" in figure ---> 
+![PCA gene loadings (from HBC)](./images/curriculum/04-PCAandIntegration/HBC-PCA_2cell_variation3.png)
 
 <!--- <Consider moving to dropdown and adding figure to show loadings> However, as we can see in the example below, genes near the end of each line are those with the greatest influence on the direction and length of the PC.-->
 
 
-We'll skip the process of generating all possible PCs, but running PCA on our data will result in a score for each cell for each PC and each gene will have a weight or loading for a given PC. By definition, the PCs capture the greatest factors of heterogeneity in decreasing order in the data set [(source)](https://bioconductor.org/books/3.13/OSCA.basic/dimensionality-reduction.html#principal-components-analysis).
+We won't illustrate the process of generating all possible PCs, but running PCA on our data will result in a score for each cell for each PC and each gene will have a weight or loading for a given PC. By definition, the PCs capture the greatest factors of heterogeneity in decreasing order in the data set [(source)](https://bioconductor.org/books/3.13/OSCA.basic/dimensionality-reduction.html#principal-components-analysis).
 
 ## Why PCA is useful for single-cell data
 
-In contrast to bulk RNA-seq, where the majority of the variance in a given dataset are usually explained by the first and second PC, for single-cell data we expect that many more PCs are contributing to the overall variance. 
+In contrast to bulk RNA-seq, where the majority of the variance is usually explained by the first and second PC, for single-cell data we expect that many more PCs are contributing to the overall variance. 
 
-However, we can assume that biological processes affect multiple genes in a coordinated way. Therefore the top PCs likely represent biological structure rather than random technical or biological noise, which affects each gene independently and and we can use the top several PCs to approximate the full data set in downstream analysis ([source](https://bioconductor.org/books/3.12/OSCA/dimensionality-reduction.html#principal-components-analysis)).
 
-This reduction in dimensionality, for example from 10,000 cells x 19,000 genes to 20 PCs, allows us to select PCs that are more likely to correspond to biological variation related to the expected cell types/subtypes and make the downstream clustering computationally feasible.
+### Sparsity in single-cell data
+
+In addition to being "high-dimensional", we expect the data to be both "sparse" and "noisy". Sparse in the sense that many genes will either not be expressed or not measured in many of the cells and have zero values. Noisy due to biological variability and technical variability due to the practical limitations of both capture and sequencing depth [(source)](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr).
+
+> *Note on zero "inflation" of single-cell data*
+>
+> Single-cell data is sometimes described as "zero inflated", however work by [Svensson](https://www.biorxiv.org/content/10.1101/582064v1.full) has challenged that characterization and argued that the higher number of zeros observed in scRNA-seq compared to bulk RNA-seq is more likely due to biological variance and lower sequencing saturation than technical artifacts. Work by [Choi et al. (2020)](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-020-02103-2) support that zeros in single-cell data are due to biology but [Jiang et al. (2022)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8783472/) delves more into the "controversy" zero inflation, including common approaches for handling zeros and the downstream impacts.
+
+For sparse, high-dimensional, _biological_ data, we expect many genes to have correlated expression as they would be impacted by the same biological process while other genes to have either low (more noisy) or have similar expression and therefore are not as important for identifying cell-type/subtypes. So we can use the top several PCs to approximate the full data set for the purpose of ([source](https://bioconductor.org/books/3.12/OSCA/dimensionality-reduction.html#principal-components-analysis)).
+
+
+<details>
+    <summary>*More detail on dimensionality reduction *</summary>
+    The [Ouyang Lab has a "gentle introduction" section of their materials](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr) that goes into greater details on dimensionality reduction including how similar strategies are used in deep learning models. Additionaly, the OSCA book has a [chapter on Dimensionality reduction](https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html) that has useful context. 
+</details>
+<br>
+<br>
 
 > #### More context using PCA for single-cell data {.unlisted .unnumbered}
 >
@@ -158,23 +172,6 @@ This reduction in dimensionality, for example from 10,000 cells x 19,000 genes t
 >
 > For additional detail on , the OSCA chapter on [Principal components analysis](https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html) includes a more descriptive overview.
 
-### Sparsity in single-cell data
-
-In addition to the "high-dimensionality" expected for single-cell data, we expect the data to be both "sparse" and "noisy". Sparse in the sense that many genes will either not be expressed or not measured in many of the cells and have zero values. Noisy due to biological variability and the practical limitations of both capture and sequencing depth [(source)](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr).
-
-> *Note on zero "inflation" of single-cell data*
->
-> Single-cell data is sometimes described as "zero inflated", however work by [Svensson](https://www.biorxiv.org/content/10.1101/582064v1.full) has challenged that characterization and argued that the higher number of zeros observed in scRNA-seq compared to bulk RNA-seq is more likely due to biological variance and lower sequencing saturation than technical artifacts. Work by [Choi et al. (2020)](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-020-02103-2) support that zeros in single-cell data are due to biology but [Jiang et al. (2022)](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8783472/) delves more into the "controversy" zero inflation, including common approaches for handling zeros and the downstream impacts.
-
-For sparse, high-dimensional, _biological_ data, we expect many genes to have correlated expression as they would be impacted by the same biological process and for other genes to have either low (more noisy) or similar expression across the cell population and therefore not likely to correspond to cell-type/subtypes. 
-
-So how do we determine what and how many genes to use before classifying cells into clusters based on their expression?
-
-<details>
-    <summary>*More detail on dimensionality reduction *</summary>
-    The [Ouyang Lab has a "gentle introduction" section of their materials](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr) that goes into greater details on dimensionality reduction including how similar strategies are used in deep learning models. Additionaly, the OSCA book has a [chapter on Dimensionality reduction](https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html) that has useful context. 
-</details>
-<br>
 
 <br>
 
@@ -182,7 +179,7 @@ So how do we determine what and how many genes to use before classifying cells i
 
 <!--- Add introduction to function, including link to documentation --->
 
-Since PCA is sensitive to scale, we will run it on the SCT normalized assay ([reference](https://ouyanglab.com/singlecell/basic.html#pca-principal-component-analysis)). We will name the reduction in an informative way to keep them clear for us in the future. In this case, our data has not yet been integrated, but it has been SCT normalized. So we will name the reduction `unintegrated.sct.pca`. Note that `SCTTransform()` returned a set of highly variable genes, and the `RunPCA()` function will use this subset to determine the PCs and genes associated with those PCs.
+Since PCA is sensitive to scale, we will use the SCT normalized assay ([reference](https://ouyanglab.com/singlecell/basic.html#pca-principal-component-analysis)). We will name the reduction in an informative way to keep them clear for us in the future. In this case, our data has not yet been integrated, but it has been SCT normalized. So we will name the reduction `unintegrated.sct.pca`. Note that `SCTTransform()` returned a set of highly variable genes, and the `RunPCA()` function will use this subset to determine the PCs and genes associated with those PCs.
 
 
 ```{r, run_pca, warning = FALSE, message = FALSE}
@@ -259,8 +256,7 @@ ggsave(filename = 'results/figures/qc_pca_loadings.png', width = 12, height = 6,
 
 ### Visualizing relative contributions of each PC
 
-
-One way to evaluate the PCs to include is by looking at an elbow plot, which shows the percent variance explained by successive PCs. We'll use the `ElbowPlot()` function to do this, specifying that the first 50 PCs be plotted. 
+So how do we determine how many PCs to use before classifying cells into clusters based on their expression? One way to evaluate how many PCs to use for clustering is by looking at an elbow plot, which shows the percent variance explained by successive PCs. We'll use the `ElbowPlot()` function to do this, specifying that the first 50 PCs be plotted. 
 
 ```{r, elbow_plot, fig.show='hold', out.width='80%'}
 # Visualize how many PCs to include using an elbow plot -------------------
@@ -270,29 +266,70 @@ ggsave(filename = 'results/figures/qc_sct_elbow_plot.png', width = 8, height = 8
 #  =========================================================================
 ```
 
-In this plot, we could arbitrarily choose a number along the x-axis that looks like a sharp change in the variance from one PC to the next, that is, an elbow. Of course, while that's often the recommendation in tutorials, the choice of where the point of the "elbow" is, is not always obvious, and this plot is no different. We could also try to quantify our choice.
+In this plot, we could arbitrarily choose a number along the x-axis that looks like a sharp change in the variance from one PC to the next, that is, an elbow. Of course, while that's often the recommendation in tutorials, the choice of where the point of the "elbow" is, is not always obvious, and this plot is no different.
 
 ## Choosing the number of significant PCs for dimensionality reduction
 
 <!-- Section may still need to be edited more & consider adding a figure --> 
-As we discussed above, we don't want to use all the PCs generated for a single cell data set but instead want to select a subset to limit the downstream steps to variation that's more likely to correspond to cell types or subtypes. So how many PCs should be used?
+An important consideration for determining how many PCs to select for your single-cell analysis is to understand the "resolution" of your biological question. Is answering your biological question dependent on identifying rarer cell types or specific subtypes? Or are broader cell-types more relevant and less PCs are needed?
 
-A good starting point for determining how many PCs to select for your single-cell analysis is to understand the "resolution" of your biological question. Is answering your biological question dependent on identifying rarer cell types or specific subtypes? Or are broader cell-types more relevant?
-
-For this dataset, we are expecting a diversity of cell types and cell populations that mediate wound healing, but are also that are part of the aberrant transition to bone, which might be more rare in the population. So for this dataset, we might want to consider starting with more PCS rather than too few PCs to start. Again, in a full analysis workflow, our selection at this step might be more of a starting point for further iterations than a final decision. 
+For this dataset, we are expecting a diversity of cell types and cell populations that mediate wound healing, but also an aberrant transition to bone, which might include rarer cells in the population. So for this dataset, we can consider starting with more PCS rather than too few PCs to start. Again, in a full analysis workflow, our selection at this step might be more of a starting point for further iterations than a final decision. 
 
 <!-- Section may need more editing
 Related - how important is that decision to the downstream impact (e.g. how much does changing the number of PCs change the clustering)?
 --> 
 
 
-### An algorithmic approach to estimate an optimal number of PCs
+### An algorithmic approach
 
-Instead of choosing based on the elbow plot by sight alone, we can try to quantify our choice. Here we create a function to return a minimum PCs based on two possible metrics (cumulative variation or above a minimum step size) and then we'll apply that function to our data:
+Instead of choosing based on the elbow plot by sight alone, we can try to 
+quantify our choice algorithmically. Here we create a function to return a 
+recommended PC based on two possible metrics ( (A) cumulative variation or (B) 
+above a minimum step size). We can apply that function to our data to get a good
+starting point for number of PCs to include.
+
+
+```{r, optimal_pcs}
+# Estimate optimal PCs for clustering with a function -------------------------
+optimal_pcs = function(so, reduction) {
+    # quantitative check for number of PCs to include
+    pct = so@reductions[[reduction]]@stdev / sum(so@reductions[[reduction]]@stdev) * 100
+    cum = cumsum(pct)
+    co1 = which(cum > 90 & pct < 5)[1]
+    co2 = sort(which((pct[1:length(pct)-1] - pct[2:length(pct)]) > .1), decreasing = T)[1] + 1
+    pcs = min(co1, co2) 
+    
+    return(pcs)
+}
+
+# Apply function to our data
+pcs = optimal_pcs(geo_so, 'unintegrated.sct.pca')
+pcs
+
+# Based on the heatmap, we'll modify to 13 PCs
+pcs = 13
+
+# =========================================================================
+```
+
+
+Again, this number is likely a starting point and may need to be revised depending on the outcome of the downstream steps. 
+
+<summary>Optional: A more advanced function for picking PCs</summary>
+<details>
+
+This function is derived from the function above; it's useful for understanding
+the overall variance of the PCs as well as visualizing the two kinds of cutoffs. 
+It returns the same recommended PCs as the original function, but also:
+
+- prints more details 
+- prints a plot of the PC variance with key PCs highlighted 
+- returns a named list of detailed results
+
 
 ```{r, estimate_optimal_pcs_fn}
 # Define a function to estimate optimal PCs for clustering ----------------
-estimate_optimal_pcs = function(so, reduction, verbose=TRUE) {
+optimal_pcs_advanced = function(so, reduction, print_plot=TRUE, verbose=TRUE) {
   # quantitative check for number of PCs to include
   threshold_var_cum_min = 90
   threshold_var_pct_max = 5
@@ -331,6 +368,10 @@ estimate_optimal_pcs = function(so, reduction, verbose=TRUE) {
          x = 'Principal Component', 
          y = 'Cumulative percent variance')
 
+  if (print_plot) {
+          print(p)
+  }
+  
   if (verbose) {
      results = paste(
                 sprintf('Reduction %s: %s PCs (total var = %s)', 
@@ -348,7 +389,6 @@ estimate_optimal_pcs = function(so, reduction, verbose=TRUE) {
                 sprintf('\tRecommended num of PCs: %s', pcs),
                 sep='\n')
       message(results)
-      print(p)
   }
   
   return(list(recommended_pcs=pcs, plot=p, co1=co1, co2=co2, df=plot_df))
@@ -359,7 +399,7 @@ estimate_optimal_pcs = function(so, reduction, verbose=TRUE) {
 
 ```{r, apply_estimate_optimal_pcs}
 # Apply function to our data ----------------------------------------------
-optimal_pcs = estimate_optimal_pcs(geo_so, 'unintegrated.sct.pca')
+optimal_pcs = optimal_pcs_advanced(geo_so, 'unintegrated.sct.pca')
 ```
 
 ```{r, set_pcs}
@@ -377,10 +417,18 @@ pcs = 13
 
 Again, this number is likely a starting point and may need to be revised depending on the outcome of the downstream steps. 
 
-> #### Other more quanitative parameter selection options {.unlisted .unnumbered}
-> 
-> While outside the scope of this workshop, there are community efforts to develop more sophisticated methods to select an appropriate number of PCs, like the [chooseR package](https://github.com/rbpatt2019/chooseR) [findPC package](https://academic.oup.com/bioinformatics/article/38/10/2949/6565314) or [using clustering trees](https://lazappi.id.au/posts/2017-07-19-building-a-clustering-tree/) to evaluate the stability of parameter choices.
+While outside the scope of this workshop, there are community efforts to develop 
+more sophisticated methods to select an appropriate number of PCs; here are a 
+few popular approaches:
 
+- [chooseR package](https://github.com/rbpatt2019/chooseR)
+- [findPC package](https://academic.oup.com/bioinformatics/article/38/10/2949/6565314)
+- [using clustering trees](https://lazappi.id.au/posts/2017-07-19-building-a-clustering-tree/)
+
+<br/>
+<hr/>
+</details>
+<br/>
 
 ### Visualizing our PC results
 
@@ -392,9 +440,12 @@ In addition to selecting a reduced number of PCs to represent our data, we can a
 
 ```{r, pca_loading_plots, message=FALSE, fig.show='hold'}
 # Visualize PCA (PC1 and PC2, unintegrated) -------------------------------
-DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'orig.ident') # first label by sample
-DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'day') # then label by day
-ggsave(filename = 'results/figures/qc_pca_plot_unintegrated_sct_day.png', width = 7, height = 6, units = 'in') # save 
+# first label by sample
+DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'orig.ident') 
+ # then label by day
+DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'day')
+ # save 
+ggsave(filename = 'results/figures/qc_pca_plot_unintegrated_sct_day.png', width = 7, height = 6, units = 'in')
 
 #  =========================================================================
 ```
@@ -404,8 +455,7 @@ In the first plot with each cell labeled by the original sample name, it looks l
 
 # Integrate Layers
 
-
-Based on our PCA plot and often a standard part of multiple sample scRNA-seq analysis, we will integrate our data across all samples. Currently, each sample is stored as a layer in our `geo_so` object, Since earlier in the workshop, we used `SCTransform()` to normalize our data, select variable genes and then have generated a PCA reduction, we can use the `IntegrateLayers()` function to do that.
+Before proceeding with clustering, we will integrate our data across all samples. This is a common step for scRNA-seq analyses that include multiple samples and should mitigate the differences between samples we saw in our PCA plot. Currently, each sample is stored as a layer in our `geo_so` object, Since earlier in the workshop, we used `SCTransform()` to normalize our data, select variable genes and then have generated a PCA reduction, we can use the `IntegrateLayers()` function to do that.
 
 ![CCA integration illustration, modified from Stuart and Butler, 2018 -https://doi.org/10.1101/460147](./images/curriculum/04-PCAandIntegration/HBC-CCA-Integration_simplified.png)
 
@@ -413,7 +463,7 @@ The details of how integration works depends on the method, but for the RPCA app
 
 New to Seurat v5 are improvements that make selecting different integration methods much easier. The results of each alternative integration method are stored within the same `Seurat` object, which makes comparing downstream effects much easier.  So, if we wanted to run the `RPCAIntegration` method, we would run (**but we won't here**):
 
-```{r, integrate_layers, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE, echo=FALSE, include=FALSE}
+```{r, integrate_layers_hidden, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE, echo=FALSE, include=FALSE}
 ### Hidden code block to generate integrated data
 geo_so = IntegrateLayers(
   object = geo_so, 

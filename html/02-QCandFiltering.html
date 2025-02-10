@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2024-12-16" />
+<meta name="date" content="2025-02-10" />
 
 <title>Secondary Quality Control and Filtering</title>
 
@@ -415,7 +415,8 @@ div.tocify {
 <h1 class="title toc-ignore">Secondary Quality Control and
 Filtering</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2024-12-16</h4>
+
+<h4 class="date">2025-02-10</h4>
 
 </div>
 
@@ -432,9 +433,9 @@ pre {
 }
 
 table.fig, th.fig, td.fig {
-  border: 1px solid black;
+  border: 1px solid lightgray;
   border-collapse: collapse;
-  padding: 15px;
+  padding: 12px;
 }
 
 table{
@@ -445,41 +446,35 @@ table{
   addClassKlippyTo("pre.r, pre.markdown, pre.bash");
   addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
 </script>
-<div id="workflow-overview" class="section level1 unlisted unnumbered">
-<h1 class="unlisted unnumbered">Workflow Overview</h1>
-<p><br/>
-<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
+<p><br/> <img src="images/wayfinder/02-QCandFiltering-Wayfinder.png" />
 <br/> <br/></p>
-</div>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>As discussed at the start of the workshop, single-cell experiments
-using 10x Chromium instrument aim to have droplets with one cell plus
-one bead. However this is an inherently imperfect process and there are
-other important considerations like how healthy or intact the cell was
-at the time of measurement.</p>
-<p>In this section, our goal is to use filtering thresholds to remove
-“cells” that were poorly measured, not cells at all, or included more
-than one cell.</p>
+<p>Single-cell experiments using the 10x Chromium instrument are
+supposed to have one cell and one bead in the droplet. However this is
+an inherently imperfect process and there are other important
+considerations like how healthy or intact the cell was at the time of
+measurement. In this section, our goal is to use filtering thresholds to
+remove “cells” that were poorly measured, aren’t actually cells, or had
+more than one cell.</p>
 <table class="fig">
 <tr>
 <td class="fig">
-<img
-src="images/graphical_abstracts/graphical_abstract_QC_and_filtering.png" />
+<img src="images/graphical_abstracts/02-QCandFiltering-Abstract.png" />
 </td>
 </tr>
 <tr>
 <td class="fig">
-The Cell Ranger barcode feature matrix outputs (A) is a mix of good and
-poor quality cells (B). We can use expression patterns to further
-visualize and filter to the subset of putative healthy cells (C) to
-improve downstream analysis.
+The Cell Ranger barcode feature matrix is a mix of good and poor quality
+cells. We can use different metrics to visualize and filter to a subset
+of putatively healthy cells to improve downstream analysis.
 </td>
 </tr>
 </table>
-<p><br/> Similar to many other areas of research, there are often gaps
-between how single-cell data is presented versus the reality of running
-an analysis. For example, only the final filtering thresholds might be
+<p><br/></p>
+<p>Similar to many other areas of research, there are often gaps between
+how single-cell data is presented versus the reality of running an
+analysis. For example, only the final filtering thresholds might be
 reported in a paper but our process for choosing those is likely to be
 more iterative and include some trial and error.</p>
 <div id="objectives" class="section level2">
@@ -581,7 +576,7 @@ geo_so$percent.mt = PercentageFeatureSet(geo_so, pattern = &#39;^mt-&#39;)
 # Use summary() to quickly check the range of values
 summary(geo_so$percent.mt)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  0.000   1.817   2.582   5.281   3.865  98.244 </code></pre>
+  0.000   1.817   2.582   5.282   3.865  98.244 </code></pre>
 <p>Just looking at the summary, we can see that there are some cells
 with a high percentage of mitochondrial reads.</p>
 <div class="float">
@@ -656,15 +651,15 @@ cell_counts_pre_tbl</code></pre>
 1   HO.Day0.replicate1            1183
 2   HO.Day0.replicate2             689
 3   HO.Day0.replicate3            1310
-4   HO.Day0.replicate4            1053
-5   HO.Day7.replicate1            5765
+4   HO.Day0.replicate4            1052
+5   HO.Day7.replicate1            5762
 6   HO.Day7.replicate2            6020
-7   HO.Day7.replicate3            6285
-8   HO.Day7.replicate4            5166
+7   HO.Day7.replicate3            6286
+8   HO.Day7.replicate4            5167
 9  HO.Day21.replicate1            2321
 10 HO.Day21.replicate2            1322
 11 HO.Day21.replicate3            1275
-12 HO.Day21.replicate4            2827</code></pre>
+12 HO.Day21.replicate4            2829</code></pre>
 <p>It appears that the Day 7 samples have systematically more cells than
 the other days. If you had an idea of how many cells you expected to see
 per sample, this table can help you check that expectation and determine
@@ -763,13 +758,13 @@ subset(geo_so, subset = nFeature_RNA &gt; 500 &amp; percent.mt &lt; 25)@meta.dat
 3   HO.Day0.replicate3             1191
 4   HO.Day0.replicate4              943
 5   HO.Day7.replicate1             4928
-6   HO.Day7.replicate2             4932
+6   HO.Day7.replicate2             4933
 7   HO.Day7.replicate3             4897
-8   HO.Day7.replicate4             4242
+8   HO.Day7.replicate4             4243
 9  HO.Day21.replicate1             2000
 10 HO.Day21.replicate2             1182
 11 HO.Day21.replicate3             1166
-12 HO.Day21.replicate4             2470</code></pre>
+12 HO.Day21.replicate4             2471</code></pre>
 </div>
 <div id="adaptive-thresholds" class="section level2">
 <h2>Adaptive thresholds</h2>
@@ -792,7 +787,7 @@ be more lenient than the usual 5-10% cutoff for mitochondrial reads.</p>
 geo_so = subset(geo_so, subset = nFeature_RNA &gt; 300 &amp; percent.mt &lt; 15)
 geo_so</code></pre>
 <pre><code>An object of class Seurat 
-26489 features across 31560 samples within 1 assay 
+26489 features across 31559 samples within 1 assay 
 Active assay: RNA (26489 features, 0 variable features)
  1 layer present: counts</code></pre>
 <p>And let’s record the number of cells remaining after filtering:</p>
@@ -803,15 +798,15 @@ cell_counts_post_tbl</code></pre>
 1   HO.Day0.replicate1             1053
 2   HO.Day0.replicate2              629
 3   HO.Day0.replicate3             1222
-4   HO.Day0.replicate4              971
-5   HO.Day7.replicate1             5215
+4   HO.Day0.replicate4              970
+5   HO.Day7.replicate1             5213
 6   HO.Day7.replicate2             5324
 7   HO.Day7.replicate3             5626
-8   HO.Day7.replicate4             4690
+8   HO.Day7.replicate4             4691
 9  HO.Day21.replicate1             2004
 10 HO.Day21.replicate2             1186
 11 HO.Day21.replicate3             1178
-12 HO.Day21.replicate4             2462</code></pre>
+12 HO.Day21.replicate4             2463</code></pre>
 <p>Let’s combine the pre and post tables:</p>
 <pre class="r"><code># Show cell counts before and after filtering --------------------------
 cell_counts_tbl = cell_counts_pre_tbl %&gt;% left_join(cell_counts_post_tbl, by = &#39;orig.ident&#39;)
@@ -820,15 +815,15 @@ cell_counts_tbl</code></pre>
 1   HO.Day0.replicate1            1183             1053
 2   HO.Day0.replicate2             689              629
 3   HO.Day0.replicate3            1310             1222
-4   HO.Day0.replicate4            1053              971
-5   HO.Day7.replicate1            5765             5215
+4   HO.Day0.replicate4            1052              970
+5   HO.Day7.replicate1            5762             5213
 6   HO.Day7.replicate2            6020             5324
-7   HO.Day7.replicate3            6285             5626
-8   HO.Day7.replicate4            5166             4690
+7   HO.Day7.replicate3            6286             5626
+8   HO.Day7.replicate4            5167             4691
 9  HO.Day21.replicate1            2321             2004
 10 HO.Day21.replicate2            1322             1186
 11 HO.Day21.replicate3            1275             1178
-12 HO.Day21.replicate4            2827             2462</code></pre>
+12 HO.Day21.replicate4            2829             2463</code></pre>
 <p>We can now easily see how many cells we started with, and how many we
 retained for downstream analysis. Let’s write this table to a file.</p>
 <pre class="r"><code>write_csv(cell_counts_tbl, file = &#39;results/tables/cell_filtering_counts.csv&#39;)</code></pre>

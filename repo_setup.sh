@@ -1,4 +1,7 @@
-# Setup input directory, assuming you're at repo root
+## Setup input directory, assuming you're at repo root
 mkdir -p source/inputs
-# Note this path must change if we're knitting on the AWS server
-cp -rl /nfs/mm-isilon/bioinfcore/ActiveProjects/rcavalca/scworkshop_code_testing/ISC_R/inputs/10x_mat_filtered source/inputs
+
+## Pull lastest version of inputs (with updated CellRanger) - 1.28.25
+## Note that path to input data will be different if we're knitting on the AWS server
+cp -r /nfs/mm-isilon/bioinfcore/ActiveProjects/workshop/inputs/* source/inputs 
+# -l flag triggered failure for updated input data 

@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-01-03" />
+<meta name="date" content="2025-02-10" />
 
 <title>Clustering and Projection</title>
 
-<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -41,6 +41,8 @@
 <link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
 <link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
 <script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
 <!--
 Favicon dervied from
 https://twemoji.twitter.com/
@@ -414,15 +416,17 @@ div.tocify {
 
 <h1 class="title toc-ignore">Clustering and Projection</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-01-03</h4>
+<h4 class="date">2025-02-10</h4>
 
 </div>
 
 
 <style type="text/css">
-body, td {
+
+body {
    font-size: 18px;
 }
+
 code.r{
   font-size: 12px;
 }
@@ -431,16 +435,11 @@ pre {
 }
 
 table.fig, th.fig, td.fig {
-  border: 1px solid black;
+  border: 1px solid lightgray;
   border-collapse: collapse;
-  padding: 15px;
+  padding: 12px;
 }
 
-table.fig, th.fig, td.fig {
-  border: 1px solid black;
-  border-collapse: collapse;
-  padding: 15px;
-}
 </style>
 <script>
   addClassKlippyTo("pre.r, pre.markdown, pre.bash");
@@ -448,9 +447,9 @@ table.fig, th.fig, td.fig {
 </script>
 <div id="workflow-overview" class="section level1 unlisted unnumbered">
 <h1 class="unlisted unnumbered">Workflow Overview</h1>
-<p><br/>
-<img src="images/wayfinder/wayfinder.png" alt="wayfinder" style="height: 400px;"/>
-<br/> <br/></p>
+<p><br/> <img
+src="images/wayfinder/05-ProjectionAndClustering-Wayfinder.png" /> <br/>
+<br/></p>
 </div>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
@@ -461,41 +460,34 @@ samples before determining if there are differences in the proportions
 of these populations or differences in gene expression within these
 populations between experimental conditions.</p>
 <table class="fig">
-<tr class="fig">
+<tr>
 <td class="fig">
 <img
-src="images/graphical_abstracts/graphical_abstract_cluster_projection.png" />
+src="images/graphical_abstracts/05-ProjectionAndClustering-Abstract.png" />
 </td>
 </tr>
-<tr class="fig">
+<tr>
 <td class="fig">
-A. The prior step used the filtered, normalized counts as input to a
-prinicpal component analysis. The top principle components (PCs) are the
-input to the clustering step. <br/> B. Cells are plotted in a
-high-dimensional space (where the num dimesnions = num of included PCs,
-e.g. 15 dimensions); cells with similar gene expression profiles are
-closer to each other and are clustered together. <br/> C. The cells
-clusters are projected from the high-dimensional space (e.g. 15
-dimensions) down to two-dimensional space for visualization.
+Starting with reduced dimensionality data [PCs x cells] for all samples
+- cells are organized into networks and then split up to into clusters
+with similar expression programs, regardless of experimental condition.
 </td>
 </tr>
 </table>
 <p><br/></p>
-<p>In this section, we will demonstrate how to generate clusters using
-Seurat’s graph based clustering approach and visualize those clustering
-assignments via a lower-dimensional projection of the full dataset.</p>
+<div id="objectives" class="section level2">
+<h2>Objectives</h2>
+<ul>
+<li>Understand the clustering process and input parameters</li>
+<li>Generate initial clusters using <code>FindNeighbors</code> and
+<code>FindClusters</code></li>
+<li>Visualize our clustering results</li>
+</ul>
 <p>Like other steps in our analysis, multiple parameters may need to be
 tested and evaluated while we would expect that only the final would be
 reported. Clustering is considered part of data exploration so an
 iterative approach is reasonable, and often expected (<a
 href="https://bioconductor.org/books/3.15/OSCA.basic/clustering.html">source</a>).</p>
-<div id="objectives" class="section level2">
-<h2>Objectives</h2>
-<ul>
-<li>Understand the clustering process and input parameters</li>
-<li>Generate initial clusters using ``</li>
-<li>Visualize our clustering results</li>
-</ul>
 <hr />
 </div>
 </div>
@@ -615,34 +607,266 @@ geo_so = FindClusters(geo_so,
 head(geo_so@meta.data)</code></pre>
 <pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
-Number of nodes: 31560
-Number of edges: 1047628
+Number of nodes: 31559
+Number of edges: 1029500
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.9428
-Number of communities: 20
-Elapsed time: 4 seconds</code></pre>
-<pre><code>                                            orig.ident nCount_RNA nFeature_RNA  day  replicate
-HODay0replicate1_AAACCTGAGAGAACAG-1 HO.Day0.replicate1      10234         3226 Day0 replicate1
-HODay0replicate1_AAACCTGGTCATGCAT-1 HO.Day0.replicate1       3158         1499 Day0 replicate1
-HODay0replicate1_AAACCTGTCAGAGCTT-1 HO.Day0.replicate1      13464         4102 Day0 replicate1
-HODay0replicate1_AAACGGGAGAGACTTA-1 HO.Day0.replicate1        577          346 Day0 replicate1
-HODay0replicate1_AAACGGGAGGCCCGTT-1 HO.Day0.replicate1       1189          629 Day0 replicate1
-HODay0replicate1_AAACGGGCAACTGGCC-1 HO.Day0.replicate1       7726         2602 Day0 replicate1
-                                    percent.mt nCount_SCT nFeature_SCT integrated.sct.rpca.clusters
-HODay0replicate1_AAACCTGAGAGAACAG-1   1.240962       6062         2867                            1
-HODay0replicate1_AAACCTGGTCATGCAT-1   7.536415       4607         1509                            1
-HODay0replicate1_AAACCTGTCAGAGCTT-1   3.112002       5314         2370                            6
-HODay0replicate1_AAACGGGAGAGACTTA-1   1.559792       3877         1031                           10
-HODay0replicate1_AAACGGGAGGCCCGTT-1   3.700589       4166          915                            0
-HODay0replicate1_AAACGGGCAACTGGCC-1   2.938131       5865         2588                            1
-                                    seurat_clusters
-HODay0replicate1_AAACCTGAGAGAACAG-1               1
-HODay0replicate1_AAACCTGGTCATGCAT-1               1
-HODay0replicate1_AAACCTGTCAGAGCTT-1               6
-HODay0replicate1_AAACGGGAGAGACTTA-1              10
-HODay0replicate1_AAACGGGAGGCCCGTT-1               0
-HODay0replicate1_AAACGGGCAACTGGCC-1               1</code></pre>
+Maximum modularity in 10 random starts: 0.9447
+Number of communities: 23
+Elapsed time: 5 seconds</code></pre>
+<div
+style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:100%; overflow-x: scroll; width:1000px; ">
+<table class="table table-condensed" style="font-size: 12px; font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+orig.ident
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+nCount_RNA
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+nFeature_RNA
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+day
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+replicate
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+percent.mt
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+nCount_SCT
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+nFeature_SCT
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+integrated.sct.rpca.clusters
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+seurat_clusters
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACCTGAGAGAACAG-1
+</td>
+<td style="text-align:left;">
+HO.Day0.replicate1
+</td>
+<td style="text-align:right;">
+10234
+</td>
+<td style="text-align:right;">
+3226
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+<td style="text-align:right;">
+1.240962
+</td>
+<td style="text-align:right;">
+6061
+</td>
+<td style="text-align:right;">
+2867
+</td>
+<td style="text-align:left;">
+6
+</td>
+<td style="text-align:left;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACCTGGTCATGCAT-1
+</td>
+<td style="text-align:left;">
+HO.Day0.replicate1
+</td>
+<td style="text-align:right;">
+3158
+</td>
+<td style="text-align:right;">
+1499
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+<td style="text-align:right;">
+7.536416
+</td>
+<td style="text-align:right;">
+4609
+</td>
+<td style="text-align:right;">
+1509
+</td>
+<td style="text-align:left;">
+6
+</td>
+<td style="text-align:left;">
+6
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACCTGTCAGAGCTT-1
+</td>
+<td style="text-align:left;">
+HO.Day0.replicate1
+</td>
+<td style="text-align:right;">
+13464
+</td>
+<td style="text-align:right;">
+4102
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+<td style="text-align:right;">
+3.112002
+</td>
+<td style="text-align:right;">
+5319
+</td>
+<td style="text-align:right;">
+2386
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACGGGAGAGACTTA-1
+</td>
+<td style="text-align:left;">
+HO.Day0.replicate1
+</td>
+<td style="text-align:right;">
+577
+</td>
+<td style="text-align:right;">
+346
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+<td style="text-align:right;">
+1.559792
+</td>
+<td style="text-align:right;">
+3880
+</td>
+<td style="text-align:right;">
+1032
+</td>
+<td style="text-align:left;">
+11
+</td>
+<td style="text-align:left;">
+11
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACGGGAGGCCCGTT-1
+</td>
+<td style="text-align:left;">
+HO.Day0.replicate1
+</td>
+<td style="text-align:right;">
+1189
+</td>
+<td style="text-align:right;">
+629
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+<td style="text-align:right;">
+3.700589
+</td>
+<td style="text-align:right;">
+4186
+</td>
+<td style="text-align:right;">
+915
+</td>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACGGGCAACTGGCC-1
+</td>
+<td style="text-align:left;">
+HO.Day0.replicate1
+</td>
+<td style="text-align:right;">
+7726
+</td>
+<td style="text-align:right;">
+2602
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+<td style="text-align:right;">
+2.938131
+</td>
+<td style="text-align:right;">
+5855
+</td>
+<td style="text-align:right;">
+2587
+</td>
+<td style="text-align:left;">
+6
+</td>
+<td style="text-align:left;">
+6
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <p>The result of <code>FindNeighbors()</code> adds graph information to
 the <code>graphs</code> slot:</p>
 <div class="float">
@@ -710,10 +934,12 @@ the number of PCs selected in the previous steps are included as an
 argument.</p>
 <pre class="r"><code># Create UMAP reduction ---------------------------------------------------
 geo_so = RunUMAP(geo_so, dims = 1:pcs, reduction = &#39;integrated.sct.rpca&#39;, reduction.name = &#39;umap.integrated.sct.rpca&#39;)
-geo_so # Notice a third reduction has been added: `umap.integrated.sct.rpca`</code></pre>
+
+# Note a third reduction has been added: `umap.integrated.sct.rpca`
+geo_so </code></pre>
 <pre><code>An object of class Seurat 
-46955 features across 31560 samples within 2 assays 
-Active assay: SCT (20466 features, 3000 variable features)
+46957 features across 31559 samples within 2 assays 
+Active assay: SCT (20468 features, 3000 variable features)
  3 layers present: counts, data, scale.data
  1 other assay present: RNA
  3 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca, umap.integrated.sct.rpca</code></pre>
@@ -725,6 +951,7 @@ slot:</p>
 alt="Image: Schematic after RunUMAP()." />
 <div class="figcaption">Image: Schematic after RunUMAP().</div>
 </div>
+<p><br/> <br/></p>
 </div>
 <div id="visualizing-and-evaluating-clustering" class="section level1">
 <h1>Visualizing and evaluating clustering</h1>
@@ -743,50 +970,27 @@ clusters that’s not necessarily a problem.</p>
 <p>We can also look at the same UMAP labeled by <code>day</code> to
 visually inspect if the UMAP structure corresponds to the
 <code>day</code>.</p>
-<pre class="r"><code># Visualize UMAP cluster --------------------------------------------------
+<pre class="r"><code># Visualize UMAP cluster 1 --------------------------------------------------
 # cluster ID labels
 post_integration_umap_plot_clusters = DimPlot(geo_so, group.by = &#39;seurat_clusters&#39;, label = TRUE, reduction = &#39;umap.integrated.sct.rpca&#39;) + NoLegend()
 post_integration_umap_plot_clusters
 
-ggsave(filename = &#39;results/figures/umap_integrated_sct_clusters.png&#39;, plot = post_integration_umap_plot_clusters, width = 6, height = 6, units = &#39;in&#39;)
-
+ggsave(filename = &#39;results/figures/umap_integrated_sct_clusters.png&#39;, plot = post_integration_umap_plot_clusters, width = 6, height = 6, units = &#39;in&#39;)</code></pre>
+<p><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_clusters-1.png" width="576" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Visualize UMAP cluster 2 --------------------------------------------------
 # clusters with labels, split by condition
 post_integration_umap_plot_split_clusters = DimPlot(geo_so, group.by = &#39;seurat_clusters&#39;, split.by = &#39;day&#39;, label = TRUE, reduction = &#39;umap.integrated.sct.rpca&#39;) + NoLegend()
 post_integration_umap_plot_split_clusters
 
-ggsave(filename = &#39;results/figures/umap_integrated_sct_split_clusters.png&#39;, plot = post_integration_umap_plot_clusters, width = 14, height = 6, units = &#39;in&#39;)
-
+ggsave(filename = &#39;results/figures/umap_integrated_sct_split_clusters.png&#39;, plot = post_integration_umap_plot_clusters, width = 14, height = 6, units = &#39;in&#39;)</code></pre>
+<p><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_splitclusters-1.png" width="816" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Visualize UMAP cluster 3 --------------------------------------------------
 # UMAP with day labels (note - we added this column to the meta-data yesterday)
 post_integration_umap_plot_day = DimPlot(geo_so, group.by = &#39;day&#39;, label = FALSE, reduction = &#39;umap.integrated.sct.rpca&#39;)
 post_integration_umap_plot_day
 
 ggsave(filename = &#39;results/figures/umap_integrated_sct_day.png&#39;, plot = post_integration_umap_plot_day, width = 8, height = 6, units = &#39;in&#39;)</code></pre>
-<p><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_clusters-1.png" width="816" style="display: block; margin: auto;" /><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_clusters-2.png" width="816" style="display: block; margin: auto;" /><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_clusters-3.png" width="816" style="display: block; margin: auto;" /></p>
-<div id="remove-plot-variables-once-they-are-saved"
-class="section level3">
-<h3>Remove plot variables once they are saved</h3>
-<p>ggplots are terrific for visualizing data and we use them liberally
-in our analysis and the workshop. Interestingly, ggplots save a
-reference to the source dataset - in our case a rather large Seurat
-object. That’s ok in most cases, BUT if you save your RStudio
-environment (or RStudio temporarily suspends your session), RStudio will
-save a <strong>separate copy</strong> of the Seurat object for each
-ggplot object; RStudio’s simplistic approach avoids a lot of complexity,
-but can drastically increase your load time and memory usage.</p>
-<p>Since (a) we have the script to recreate the plots and (b) we
-explicitly saved them as graphic objects - we can simply remove them
-from memory.</p>
-<pre class="r"><code># Remove the plot variables from the environment to avoid excessive memory usage
-rm(post_integration_umap_plot_clusters) 
-rm(post_integration_umap_plot_split_clusters)
-rm(post_integration_umap_plot_day)
-gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   6688015  357.2   10179320  543.7  10179320  543.7
-Vcells 379124849 2892.5  885591660 6756.6 879547516 6710.5</code></pre>
-</div>
-<div id="why-are" class="section level3">
-<h3>Why are</h3>
+<p><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_dayclusters-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Similar to the PCA plots, the <code>day</code> labeled UMAP can tell
 us if technical sources of variation might be driving or stratifying the
 clusters, which would suggest that the normalization and integration
@@ -801,32 +1005,1288 @@ table(geo_so@meta.data$day, geo_so@meta.data$integrated.sct.rpca.clusters)
 
 # cells per cluster per sample
 table(geo_so@meta.data$orig.ident, geo_so@meta.data$integrated.sct.rpca.clusters)</code></pre>
-<pre><code>       
-           0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19
-  Day0   119  946   25  213   44  190  240  789  186   92  121   71   30  270    1   76  138  161  133   30
-  Day7  3561 1325 2919 2443 2693 1684 1237  133  597  552  542  684  650  351  570  334   97  285   93  105
-  Day21 1502 1320   39  325  148  484  375  449  453  452  266  166   68  123    2  135  271   40  194   18</code></pre>
-<pre><code>                     
-                         0    1    2    3    4    5    6    7    8    9   10   11   12   13   14   15   16   17   18   19
-  HO.Day0.replicate1    31  279   10   72   20   58   64  196   50   18   23   22   11   71    0   14   22   48   34   10
-  HO.Day0.replicate2    15  132    8   33    7   35   24  165   29   24   20    8    7   52    1   15   25   13   13    3
-  HO.Day0.replicate3    48  329    2   66    4   56   90  221   64   26   36   20    5   75    0   25   41   59   52    3
-  HO.Day0.replicate4    25  206    5   42   13   41   62  207   43   24   42   21    7   72    0   22   50   41   34   14
-  HO.Day7.replicate1   521  343 1089  572  898  446  307   49  208  106    0  191  214   29    0   76   41   57   29   39
-  HO.Day7.replicate2  1269  285  600  658  552  522  276   12  153  163    0  197  159  242    0  101   18   87   15   15
-  HO.Day7.replicate3   990  530  767  759  565  454  422   63  145  187    0  194  158   57    0  129   28   96   37   45
-  HO.Day7.replicate4   781  167  463  454  678  262  232    9   91   96  542  102  119   23  570   28   10   45   12    6
-  HO.Day21.replicate1  382  415   13   85   50  152  140  131  134  131   68   56   16   47    0   40   71   13   58    2
-  HO.Day21.replicate2  198  233    7   64   25   85   51  140   71   68   56   25   14   24    1   33   53    5   28    5
-  HO.Day21.replicate3  218  199    4   65   23   97   57  117   85   78   44   24   18   20    0   22   56    7   38    6
-  HO.Day21.replicate4  704  473   15  111   50  150  127   61  163  175   98   61   20   32    1   40   91   15   70    5</code></pre>
+<div
+style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:100%; overflow-x: scroll; width:825px; ">
+<table class="table table-condensed" style="font-size: 12px; font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+0
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+1
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+2
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+3
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+4
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+5
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+6
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+7
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+8
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+9
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+10
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+11
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+12
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+13
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+14
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+15
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+16
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+17
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+18
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+19
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+20
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+21
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+22
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:right;">
+72
+</td>
+<td style="text-align:right;">
+403
+</td>
+<td style="text-align:right;">
+988
+</td>
+<td style="text-align:right;">
+176
+</td>
+<td style="text-align:right;">
+75
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+793
+</td>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:right;">
+270
+</td>
+<td style="text-align:right;">
+155
+</td>
+<td style="text-align:right;">
+108
+</td>
+<td style="text-align:right;">
+117
+</td>
+<td style="text-align:right;">
+70
+</td>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+151
+</td>
+<td style="text-align:right;">
+136
+</td>
+<td style="text-align:right;">
+60
+</td>
+<td style="text-align:right;">
+132
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day7
+</td>
+<td style="text-align:right;">
+2758
+</td>
+<td style="text-align:right;">
+1949
+</td>
+<td style="text-align:right;">
+782
+</td>
+<td style="text-align:right;">
+1919
+</td>
+<td style="text-align:right;">
+2103
+</td>
+<td style="text-align:right;">
+2254
+</td>
+<td style="text-align:right;">
+912
+</td>
+<td style="text-align:right;">
+1849
+</td>
+<td style="text-align:right;">
+818
+</td>
+<td style="text-align:right;">
+909
+</td>
+<td style="text-align:right;">
+554
+</td>
+<td style="text-align:right;">
+543
+</td>
+<td style="text-align:right;">
+663
+</td>
+<td style="text-align:right;">
+646
+</td>
+<td style="text-align:right;">
+628
+</td>
+<td style="text-align:right;">
+612
+</td>
+<td style="text-align:right;">
+304
+</td>
+<td style="text-align:right;">
+97
+</td>
+<td style="text-align:right;">
+297
+</td>
+<td style="text-align:right;">
+89
+</td>
+<td style="text-align:right;">
+117
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+36
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day21
+</td>
+<td style="text-align:right;">
+1246
+</td>
+<td style="text-align:right;">
+1005
+</td>
+<td style="text-align:right;">
+931
+</td>
+<td style="text-align:right;">
+498
+</td>
+<td style="text-align:right;">
+259
+</td>
+<td style="text-align:right;">
+65
+</td>
+<td style="text-align:right;">
+625
+</td>
+<td style="text-align:right;">
+79
+</td>
+<td style="text-align:right;">
+215
+</td>
+<td style="text-align:right;">
+125
+</td>
+<td style="text-align:right;">
+452
+</td>
+<td style="text-align:right;">
+443
+</td>
+<td style="text-align:right;">
+112
+</td>
+<td style="text-align:right;">
+65
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+45
+</td>
+<td style="text-align:right;">
+255
+</td>
+<td style="text-align:right;">
+112
+</td>
+<td style="text-align:right;">
+192
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+72
+</td>
+<td style="text-align:right;">
+4
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><br/></p>
+<div
+style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:100%; overflow-x: scroll; width:825px; ">
+<table class="table table-condensed" style="font-size: 12px; font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+0
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+1
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+2
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+3
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+4
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+5
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+6
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+7
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+8
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+9
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+10
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+11
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+12
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+13
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+14
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+15
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+16
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+17
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+18
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+19
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+20
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+21
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+22
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+HO.Day0.replicate1
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+123
+</td>
+<td style="text-align:right;">
+247
+</td>
+<td style="text-align:right;">
+54
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+229
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+70
+</td>
+<td style="text-align:right;">
+51
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+24
+</td>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:right;">
+22
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HO.Day0.replicate2
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+60
+</td>
+<td style="text-align:right;">
+200
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+92
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+53
+</td>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HO.Day0.replicate3
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+134
+</td>
+<td style="text-align:right;">
+290
+</td>
+<td style="text-align:right;">
+51
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+296
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+74
+</td>
+<td style="text-align:right;">
+47
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+52
+</td>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+52
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HO.Day0.replicate4
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+86
+</td>
+<td style="text-align:right;">
+251
+</td>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+176
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+73
+</td>
+<td style="text-align:right;">
+30
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+39
+</td>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+0
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HO.Day7.replicate1
+</td>
+<td style="text-align:right;">
+434
+</td>
+<td style="text-align:right;">
+441
+</td>
+<td style="text-align:right;">
+272
+</td>
+<td style="text-align:right;">
+520
+</td>
+<td style="text-align:right;">
+521
+</td>
+<td style="text-align:right;">
+818
+</td>
+<td style="text-align:right;">
+256
+</td>
+<td style="text-align:right;">
+627
+</td>
+<td style="text-align:right;">
+65
+</td>
+<td style="text-align:right;">
+243
+</td>
+<td style="text-align:right;">
+107
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+178
+</td>
+<td style="text-align:right;">
+202
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+274
+</td>
+<td style="text-align:right;">
+70
+</td>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+63
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+42
+</td>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HO.Day7.replicate2
+</td>
+<td style="text-align:right;">
+933
+</td>
+<td style="text-align:right;">
+447
+</td>
+<td style="text-align:right;">
+173
+</td>
+<td style="text-align:right;">
+566
+</td>
+<td style="text-align:right;">
+544
+</td>
+<td style="text-align:right;">
+478
+</td>
+<td style="text-align:right;">
+201
+</td>
+<td style="text-align:right;">
+396
+</td>
+<td style="text-align:right;">
+485
+</td>
+<td style="text-align:right;">
+213
+</td>
+<td style="text-align:right;">
+165
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+189
+</td>
+<td style="text-align:right;">
+163
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+126
+</td>
+<td style="text-align:right;">
+87
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+98
+</td>
+<td style="text-align:right;">
+13
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+10
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HO.Day7.replicate3
+</td>
+<td style="text-align:right;">
+744
+</td>
+<td style="text-align:right;">
+758
+</td>
+<td style="text-align:right;">
+222
+</td>
+<td style="text-align:right;">
+518
+</td>
+<td style="text-align:right;">
+543
+</td>
+<td style="text-align:right;">
+607
+</td>
+<td style="text-align:right;">
+312
+</td>
+<td style="text-align:right;">
+424
+</td>
+<td style="text-align:right;">
+167
+</td>
+<td style="text-align:right;">
+288
+</td>
+<td style="text-align:right;">
+187
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+182
+</td>
+<td style="text-align:right;">
+160
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+160
+</td>
+<td style="text-align:right;">
+99
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+116
+</td>
+<td style="text-align:right;">
+37
+</td>
+<td style="text-align:right;">
+53
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+12
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HO.Day7.replicate4
+</td>
+<td style="text-align:right;">
+647
+</td>
+<td style="text-align:right;">
+303
+</td>
+<td style="text-align:right;">
+115
+</td>
+<td style="text-align:right;">
+315
+</td>
+<td style="text-align:right;">
+495
+</td>
+<td style="text-align:right;">
+351
+</td>
+<td style="text-align:right;">
+143
+</td>
+<td style="text-align:right;">
+402
+</td>
+<td style="text-align:right;">
+101
+</td>
+<td style="text-align:right;">
+165
+</td>
+<td style="text-align:right;">
+95
+</td>
+<td style="text-align:right;">
+543
+</td>
+<td style="text-align:right;">
+114
+</td>
+<td style="text-align:right;">
+121
+</td>
+<td style="text-align:right;">
+628
+</td>
+<td style="text-align:right;">
+52
+</td>
+<td style="text-align:right;">
+48
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+11
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+5
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HO.Day21.replicate1
+</td>
+<td style="text-align:right;">
+323
+</td>
+<td style="text-align:right;">
+326
+</td>
+<td style="text-align:right;">
+267
+</td>
+<td style="text-align:right;">
+153
+</td>
+<td style="text-align:right;">
+66
+</td>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+211
+</td>
+<td style="text-align:right;">
+26
+</td>
+<td style="text-align:right;">
+59
+</td>
+<td style="text-align:right;">
+40
+</td>
+<td style="text-align:right;">
+132
+</td>
+<td style="text-align:right;">
+127
+</td>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+12
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+65
+</td>
+<td style="text-align:right;">
+34
+</td>
+<td style="text-align:right;">
+58
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+21
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HO.Day21.replicate2
+</td>
+<td style="text-align:right;">
+171
+</td>
+<td style="text-align:right;">
+142
+</td>
+<td style="text-align:right;">
+225
+</td>
+<td style="text-align:right;">
+88
+</td>
+<td style="text-align:right;">
+46
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+135
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+27
+</td>
+<td style="text-align:right;">
+67
+</td>
+<td style="text-align:right;">
+77
+</td>
+<td style="text-align:right;">
+16
+</td>
+<td style="text-align:right;">
+15
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+53
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+28
+</td>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+14
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HO.Day21.replicate3
+</td>
+<td style="text-align:right;">
+190
+</td>
+<td style="text-align:right;">
+144
+</td>
+<td style="text-align:right;">
+206
+</td>
+<td style="text-align:right;">
+97
+</td>
+<td style="text-align:right;">
+50
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+105
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+25
+</td>
+<td style="text-align:right;">
+76
+</td>
+<td style="text-align:right;">
+73
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+18
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+0
+</td>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+54
+</td>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HO.Day21.replicate4
+</td>
+<td style="text-align:right;">
+562
+</td>
+<td style="text-align:right;">
+393
+</td>
+<td style="text-align:right;">
+233
+</td>
+<td style="text-align:right;">
+160
+</td>
+<td style="text-align:right;">
+97
+</td>
+<td style="text-align:right;">
+23
+</td>
+<td style="text-align:right;">
+174
+</td>
+<td style="text-align:right;">
+29
+</td>
+<td style="text-align:right;">
+103
+</td>
+<td style="text-align:right;">
+33
+</td>
+<td style="text-align:right;">
+177
+</td>
+<td style="text-align:right;">
+166
+</td>
+<td style="text-align:right;">
+38
+</td>
+<td style="text-align:right;">
+20
+</td>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+17
+</td>
+<td style="text-align:right;">
+83
+</td>
+<td style="text-align:right;">
+41
+</td>
+<td style="text-align:right;">
+68
+</td>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+31
+</td>
+<td style="text-align:right;">
+1
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><br/> <br/></p>
 <!-- consider adding later 
 Add DimPlot for % mitochondria to see if high % are across dataset or limited to one/few clusters (related to what Olivia talked about during Day 1)
 
 # Other approaches for visualizing scRNA-sq data
 e.g. code for tSNE visualization 
 -->
-</div>
 </div>
 <div id="comparing-to-unintegrated-data" class="section level1">
 <h1>Comparing to unintegrated data</h1>
@@ -837,21 +2297,20 @@ sample of origin, then we would see the following for our data:</p>
 <!--Add updated example of UMAP / sample labels for unintegrated data - need to check with Raymond regarding how best to do this in place -->
 <pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
 
-Number of nodes: 31560
-Number of edges: 998270
+Number of nodes: 31559
+Number of edges: 998702
 
 Running Louvain algorithm...
-Maximum modularity in 10 random starts: 0.9475
-Number of communities: 22
+Maximum modularity in 10 random starts: 0.9514
+Number of communities: 24
 Elapsed time: 5 seconds</code></pre>
-<p><img src="images/curriculum/05-ProjectionAndClustering/05-run_umap_unintegrated-1.png" width="816" height="60%" style="display: block; margin: auto;" /></p>
+<p><img src="images/curriculum/05-ProjectionAndClustering/05-run_umap_unintegrated-1.png" width="816" style="display: block; margin: auto;" /></p>
 <p>In the plot at left, we see that while there are distinct clusters,
 those clusters seem to stratified by day. This suggests that without
 integration, these batch effects could skew the biological variability
 in our data. While on the right, we see little stratification within our
 clusters which means the integration seems to have removed those batch
 effects.</p>
-<!-- Edit section to incorporate --->
 <details>
 <summary>
 <strong>Rewind: Pre-integration evaluation clustering and visualization
@@ -901,6 +2360,34 @@ the metadata slot.</p>
 <pre class="r"><code>head(geo_so@meta.data)</code></pre>
 </details>
 <p><br> <br></p>
+<div id="remove-plot-variables-once-they-are-saved"
+class="section level3">
+<h3>Remove plot variables once they are saved</h3>
+<p>ggplots are terrific for visualizing data and we use them liberally
+in our analysis and the workshop. Interestingly, ggplots save a
+reference to the source dataset - in our case a rather large Seurat
+object. That’s ok in most cases, BUT if you save your RStudio
+environment (or RStudio temporarily suspends your session), RStudio will
+save a <strong>separate copy</strong> of the Seurat object for each
+ggplot object; RStudio’s simplistic approach avoids a lot of complexity,
+but can drastically increase your load time and memory usage.</p>
+<p>Since (a) we have the script to recreate the plots and (b) we
+explicitly saved them as graphic objects - we can simply remove them
+from memory.</p>
+<pre class="r"><code># Remove plot variables from the environment to avoid excessive memory usage
+
+plots = c(&quot;pre_integration_umap_plot_day&quot;, 
+          &quot;post_integration_umap_plot_clusters&quot;, 
+          &quot;post_integration_umap_plot_split_clusters&quot;, 
+          &quot;post_integration_umap_plot_day&quot;)
+
+# Only remove plots that actually exist in the environment
+rm(list=Filter(exists, plots))
+gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells   6656902  355.6   11382044   607.9   11382044   607.9
+Vcells 742925769 5668.1 2110648647 16103.0 2059012342 15709.1</code></pre>
+</div>
 </div>
 <div id="save-our-progress" class="section level1">
 <h1>Save our progress</h1>
