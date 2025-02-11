@@ -62,65 +62,53 @@ knitr_fig_path("01-GettingStarted/01-")
 
 # Introduction
 
-The field of single-cell expression measurements is new, and best practices for analysis and standard for publication are still fluid to some extent. One of the goals of this workshop is to work through an example from start to end, and to highlight some of the decision points and the rationale behind the decisions. The first step is to read in the data from Cell Ranger into R for analysis.
+One of the goals of this workshop is to work through an example from start to end, and to highlight some of the decision points and rationales behind the decisions. The first step of any single-cell project will be to get the data into R for analysis.
 
 <table class='fig'><tr><td class='fig'>
 ![](images/graphical_abstracts/01-GettingStarted-Abstract.png)
-</td></tr><tr><td class='fig'>Data can be read from Cell Ranger outputs, or from BPCells files to be more memory efficient.
+</td></tr><tr><td class='fig'>
+Cell Ranger outputs can be read into R via the triple of files directly, or via a memory saving route with the BPCells package. We provide code for both routes in this section.
 </td></tr></table>
-<br/>
-<br/>
 <br/>
 
 ## Objectives
 
 - Orient on RStudio.
-- Create RStudio project for analysis.
+- Create an RStudio project for analysis.
 - Create directory structure for analysis.
-- Learn how to read 10X data into Seurat.
+- Learn how to read Cell Ranger data into Seurat.
 - Introduce the Seurat object, and how to access parts of it.
 
 ---
 
 # Orienting on RStudio
 
-To orient ourselves on the interface of RStudio, look in the lower right pane, that has a list of files and folders. Click on the `welcome.R` script.
+We've created a simple `welcome.R` script to demonstrate the wheres and hows of the interface. The "File" pane in the lower right should have a `welcome.R` script. Click on it to open.
 
-There should now be four panes in your RStudio window, with the `welcome.R` script in the upper left pane, this is the "Source" or "Scripts" pane. It displays the code that we will write to perform our analysis.
+![](images/curriculum/01-GettingStarted/01-01_start.png)
 
-<!-- Insert screenshot with welcome.R in script pane. -->
+There should now be four panes in the RStudio window, with the `welcome.R` script in the "Script" (or "Source") pane. It displays the code that we will write to perform our analysis.
 
-In the Scripts pane, there is a line of icons, towards the right side of the pane there is a "Run" button. First highlight all the code in the Source pane, and then click "Run".
+![](images/curriculum/01-GettingStarted/01-02_welcome.png)
 
-<!-- Insert screenshot of the result of running welcome.R -->
+Currently the `welcome.R` script is inert. We must execute it in sequence to bring it to life. Highlight all the code in `welcome.R` and then click the "Run" button located along the top of the Script pane. Three things happen in quick succession:
 
-**Checkpoint**
+1. The "Console" pane (lower left) shows a record of the code that was executed.
+2. The "Environment" pane (upper right) shows what variables are present in the environment.
+3. The "Plots" pane (lower right) shows a plot that was generated from the code in the "Scripts" pane (upper left).
 
-A number of things just happened in all the panes:
+![](images/curriculum/01-GettingStarted/01-03_run.png)
 
-1. There is a record of the code that was run along with the results in the lower left pane. This is the "Console" panel, and here is where the output of executing code is displayed. You can also type directly in the prompt and execute code, but it is not saved in the script.
-2. There is a `phenotypes_by_species` object listed in the upper right pane. This is the "Environment" panel, and it shows all the existing variables in the session, as well as a brief description.
-3. There is a plot in the lower right pane where the file structure was previously listed. This is the "Files / Plots / Help" pane, and it can show the file browser that we saw at the start, display plots that are executed in the Console, or display help pages as we'll see later.
+We note that code can be run in two ways:
 
-# Project setup
+1. By first writing it out in the Script pane, highlighting it, and clicking "Run", or
+2. By typing directly into the Console pane and hitting enter to execute the code.
 
-To start, we will access our shared RStudio server by opening a web browser to the following URL:
-
-[https://bfx-workshop02.med.umich.edu/](https://bfx-workshop02.med.umich.edu/)
-
-You should now be looking at a page that will allow you to login to the RStudio server:
-
-![Image: Login page for RStudio server.](images/curriculum/server_login.png)
-
-Enter your user credentials and click <kbd>Sign In</kbd>. Your username and password were provided via email, but if you need help, a helper can retrieve it for you if you ask in Slack. Once logged in, you should now see the RStudio interface:
-
-![Image: Landing page after successful login to RStudio server.](images/curriculum/rstudio_landing.png)
-
-<!-- consider adding welcome script or example of final goal?-->
+**Question:** What is the advantage of the first way over the second?
 
 ## Creating a project
 
-We will create an RStudio Project that will help us keep our files organized. See the [Projects](https://r4ds.hadley.nz/workflow-scripts.html#projects) section of [R for Data Science](https://r4ds.hadley.nz/) for a more in-depth description of what a project is and how it's helpful.
+We will create an RStudio Project to keep our files and code organized. See the [Projects](https://r4ds.hadley.nz/workflow-scripts.html#projects) section of [R for Data Science](https://r4ds.hadley.nz/) for a more in-depth description of what a project is and how it's helpful.
 
 To create a Project for this workshop, click <kbd>File</kbd> then <kbd>New Project...</kbd>. In the New Project Wizard window that opens, select <kbd>Existing Directory</kbd>, then <kbd>Browse...</kbd>. In the Choose Directory window, select the `ISC_R` folder by clicking it once, and then click the <kbd>Choose</kbd> button. Finally, click <kbd>Create Project</kbd>.
 
@@ -128,7 +116,7 @@ Once we do this, RStudio will restart and the Files pane (lower right) should pu
 
 ## Directory structure
 
-We have included the data to be used in the workshop in the `inputs/` folder. However, the project will need to include folders for our analysis and our analysis scripts. Let's create that directory structure with the `dir.create()` function.
+We have included the data to be used in the workshop in the `inputs/` folder. However, the project will need to include folders for our analysis and our analysis scripts. Let's create that directory structure with the `dir.create()` function. We will start by putting the following commands into the Console pane directly.
 
 ```{r, dir_create}
 ##### Day 1 - Getting Started with Seurat
@@ -154,6 +142,18 @@ As we proceed through the workshop, we should save this file (by clicking the Fl
 > 
 > In any analysis script, we recommend using comments (lines preceded by a "#") to provide additional information about code that may not be self-evident. This is to the benefit of others that may look at the code, but also to your future-self.
 <br>
+
+For completeness, insert the `dir.create` commands at the top of our new script.
+
+```{r, dir_create2, eval = FALSE}
+##### Day 1 - Getting Started with Seurat
+
+# Create project directories ----------------------------------------------
+dir.create('scripts', showWarnings = FALSE, recursive = TRUE)
+dir.create('results/figures', showWarnings = FALSE, recursive = TRUE)
+dir.create('results/tables', showWarnings = FALSE, recursive = TRUE)
+dir.create('results/rdata', showWarnings = FALSE, recursive = TRUE)
+```
 
 # Analysis initialization
 
@@ -182,7 +182,7 @@ The `inputs/` folder has the data for the workshop stored in two forms. The firs
 - `features.tsv.gz`
 - `matrix.mtx.gz`
 
-Note, we will be using the filtered matrices.
+Note, these files are filtered matrices, AGC will touch on filtered and unfiltered Cell Ranger outputs.
 
 <!-- Were these files explained earlier? If not, briefly explain them here -->
 
