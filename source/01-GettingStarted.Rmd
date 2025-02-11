@@ -412,6 +412,17 @@ if(!file.exists('results/rdata/geo_so_unfiltered.rds')) {
 saveRDS(geo_so, file = 'results/rdata/geo_so_unfiltered.rds')
 ```
 
+Now that the state of our analysis is saved on disk, we'll demonstrate how to power down the RStudio session, restart the session, and re-load the data we just saved. 
+
+1. To power down the session, click the orange power button in the upper right corner of the RStudio window. Note: There is no confirmation dialogue, the session will simply end.
+2. Click the "Start New Session" button to restart the RStudio session.
+3. Re-load the `geo_so` object with:
+
+```{r, load_rds, eval = FALSE}
+# Load the Seurat object ----------------------------------------------
+geo_so = readRDS('results/rdata/geo_so_unfiltered.rds')
+```
+
 # Summary
 
 In this section we:
