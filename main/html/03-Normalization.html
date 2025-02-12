@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-02-10" />
+<meta name="date" content="2025-02-11" />
 
 <title>Normalization</title>
 
@@ -414,7 +414,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Normalization</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-02-10</h4>
+<h4 class="date">2025-02-11</h4>
 
 </div>
 
@@ -466,6 +466,21 @@ is primarily due to biological variance.
 </tr>
 </table>
 <p><br/></p>
+<div id="objectives" class="section level2">
+<h2>Objectives</h2>
+<ul>
+<li>Understand why normalization is needed.</li>
+<li>Describe the essence of the <code>SCTransform()</code> method.</li>
+<li>Understand normalization options.</li>
+<li>Normalize the counts with <code>SCTransform()</code>.</li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="normalization" class="section level1">
+<h1>Normalization</h1>
+<div id="motivation" class="section level2">
+<h2>Motivation</h2>
 <p>Variation in scRNA-seq data comes from biological sources:</p>
 <ul>
 <li>Differences in cell type or state</li>
@@ -491,25 +506,7 @@ erroneously imply differential expression. Source: <a
 href="https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html">HBC
 training materials</a>.</div>
 </div>
-<div id="objectives" class="section level2">
-<h2>Objectives</h2>
-<ul>
-<li>Understand why normalization is needed.</li>
-<li>Describe the essence of the <code>SCTransform()</code> method.</li>
-<li>Understand normalization options.</li>
-<li>Normalize the counts with <code>SCTransform()</code>.</li>
-</ul>
-<hr />
 </div>
-</div>
-<div id="normalization" class="section level1">
-<h1>Normalization</h1>
-<p>We will use the <code>SCTransform()</code> function, which uses a
-generalized linear model (GLM) framework to account for cell-level
-sequencing depth while also stabilizing the variance of the counts.
-Let’s get the normalization started, as it takes a little time, and then
-we can explain what it’s doing and why it is an improvement on alternate
-methods.</p>
 <div id="layers-of-a-seurat-object" class="section level2">
 <h2>Layers of a Seurat object</h2>
 <p>The <code>assays</code> in a Seurat v5 object store data in “layers”.
@@ -525,7 +522,7 @@ geo_so</code></pre>
 <pre><code>An object of class Seurat 
 26489 features across 31559 samples within 1 assay 
 Active assay: RNA (26489 features, 0 variable features)
- 12 layers present: counts.HO.Day0.replicate1, counts.HO.Day0.replicate2, counts.HO.Day0.replicate3, counts.HO.Day0.replicate4, counts.HO.Day7.replicate1, counts.HO.Day7.replicate2, counts.HO.Day7.replicate3, counts.HO.Day7.replicate4, counts.HO.Day21.replicate1, counts.HO.Day21.replicate2, counts.HO.Day21.replicate3, counts.HO.Day21.replicate4</code></pre>
+ 12 layers present: counts.HODay0replicate1, counts.HODay0replicate2, counts.HODay0replicate3, counts.HODay0replicate4, counts.HODay7replicate1, counts.HODay7replicate2, counts.HODay7replicate3, counts.HODay7replicate4, counts.HODay21replicate1, counts.HODay21replicate2, counts.HODay21replicate3, counts.HODay21replicate4</code></pre>
 <p>We see the 12 layers containing the count data for each of the
 samples. Our running schematic has now changed:</p>
 <div class="float">
@@ -644,6 +641,7 @@ analysis. Viewed in our running schematic:</p>
 <p>Let’s save this normalized form of our Seurat object.</p>
 <pre class="r"><code># Save Seurat object  -----------------------------------------------------
 saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_normalized.rds&#39;)</code></pre>
+<p>Once that completes, we’ll power down the session as we earlier.</p>
 </div>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
