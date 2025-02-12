@@ -114,17 +114,14 @@ We can add arbitrary per-cell information to this table such as:
 
 The following code chunk will create new columns for `day` and `replicate`, and ensure that certain categorical data appears in correct order, e.g. Day0, Day7, and Day21 instead of Day0, Day21, and Day7.
 
-```{r, alter_metadata}
+```{r, read_phenotypes}
 # Make metadata more granular ------------------------------------------
 # Load the expanded phenotype columns (condition, day, and replicate)
 phenos = read.csv('inputs/phenos.csv')
 head(phenos, 3)
+```
 
-#         orig.ident condition  day  replicate
-# 1 HODay0replicate1        HO Day0 replicate1
-# 2 HODay0replicate2        HO Day0 replicate2
-# 3 HODay0replicate3        HO Day0 replicate3
-
+```{r, alter_metadata}
 # Make a temp table that joins Seurat loaded metadata with expanded phenotype columns
 # (Also, preserve the rownames and order samples based on order in phenos.csv)
 tmp_meta = geo_so@meta.data %>% 
@@ -133,7 +130,9 @@ tmp_meta = geo_so@meta.data %>%
   mutate(orig.ident = factor(orig.ident, phenos$orig.ident)) %>%
   column_to_rownames('tmp_rowname')
 head(tmp_meta)  
+```
 
+```{r, assign_extended_metadata}
 # Assign tmp_meta back to geo_so@meta.data and reset the default identity cell name
 geo_so@meta.data = tmp_meta
 Idents(geo_so) = 'orig.ident'
