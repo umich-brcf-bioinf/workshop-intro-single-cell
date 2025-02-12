@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-02-10" />
+<meta name="date" content="2025-02-11" />
 
 <title>Marker identification and visualization</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -415,7 +415,7 @@ div.tocify {
 <h1 class="title toc-ignore">Marker identification and
 visualization</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-02-10</h4>
+<h4 class="date">2025-02-11</h4>
 
 </div>
 
@@ -449,9 +449,9 @@ src="images/wayfinder/06-MarkerVisualization-Wayfinder.png" /> <br/>
 </div>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>To interpret our initial clustering results for all cells in our
-experiment, we’ll need to characterize the gene expression driving
-separation between the clusters. <br/></p>
+<p>To interpret our initial clustering result, we need to have a better
+understanding of what biologically relevant populations the clusters
+might correspond to across all samples or conditions. <br/></p>
 <table class='fig'>
 <tr>
 <td class="fig">
@@ -462,34 +462,28 @@ src="images/graphical_abstracts/06-MarkerVisualization-Abstract.png" />
 <tr>
 <tr class="fig">
 <td class="fig">
-Starting with clustered data and ignoring sample/condition - the gene
-expression in cells in one cluster is compared to expression in cells
-from all other clusters to characterize the similarities and differences
-between clusters and to aid in identifying what cell-types might be
-present.
+Starting with numbered cluster data, gene expression is compared between
+cells in one cluster versus cells in all other clusters - ignoring
+sample/condition at this step - to characterize the similarities and
+differences between clusters.
 </td>
 </tr>
 </table>
 <p><br/></p>
-<p>In this section, we will demonstrate: - How to generate “analytical”
-markers based on gene expression in each cluster - How to visualize the
-expression of genes of interest to aid in cluster identification and
-labeling</p>
-<p>This process can be a highly variable, from seeing well-characterized
-marker genes as top markers to needing to dig through the literature and
-plot the expression for multiple sets of genes of interest. Like the
-previous sections (and like other areas of research), when this process
-is more involved or iterative, often only the final results are
-reported.</p>
 <div id="objectives" class="section level2">
 <h2>Objectives</h2>
 <!--Add specific goals for section-->
 <ul>
-<li>Determine gene markers for each of the clusters using
+<li>Determine gene markers for each of the initial clusters using
 <code>FindAllMarkers()</code></li>
 <li>Visualize expression across clusters for genes of interest using
 <code>DotPlot()</code></li>
 </ul>
+<p>This process can be highly variable, from seeing one set of
+well-characterized marker genes as the top markers for each cluster to
+having . Like the previous sections, this step may need to be
+iterated.</p>
+<p><br/></p>
 <hr />
 </div>
 </div>
@@ -592,12 +586,12 @@ write_csv(geo_markers, file = &#39;results/tables/marker_genes_0.4res.csv&#39;)
 # Take a look at the first few rows of the result
 head(geo_markers)</code></pre>
 <pre><code>        p_val avg_log2FC pct.1 pct.2 p_val_adj cluster    gene
-Col12a1     0   4.064165 0.966 0.156         0       0 Col12a1
-Thbs2       0   3.757858 0.935 0.175         0       0   Thbs2
-Col11a1     0   4.825144 0.832 0.078         0       0 Col11a1
-Tnc         0   3.571279 0.868 0.121         0       0     Tnc
-Lox         0   2.799087 0.923 0.190         0       0     Lox
-C1qtnf3     0   5.206444 0.811 0.098         0       0 C1qtnf3</code></pre>
+Col12a1     0   4.184692 0.937 0.141         0       0 Col12a1
+Tnc         0   4.077785 0.862 0.104         0       0     Tnc
+Thbs2       0   3.689463 0.896 0.164         0       0   Thbs2
+Lox         0   2.894542 0.903 0.176         0       0     Lox
+Col11a1     0   4.825617 0.765 0.071         0       0 Col11a1
+Mxra8       0   2.709668 0.865 0.201         0       0   Mxra8</code></pre>
 <div class="float">
 <img src="images/seurat_schematic/Slide11.png"
 alt="Image: Schematic after SetIdent()." />
@@ -637,16 +631,16 @@ head(top_5, n = 10)</code></pre>
 # Groups:   cluster [2]
    p_val avg_log2FC pct.1 pct.2 p_val_adj cluster gene    
    &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;   
- 1     0       4.06 0.966 0.156         0 0       Col12a1 
- 2     0       3.76 0.935 0.175         0 0       Thbs2   
- 3     0       4.83 0.832 0.078         0 0       Col11a1 
- 4     0       3.57 0.868 0.121         0 0       Tnc     
- 5     0       2.80 0.923 0.19          0 0       Lox     
- 6     0       2.16 0.835 0.217         0 1       Dpt     
- 7     0       2.58 0.779 0.165         0 1       Col14a1 
- 8     0       1.86 0.914 0.301         0 1       Serping1
- 9     0       2.55 0.819 0.208         0 1       Bicc1   
-10     0       2.50 0.786 0.189         0 1       Gas1    </code></pre>
+ 1     0       4.18 0.937 0.141         0 0       Col12a1 
+ 2     0       4.08 0.862 0.104         0 0       Tnc     
+ 3     0       3.69 0.896 0.164         0 0       Thbs2   
+ 4     0       2.89 0.903 0.176         0 0       Lox     
+ 5     0       4.83 0.765 0.071         0 0       Col11a1 
+ 6     0       4.44 0.848 0.092         0 1       Clec3b  
+ 7     0       2.92 0.958 0.271         0 1       Serping1
+ 8     0       2.94 0.865 0.189         0 1       Dpt     
+ 9     0       3.45 0.87  0.228         0 1       Igfbp6  
+10     0       2.17 0.823 0.191         0 1       Fxyd1   </code></pre>
 <pre class="r"><code># Optional - Create table of top 5 markers per cluster (ranked by logFC) -------
 top_5_by_log2FC = geo_markers %&gt;% group_by(cluster) %&gt;% arrange(p_val_adj, desc(avg_log2FC)) %&gt;% slice_head(n = 5)
 
@@ -657,16 +651,16 @@ head(top_5_by_log2FC, n = 10) </code></pre>
 # Groups:   cluster [2]
    p_val avg_log2FC pct.1 pct.2 p_val_adj cluster gene  
    &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt; 
- 1     0       6.17 0.153 0.005         0 0       Cilp2 
- 2     0       5.58 0.497 0.018         0 0       Scx   
- 3     0       5.55 0.101 0.004         0 0       Ucma  
- 4     0       5.35 0.686 0.053         0 0       Fmod  
- 5     0       5.24 0.092 0.004         0 0       Matn3 
- 6     0       4.17 0.183 0.015         0 1       Brinp1
- 7     0       4.00 0.099 0.007         0 1       Agtr2 
- 8     0       3.68 0.458 0.063         0 1       Slc1a3
- 9     0       3.09 0.406 0.07          0 1       Ccn5  
-10     0       3.07 0.54  0.141         0 1       Sfrp2 </code></pre>
+ 1     0       6.23 0.091 0.003         0 0       Ucma  
+ 2     0       5.77 0.448 0.015         0 0       Scx   
+ 3     0       5.72 0.131 0.005         0 0       Cilp2 
+ 4     0       5.66 0.086 0.003         0 0       Matn3 
+ 5     0       5.07 0.535 0.03          0 0       Acan  
+ 6     0       5.54 0.187 0.007         0 1       C7    
+ 7     0       5.29 0.302 0.016         0 1       Myoc  
+ 8     0       4.82 0.094 0.003         0 1       Nat8f7
+ 9     0       4.82 0.082 0.005         0 1       Dact2 
+10     0       4.79 0.129 0.006         0 1       Inmt  </code></pre>
 <p>We expect to see several columns:</p>
 <ul>
 <li><code>gene</code>: gene symbol</li>
@@ -762,9 +756,9 @@ plots = c(&quot;top_5_sct_dot_plot&quot;,
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells   6884990  367.7   11382044   607.9   11382044   607.9
-Vcells 695066460 5303.0 2110648647 16103.0 2110191873 16099.5</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
+Ncells   8620800  460.5   15719665  839.6   15719665  839.6
+Vcells 536532401 4093.5 1146181518 8744.7 1146180696 8744.7</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">
