@@ -54,26 +54,26 @@ knitr_fig_path("06-MarkerVisualization/06-")
 
 # Introduction
 
-To interpret our initial clustering results for all cells in our experiment, we'll need to characterize the gene expression driving separation between the clusters. 
+To interpret our initial clustering result, we need to have a better understanding of what biologically relevant populations the clusters might correspond to across all samples or conditions. 
 <br/>
 
 <table class='fig'><tr><td class='fig'>
 ![](images/graphical_abstracts/06-MarkerVisualization-Abstract.png)
-</td></tr><tr><tr class='fig'><td class='fig'>Starting with clustered data and ignoring sample/condition - the gene expression in cells in one cluster is compared to expression in cells from all other clusters to characterize the similarities and differences between clusters and to aid in identifying what cell-types might be present.
+</td></tr><tr><tr class='fig'><td class='fig'>Starting with numbered cluster data, gene expression is compared between cells in one cluster versus cells in all other clusters - ignoring sample/condition at this step - to characterize the similarities and differences between clusters.
 </td></tr>
 </table>
 <br/>
 
-In this section, we will demonstrate:
-- How to generate "analytical" markers based on gene expression in each cluster 
-- How to visualize the expression of genes of interest to aid in cluster identification and labeling
-
-This process can be a highly variable, from seeing well-characterized marker genes as top markers to needing to dig through the literature and plot the expression for multiple sets of genes of interest. Like the previous sections (and like other areas of research), when this process is more involved or iterative, often only the final results are reported.
 
 ## Objectives
 <!--Add specific goals for section-->
-- Determine gene markers for each of the clusters using `FindAllMarkers()`
+- Determine gene markers for each of the initial clusters using `FindAllMarkers()`
 - Visualize expression across clusters for genes of interest using `DotPlot()`
+
+
+This process can be highly variable, from seeing one set of well-characterized marker genes as the top markers for each cluster to having . Like the previous sections, this step may need to be iterated.
+
+<br/>
 
 ---
 

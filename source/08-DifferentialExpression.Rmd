@@ -54,14 +54,22 @@ knitr_fig_path("08-DifferentialExpression/08-")
 
 # Introduction
 
-Differential expression comparison is a key step to addressing the biological question at hand for the experiment, namely what genes might be contributing to the aberrant bone formation during healing that was observed in this experiment.
+After identifying what cell-types are likely present in our data, we can finally consider experimental conditions and use differential expression comparisons to address the biological question at hand for an experiment.
 
 <table class='fig'><tr><td class='fig'>
 ![](images/graphical_abstracts/08-DifferentialExpression-Abstract.png)
-</td></tr><tr><tr class='fig'><td class='fig'>Starting with labeled clustered data and considering sample and/or condition  - compare between case and control within each cluster to identify genes that are impacted by experimental perturbation(s) within that cell-type or subtype.
+</td></tr><tr><tr class='fig'><td class='fig'>Starting with labeled clustered data, for each labeled cluster, we can compare between case and control within that cluster to identify genes that are impacted by the experimental perturbation(s) for that cell-type or subtype.
 </td></tr>
 </table>
 <br/>
+
+
+## Objectives
+
+<!--Add specific goals for section-->
+- Run "standard" differential expression comparisons with cells as replicates
+- Run "pseudobulk" differential expression comparisons with samples as replicates
+
 
 As a reminder, our data includes cells isolated from issue from day 0 (prior to injury) as controls, and days 7 and 21 post-injury as experimental conditions.
 
@@ -69,11 +77,7 @@ As a reminder, our data includes cells isolated from issue from day 0 (prior to 
 
 We already introduced DE comparisons in the [marker identification section of this workshop](06-MarkerVisualization.html), but here we will show how to run comparisons between experimental conditions for each annotated cluster.
 
-## Objectives
-
-<!--Add specific goals for section-->
-- Run cell-level differential expression comparisons
-- Run sample level differential expression comparisons
+<br/>
 
 ----
 
