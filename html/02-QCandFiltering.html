@@ -526,16 +526,11 @@ Day21, and Day7.</p>
 # Load the expanded phenotype columns (condition, day, and replicate)
 phenos = read.csv(&#39;inputs/phenos.csv&#39;)
 head(phenos, 3)</code></pre>
-<pre><code>  X condition   day  replicate        orig.ident
-1 1        HO  Day0 replicate1  HODay0replicate1
-2 2        HO  Day7 replicate1  HODay7replicate1
-3 3        HO Day21 replicate1 HODay21replicate1</code></pre>
-<pre class="r"><code>#         orig.ident condition  day  replicate
-# 1 HODay0replicate1        HO Day0 replicate1
-# 2 HODay0replicate2        HO Day0 replicate2
-# 3 HODay0replicate3        HO Day0 replicate3
-
-# Make a temp table that joins Seurat loaded metadata with expanded phenotype columns
+<pre><code>        orig.ident condition  day  replicate
+1 HODay0replicate1        HO Day0 replicate1
+2 HODay0replicate2        HO Day0 replicate2
+3 HODay0replicate3        HO Day0 replicate3</code></pre>
+<pre class="r"><code># Make a temp table that joins Seurat loaded metadata with expanded phenotype columns
 # (Also, preserve the rownames and order samples based on order in phenos.csv)
 tmp_meta = geo_so@meta.data %&gt;% 
   rownames_to_column(&#39;tmp_rowname&#39;) %&gt;%
@@ -543,13 +538,13 @@ tmp_meta = geo_so@meta.data %&gt;%
   mutate(orig.ident = factor(orig.ident, phenos$orig.ident)) %&gt;%
   column_to_rownames(&#39;tmp_rowname&#39;)
 head(tmp_meta)  </code></pre>
-<pre><code>                                          orig.ident nCount_RNA nFeature_RNA X condition  day  replicate
-HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1      10234         3226 1        HO Day0 replicate1
-HODay0replicate1_AAACCTGGTCATGCAT-1 HODay0replicate1       3158         1499 1        HO Day0 replicate1
-HODay0replicate1_AAACCTGTCAGAGCTT-1 HODay0replicate1      13464         4102 1        HO Day0 replicate1
-HODay0replicate1_AAACGGGAGAGACTTA-1 HODay0replicate1        577          346 1        HO Day0 replicate1
-HODay0replicate1_AAACGGGAGGCCCGTT-1 HODay0replicate1       1189          629 1        HO Day0 replicate1
-HODay0replicate1_AAACGGGCAACTGGCC-1 HODay0replicate1       7726         2602 1        HO Day0 replicate1</code></pre>
+<pre><code>                                          orig.ident nCount_RNA nFeature_RNA condition  day  replicate
+HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1      10234         3226        HO Day0 replicate1
+HODay0replicate1_AAACCTGGTCATGCAT-1 HODay0replicate1       3158         1499        HO Day0 replicate1
+HODay0replicate1_AAACCTGTCAGAGCTT-1 HODay0replicate1      13464         4102        HO Day0 replicate1
+HODay0replicate1_AAACGGGAGAGACTTA-1 HODay0replicate1        577          346        HO Day0 replicate1
+HODay0replicate1_AAACGGGAGGCCCGTT-1 HODay0replicate1       1189          629        HO Day0 replicate1
+HODay0replicate1_AAACGGGCAACTGGCC-1 HODay0replicate1       7726         2602        HO Day0 replicate1</code></pre>
 <pre class="r"><code># Assign tmp_meta back to geo_so@meta.data and reset the default identity cell name
 geo_so@meta.data = tmp_meta
 Idents(geo_so) = &#39;orig.ident&#39;</code></pre>
@@ -558,13 +553,13 @@ factor with ordering we prefer. We also have <code>day</code> and
 <code>replicate</code> columns that will be useful downstream.</p>
 <pre class="r"><code># Re-examine Seurat metdata  -------------------------------------------
 head(geo_so@meta.data)</code></pre>
-<pre><code>                                          orig.ident nCount_RNA nFeature_RNA X condition  day  replicate
-HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1      10234         3226 1        HO Day0 replicate1
-HODay0replicate1_AAACCTGGTCATGCAT-1 HODay0replicate1       3158         1499 1        HO Day0 replicate1
-HODay0replicate1_AAACCTGTCAGAGCTT-1 HODay0replicate1      13464         4102 1        HO Day0 replicate1
-HODay0replicate1_AAACGGGAGAGACTTA-1 HODay0replicate1        577          346 1        HO Day0 replicate1
-HODay0replicate1_AAACGGGAGGCCCGTT-1 HODay0replicate1       1189          629 1        HO Day0 replicate1
-HODay0replicate1_AAACGGGCAACTGGCC-1 HODay0replicate1       7726         2602 1        HO Day0 replicate1</code></pre>
+<pre><code>                                          orig.ident nCount_RNA nFeature_RNA condition  day  replicate
+HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1      10234         3226        HO Day0 replicate1
+HODay0replicate1_AAACCTGGTCATGCAT-1 HODay0replicate1       3158         1499        HO Day0 replicate1
+HODay0replicate1_AAACCTGTCAGAGCTT-1 HODay0replicate1      13464         4102        HO Day0 replicate1
+HODay0replicate1_AAACGGGAGAGACTTA-1 HODay0replicate1        577          346        HO Day0 replicate1
+HODay0replicate1_AAACGGGAGGCCCGTT-1 HODay0replicate1       1189          629        HO Day0 replicate1
+HODay0replicate1_AAACGGGCAACTGGCC-1 HODay0replicate1       7726         2602        HO Day0 replicate1</code></pre>
 </div>
 <div id="quality-metrics" class="section level1">
 <h1>Quality Metrics</h1>
@@ -629,16 +624,16 @@ cell_counts_pre_tbl = geo_so@meta.data %&gt;% count(orig.ident, name = &#39;pref
 cell_counts_pre_tbl</code></pre>
 <pre><code>          orig.ident prefilter_cells
 1   HODay0replicate1            1183
-2   HODay7replicate1            5762
-3  HODay21replicate1            2321
-4   HODay0replicate2             689
-5   HODay7replicate2            6020
-6  HODay21replicate2            1322
-7   HODay0replicate3            1310
-8   HODay7replicate3            6286
-9  HODay21replicate3            1275
-10  HODay0replicate4            1052
-11  HODay7replicate4            5167
+2   HODay0replicate2             689
+3   HODay0replicate3            1310
+4   HODay0replicate4            1052
+5   HODay7replicate1            5762
+6   HODay7replicate2            6020
+7   HODay7replicate3            6286
+8   HODay7replicate4            5167
+9  HODay21replicate1            2321
+10 HODay21replicate2            1322
+11 HODay21replicate3            1275
 12 HODay21replicate4            2829</code></pre>
 <p>It appears that the Day 7 samples have systematically more cells than
 the other days. If you had an idea of how many cells you expected to see
@@ -757,16 +752,16 @@ subset(geo_so, subset = nFeature_RNA &gt; 500 &amp; percent.mt &lt; 25)@meta.dat
     count(orig.ident, name = &#39;postfilter_cells&#39;)</code></pre>
 <pre><code>          orig.ident postfilter_cells
 1   HODay0replicate1             1049
-2   HODay7replicate1             4928
-3  HODay21replicate1             2000
-4   HODay0replicate2              615
-5   HODay7replicate2             4933
-6  HODay21replicate2             1182
-7   HODay0replicate3             1191
-8   HODay7replicate3             4897
-9  HODay21replicate3             1166
-10  HODay0replicate4              943
-11  HODay7replicate4             4243
+2   HODay0replicate2              615
+3   HODay0replicate3             1191
+4   HODay0replicate4              943
+5   HODay7replicate1             4928
+6   HODay7replicate2             4933
+7   HODay7replicate3             4897
+8   HODay7replicate4             4243
+9  HODay21replicate1             2000
+10 HODay21replicate2             1182
+11 HODay21replicate3             1166
 12 HODay21replicate4             2471</code></pre>
 </div>
 <div id="adaptive-thresholds" class="section level2">
@@ -799,16 +794,16 @@ cell_counts_post_tbl = geo_so@meta.data %&gt;% count(orig.ident, name = &#39;pos
 cell_counts_post_tbl</code></pre>
 <pre><code>          orig.ident postfilter_cells
 1   HODay0replicate1             1053
-2   HODay7replicate1             5213
-3  HODay21replicate1             2004
-4   HODay0replicate2              629
-5   HODay7replicate2             5324
-6  HODay21replicate2             1186
-7   HODay0replicate3             1222
-8   HODay7replicate3             5626
-9  HODay21replicate3             1178
-10  HODay0replicate4              970
-11  HODay7replicate4             4691
+2   HODay0replicate2              629
+3   HODay0replicate3             1222
+4   HODay0replicate4              970
+5   HODay7replicate1             5213
+6   HODay7replicate2             5324
+7   HODay7replicate3             5626
+8   HODay7replicate4             4691
+9  HODay21replicate1             2004
+10 HODay21replicate2             1186
+11 HODay21replicate3             1178
 12 HODay21replicate4             2463</code></pre>
 <p>Let’s combine the pre and post tables:</p>
 <pre class="r"><code># Show cell counts before and after filtering --------------------------
@@ -816,16 +811,16 @@ cell_counts_tbl = cell_counts_pre_tbl %&gt;% left_join(cell_counts_post_tbl, by 
 cell_counts_tbl</code></pre>
 <pre><code>          orig.ident prefilter_cells postfilter_cells
 1   HODay0replicate1            1183             1053
-2   HODay7replicate1            5762             5213
-3  HODay21replicate1            2321             2004
-4   HODay0replicate2             689              629
-5   HODay7replicate2            6020             5324
-6  HODay21replicate2            1322             1186
-7   HODay0replicate3            1310             1222
-8   HODay7replicate3            6286             5626
-9  HODay21replicate3            1275             1178
-10  HODay0replicate4            1052              970
-11  HODay7replicate4            5167             4691
+2   HODay0replicate2             689              629
+3   HODay0replicate3            1310             1222
+4   HODay0replicate4            1052              970
+5   HODay7replicate1            5762             5213
+6   HODay7replicate2            6020             5324
+7   HODay7replicate3            6286             5626
+8   HODay7replicate4            5167             4691
+9  HODay21replicate1            2321             2004
+10 HODay21replicate2            1322             1186
+11 HODay21replicate3            1275             1178
 12 HODay21replicate4            2829             2463</code></pre>
 <p>We can now easily see how many cells we started with, and how many we
 retained for downstream analysis. Let’s write this table to a file.</p>
