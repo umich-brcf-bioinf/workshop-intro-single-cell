@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-02-10" />
+<meta name="date" content="2025-02-11" />
 
 <title>Getting Started with Seurat</title>
 
@@ -414,9 +414,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Getting Started with Seurat</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-
-<h4 class="date">2025-02-10</h4>
-
+<h4 class="date">2025-02-11</h4>
 
 </div>
 
@@ -456,12 +454,10 @@ background-color: CornSilk;
 <br/> <br/></p>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>The field of single-cell expression measurements is new, and best
-practices for analysis and standard for publication are still fluid to
-some extent. One of the goals of this workshop is to work through an
-example from start to end, and to highlight some of the decision points
-and the rationale behind the decisions. The first step is to read in the
-data from Cell Ranger into R for analysis.</p>
+<p>One of the goals of this workshop is to work through an example from
+start to end, and to highlight some of the decision points and
+rationales behind the decisions. The first step of any single-cell
+project will be to get the data into R for analysis.</p>
 <table class="fig">
 <tr>
 <td class="fig">
@@ -470,19 +466,20 @@ data from Cell Ranger into R for analysis.</p>
 </tr>
 <tr>
 <td class="fig">
-Data can be read from Cell Ranger outputs, or from BPCells files to be
-more memory efficient.
+Cell Ranger outputs can be read into R via the triple of files directly,
+or via a memory saving route with the BPCells package. We provide code
+for both routes in this section.
 </td>
 </tr>
 </table>
-<p><br/> <br/> <br/></p>
+<p><br/></p>
 <div id="objectives" class="section level2">
 <h2>Objectives</h2>
 <ul>
 <li>Orient on RStudio.</li>
-<li>Create RStudio project for analysis.</li>
+<li>Create an RStudio project for analysis.</li>
 <li>Create directory structure for analysis.</li>
-<li>Learn how to read 10X data into Seurat.</li>
+<li>Learn how to read Cell Ranger data into Seurat.</li>
 <li>Introduce the Seurat object, and how to access parts of it.</li>
 </ul>
 <hr />
@@ -490,61 +487,40 @@ more memory efficient.
 </div>
 <div id="orienting-on-rstudio" class="section level1">
 <h1>Orienting on RStudio</h1>
-<p>To orient ourselves on the interface of RStudio, look in the lower
-right pane, that has a list of files and folders. Click on the
-<code>welcome.R</code> script.</p>
-<p>There should now be four panes in your RStudio window, with the
-<code>welcome.R</code> script in the upper left pane, this is the
-“Source” or “Scripts” pane. It displays the code that we will write to
-perform our analysis.</p>
-<!-- Insert screenshot with welcome.R in script pane. -->
-<p>In the Scripts pane, there is a line of icons, towards the right side
-of the pane there is a “Run” button. First highlight all the code in the
-Source pane, and then click “Run”.</p>
-<!-- Insert screenshot of the result of running welcome.R -->
-<p><strong>Checkpoint</strong></p>
-<p>A number of things just happened in all the panes:</p>
+<p>We’ve created a simple <code>welcome.R</code> script to demonstrate
+the wheres and hows of the interface. The “File” pane in the lower right
+should have a <code>welcome.R</code> script. Click on it to open.</p>
+<p><img src="images/curriculum/01-GettingStarted/01-01_start.png" /></p>
+<p>There should now be four panes in the RStudio window, with the
+<code>welcome.R</code> script in the “Script” (or “Source”) pane. It
+displays the code that we will write to perform our analysis.</p>
+<p><img
+src="images/curriculum/01-GettingStarted/01-02_welcome.png" /></p>
+<p>Currently the <code>welcome.R</code> script is inert. We must execute
+it in sequence to bring it to life. Highlight all the code in
+<code>welcome.R</code> and then click the “Run” button located along the
+top of the Script pane. Three things happen in quick succession:</p>
 <ol style="list-style-type: decimal">
-<li>There is a record of the code that was run along with the results in
-the lower left pane. This is the “Console” panel, and here is where the
-output of executing code is displayed. You can also type directly in the
-prompt and execute code, but it is not saved in the script.</li>
-<li>There is a <code>phenotypes_by_species</code> object listed in the
-upper right pane. This is the “Environment” panel, and it shows all the
-existing variables in the session, as well as a brief description.</li>
-<li>There is a plot in the lower right pane where the file structure was
-previously listed. This is the “Files / Plots / Help” pane, and it can
-show the file browser that we saw at the start, display plots that are
-executed in the Console, or display help pages as we’ll see later.</li>
+<li>The “Console” pane (lower left) shows a record of the code that was
+executed.</li>
+<li>The “Environment” pane (upper right) shows what variables are
+present in the environment.</li>
+<li>The “Plots” pane (lower right) shows a plot that was generated from
+the code in the “Scripts” pane (upper left).</li>
 </ol>
-</div>
-<div id="project-setup" class="section level1">
-<h1>Project setup</h1>
-<p>To start, we will access our shared RStudio server by opening a web
-browser to the following URL:</p>
-<p><a
-href="https://bfx-workshop02.med.umich.edu/">https://bfx-workshop02.med.umich.edu/</a></p>
-<p>You should now be looking at a page that will allow you to login to
-the RStudio server:</p>
-<div class="float">
-<img src="images/curriculum/server_login.png"
-alt="Image: Login page for RStudio server." />
-<div class="figcaption">Image: Login page for RStudio server.</div>
-</div>
-<p>Enter your user credentials and click <kbd>Sign In</kbd>. Your
-username and password were provided via email, but if you need help, a
-helper can retrieve it for you if you ask in Slack. Once logged in, you
-should now see the RStudio interface:</p>
-<div class="float">
-<img src="images/curriculum/rstudio_landing.png"
-alt="Image: Landing page after successful login to RStudio server." />
-<div class="figcaption">Image: Landing page after successful login to
-RStudio server.</div>
-</div>
-<!-- consider adding welcome script or example of final goal?-->
+<p><img src="images/curriculum/01-GettingStarted/01-03_run.png" /></p>
+<p>We note that code can be run in two ways:</p>
+<ol style="list-style-type: decimal">
+<li>By first writing it out in the Script pane, highlighting it, and
+clicking “Run”, or</li>
+<li>By typing directly into the Console pane and hitting enter to
+execute the code.</li>
+</ol>
+<p><strong>Question:</strong> What is the advantage of the first way
+over the second?</p>
 <div id="creating-a-project" class="section level2">
 <h2>Creating a project</h2>
-<p>We will create an RStudio Project that will help us keep our files
+<p>We will create an RStudio Project to keep our files and code
 organized. See the <a
 href="https://r4ds.hadley.nz/workflow-scripts.html#projects">Projects</a>
 section of <a href="https://r4ds.hadley.nz/">R for Data Science</a> for
@@ -565,7 +541,9 @@ an <code>inputs/</code> folder and an <code>ISC_R.Rproj</code> file.</p>
 <p>We have included the data to be used in the workshop in the
 <code>inputs/</code> folder. However, the project will need to include
 folders for our analysis and our analysis scripts. Let’s create that
-directory structure with the <code>dir.create()</code> function.</p>
+directory structure with the <code>dir.create()</code> function. We will
+start by putting the following commands into the Console pane
+directly.</p>
 <pre class="r"><code>##### Day 1 - Getting Started with Seurat
 
 # Create project directories ----------------------------------------------
@@ -600,6 +578,15 @@ by a “#”) to provide additional information about code that may not be
 self-evident. This is to the benefit of others that may look at the
 code, but also to your future-self. <br></p>
 </blockquote>
+<p>For completeness, insert the <code>dir.create</code> commands at the
+top of our new script.</p>
+<pre class="r"><code>##### Day 1 - Getting Started with Seurat
+
+# Create project directories ----------------------------------------------
+dir.create(&#39;scripts&#39;, showWarnings = FALSE, recursive = TRUE)
+dir.create(&#39;results/figures&#39;, showWarnings = FALSE, recursive = TRUE)
+dir.create(&#39;results/tables&#39;, showWarnings = FALSE, recursive = TRUE)
+dir.create(&#39;results/rdata&#39;, showWarnings = FALSE, recursive = TRUE)</code></pre>
 </div>
 </div>
 <div id="analysis-initialization" class="section level1">
@@ -645,7 +632,8 @@ within that folder there are three files:</p>
 <li><code>features.tsv.gz</code></li>
 <li><code>matrix.mtx.gz</code></li>
 </ul>
-<p>Note, we will be using the filtered matrices.</p>
+<p>Note, these files are filtered matrices, AGC will touch on filtered
+and unfiltered Cell Ranger outputs.</p>
 <!-- Were these files explained earlier? If not, briefly explain them here -->
 <p>The second, <code>inputs/bpcells/</code> is the result of the
 <code>BPCells</code> package, and is more machine-readable than
@@ -931,6 +919,19 @@ different steps of the analysis. These will also help us get untangled
 if we get into an odd state.</p>
 <pre class="r"><code># Save the Seurat object ----------------------------------------------
 saveRDS(geo_so, file = &#39;results/rdata/geo_so_unfiltered.rds&#39;)</code></pre>
+<p>Now that the state of our analysis is saved on disk, we’ll
+demonstrate how to power down the RStudio session, restart the session,
+and re-load the data we just saved.</p>
+<ol style="list-style-type: decimal">
+<li>To power down the session, click the orange power button in the
+upper right corner of the RStudio window. Note: There is no confirmation
+dialogue, the session will simply end.</li>
+<li>Click the “Start New Session” button to restart the RStudio
+session.</li>
+<li>Re-load the <code>geo_so</code> object with:</li>
+</ol>
+<pre class="r"><code># Load the Seurat object ----------------------------------------------
+geo_so = readRDS(&#39;results/rdata/geo_so_unfiltered.rds&#39;)</code></pre>
 </div>
 <div id="summary" class="section level1">
 <h1>Summary</h1>

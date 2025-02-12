@@ -55,11 +55,12 @@ knitr_fig_path("02-QCandFiltering/02-")
 
 # Introduction
 
-Single-cell experiments using the 10x Chromium instrument are supposed to have one cell and one bead in the droplet. However this is an inherently imperfect process and there are other important considerations like how healthy or intact the cell was at the time of measurement. In this section, our goal is to use filtering thresholds to remove "cells" that were poorly measured, aren't actually cells, or had more than one cell.
+Single-cell experiments using the 10x Chromium instrument are expected to have one cell and one bead in one droplet. However this is an imperfect process and there are other important considerations like how healthy or intact the cell was at the time of measurement. In this section, we will use filtering thresholds to remove "cells" that were poorly measured, aren't actually cells, or had more than one cell.
 
 <table class='fig'><tr><td class='fig'>
 ![](images/graphical_abstracts/02-QCandFiltering-Abstract.png)
-</td></tr><tr><td class='fig'>The Cell Ranger barcode feature matrix is a mix of good and poor quality cells. We can use different metrics to visualize and filter to a subset of putatively healthy cells to improve downstream analysis.
+</td></tr><tr><td class='fig'>
+The filtered Cell Ranger barcode feature matrix consists of cells that range in quality. We can use different metrics to visualize and filter to a subset of putative healthy cells to improve downstream analysis.
 </td></tr></table>
 <br/>
 
@@ -111,58 +112,39 @@ We can add arbitrary per-cell information to this table such as:
 - Cell cycle phase for each cell.
 - Other custom annotations for each cell.
 
-The following code chunk will create new columns from the `orig.ident` column, one for the `day` and one for the `replicate`. We'll also use factors to make the days appear in the correct order (by default R will order them Day0, Day21, Day7).
+The following code chunk will create new columns for `day` and `replicate`, and ensure that certain categorical data appears in correct order, e.g. Day0, Day7, and Day21 instead of Day0, Day21, and Day7.
 
 ```{r, alter_metadata}
 # Make metadata more granular ------------------------------------------
-# (So it's easier for us to understand)  
-orig.ident_levels = apply(
-    expand.grid(c('HO'), c('replicate1', 'replicate2', 'replicate3', 'replicate4'), c('Day0','Day7','Day21')), 
-    MARGIN = 1, FUN = function(row){paste(row[1], row[3], row[2], sep = '.')})
+# Load the expanded phenotype columns (condition, day, and replicate)
+phenos = read.csv('inputs/phenos.csv')
+head(phenos, 3)
 
-tmp_meta = geo_so@meta.data
+#         orig.ident condition  day  replicate
+# 1 HODay0replicate1        HO Day0 replicate1
+# 2 HODay0replicate2        HO Day0 replicate2
+# 3 HODay0replicate3        HO Day0 replicate3
 
-tmp_meta$orig.ident = gsub('HO', 'HO.', tmp_meta$orig.ident)
-tmp_meta$orig.ident = gsub('rep', '.rep', tmp_meta$orig.ident)
+# Make a temp table that joins Seurat loaded metadata with expanded phenotype columns
+# (Also, preserve the rownames and order samples based on order in phenos.csv)
+tmp_meta = geo_so@meta.data %>% 
+  rownames_to_column('tmp_rowname') %>%
+  left_join(phenos, by = 'orig.ident') %>%
+  mutate(orig.ident = factor(orig.ident, phenos$orig.ident)) %>%
+  column_to_rownames('tmp_rowname')
+head(tmp_meta)  
 
-tmp_meta$orig.ident = factor(tmp_meta$orig.ident, levels = orig.ident_levels)
-
-# Add day information
-tmp_meta$day = factor(str_split(tmp_meta$orig.ident, pattern = '[.]', simplify = TRUE)[,2], levels = c('Day0', 'Day7', 'Day21'))
-
-# Add replicate column
-tmp_meta$replicate = str_split(tmp_meta$orig.ident, pattern = '[.]', simplify = TRUE)[,3]
-
-# Assign the updated metadata to that in the Seurat object
+# Assign tmp_meta back to geo_so@meta.data and reset the default identity cell name
 geo_so@meta.data = tmp_meta
-
-# Set the Idents(geo_so) to the new orig.ident
 Idents(geo_so) = 'orig.ident'
 ```
 
-Taking a look at the result, we see `orig.ident` looks a little different, and we have new `day` and `replicate` columns. Note that there are many ways to have accomplished this, the above code is just one route.
+The `orig.ident` column looks the same, but is now a factor with ordering we prefer. We also have `day` and `replicate` columns that will be useful downstream.
 
 ```{r, preview_metadata3}
 # Re-examine Seurat metdata  -------------------------------------------
 head(geo_so@meta.data)
 ```
-
-## Percent mitochondrial reads
-
-The `PercentageFeatureSet()` function enables us to quickly determine the counts belonging to a subset of the possible features for each cell. Since mitochondrial transcripts in mouse begin with "mt", we will use that pattern to count the percentage of reads coming from mitochondrial transcripts.
-
-```{r, assign_percent_mt}
-# Consider mitochondrial transcripts  ----------------------------------
-# We use "mt" because this is mouse, depending on the organism, this might need to be changed
-geo_so$percent.mt = PercentageFeatureSet(geo_so, pattern = '^mt-')
-
-# Use summary() to quickly check the range of values
-summary(geo_so$percent.mt)
-```
-
-Just looking at the summary, we can see that there are some cells with a high percentage of mitochondrial reads.
-
-![Image: Schematic after altering some meta data columns.](images/seurat_schematic/Slide3.png)
 
 # Quality Metrics
 
@@ -174,7 +156,7 @@ Let's dig deeper to determine when a droplet might contain two cells, a very str
 2. The number of expressed features, defined as number of genes with non-zero counts. Cells with very few measured genes are likely to be of low-quality, and may distort downstream variance estimation or dimension reduction steps.
 3. The proportion of reads mapped to the mitochondrial genome. High proportions of mitochondrial transcripts may indicate a damaged cell, the measure of which may also distort downstream analysis steps.
 
-The number of UMIs detected (`nCount`) and number of expressed features (`nFeature`) are already given in the meta data table.
+The number of UMIs detected (`nCount`) and number of expressed features (`nFeature`) are already given in the meta data table. We will demonstrate how to add the mitochondrial fraction shortly.
 
 > **Why total UMIs instead of total reads?**
 > 
@@ -204,13 +186,13 @@ It appears that the Day 7 samples have systematically more cells than the other 
 
 ## Visualizing quality metrics
 
-A violin plot shows the distribution of a quantity among the cells in a single sample, or across many samples. Seurat has a built-in function, `VlnPlot()` for this purpose. Let's orient with a violin plot of `nFeature_RNA` for only one sample, `HO.Day21.replicate1`:
+A violin plot shows the distribution of a quantity among the cells in a single sample, or across many samples. Seurat has a built-in function, `VlnPlot()` for this purpose. Let's orient with a violin plot of `nFeature_RNA` for only one sample, `HODay21replicate1`:
 
 ```{r, single_violin_plot, echo = FALSE}
-VlnPlot(subset(geo_so, orig.ident == 'HO.Day21.replicate1'), features = 'nFeature_RNA', assay = 'RNA', layer = 'counts') + NoLegend()
+VlnPlot(subset(geo_so, orig.ident == 'HODay21replicate1'), features = 'nFeature_RNA', assay = 'RNA', layer = 'counts') + NoLegend()
 ```
 
-A violin plot is similar to a box plot, but it shows the density of the data at different values. Here the individual points are the cells from `HO.Day21.replicate1` and the y-axis is the value of `nFeature_RNA` for that cell. The violin part of the function is essentially showing the density of the cells at different values of `nFeature_RNA`.
+A violin plot is similar to a box plot, but it shows the density of the data at different values. Here the individual points are the cells from `HODay21replicate1` and the y-axis is the value of `nFeature_RNA` for that cell. The violin part of the function is essentially showing the density of the cells at different values of `nFeature_RNA`.
 
 ### Genes per cell
 
@@ -237,6 +219,21 @@ ggsave(filename = 'results/figures/qc_nCount_violin.png', width = 12, height = 6
 We observe a similar within-and-across day behavior among the samples. Overall it appears that the Day 0 samples have fewer UMIs detected per cell than Day 7 and Day 21. Also of note is the outlier cell in HO.Day0.replicate1, with around 100K UMIs detected. This cell might be a doublet.
 
 ### Percent mitochondrial reads
+
+The `PercentageFeatureSet()` function enables us to quickly determine the counts belonging to a subset of the possible features for each cell. Since mitochondrial transcripts in mouse begin with "mt", we will use that pattern to count the percentage of reads coming from mitochondrial transcripts.
+
+```{r, assign_percent_mt}
+# Consider mitochondrial transcripts  ----------------------------------
+# We use "mt" because this is mouse, depending on the organism, this might need to be changed
+geo_so$percent.mt = PercentageFeatureSet(geo_so, pattern = '^mt-')
+
+# Use summary() to quickly check the range of values
+summary(geo_so$percent.mt)
+```
+
+Just looking at the summary, we can see that there are some cells with a high percentage of mitochondrial reads. Our Seurat object has changed by adding the `percent.mt` column to the meta data.
+
+![Image: Schematic after altering some meta data columns.](images/seurat_schematic/Slide3.png)
 
 Finally, lets plot the percent mitochondrial reads, `percent.mt`.
 

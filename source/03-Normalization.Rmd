@@ -61,21 +61,6 @@ After removing low-quality cells from the data, the next task is the normalizati
 </table>
 <br/>
 
-Variation in scRNA-seq data comes from biological sources:
-
-- Differences in cell type or state
-- Differences in response to treatment
-
-And from technical sources:
-
-- Fluctuations in cellular RNA content
-- Efficiency in lysis and reverse transcription
-- Stochastic sampling during sequencing
-
-A key driver of technical variation is cellular sequencing depth (that is, the number of UMIs sequenced per cell). In the figure below, Sample A (left, red reads) is more deeply sequenced than Sample B (right, green reads). In a test for differential expression, we want to account for the difference in sequencing depth to avoid erroneously calling a gene differentially expressed.
-
-![Image: Different sequencing depths can erroneously imply differential expression. Source: [HBC training materials](https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html).](images/curriculum/03-Normalization/normalization_depth.png)
-
 ## Objectives
 
 - Understand why normalization is needed.
@@ -99,7 +84,22 @@ if(!exists('geo_so')) {
 
 # Normalization
 
-We will use the `SCTransform()` function, which uses a generalized linear model (GLM) framework to account for cell-level sequencing depth while also stabilizing the variance of the counts. Let's get the normalization started, as it takes a little time, and then we can explain what it's doing and why it is an improvement on alternate methods.
+## Motivation
+
+Variation in scRNA-seq data comes from biological sources:
+
+- Differences in cell type or state
+- Differences in response to treatment
+
+And from technical sources:
+
+- Fluctuations in cellular RNA content
+- Efficiency in lysis and reverse transcription
+- Stochastic sampling during sequencing
+
+A key driver of technical variation is cellular sequencing depth (that is, the number of UMIs sequenced per cell). In the figure below, Sample A (left, red reads) is more deeply sequenced than Sample B (right, green reads). In a test for differential expression, we want to account for the difference in sequencing depth to avoid erroneously calling a gene differentially expressed.
+
+![Image: Different sequencing depths can erroneously imply differential expression. Source: [HBC training materials](https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html).](images/curriculum/03-Normalization/normalization_depth.png)
 
 ## Layers of a Seurat object
 
@@ -201,6 +201,8 @@ if(!file.exists('results/rdata/geo_so_sct_normalized.rds')) {
 # Save Seurat object  -----------------------------------------------------
 saveRDS(geo_so, file = 'results/rdata/geo_so_sct_normalized.rds')
 ```
+
+Once that completes, we'll power down the session as we earlier.
 
 # Summary
 
