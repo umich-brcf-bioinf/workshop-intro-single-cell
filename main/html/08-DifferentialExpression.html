@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-02-10" />
+<meta name="date" content="2025-02-11" />
 
 <title>Differential Expression Analysis</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -416,7 +416,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Differential Expression Analysis</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-02-10</h4>
+<h4 class="date">2025-02-11</h4>
 
 </div>
 
@@ -450,10 +450,10 @@ src="images/wayfinder/08-DifferentialExpression-Wayfinder.png" /> <br/>
 </div>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>Differential expression comparison is a key step to addressing the
-biological question at hand for the experiment, namely what genes might
-be contributing to the aberrant bone formation during healing that was
-observed in this experiment.</p>
+<p>After identifying what cell-types are likely present in our data, we
+can finally consider experimental conditions and use differential
+expression comparisons to address the biological question at hand for an
+experiment.</p>
 <table class='fig'>
 <tr>
 <td class="fig">
@@ -464,14 +464,23 @@ src="images/graphical_abstracts/08-DifferentialExpression-Abstract.png" />
 <tr>
 <tr class="fig">
 <td class="fig">
-Starting with labeled clustered data and considering sample and/or
-condition - compare between case and control within each cluster to
-identify genes that are impacted by experimental perturbation(s) within
-that cell-type or subtype.
+Starting with labeled clustered data, for each labeled cluster, we can
+compare between case and control within that cluster to identify genes
+that are impacted by the experimental perturbation(s) for that cell-type
+or subtype.
 </td>
 </tr>
 </table>
 <p><br/></p>
+<div id="objectives" class="section level2">
+<h2>Objectives</h2>
+<!--Add specific goals for section-->
+<ul>
+<li>Run “standard” differential expression comparisons with cells as
+replicates</li>
+<li>Run “pseudobulk” differential expression comparisons with samples as
+replicates</li>
+</ul>
 <p>As a reminder, our data includes cells isolated from issue from day 0
 (prior to injury) as controls, and days 7 and 21 post-injury as
 experimental conditions.</p>
@@ -480,13 +489,7 @@ experimental conditions.</p>
 href="06-MarkerVisualization.html">marker identification section of this
 workshop</a>, but here we will show how to run comparisons between
 experimental conditions for each annotated cluster.</p>
-<div id="objectives" class="section level2">
-<h2>Objectives</h2>
-<!--Add specific goals for section-->
-<ul>
-<li>Run cell-level differential expression comparisons</li>
-<li>Run sample level differential expression comparisons</li>
-</ul>
+<p><br/></p>
 <hr />
 </div>
 </div>
@@ -546,27 +549,17 @@ x
 <tbody>
 <tr>
 <td style="text-align:left;">
-Day0_Myofibroblast
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
 Day0_Fibroblast
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Day0_Macrophage
+Day0_Mesenchymal stem/stromal cell
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Day0_Hematopoietic Stem Cell
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Day0_Hematopoietic stem cell
+Day0_Myofibroblast
 </td>
 </tr>
 <tr>
@@ -576,7 +569,17 @@ Day0_Platelet
 </tr>
 <tr>
 <td style="text-align:left;">
-Day0_Mesenchymal stem/stromal cell
+Day0_Inflammatory macrophage
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day0_Monocyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day0_Hematopoietic stem cell
 </td>
 </tr>
 <tr>
@@ -591,12 +594,7 @@ Day0_Pericyte
 </tr>
 <tr>
 <td style="text-align:left;">
-Day0_Regulatory T Cell
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Day0_Inflammatory macrophage
+Day0_Macrophage
 </td>
 </tr>
 <tr>
@@ -606,27 +604,17 @@ Day0_Erythroid
 </tr>
 <tr>
 <td style="text-align:left;">
-Day7_Hematopoietic Stem Cell
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Day7_Hematopoietic stem cell
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Day7_Platelet
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Day7_Pericyte
+Day0_Dendritic Cell
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Day7_Myofibroblast
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day7_Monocyte
 </td>
 </tr>
 <tr>
@@ -641,12 +629,17 @@ Day7_Fibroblast
 </tr>
 <tr>
 <td style="text-align:left;">
-Day7_Mesenchymal stem/stromal cell
+Day7_Platelet
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Day7_Unknown
+Day7_Hematopoietic stem cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day7_Pericyte
 </td>
 </tr>
 <tr>
@@ -656,7 +649,17 @@ Day7_Erythroid
 </tr>
 <tr>
 <td style="text-align:left;">
-Day7_Regulatory T Cell
+Day7_Macrophage
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day7_Mesenchymal stem/stromal cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day7_Dendritic Cell
 </td>
 </tr>
 <tr>
@@ -666,22 +669,22 @@ Day7_Mast
 </tr>
 <tr>
 <td style="text-align:left;">
-Day7_Macrophage
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Day21_Mesenchymal stem/stromal cell
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Day21_Hematopoietic stem cell
+Day7_Unknown
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Day21_Platelet
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day21_Inflammatory macrophage
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day21_Monocyte
 </td>
 </tr>
 <tr>
@@ -696,12 +699,7 @@ Day21_Pericyte
 </tr>
 <tr>
 <td style="text-align:left;">
-Day21_Hematopoietic Stem Cell
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Day21_Regulatory T Cell
+Day21_Myofibroblast
 </td>
 </tr>
 <tr>
@@ -711,17 +709,22 @@ Day21_Macrophage
 </tr>
 <tr>
 <td style="text-align:left;">
-Day21_Myofibroblast
+Day21_Hematopoietic stem cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day21_Mesenchymal stem/stromal cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day21_Dendritic Cell
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Day21_Unknown
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Day21_Inflammatory macrophage
 </td>
 </tr>
 <tr>
@@ -749,13 +752,13 @@ de_cell_pericyte_D21_vs_D7 = FindMarkers(
     ident.1 = &#39;Day21_Pericyte&#39;, ident.2 = &#39;Day7_Pericyte&#39;)
 
 head(de_cell_pericyte_D21_vs_D7)</code></pre>
-<pre><code>                 p_val avg_log2FC pct.1 pct.2     p_val_adj
-Gm10076  1.916831e-296 -1.2754653 0.802 0.963 3.923369e-292
-Prelp    1.213396e-287  2.5558097 0.778 0.234 2.483579e-283
-Tpt1     1.403161e-257  0.7694325 0.998 0.981 2.871990e-253
-Wfdc1    2.775139e-257  6.1155893 0.395 0.007 5.680154e-253
-Fmod     4.726619e-253  2.1211584 0.896 0.561 9.674444e-249
-Serpinh1 4.553493e-251 -1.0014677 0.981 0.999 9.320089e-247</code></pre>
+<pre><code>                p_val avg_log2FC pct.1 pct.2     p_val_adj
+Prelp   2.728393e-300  2.7289990 0.704 0.186 5.584474e-296
+Gm10076 7.066622e-300 -1.1741553 0.827 0.965 1.446396e-295
+Tpt1    6.535431e-287  0.7863954 0.996 0.983 1.337672e-282
+Fmod    1.793321e-285  2.3560131 0.860 0.461 3.670569e-281
+Cilp2   1.264397e-276  5.8416708 0.380 0.012 2.587968e-272
+Wfdc1   3.287086e-256  6.6991399 0.331 0.004 6.728008e-252</code></pre>
 <pre class="r"><code># Add gene symmbols names and save ----------------------------------------
 
 # Add rownames as a column for output
@@ -770,7 +773,7 @@ table(de_cell_pericyte_D21_vs_D7$p_val_adj &lt; 0.05 &amp;
         abs(de_cell_pericyte_D21_vs_D7$avg_log2FC) &gt; 1.5)</code></pre>
 <pre><code>
 FALSE  TRUE 
- 9140   603 </code></pre>
+ 9272   526 </code></pre>
 <p>In the first 3 lines of the above code block we can see the changes
 to the schematic:</p>
 <div class="float">
@@ -792,13 +795,13 @@ de_cell_pericyte_D7_vs_D0 = FindMarkers(
     ident.1 = &#39;Day7_Pericyte&#39;, ident.2 = &#39;Day0_Pericyte&#39;)
 
 head(de_cell_pericyte_D7_vs_D0)</code></pre>
-<pre><code>              p_val avg_log2FC pct.1 pct.2     p_val_adj
-Wnt6  2.311609e-192  -8.333802 0.001 0.340 4.731402e-188
-Dapk2 1.083674e-184  -6.453473 0.006 0.415 2.218065e-180
-Chad  4.252703e-184  -9.383911 0.002 0.349 8.704433e-180
-Tnxb  3.434032e-178  -5.691164 0.018 0.547 7.028776e-174
-Sfrp5 1.091394e-174 -10.742734 0.001 0.302 2.233865e-170
-Cilp2 6.222324e-170  -7.269717 0.015 0.500 1.273585e-165</code></pre>
+<pre><code>                 p_val avg_log2FC pct.1 pct.2     p_val_adj
+Cilp2    3.773421e-268  -7.818834 0.012 0.658 7.723439e-264
+Ptx4     2.816100e-263  -7.285402 0.004 0.500 5.763994e-259
+Chad     6.383421e-262 -10.076183 0.002 0.421 1.306559e-257
+Chodl    1.074666e-248  -7.198727 0.005 0.500 2.199627e-244
+Crispld1 2.792293e-131  -7.122703 0.009 0.368 5.715265e-127
+Fam49a   1.428243e-117  -5.502214 0.010 0.368 2.923328e-113</code></pre>
 <pre class="r"><code># Add rownames for D7 v D0 results ----------------------------------------
 de_cell_pericyte_D7_vs_D0$gene = rownames(de_cell_pericyte_D7_vs_D0)
 
@@ -807,7 +810,7 @@ table(de_cell_pericyte_D7_vs_D0$p_val_adj &lt; 0.05 &amp;
         abs(de_cell_pericyte_D7_vs_D0$avg_log2FC) &gt; 1.5)</code></pre>
 <pre><code>
 FALSE  TRUE 
- 9973  1579 </code></pre>
+11119  1100 </code></pre>
 <p>This same approach can be extended to run pairwise comparisons
 between conditions for each annotated cluster of interest.</p>
 <!-- add code to loop through all clusters and generate comparisons -->
@@ -847,13 +850,13 @@ de_pseudo_pericyte_D21_vs_D7 = FindMarkers(
 
 # Take a look at the table
 head(de_pseudo_pericyte_D21_vs_D7)</code></pre>
-<pre><code>                p_val avg_log2FC pct.1 pct.2     p_val_adj
-Cilp2   5.328380e-237   4.989394     1     1 1.411434e-232
-Ltbp4   2.067772e-123   1.607997     1     1 5.477322e-119
-Nav3     2.582330e-98  -2.810241     1     1  6.840335e-94
-Prss23   1.411491e-94   1.378870     1     1  3.738899e-90
-Cd55     3.167911e-81   1.897599     1     1  8.391481e-77
-Gm42418  4.258179e-81   1.821880     1     1  1.127949e-76</code></pre>
+<pre><code>               p_val avg_log2FC pct.1 pct.2     p_val_adj
+Cilp2  1.182214e-217   2.873009     1     1 3.131567e-213
+Wfdc1  2.417821e-154   1.968857     1     1 6.404566e-150
+Cd55   3.694878e-127   1.364748     1     1 9.787362e-123
+Prss23 1.946984e-108   1.666211     1     1 5.157365e-104
+Ltbp4  2.759204e-102   1.767210     1     1  7.308855e-98
+Col8a1  1.528731e-91   1.657854     1     1  4.049456e-87</code></pre>
 <pre class="r"><code># Add genes and review pseudobulk results ----------------------------------
 
 # Add rownames as a column for output
@@ -868,7 +871,7 @@ table(de_pseudo_pericyte_D21_vs_D7$p_val_adj &lt; 0.05 &amp;
         abs(de_pseudo_pericyte_D21_vs_D7$avg_log2FC) &gt; 1.5)</code></pre>
 <pre><code>
 FALSE  TRUE 
-22810   657 </code></pre>
+23767    58 </code></pre>
 <p>Since we’re working with pseudobulk data, unlike in the marker
 identification section, there is no percentage of cells expressing to
 need to represent so we can summarize our DE results with a volcano
@@ -924,9 +927,9 @@ pathway enrichment, and GSEA with mSigDB.</p>
 # Ok since we saved the plots as we went along
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells  10046049  536.6   19599850  1046.8   19599850  1046.8
-Vcells 710117792 5417.8 2110648647 16103.0 2110191873 16099.5</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
+Ncells  11042377  589.8   20121748 1074.7   20121748 1074.7
+Vcells 549090531 4189.3 1146181518 8744.7 1146180696 8744.7</code></pre>
 <p>We’ll save the scCATCH object. The Seurat object has not been changed
 in this module.</p>
 <pre class="r"><code># Save Seurat object ------------------------------------------------------
