@@ -128,8 +128,10 @@ tmp_meta = geo_so@meta.data %>%
   rownames_to_column('tmp_rowname') %>%
   left_join(phenos, by = 'orig.ident') %>%
   mutate(orig.ident = factor(orig.ident, phenos$orig.ident)) %>%
+  mutate(day = factor(day, unique(phenos$day))) %>%
   column_to_rownames('tmp_rowname')
-head(tmp_meta)  
+head(tmp_meta)
+
 ```
 
 ```{r, assign_extended_metadata}

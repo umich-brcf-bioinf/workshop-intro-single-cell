@@ -36,8 +36,9 @@ table.fig, th.fig, td.fig {
 }
 </style>
 
-```{r klippy, echo=FALSE, include=TRUE}
+```{r klippy, include=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
 klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
+library(kableExtra)
 ```
 
 ```{r, include = FALSE}
@@ -370,7 +371,7 @@ ggsave(filename = 'results/figures/umap_integrated_catch.png', plot = catch_umap
 catch_umap_condition_plot = DimPlot(geo_so, group.by = 'cell_type', split.by = 'day', label = TRUE, reduction = 'umap.integrated.sct.rpca')
 
 ggsave(filename = 'results/figures/umap_integrated_catch_byCondition.png', 
-       plot = catch_umap_plot, width = 10, height = 8, units = 'in')
+       plot = catch_umap_condition_plot, width = 10, height = 8, units = 'in')
 
 catch_umap_condition_plot
 
