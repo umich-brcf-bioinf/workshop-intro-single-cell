@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-02-11" />
+<meta name="date" content="2025-02-14" />
 
 <title>Cell Type Annotation</title>
 
@@ -416,7 +416,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Cell Type Annotation</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-02-11</h4>
+<h4 class="date">2025-02-14</h4>
 
 </div>
 
@@ -871,9 +871,6 @@ nCount_RNA
 nFeature_RNA
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-condition
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 day
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
@@ -895,6 +892,9 @@ integrated.sct.rpca.clusters
 seurat_clusters
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+unintegrated.sct.pca.clusters
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 cell_type
 </th>
 </tr>
@@ -905,16 +905,13 @@ cell_type
 HODay0replicate1_AAACCTGAGAGAACAG-1
 </td>
 <td style="text-align:left;">
-HODay0replicate1
+HO.Day0.replicate1
 </td>
 <td style="text-align:right;">
 10234
 </td>
 <td style="text-align:right;">
 3226
-</td>
-<td style="text-align:left;">
-HO
 </td>
 <td style="text-align:left;">
 Day0
@@ -938,6 +935,9 @@ replicate1
 2
 </td>
 <td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
 Fibroblast
 </td>
 </tr>
@@ -946,16 +946,13 @@ Fibroblast
 HODay0replicate1_AAACCTGGTCATGCAT-1
 </td>
 <td style="text-align:left;">
-HODay0replicate1
+HO.Day0.replicate1
 </td>
 <td style="text-align:right;">
 3158
 </td>
 <td style="text-align:right;">
 1499
-</td>
-<td style="text-align:left;">
-HO
 </td>
 <td style="text-align:left;">
 Day0
@@ -979,6 +976,9 @@ replicate1
 2
 </td>
 <td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
 Fibroblast
 </td>
 </tr>
@@ -987,16 +987,13 @@ Fibroblast
 HODay0replicate1_AAACCTGTCAGAGCTT-1
 </td>
 <td style="text-align:left;">
-HODay0replicate1
+HO.Day0.replicate1
 </td>
 <td style="text-align:right;">
 13464
 </td>
 <td style="text-align:right;">
 4102
-</td>
-<td style="text-align:left;">
-HO
 </td>
 <td style="text-align:left;">
 Day0
@@ -1020,6 +1017,9 @@ replicate1
 2
 </td>
 <td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
 Fibroblast
 </td>
 </tr>
@@ -1028,16 +1028,13 @@ Fibroblast
 HODay0replicate1_AAACGGGAGAGACTTA-1
 </td>
 <td style="text-align:left;">
-HODay0replicate1
+HO.Day0.replicate1
 </td>
 <td style="text-align:right;">
 577
 </td>
 <td style="text-align:right;">
 346
-</td>
-<td style="text-align:left;">
-HO
 </td>
 <td style="text-align:left;">
 Day0
@@ -1061,6 +1058,9 @@ replicate1
 8
 </td>
 <td style="text-align:left;">
+8
+</td>
+<td style="text-align:left;">
 Mesenchymal stem/stromal cell
 </td>
 </tr>
@@ -1069,16 +1069,13 @@ Mesenchymal stem/stromal cell
 HODay0replicate1_AAACGGGAGGCCCGTT-1
 </td>
 <td style="text-align:left;">
-HODay0replicate1
+HO.Day0.replicate1
 </td>
 <td style="text-align:right;">
 1189
 </td>
 <td style="text-align:right;">
 629
-</td>
-<td style="text-align:left;">
-HO
 </td>
 <td style="text-align:left;">
 Day0
@@ -1102,6 +1099,9 @@ replicate1
 2
 </td>
 <td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
 Fibroblast
 </td>
 </tr>
@@ -1110,16 +1110,13 @@ Fibroblast
 HODay0replicate1_AAACGGGCAACTGGCC-1
 </td>
 <td style="text-align:left;">
-HODay0replicate1
+HO.Day0.replicate1
 </td>
 <td style="text-align:right;">
 7726
 </td>
 <td style="text-align:right;">
 2602
-</td>
-<td style="text-align:left;">
-HO
 </td>
 <td style="text-align:left;">
 Day0
@@ -1138,6 +1135,9 @@ replicate1
 </td>
 <td style="text-align:left;">
 1
+</td>
+<td style="text-align:left;">
+2
 </td>
 <td style="text-align:left;">
 2
@@ -1173,7 +1173,7 @@ ggsave(filename = &#39;results/figures/umap_integrated_catch.png&#39;, plot = ca
 catch_umap_condition_plot = DimPlot(geo_so, group.by = &#39;cell_type&#39;, split.by = &#39;day&#39;, label = TRUE, reduction = &#39;umap.integrated.sct.rpca&#39;)
 
 ggsave(filename = &#39;results/figures/umap_integrated_catch_byCondition.png&#39;, 
-       plot = catch_umap_plot, width = 10, height = 8, units = &#39;in&#39;)
+       plot = catch_umap_condition_plot, width = 10, height = 8, units = &#39;in&#39;)
 
 catch_umap_condition_plot</code></pre>
 <p><img src="images/curriculum/07-CellTypeAnnotation/07-catch_umap_plot-1.png" width="960" style="display: block; margin: auto;" /><img src="images/curriculum/07-CellTypeAnnotation/07-catch_umap_plot-2.png" width="960" style="display: block; margin: auto;" /></p>
@@ -1187,8 +1187,8 @@ catch_umap_condition_plot</code></pre>
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
-Ncells   8676794  463.4   15719665  839.6   15719665  839.6
-Vcells 537799010 4103.1 1146181518 8744.7 1146180696 8744.7</code></pre>
+Ncells   6904063  368.8   11863601  633.6   11863601  633.6
+Vcells 336463314 2567.1 1109312410 8463.4 1108694243 8458.7</code></pre>
 <p>We’ll save the scCATCH object. The Seurat object has not been changed
 in this module.</p>
 <pre class="r"><code># Save Seurat object and annotations --------------------------------------
