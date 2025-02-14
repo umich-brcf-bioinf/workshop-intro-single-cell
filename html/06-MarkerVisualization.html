@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-02-10" />
+<meta name="date" content="2025-02-11" />
 
 <title>Marker identification and visualization</title>
 
@@ -415,7 +415,7 @@ div.tocify {
 <h1 class="title toc-ignore">Marker identification and
 visualization</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-02-10</h4>
+<h4 class="date">2025-02-11</h4>
 
 </div>
 
@@ -449,9 +449,9 @@ src="images/wayfinder/06-MarkerVisualization-Wayfinder.png" /> <br/>
 </div>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>To interpret our initial clustering results for all cells in our
-experiment, we’ll need to characterize the gene expression driving
-separation between the clusters. <br/></p>
+<p>To interpret our initial clustering result, we need to have a better
+understanding of what biologically relevant populations the clusters
+might correspond to across all samples or conditions. <br/></p>
 <table class='fig'>
 <tr>
 <td class="fig">
@@ -462,34 +462,28 @@ src="images/graphical_abstracts/06-MarkerVisualization-Abstract.png" />
 <tr>
 <tr class="fig">
 <td class="fig">
-Starting with clustered data and ignoring sample/condition - the gene
-expression in cells in one cluster is compared to expression in cells
-from all other clusters to characterize the similarities and differences
-between clusters and to aid in identifying what cell-types might be
-present.
+Starting with numbered cluster data, gene expression is compared between
+cells in one cluster versus cells in all other clusters - ignoring
+sample/condition at this step - to characterize the similarities and
+differences between clusters.
 </td>
 </tr>
 </table>
 <p><br/></p>
-<p>In this section, we will demonstrate: - How to generate “analytical”
-markers based on gene expression in each cluster - How to visualize the
-expression of genes of interest to aid in cluster identification and
-labeling</p>
-<p>This process can be a highly variable, from seeing well-characterized
-marker genes as top markers to needing to dig through the literature and
-plot the expression for multiple sets of genes of interest. Like the
-previous sections (and like other areas of research), when this process
-is more involved or iterative, often only the final results are
-reported.</p>
 <div id="objectives" class="section level2">
 <h2>Objectives</h2>
 <!--Add specific goals for section-->
 <ul>
-<li>Determine gene markers for each of the clusters using
+<li>Determine gene markers for each of the initial clusters using
 <code>FindAllMarkers()</code></li>
 <li>Visualize expression across clusters for genes of interest using
 <code>DotPlot()</code></li>
 </ul>
+<p>This process can be highly variable, from seeing one set of
+well-characterized marker genes as the top markers for each cluster to
+having . Like the previous sections, this step may need to be
+iterated.</p>
+<p><br/></p>
 <hr />
 </div>
 </div>
@@ -762,9 +756,9 @@ plots = c(&quot;top_5_sct_dot_plot&quot;,
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells   6884990  367.7   11382044   607.9   11382044   607.9
-Vcells 695066460 5303.0 2110648647 16103.0 2110191873 16099.5</code></pre>
+<pre><code>            used   (Mb) gc trigger  (Mb)   max used    (Mb)
+Ncells   6695846  357.6   12058432   644   12058432   644.0
+Vcells 694855171 5301.4 1751371232 13362 1505477629 11485.9</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">

@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-02-10" />
+<meta name="date" content="2025-02-11" />
 
 <title>Clustering and Projection</title>
 
@@ -416,7 +416,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Clustering and Projection</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-02-10</h4>
+<h4 class="date">2025-02-11</h4>
 
 </div>
 
@@ -456,9 +456,8 @@ src="images/wayfinder/05-ProjectionAndClustering-Wayfinder.png" /> <br/>
 <!--- General goal: to generate clusters that reasonably approximate cell-types or sub-types of interest --->
 <p>One of our goals in a single-cell analysis is to generate clusters
 that reasonably approximate cell-types or sub-types of interest in our
-samples before determining if there are differences in the proportions
-of these populations or differences in gene expression within these
-populations between experimental conditions.</p>
+samples before we can determine any differences in gene expression or
+relative proportion between experimental conditions.</p>
 <table class="fig">
 <tr>
 <td class="fig">
@@ -483,6 +482,7 @@ with similar expression programs, regardless of experimental condition.
 <code>FindClusters</code></li>
 <li>Visualize our clustering results</li>
 </ul>
+<p><br/></p>
 <p>Like other steps in our analysis, multiple parameters may need to be
 tested and evaluated while we would expect that only the final would be
 reported. Clustering is considered part of data exploration so an
@@ -2303,7 +2303,7 @@ Number of edges: 998702
 Running Louvain algorithm...
 Maximum modularity in 10 random starts: 0.9514
 Number of communities: 24
-Elapsed time: 5 seconds</code></pre>
+Elapsed time: 4 seconds</code></pre>
 <p><img src="images/curriculum/05-ProjectionAndClustering/05-run_umap_unintegrated-1.png" width="816" style="display: block; margin: auto;" /></p>
 <p>In the plot at left, we see that while there are distinct clusters,
 those clusters seem to stratified by day. This suggests that without
@@ -2384,9 +2384,9 @@ plots = c(&quot;pre_integration_umap_plot_day&quot;,
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells   6656902  355.6   11382044   607.9   11382044   607.9
-Vcells 742925769 5668.1 2110648647 16103.0 2059012342 15709.1</code></pre>
+<pre><code>            used   (Mb) gc trigger  (Mb)   max used    (Mb)
+Ncells   6574310  351.2   12058432   644   12058432   644.0
+Vcells 742753922 5666.8 1751371232 13362 1505477629 11485.9</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">

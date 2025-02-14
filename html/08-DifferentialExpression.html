@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-02-10" />
+<meta name="date" content="2025-02-11" />
 
 <title>Differential Expression Analysis</title>
 
@@ -416,7 +416,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Differential Expression Analysis</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-02-10</h4>
+<h4 class="date">2025-02-11</h4>
 
 </div>
 
@@ -450,10 +450,10 @@ src="images/wayfinder/08-DifferentialExpression-Wayfinder.png" /> <br/>
 </div>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>Differential expression comparison is a key step to addressing the
-biological question at hand for the experiment, namely what genes might
-be contributing to the aberrant bone formation during healing that was
-observed in this experiment.</p>
+<p>After identifying what cell-types are likely present in our data, we
+can finally consider experimental conditions and use differential
+expression comparisons to address the biological question at hand for an
+experiment.</p>
 <table class='fig'>
 <tr>
 <td class="fig">
@@ -464,14 +464,23 @@ src="images/graphical_abstracts/08-DifferentialExpression-Abstract.png" />
 <tr>
 <tr class="fig">
 <td class="fig">
-Starting with labeled clustered data and considering sample and/or
-condition - compare between case and control within each cluster to
-identify genes that are impacted by experimental perturbation(s) within
-that cell-type or subtype.
+Starting with labeled clustered data, for each labeled cluster, we can
+compare between case and control within that cluster to identify genes
+that are impacted by the experimental perturbation(s) for that cell-type
+or subtype.
 </td>
 </tr>
 </table>
 <p><br/></p>
+<div id="objectives" class="section level2">
+<h2>Objectives</h2>
+<!--Add specific goals for section-->
+<ul>
+<li>Run “standard” differential expression comparisons with cells as
+replicates</li>
+<li>Run “pseudobulk” differential expression comparisons with samples as
+replicates</li>
+</ul>
 <p>As a reminder, our data includes cells isolated from issue from day 0
 (prior to injury) as controls, and days 7 and 21 post-injury as
 experimental conditions.</p>
@@ -480,13 +489,7 @@ experimental conditions.</p>
 href="06-MarkerVisualization.html">marker identification section of this
 workshop</a>, but here we will show how to run comparisons between
 experimental conditions for each annotated cluster.</p>
-<div id="objectives" class="section level2">
-<h2>Objectives</h2>
-<!--Add specific goals for section-->
-<ul>
-<li>Run cell-level differential expression comparisons</li>
-<li>Run sample level differential expression comparisons</li>
-</ul>
+<p><br/></p>
 <hr />
 </div>
 </div>
@@ -925,8 +928,8 @@ pathway enrichment, and GSEA with mSigDB.</p>
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells  10046049  536.6   19599850  1046.8   19599850  1046.8
-Vcells 710117792 5417.8 2110648647 16103.0 2110191873 16099.5</code></pre>
+Ncells   9350592  499.4   17785815   949.9   17785815   949.9
+Vcells 707807353 5400.2 1751371232 13362.0 1505477629 11485.9</code></pre>
 <p>We’ll save the scCATCH object. The Seurat object has not been changed
 in this module.</p>
 <pre class="r"><code># Save Seurat object ------------------------------------------------------

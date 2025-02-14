@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-02-10" />
+<meta name="date" content="2025-02-11" />
 
 <title>Cell Type Annotation</title>
 
@@ -416,7 +416,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Cell Type Annotation</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-02-10</h4>
+<h4 class="date">2025-02-11</h4>
 
 </div>
 
@@ -450,13 +450,13 @@ table.fig, th.fig, td.fig {
 </div>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>A frequent bottleneck in the single-cell RNA-seq analysis workflow is
-annotating our clustering results, as it requires bridging the gap
+<p>A frequent bottleneck in single-cell analysis is annotating the
+algorithmicly generated clusters, as it requires bridging the gap
 between the data and prior knowledge (<a
 href="https://bioconductor.org/books/3.15/OSCA.basic/cell-type-annotation.html">source</a>).
-While generating markers for each cluster and evaluating the expression
-of known marker genes is important, it may or may not be sufficient to
-assign cell-type or sub-type labels.</p>
+While generating markers for each cluster it important, it may or may
+not be sufficient to assign cell-type or sub-type labels without
+bringing in additional sources.</p>
 <table class='fig'>
 <tr>
 <td class="fig">
@@ -466,21 +466,14 @@ assign cell-type or sub-type labels.</p>
 <tr>
 <tr class="fig">
 <td class="fig">
-Starting with clustered data and ignoring sample/condition - we can
-summarize and compare gene expression for known gene markers within each
-cluster to aid with labeling clusters with the appropriate cell-type or
-subtype.
+Starting with clustered data, we can summarize and compare gene
+expression for known gene markers within each cluster, irrespective of
+sample or condition, to help label clusters with the appropriate
+cell-type or subtype.
 </td>
 </tr>
 </table>
 <p><br/></p>
-<p>In this section, our goal is to use an automated annotation tool to
-generate cell type predictions for our clusters.</p>
-<p>Like the previous sections, the process to assign cell-types to
-clusters can be very iterative. In addition, the steps to reach a
-“Figure 1” level of labeled clusters may not be presented in detail, can
-be very dataset dependent, and often is more challenging for less
-characterized tissues.</p>
 <div id="objectives" class="section level2">
 <h2>Objectives</h2>
 <ul>
@@ -489,6 +482,13 @@ characterized tissues.</p>
 <li>Use <code>scCATCH</code> cell-type predictions to annotate our
 clusters</li>
 </ul>
+<p><br></p>
+<p>Like the previous sections, the process to assign cell-types to
+clusters can be very iterative. In addition, the steps to reach a
+“Figure 1” of labeled clusters may not be presented in detail, can be
+very dataset dependent, and often is more challenging for less
+characterized tissues.</p>
+<p><br></p>
 <hr />
 </div>
 </div>
@@ -679,9 +679,14 @@ immune_markers[[&#39;B-cell&#39;]] = c( &#39;Ly6d&#39;, &#39;Cd19&#39;, &#39;Cd7
 immune_markers[[&#39;T-cell&#39;]] = c( &#39;Cd3d&#39;,&#39;Cd3e&#39;,&#39;Cd3g&#39;) # also Thy1</code></pre>
 <pre class="r"><code># Plot other immune to assist with cluster identification ---------------
 immune_markers_plot = DotPlot(geo_so, features = immune_markers, assay = &#39;SCT&#39;)  +
-  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
-
-# save to file
+  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))</code></pre>
+<pre><code>Warning: The `facets` argument of `facet_grid()` is deprecated as of ggplot2 2.2.0.
+ℹ Please use the `rows` argument instead.
+ℹ The deprecated feature was likely used in the Seurat package.
+  Please report the issue at &lt;https://github.com/satijalab/seurat/issues&gt;.
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+<pre class="r"><code># save to file
 ggsave(filename = &#39;results/figures/immune_markers_sct_dot_plot.png&#39;, 
        plot = immune_markers_plot, width = 10, height = 5, units = &#39;in&#39;)
 
@@ -1181,9 +1186,9 @@ catch_umap_condition_plot</code></pre>
 # Ok since we saved the plots as we went along
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells   7573843  404.5   11382044   607.9   11382044   607.9
-Vcells 698668305 5330.5 2110648647 16103.0 2110191873 16099.5</code></pre>
+<pre><code>            used   (Mb) gc trigger  (Mb)   max used    (Mb)
+Ncells   6773019  361.8   12058432   644   12058432   644.0
+Vcells 696197461 5311.6 1751371232 13362 1505477629 11485.9</code></pre>
 <p>We’ll save the scCATCH object. The Seurat object has not been changed
 in this module.</p>
 <pre class="r"><code># Save Seurat object and annotations --------------------------------------
