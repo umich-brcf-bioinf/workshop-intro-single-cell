@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+
+<html lang="en" xml:lang="en">
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core Workshop Team" />
+
+<meta name="date" content="2025-02-11" />
+
+<title>PCA and Integration</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<!--
+Favicon dervied from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<link rel="manifest" href="site.webmanifest">
+<link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+    </li>
+    <li>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+    </li>
+    <li>
+      <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
+    </li>
+    <li>
+      <a href="03-Normalization.html">Normalization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
+    </li>
+    <li>
+      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="06-MarkerVisualization.html">Marker identification and visualization</a>
+    </li>
+    <li>
+      <a href="07-CellTypeAnnos.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="08-DifferentialExpression.html">Differential expression analysis</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">PCA and Integration</h1>
+<h4 class="author">UM Bioinformatics Core Workshop Team</h4>
+<h4 class="date">2025-02-11</h4>
+
+</div>
+
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+
+table.fig, th.fig, td.fig {
+  border: 1px solid lightgray;
+  border-collapse: collapse;
+  padding: 12px;
+}
+</style>
+<script>
+  addClassKlippyTo("pre.r, pre.markdown, pre.bash");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<style type="text/css">
+.doNotRun {
+background-color: CornSilk;
+}
+</style>
+<p><br/> <img
+src="images/wayfinder/04-PCAandIntegration-Wayfinder.png" /> <br/>
+<br/></p>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>After filtering and normalization, our next goal is to cluster the
+cells according to their expression profiles. However, even after
+filtering, we expect to still have several thousand cells assayed with
+approximately 21,000 genes measured per cell. This means that we are
+working very “high-dimensional” data that presents some challenges.
+<br/></p>
+<table class="fig">
+<tr>
+<td class="fig">
+<img
+src="images/graphical_abstracts/04-PCAandIntegration-Abstract.png" />
+</td>
+</tr>
+<tr>
+<td class="fig">
+Starting with filtered, normalized data [gene x cell] for all samples -
+principal component analysis (PCA) can be used to reduce the
+dimensionality while still representing the overall gene expression
+patterns for each cell
+</td>
+</tr>
+</table>
+<p><br/></p>
+<div id="objectives" class="section level2">
+<h2>Objectives</h2>
+<ul>
+<li>Understand why PCA is used prior to integration and clustering for
+single-cell data<br />
+</li>
+<li>Use the <code>RunPCA()</code> function to generate principal
+components for our data<br />
+</li>
+<li>Choose an appropriate number of principal components to represent
+our data<br />
+</li>
+<li>Use <code>IntegrateLayers</code> to integrate our sample data prior
+to clustering</li>
+</ul>
+<p><br/></p>
+<p>Similar to the previous sections, while you may see only a single
+approach in a paper and we will be showing one example of executing
+these steps here, testing multiple methods or parameters might be
+necessary</p>
+<p><br/></p>
+<hr />
+<!--Before this section - Day 1: Starting w/ Seurat, Initial QC, & Batch correction (SCtransform)-->
+<!--Instruction Note: Using integrated data here and will compare to unintegrated results in next section, similar to  [here](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-021-03957-4)?-->
+</div>
+</div>
+<div id="what-is-pca" class="section level1">
+<h1>What is PCA?</h1>
+<!--- Give some context and background on PCA
+- What is PCA
+- Why do we use it 
+--->
+<!--- add PCA illustration here? --->
+<p>The high dimensionality of single-cell data present two major
+challenges for analysis:</p>
+<ul>
+<li>The scale makes analysis steps costly and slow<br />
+</li>
+<li>The sparseness means there is likely uninteresting variation that
+should be excluded</li>
+</ul>
+<p>In practical terms, Principal component analysis (PCA) creates a
+simpler, more concise version of data while preserving the same “story”.
+For example, we can think of watching football - attending a game in
+person is exciting but can take hours, especially considering the time
+that will be spent traveling and waiting. Conversely, watching a
+highlight reel of those same game might not give you the full
+experience, but by seeing the key plays you can get a good understand
+what happened in the game in a fraction of the time.</p>
+<p>Similarly to a highlight reel, running PCA allows us to select PCs
+that represent correlated gene expression to reduce the size and
+complexity of the data while still capturing the overall expression
+patterns and also reducing computation time.</p>
+<p><img
+src="images/curriculum/04-PCAandIntegration/04-PCAandIntegration_purpose.png" /></p>
+<div id="pca-example" class="section level3">
+<h3>PCA example</h3>
+<p>To understand how PCA works for single-cell data, we can consider a
+smaller dataset measuring the expression of four genes measured in just
+two cells and plot the expression of those four genes, with data from
+one cell plotted on the x-axis and the second cell plotted on the
+y-axis.</p>
+<div class="float">
+<img
+src="images/curriculum/04-PCAandIntegration/HBC-PCA_2cell_genes.png"
+alt="A simple PCA example (from HBC)" />
+<div class="figcaption">A simple PCA example (from HBC)</div>
+</div>
+<p>If we wanted to represent the most variation across the data, we
+would draw a diagonal line between gene B and gene C - this would
+represent the first principal component (PC). However, this line doesn’t
+capture all the variance in this data as the genes also vary above and
+below the line, so we could draw another line (at a right angle to the
+first) representing the second most variation in the data - which would
+represent the second PC.</p>
+<div class="float">
+<img
+src="images/curriculum/04-PCAandIntegration/HBC-PCA_2cell_variation3.png"
+alt="PCA gene loadings (from HBC)" />
+<div class="figcaption">PCA gene loadings (from HBC)</div>
+</div>
+<!--- <Consider moving to dropdown and adding figure to show loadings> However, as we can see in the example below, genes near the end of each line are those with the greatest influence on the direction and length of the PC.-->
+<p>We won’t illustrate the process of generating all possible PCs, but
+running PCA on our data will result in a score for each cell for each PC
+and each gene will have a weight or loading for a given PC. By
+definition, the PCs capture the greatest factors of heterogeneity in
+decreasing order in the data set <a
+href="https://bioconductor.org/books/3.13/OSCA.basic/dimensionality-reduction.html#principal-components-analysis">(source)</a>.</p>
+</div>
+<div id="why-pca-is-useful-for-single-cell-data" class="section level2">
+<h2>Why PCA is useful for single-cell data</h2>
+<p>In contrast to bulk RNA-seq, where the majority of the variance is
+usually explained by the first and second PC, for single-cell data we
+expect that many more PCs are contributing to the overall variance.</p>
+<div id="sparsity-in-single-cell-data" class="section level3">
+<h3>Sparsity in single-cell data</h3>
+<p>In addition to being “high-dimensional”, we expect the data to be
+both “sparse” and “noisy”. Sparse in the sense that many genes will
+either not be expressed or not measured in many of the cells and have
+zero values. Noisy due to biological variability and technical
+variability due to the practical limitations of both capture and
+sequencing depth <a
+href="https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr">(source)</a>.</p>
+<blockquote>
+<p><em>Note on zero “inflation” of single-cell data</em></p>
+<p>Single-cell data is sometimes described as “zero inflated”, however
+work by <a
+href="https://www.biorxiv.org/content/10.1101/582064v1.full">Svensson</a>
+has challenged that characterization and argued that the higher number
+of zeros observed in scRNA-seq compared to bulk RNA-seq is more likely
+due to biological variance and lower sequencing saturation than
+technical artifacts. Work by <a
+href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-020-02103-2">Choi
+et al. (2020)</a> support that zeros in single-cell data are due to
+biology but <a
+href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC8783472/">Jiang et
+al. (2022)</a> delves more into the “controversy” zero inflation,
+including common approaches for handling zeros and the downstream
+impacts.</p>
+</blockquote>
+<p>For sparse, high-dimensional, <em>biological</em> data, we expect
+many genes to have correlated expression as they would be impacted by
+the same biological process while other genes to have either low (more
+noisy) or have similar expression and therefore are not as important for
+identifying cell-type/subtypes. So we can use the top several PCs to
+approximate the full data set for the purpose of (<a
+href="https://bioconductor.org/books/3.12/OSCA/dimensionality-reduction.html#principal-components-analysis">source</a>).</p>
+<details>
+<summary>
+<em>More detail on dimensionality reduction </em>
+</summary>
+The <a
+href="https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr">Ouyang
+Lab has a “gentle introduction” section of their materials</a> that goes
+into greater details on dimensionality reduction including how similar
+strategies are used in deep learning models. Additionaly, the OSCA book
+has a <a
+href="https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html">chapter
+on Dimensionality reduction</a> that has useful context.
+</details>
+<p><br> <br></p>
+<blockquote>
+<h4 id="more-context-using-pca-for-single-cell-data"
+class="unlisted unnumbered">More context using PCA for single-cell
+data</h4>
+<p>To read more on PCA, please refer to the <a
+href="https://hbctraining.github.io/scRNA-seq_online/lessons/05_theory_of_PCA.html">HBC
+- Theory of PCA content</a>, from which this section is adapted and the
+original source material for that content, specifically <a
+href="https://www.youtube.com/watch?v=_UVHneBUBW0">Josh Starmer’s
+StatQuest video</a>.</p>
+<p>For additional detail on , the OSCA chapter on <a
+href="https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html">Principal
+components analysis</a> includes a more descriptive overview.</p>
+</blockquote>
+<p><br></p>
+</div>
+</div>
+</div>
+<div id="run-pca-on-our-dataset" class="section level1">
+<h1>Run PCA on our dataset</h1>
+<!--- Add introduction to function, including link to documentation --->
+<p>Since PCA is sensitive to scale, we will use the SCT normalized assay
+(<a
+href="https://ouyanglab.com/singlecell/basic.html#pca-principal-component-analysis">reference</a>).
+We will name the reduction in an informative way to keep them clear for
+us in the future. In this case, our data has not yet been integrated,
+but it has been SCT normalized. So we will name the reduction
+<code>unintegrated.sct.pca</code>. Note that <code>SCTTransform()</code>
+returned a set of highly variable genes, and the <code>RunPCA()</code>
+function will use this subset to determine the PCs and genes associated
+with those PCs.</p>
+<pre class="r"><code># Day 2 - PCA and Integration
+# =========================================================================
+
+# Build a PCA and add it to the Seurat object  ----------------------------
+geo_so = RunPCA(geo_so, reduction.name = &#39;unintegrated.sct.pca&#39;)
+geo_so</code></pre>
+<pre><code>An object of class Seurat 
+46957 features across 31559 samples within 2 assays 
+Active assay: SCT (20468 features, 3000 variable features)
+ 3 layers present: counts, data, scale.data
+ 1 other assay present: RNA
+ 1 dimensional reduction calculated: unintegrated.sct.pca</code></pre>
+<p>After running the command in the console, we should see that the
+<code>geo_so</code> Seurat object has a new reduction. Viewed in our
+running schematic:</p>
+<div class="float">
+<img src="images/seurat_schematic/Slide6.png"
+alt="Image: Schematic after RunPCA()." />
+<div class="figcaption">Image: Schematic after RunPCA().</div>
+</div>
+<p>We can then visualize the first several PCs using the
+<code>DimHeatmp()</code> function, which orders both cells and features
+(genes) according to their PCA scores and allows us to see some general
+patterns in the data. Here we will specify that the first 24 PCs be
+included in the figure and that 500 cells are randomly subsetted for the
+plot. <em>Note - you may need to increase your plot window size to
+resolve errors regarding figure margins.</em></p>
+<pre class="r"><code># Build heatmaps of PCAs  -------------------------------------------------
+# Plot cell by gene heatmaps for first several PCs
+DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;) # look at first PC alone first
+DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;) # first 18 PCs
+
+# note - need to use png() to write to file because this isn&#39;t a ggplot
+png(filename = &#39;results/figures/qc_pca_heatmap.png&#39;, width = 12, height = 40, units = &#39;in&#39;, res = 300)
+  DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;)
+dev.off()
+
+#  =========================================================================</code></pre>
+<div class="figure" style="text-align: center">
+<img src="images/curriculum/04-PCAandIntegration/04-pca_heatmap_one-1.png" alt="DimHeatmap for PC1 alone" width="50%" />
+<p class="caption">
+DimHeatmap for PC1 alone
+</p>
+</div>
+<div class="figure" style="text-align: center">
+<img src="images/curriculum/04-PCAandIntegration/04-pca_heatmap_18-1.png" alt="DimHeatmap for PC1-18" width="816" />
+<p class="caption">
+DimHeatmap for PC1-18
+</p>
+</div>
+<p>As we scroll down in this plot, we see less and less structure in our
+plots indicating that no only is less variation is being represented by
+larger PCs overall but also that those PCs are less likely to correspond
+to variation of interest, e.g. corresponding to cell types/subtypes.</p>
+<details>
+<summary>
+<em>What genes are contributing the most to each PC?</em>
+</summary>
+<p>We can also visualize the loadings for genes contributing to each
+principal components using Seurat provided functions <a
+href="https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction">source</a>.</p>
+<p>We can highlight genes loaded for dimenstions of interest using using
+<code>VizDimLoadings()</code>:</p>
+<pre class="r"><code># Visualize gene loadings for PC1 and PC2 ---------------------------------
+VizDimLoadings(geo_so, dims = 1:2, reduction = &#39;unintegrated.sct.pca&#39;)
+ggsave(filename = &#39;results/figures/qc_pca_loadings.png&#39;, width = 12, height = 6, units = &#39;in&#39;)
+
+#  =========================================================================</code></pre>
+<img src="images/curriculum/04-PCAandIntegration/04-pca_loading_plot-1.png" width="816" style="display: block; margin: auto;" />
+</details>
+<p><br> </br></p>
+<blockquote>
+<h4 id="how-does-seurat-use-pca-scores" class="unlisted unnumbered">How
+does Seurat use PCA scores?</h4>
+<p>Per the <a
+href="https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction">Ho
+Lab’s materials</a> - “To overcome the extensive technical noise in any
+single feature for scRNA-seq data, Seurat clusters cells based on their
+PCA scores, with each PC essentially representing a ‘metafeature’ that
+combines information across a correlated feature set. The top principal
+components therefore represent a robust compression of the dataset.”
+<!-- Note, may want to edit/remove above section --></p>
+</blockquote>
+<div id="visualizing-relative-contributions-of-each-pc"
+class="section level3">
+<h3>Visualizing relative contributions of each PC</h3>
+<p>So how do we determine how many PCs to use before classifying cells
+into clusters based on their expression? One way to evaluate how many
+PCs to use for clustering is by looking at an elbow plot, which shows
+the percent variance explained by successive PCs. We’ll use the
+<code>ElbowPlot()</code> function to do this, specifying that the first
+50 PCs be plotted.</p>
+<pre class="r"><code># Visualize how many PCs to include using an elbow plot -------------------
+ElbowPlot(geo_so, ndims = 50, reduction = &#39;unintegrated.sct.pca&#39;)
+ggsave(filename = &#39;results/figures/qc_sct_elbow_plot.png&#39;, width = 8, height = 8, units = &#39;in&#39;)
+
+#  =========================================================================</code></pre>
+<p><img src="images/curriculum/04-PCAandIntegration/04-elbow_plot-1.png" width="80%" style="display: block; margin: auto;" /></p>
+<p>In this plot, we could arbitrarily choose a number along the x-axis
+that looks like a sharp change in the variance from one PC to the next,
+that is, an elbow. Of course, while that’s often the recommendation in
+tutorials, the choice of where the point of the “elbow” is, is not
+always obvious, and this plot is no different.</p>
+</div>
+<div
+id="choosing-the-number-of-significant-pcs-for-dimensionality-reduction"
+class="section level2">
+<h2>Choosing the number of significant PCs for dimensionality
+reduction</h2>
+<!-- Section may still need to be edited more & consider adding a figure -->
+<p>An important consideration for determining how many PCs to select for
+your single-cell analysis is to understand the “resolution” of your
+biological question. Is answering your biological question dependent on
+identifying rarer cell types or specific subtypes? Or are broader
+cell-types more relevant and less PCs are needed?</p>
+<p>For this dataset, we are expecting a diversity of cell types and cell
+populations that mediate wound healing, but also an aberrant transition
+to bone, which might include rarer cells in the population. So for this
+dataset, we can consider starting with more PCS rather than too few PCs
+to start. Again, in a full analysis workflow, our selection at this step
+might be more of a starting point for further iterations than a final
+decision.</p>
+<!-- Section may need more editing
+Related - how important is that decision to the downstream impact (e.g. how much does changing the number of PCs change the clustering)?
+-->
+<div id="an-algorithmic-approach" class="section level3">
+<h3>An algorithmic approach</h3>
+<p>Instead of choosing based on the elbow plot by sight alone, we can
+try to quantify our choice algorithmically. Here we create a function to
+return a recommended PC based on two possible metrics ( (A) cumulative
+variation or (B) above a minimum step size). We can apply that function
+to our data to get a good starting point for number of PCs to
+include.</p>
+<pre class="r"><code># Estimate optimal PCs for clustering with a function -------------------------
+optimal_pcs = function(so, reduction) {
+    # quantitative check for number of PCs to include
+    pct = so@reductions[[reduction]]@stdev / sum(so@reductions[[reduction]]@stdev) * 100
+    cum = cumsum(pct)
+    co1 = which(cum &gt; 90 &amp; pct &lt; 5)[1]
+    co2 = sort(which((pct[1:length(pct)-1] - pct[2:length(pct)]) &gt; .1), decreasing = T)[1] + 1
+    pcs = min(co1, co2) 
+    
+    return(pcs)
+}
+
+# Apply function to our data
+pcs = optimal_pcs(geo_so, &#39;unintegrated.sct.pca&#39;)
+pcs</code></pre>
+<pre><code>[1] 16</code></pre>
+<pre class="r"><code># Based on the heatmap, we&#39;ll modify to 13 PCs
+pcs = 13
+
+# =========================================================================</code></pre>
+<p>Again, this number is likely a starting point and may need to be
+revised depending on the outcome of the downstream steps.</p>
+<summary>
+Optional: A more advanced function for picking PCs
+</summary>
+<details>
+<p>This function is derived from the function above; it’s useful for
+understanding the overall variance of the PCs as well as visualizing the
+two kinds of cutoffs. It returns the same recommended PCs as the
+original function, but also:</p>
+<ul>
+<li>prints more details</li>
+<li>prints a plot of the PC variance with key PCs highlighted</li>
+<li>returns a named list of detailed results</li>
+</ul>
+<pre class="r"><code># Define a function to estimate optimal PCs for clustering ----------------
+optimal_pcs_advanced = function(so, reduction, print_plot=TRUE, verbose=TRUE) {
+  # quantitative check for number of PCs to include
+  threshold_var_cum_min = 90
+  threshold_var_pct_max = 5
+  threshold_step_min = 0.1
+  pct = so@reductions[[reduction]]@stdev / sum(so@reductions[[reduction]]@stdev) * 100
+  cum = cumsum(pct)
+  co1 = which(cum &gt; threshold_var_cum_min &amp; pct &lt; threshold_var_pct_max)[1]
+  co2 = sort(which((pct[1:length(pct)-1] - pct[2:length(pct)]) &gt; threshold_step_min), decreasing = T)[1] + 1
+  pcs = min(co1, co2) 
+  
+  plot_df &lt;- data.frame(pc = 1:length(pct),
+                        pct_var = pct, 
+                        cum_var = cum)
+  plot_df$labels = &#39;&#39;
+  co1_label = paste0(&#39;PC &#39;, co1)
+  co2_label = paste0(&#39;PC &#39;, co2)
+  if (co1 == co2) {
+    plot_df$labels[plot_df$pc == co1] = paste0(co1_label, &#39;\n&#39;, co2_label)
+  } else {
+    plot_df$labels[plot_df$pc == co1] = co1_label
+    plot_df$labels[plot_df$pc == co2] = co2_label
+  }
+  
+  
+  p = ggplot(plot_df, aes(x=pc, y=cum_var, label=labels)) +
+    geom_point(color=&quot;grey&quot;, alpha=1) +
+    geom_text(hjust = 0, vjust=1, nudge_x=2, nudge_y=-5) +
+    geom_step(data=filter(plot_df, pc&lt;=co2), color=&quot;blue&quot;, alpha=0.6, direction=&#39;vh&#39;) +
+    geom_step(data=filter(plot_df, pc&gt;=co2), color=&quot;grey&quot;, alpha=0.6, direction=&#39;hv&#39;) +
+    geom_hline(yintercept = 90, color = &quot;red&quot;, alpha=0.6, linetype = &#39;dashed&#39;) +
+    geom_point(data=filter(plot_df, pc==co1), aes(x=pc,y=cum_var), color=&#39;red&#39;) + 
+    geom_point(data=filter(plot_df, pc==co2), aes(x=pc,y=cum_var), color=&#39;blue&#39;) +
+    scale_y_continuous(breaks = c(0,25,50,75,100, threshold_var_cum_min)) +
+    theme_bw() +
+    labs(title = &#39;Optimal num of PCs&#39;,
+         x = &#39;Principal Component&#39;, 
+         y = &#39;Cumulative percent variance&#39;)
+
+  if (print_plot) {
+          print(p)
+  }
+  
+  if (verbose) {
+     results = paste(
+                sprintf(&#39;Reduction %s: %s PCs (total var = %s)&#39;, 
+                     reduction,
+                     nrow(plot_df),
+                     plot_df[plot_df$pc==nrow(plot_df), &#39;cum_var&#39;]),
+                sprintf(&quot;\t%s (total var = %s) : Smallest PC that explains at least %s%% total variance&quot;, 
+                     co1_label,
+                     round(plot_df[plot_df$pc==co1, &#39;cum_var&#39;], 2),
+                     threshold_var_cum_min),
+                sprintf(&quot;\t%s (total var = %s) : Largest PC with incremental variance step at least %s%%&quot;, 
+                      co2_label,
+                      round(plot_df[plot_df$pc==co2, &#39;cum_var&#39;],2),
+                      threshold_step_min),
+                sprintf(&#39;\tRecommended num of PCs: %s&#39;, pcs),
+                sep=&#39;\n&#39;)
+      message(results)
+  }
+  
+  return(list(recommended_pcs=pcs, plot=p, co1=co1, co2=co2, df=plot_df))
+}
+
+# =========================================================================</code></pre>
+<pre class="r"><code># Apply function to our data ----------------------------------------------
+optimal_pcs = optimal_pcs_advanced(geo_so, &#39;unintegrated.sct.pca&#39;)</code></pre>
+<pre><code>Reduction unintegrated.sct.pca: 50 PCs (total var = 100)
+    PC 42 (total var = 90.98) : Smallest PC that explains at least 90% total variance
+    PC 16 (total var = 53.21) : Largest PC with incremental variance step at least 0.1%
+    Recommended num of PCs: 16</code></pre>
+<p><img src="images/curriculum/04-PCAandIntegration/04-apply_estimate_optimal_pcs-1.png" width="816" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Save plot of PCs --------------------------------------------------------
+ggsave(filename = &#39;results/figures/optimal_pcs.png&#39;,
+       plot=optimal_pcs$plot,
+       width = 8, height = 8, units = &#39;in&#39;)
+
+# Based on the heatmaps above, we&#39;ll cluster on 13 PCs
+pcs = 13
+
+# =========================================================================</code></pre>
+<p>Again, this number is likely a starting point and may need to be
+revised depending on the outcome of the downstream steps.</p>
+<p>While outside the scope of this workshop, there are community efforts
+to develop more sophisticated methods to select an appropriate number of
+PCs; here are a few popular approaches:</p>
+<ul>
+<li><a href="https://github.com/rbpatt2019/chooseR">chooseR
+package</a></li>
+<li><a
+href="https://academic.oup.com/bioinformatics/article/38/10/2949/6565314">findPC
+package</a></li>
+<li><a
+href="https://lazappi.id.au/posts/2017-07-19-building-a-clustering-tree/">using
+clustering trees</a></li>
+</ul>
+<br/>
+<hr/>
+</details>
+<p><br/></p>
+</div>
+<div id="visualizing-our-pc-results" class="section level3">
+<h3>Visualizing our PC results</h3>
+<p>In addition to selecting a reduced number of PCs to represent our
+data, we can also visualize , similarly to how we often look at samples
+for bulk RNA-seq using the <code>DimPlot()</code> function, with each
+cell plotted along the selected PCs and colored by a selected meta-data
+column:</p>
+<pre><code>?DimPlot # default dims = c(1,2)</code></pre>
+<pre class="r"><code># Visualize PCA (PC1 and PC2, unintegrated) -------------------------------
+# first label by sample
+DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;orig.ident&#39;) 
+ # then label by day
+DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;day&#39;)
+ # save 
+ggsave(filename = &#39;results/figures/qc_pca_plot_unintegrated_sct_day.png&#39;, width = 7, height = 6, units = &#39;in&#39;)
+
+#  =========================================================================</code></pre>
+<p><img src="images/curriculum/04-PCAandIntegration/04-pca_loading_plots-1.png" width="816" style="display: block; margin: auto;" /><img src="images/curriculum/04-PCAandIntegration/04-pca_loading_plots-2.png" width="816" style="display: block; margin: auto;" /></p>
+<p>In the first plot with each cell labeled by the original sample name,
+it looks like there might be some batches but it’s hard to distinguish.
+From the second by <code>day</code>, we can see that even after
+normalization there seems to be variation that corresponds more to a
+batch effect related to the day status than interesting biological
+variation. This suggests that clustering our data using our selected
+number of PCs, integration should be performed to mitigate these
+differences and better align our data.</p>
+</div>
+</div>
+</div>
+<div id="integrate-layers" class="section level1">
+<h1>Integrate Layers</h1>
+<p>Before proceeding with clustering, we will integrate our data across
+all samples. This is a common step for scRNA-seq analyses that include
+multiple samples and should mitigate the differences between samples we
+saw in our PCA plot. Currently, each sample is stored as a layer in our
+<code>geo_so</code> object, Since earlier in the workshop, we used
+<code>SCTransform()</code> to normalize our data, select variable genes
+and then have generated a PCA reduction, we can use the
+<code>IntegrateLayers()</code> function to do that.</p>
+<div class="float">
+<img
+src="images/curriculum/04-PCAandIntegration/HBC-CCA-Integration_simplified.png"
+alt="CCA integration illustration, modified from Stuart and Butler, 2018 -https://doi.org/10.1101/460147" />
+<div class="figcaption">CCA integration illustration, modified from
+Stuart and Butler, 2018 -<a href="https://doi.org/10.1101/460147"
+class="uri">https://doi.org/10.1101/460147</a></div>
+</div>
+<p>The details of how integration works depends on the method, but for
+the RPCA approach that we’ll be using here - the process is similar to
+the canonical correlation analysis (CCA) approach illustration above <a
+href="https://www.biorxiv.org/content/10.1101/2021.08.04.453579v1.full.pdf">(source)</a>.
+However, RPCA is more efficient (faster) to run and better preserves
+distinct cell identities between samples <a
+href="https://www.nature.com/articles/s41592-021-01336-8">(source)</a>.
+As described in the corresponding <a
+href="https://satijalab.org/seurat/articles/integration_rpca.html">Seurat
+tutorial</a>, each dataset is projected into the others’ PCA space and
+constrain the anchors</p>
+<p>New to Seurat v5 are improvements that make selecting different
+integration methods much easier. The results of each alternative
+integration method are stored within the same <code>Seurat</code>
+object, which makes comparing downstream effects much easier. So, if we
+wanted to run the <code>RPCAIntegration</code> method, we would run
+(<strong>but we won’t here</strong>):</p>
+<pre class="default doNotRun"><code>### DO NOT RUN ###
+geo_so = IntegrateLayers(
+  object = geo_so, 
+  method = RPCAIntegration, 
+  orig.reduction = &#39;unintegrated.sct.pca&#39;,
+  normalization.method = &#39;SCT&#39;,
+  new.reduction = &#39;integrated.sct.rpca&#39;)
+### DO NOT RUN ###
+#  =========================================================================
+</code></pre>
+<p>Note that the integration is run on the layers, which from our prior
+steps each correspond to a single sample, in our <code>geo_so</code>
+Seurat object. For additional information, refer to the Seurat v5
+vignette on integrative analysis (<a
+href="https://satijalab.org/seurat/articles/seurat5_integration#perform-streamlined-one-line-integrative-analysis">link</a>)
+provides examples of each integration method. Note, that the vignette
+code uses the <code>NormalizeData()</code>, <code>ScaleData()</code>,
+<code>FindVariableFeatures()</code> pipeline, so their
+<code>IntegrateLayers()</code> call does not include
+<code>normalization.method = 'SCT'</code>, as ours must.</p>
+<p>Note we have specified the unintegrated reduction
+<code>unintegrated.sct.pca</code>, which is what
+<code>IntegrateLayers()</code> operates on, along with the
+<code>SCT</code> assay. Let’s take a look to see what’s different about
+the <code>Seurat</code> object:</p>
+<blockquote>
+<p><strong>Load integrated data</strong></p>
+<p>Because the <code>IntegrateLayers()</code> function takes a while to
+run, we will simply load the RPCA integrated <code>geo_so</code> object
+from a file we have previously generated.</p>
+<pre class="r"><code>geo_so = readRDS(&#39;/home/workshop/rcavalca/ISC_R/results/rdata/geo_so_sct_integrated.rds&#39;)</code></pre>
+</blockquote>
+<pre class="r"><code># Check our updated object that we&#39;ve read in from file ------------------- 
+# Observe that we now have a new reduction, `integrated.sct.rpca`
+geo_so </code></pre>
+<pre><code>An object of class Seurat 
+46957 features across 31559 samples within 2 assays 
+Active assay: SCT (20468 features, 3000 variable features)
+ 3 layers present: counts, data, scale.data
+ 1 other assay present: RNA
+ 2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca</code></pre>
+<p>Viewed in our running schematic:</p>
+<div class="float">
+<img src="images/seurat_schematic/Slide7.png"
+alt="Image: Schematic after IntegrateLayers()." />
+<div class="figcaption">Image: Schematic after IntegrateLayers().</div>
+</div>
+<p>We can also confirm that our integration method has helped to correct
+the <code>Day</code> effects we saw in the initial PCA plots</p>
+<pre class="r"><code># Visualize PCA (PC1 and PC2, integrated) ---------------------------------
+DimPlot(geo_so, reduction = &#39;integrated.sct.rpca&#39;, group.by = &#39;day&#39;)
+ggsave(filename = &#39;results/figures/qc_pca_plot_integrated_sct_day.png&#39;, width = 7, height = 6, units = &#39;in&#39;)
+
+#  =========================================================================</code></pre>
+<p><img src="images/curriculum/04-PCAandIntegration/04-check_integration-1.png" width="816" style="display: block; margin: auto;" /></p>
+<!--- confirmed in testing that PCA plot is updated if run on catched geo_so object --->
+</div>
+<div id="save-our-progress" class="section level1">
+<h1>Save our progress</h1>
+<p>Before we move on, let’s save our updated Seurat object to file:</p>
+<pre class="r"><code># Save updated seurat object to file  -------------------------------------
+saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_integrated.rds&#39;)
+
+#  =========================================================================</code></pre>
+<blockquote>
+<p><strong>Other integration methods</strong></p>
+<p>After normalizing the data with <code>SCTransform()</code> and
+performed the dimension reduction with <code>RunPCA()</code>,
+alternatively we could also use the <code>CCA</code> integration method
+with:</p>
+<pre class="default doNotRun"><code>### DO NOT RUN ###
+geo_so = IntegrateLayers(
+    object = geo_so, 
+    method = CCAIntegration, 
+    orig.reduction = &#39;unintegrated.sct.pca&#39;,
+    normalization.method = &#39;SCT&#39;,
+    new.reduction = &#39;integrated.sct.cca&#39;)
+### DO NOT RUN ###</code></pre>
+</blockquote>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>In this section, we:</p>
+<ul>
+<li>Discussed how PCA is used in scRNA-seq analysis.</li>
+<li>Demonstrated some visualizations after computing PCA.</li>
+<li>Discussed how to decide how many PCs to use in downstream
+analysis.</li>
+<li>Integrated the data.</li>
+</ul>
+<p>Next steps: Clustering and projection</p>
+<hr />
+<p>These materials have been adapted and extended from materials listed
+above. These are open access materials distributed under the terms of
+the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
+Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
+use, distribution, and reproduction in any medium, provided the original
+author and source are credited.</p>
+<br/> <br/>
+<hr/>
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="03-Normalization.html">Previous
+lesson</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="05-ProjectionAndClustering.html">Next
+lesson</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+
+<html lang="en" xml:lang="en">
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core Workshop Team" />
+
+<meta name="date" content="2025-02-14" />
+
+<title>Marker identification and visualization</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<!--
+Favicon dervied from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<link rel="manifest" href="site.webmanifest">
+<link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+    </li>
+    <li>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+    </li>
+    <li>
+      <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
+    </li>
+    <li>
+      <a href="03-Normalization.html">Normalization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
+    </li>
+    <li>
+      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="06-MarkerVisualization.html">Marker identification and visualization</a>
+    </li>
+    <li>
+      <a href="07-CellTypeAnnos.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="08-DifferentialExpression.html">Differential expression analysis</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Marker identification and
+visualization</h1>
+<h4 class="author">UM Bioinformatics Core Workshop Team</h4>
+<h4 class="date">2025-02-14</h4>
+
+</div>
+
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+
+table.fig, th.fig, td.fig {
+  border: 1px solid lightgray;
+  border-collapse: collapse;
+  padding: 12px;
+}
+</style>
+<script>
+  addClassKlippyTo("pre.r, pre.markdown, pre.bash");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<div id="workflow-overview" class="section level1 unlisted unnumbered">
+<h1 class="unlisted unnumbered">Workflow Overview</h1>
+<p><br/> <img
+src="images/wayfinder/06-MarkerVisualization-Wayfinder.png" /> <br/>
+<br/></p>
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>To interpret our initial clustering result, we need to have a better
+understanding of what biologically relevant populations the clusters
+might correspond to across all samples or conditions. <br/></p>
+<table class='fig'>
+<tr>
+<td class="fig">
+<img
+src="images/graphical_abstracts/06-MarkerVisualization-Abstract.png" />
+</td>
+</tr>
+<tr>
+<tr class="fig">
+<td class="fig">
+Starting with numbered cluster data, gene expression is compared between
+cells in one cluster versus cells in all other clusters - ignoring
+sample/condition at this step - to characterize the similarities and
+differences between clusters.
+</td>
+</tr>
+</table>
+<p><br/></p>
+<div id="objectives" class="section level2">
+<h2>Objectives</h2>
+<!--Add specific goals for section-->
+<ul>
+<li>Determine gene markers for each of the initial clusters using
+<code>FindAllMarkers()</code></li>
+<li>Visualize expression across clusters for genes of interest using
+<code>DotPlot()</code></li>
+</ul>
+<p>This process can be highly variable, from seeing one set of
+well-characterized marker genes as the top markers for each cluster to
+having . Like the previous sections, this step may need to be
+iterated.</p>
+<p><br/></p>
+<hr />
+</div>
+</div>
+<div id="cluster-markers-and-characterization" class="section level1">
+<h1>Cluster markers and characterization</h1>
+<p>After generating clusters, we need to perform differential expression
+analysis to identify the genes that distinguish those clusters (<a
+href="https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes">source</a>).
+This should allow us to get visibility on some key questions for our
+clusters, as <a
+href="https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html">highlighted
+by the HBC materials</a>, namely:</p>
+<ul>
+<li>Are there are biologically meaningful gene expression differences
+between the clusters?</li>
+<li>Does the gene expression of the generated clusters correspond to
+expected cell-types or sub-types?</li>
+<li>Are there clusters with similar expression that should be combined
+and/or clusters that might need to be sub-clustered into smaller
+populations?</li>
+</ul>
+<p>Many of the differential expression (DE) tools designed for bulk
+RNA-seq samples have been benchmarked for performance on scRNA-seq in <a
+href="https://pubmed.ncbi.nlm.nih.gov/29481549/">Soneson and Robinson
+(2018)</a> and there are also dedicated DE tools for scRNA-seq, like <a
+href="https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0844-5">MAST</a>,
+that use models that account for the expected sparse structure of
+scRNA-seq data. However in our and others’ experience, the default
+Wilcoxon test is often sufficient for simple pairwise DE comparisons,
+while edgeR (<a
+href="https://pubmed.ncbi.nlm.nih.gov/19910308/">Robinson, McCarthy, and
+Smyth 2010</a>) is recommended by the <a
+href="%5BOuyang%5D(https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes)">Ouyang
+Lab</a> for more complex comparison designs, such as those that include
+covariates.</p>
+<!-- Additional context from [Ouyang](https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes) regarding tool options and [HBC materials](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html) regarding FindMarkers vs FindConservedMarkers, etc. -->
+<div class="float">
+<img
+src="images/curriculum/06-MarkerVisualization/Ouyang_clust-deCompare.png"
+alt="Image: Comparison of the performance of DE methods applied to scRNA-seq datasets. Methods are ranked by their average performance across all the listed criteria. Image taken from Soneson and Robinson (2018)." />
+<div class="figcaption">Image: Comparison of the performance of DE
+methods applied to scRNA-seq datasets. Methods are ranked by their
+average performance across all the listed criteria. Image taken from
+Soneson and Robinson (2018).</div>
+</div>
+<details>
+<summary>
+<em>Additional considerations for differential expression</em>
+</summary>
+The Ouyang Lab has a <a
+href="https://ouyanglab.com/singlecell/clust.html#sec:diffexpr">section
+of their tutorial</a> that discusses the methods available for
+differential expression including some highlighted in the figure below,
+as well as a more extensive section on <a
+href="https://ouyanglab.com/singlecell/clust.html#sec:diffexpr">threshold
+considerations</a>, while the <a
+href="https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html">HBC
+section on marker genes identification</a> highlights the different
+types of marker identification options available via Seurat.
+</details>
+<p><br></p>
+<div id="marker-identification" class="section level2">
+<h2>Marker identification</h2>
+<p>First, we’ll change identities of the cells to
+“integrated.sct.rpca.clusters” explicitly with <code>SetIdent()</code>.
+The “seurat_clusters” column is the default column for cell identities
+and changes each time a new clustering is performed. Then, we’ll ensure
+that the correct resolution is selected from our Seurat object and then
+we’ll use the <code>PrepSCTFindMarkers()</code> <a
+href="https://satijalab.org/seurat/reference/prepsctfindmarkers">function</a>
+in preparation for DE comaprisons to “reverse the individual SCT
+regression model using minimum of median UMI as the sequencing depth
+covariate” according to the <a
+href="https://satijalab.org/seurat/reference/prepsctfindmarkers">Seurat
+documentation</a>. Remember that we’ve performed integration and
+clustering to assign the cells to clusters regardless of their
+experimental condition but that we now want to ensure that the data is
+normalized but not with the SCTransformation scaling needed for the
+previous steps.</p>
+<!-- if we want to use the normalized RNA data (not the integrated data) `DefaultAssay(geo_so) <- "RNA"`, although need to check if that still makes sense for Seurat v5 -->
+<p>Then we’ll run the<code>FindAllMarkers()</code> <a
+href="https://satijalab.org/seurat/reference/findallmarkers">function</a>
+to generate comparisons between each cluster and all other cells,
+regardless of the experimental group. Note - the statistical test to
+perform can be specified in <code>FindAllMarkers()</code>, but the
+default is a Wilcoxon test.</p>
+<pre class="r"><code>##### Day 3 - Marker identification and visualization 
+
+# Find empirical markers  -------------------------------------------------
+# Prep for cluster comparisons
+geo_so = SetIdent(geo_so, value = &#39;integrated.sct.rpca.clusters&#39;)
+geo_so = PrepSCTFindMarkers(geo_so)
+
+# Run comparisons for each cluster to generate markers
+geo_markers = FindAllMarkers(geo_so, only.pos = TRUE, min.pct = 0.05)
+
+# Write out full cluster marker results to file
+write_csv(geo_markers, file = &#39;results/tables/marker_genes_0.4res.csv&#39;)
+
+# Take a look at the first few rows of the result
+head(geo_markers)</code></pre>
+<pre><code>        p_val avg_log2FC pct.1 pct.2 p_val_adj cluster    gene
+Col12a1     0   4.184692 0.937 0.141         0       0 Col12a1
+Tnc         0   4.077785 0.862 0.104         0       0     Tnc
+Thbs2       0   3.689463 0.896 0.164         0       0   Thbs2
+Lox         0   2.894542 0.903 0.176         0       0     Lox
+Col11a1     0   4.825617 0.765 0.071         0       0 Col11a1
+Mxra8       0   2.709668 0.865 0.201         0       0   Mxra8</code></pre>
+<div class="float">
+<img src="images/seurat_schematic/Slide11.png"
+alt="Image: Schematic after SetIdent()." />
+<div class="figcaption">Image: Schematic after SetIdent().</div>
+</div>
+<!--- Consider how to represent the result of PrepSCTFindMarkers() in the schematic. It's a little too subtle... -->
+<!--- Consider adding figure showing example of what's being compared (circle cluster 1 and then circle all other cells for example) -->
+<details>
+<summary>
+<em>Seurat v5 improvements</em>
+</summary>
+For marker generation, Seurat v5 uses the <a
+href="https://www.biorxiv.org/content/10.1101/653253v1">presto
+package</a> to reduce the time required to run DE comparisons,
+particularly for large datasets. For users who are not using presto,
+Seurat recommends increasing the min.pct and logfc.threshold
+parameterscto increase the speed of DE testing (<a
+href="https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#finding-differentially-expressed-features-cluster-biomarkers">source</a>).
+</details>
+<p><br></p>
+<p>Note that over-interpretation of these results should be avoided,
+since each cell is used as a replicate in these comparisons which can
+lead to inflated (e.g. very low) p-values, the top markers are more
+likely to be trustworthy (<a
+href="https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html">source</a>).</p>
+<p>Therefore, it’s useful to filter the results to highlight the top
+positive markers (since a positive fold-change would mean that gene is
+more highly expressed in the cluster compared to all other cells),
+before looking at our results</p>
+<pre class="r"><code># Identify marker genes for each cluster ----------------------------------
+# Create table of top 5 markers per cluster (using default ranking)
+top_5 = geo_markers %&gt;% filter(p_val_adj &lt; 0.01) %&gt;% group_by(cluster) %&gt;% slice_head(n = 5)
+
+# Look at results
+head(top_5, n = 10)</code></pre>
+<pre><code># A tibble: 10 × 7
+# Groups:   cluster [2]
+   p_val avg_log2FC pct.1 pct.2 p_val_adj cluster gene    
+   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;   
+ 1     0       4.18 0.937 0.141         0 0       Col12a1 
+ 2     0       4.08 0.862 0.104         0 0       Tnc     
+ 3     0       3.69 0.896 0.164         0 0       Thbs2   
+ 4     0       2.89 0.903 0.176         0 0       Lox     
+ 5     0       4.83 0.765 0.071         0 0       Col11a1 
+ 6     0       4.44 0.848 0.092         0 1       Clec3b  
+ 7     0       2.92 0.958 0.271         0 1       Serping1
+ 8     0       2.94 0.865 0.189         0 1       Dpt     
+ 9     0       3.45 0.87  0.228         0 1       Igfbp6  
+10     0       2.17 0.823 0.191         0 1       Fxyd1   </code></pre>
+<pre class="r"><code># Optional - Create table of top 5 markers per cluster (ranked by logFC) -------
+top_5_by_log2FC = geo_markers %&gt;% group_by(cluster) %&gt;% arrange(p_val_adj, desc(avg_log2FC)) %&gt;% slice_head(n = 5)
+
+# Look at results after ranking
+# Note difference in pct.1 column between tables
+head(top_5_by_log2FC, n = 10) </code></pre>
+<pre><code># A tibble: 10 × 7
+# Groups:   cluster [2]
+   p_val avg_log2FC pct.1 pct.2 p_val_adj cluster gene  
+   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt; 
+ 1     0       6.23 0.091 0.003         0 0       Ucma  
+ 2     0       5.77 0.448 0.015         0 0       Scx   
+ 3     0       5.72 0.131 0.005         0 0       Cilp2 
+ 4     0       5.66 0.086 0.003         0 0       Matn3 
+ 5     0       5.07 0.535 0.03          0 0       Acan  
+ 6     0       5.54 0.187 0.007         0 1       C7    
+ 7     0       5.29 0.302 0.016         0 1       Myoc  
+ 8     0       4.82 0.094 0.003         0 1       Nat8f7
+ 9     0       4.82 0.082 0.005         0 1       Dact2 
+10     0       4.79 0.129 0.006         0 1       Inmt  </code></pre>
+<p>We expect to see several columns:</p>
+<ul>
+<li><code>gene</code>: gene symbol</li>
+<li><code>p_val</code>: p-value not adjusted for multiple test
+correction</li>
+<li><code>avg_logFC</code>: average log fold change. Positive values
+indicate that the gene is more highly expressed in the cluster.</li>
+<li><code>pct.1</code>: percentage of cells where the gene is detected
+in the cluster</li>
+<li><code>pct.2</code>: percentage of cells where the gene is detected
+on average across all other clusters</li>
+<li><code>p_val_adj</code>: adjusted p-value based on bonferroni
+correction using all genes in the dataset, used to determine
+significance</li>
+<li><code>cluster</code>: cluster represented by <code>pct.1</code> and
+for which the statistics in the row are reported</li>
+</ul>
+<p>When looking at the output, it is important to prioritize marker
+genes with both larger fold-change differences and larger difference
+between pct.1 and pct.2, particularly if pct.1 is high (e.g. if 80% of
+cells in the cluster evaluated express the gene that more reliable than
+if only 20% of cells express that gene) (<a
+href="https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html">source</a>).</p>
+</div>
+<div id="marker-visualization" class="section level2">
+<h2>Marker visualization</h2>
+<p>Now that we have generated a set of marker genes for our clusters, it
+is useful to visualize the expression of those markers to aid in
+evaluating them. While the expression of individual genes per cell can
+be overlaid on our UMAPs (as with the <code>FeaturePlot()</code> <a
+href="https://satijalab.org/seurat/reference/featureplot">function</a>),
+it’s often more useful to visualize the expression of multiple genes
+simultaneously. While there are <a
+href="https://satijalab.org/seurat/articles/visualization_vignette">multiple
+methods supported by Seurat</a> for visualizing marker gene expression,
+a heatmap or a related plot called a dotplot are commonly used.</p>
+<p>We’ll use the <code>DotPlot()</code> <a
+href="https://satijalab.org/seurat/reference/dotplot">function</a> with
+the SCT values to visualize the top 5 marker genes per cluster:</p>
+<pre class="r"><code># Visualize top marker genes as dot plot ----------------------------------
+top_5_sct_dot_plot = DotPlot(geo_so, features = unique(top_5$gene)) + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    labs(title = &#39;Top 5 Cluster Genes by FDR and avg_log2FC&#39;) + coord_flip()
+top_5_sct_dot_plot</code></pre>
+<p><img src="images/curriculum/06-MarkerVisualization/06-top_5_dot_plot_sct-1.png" width="768" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Save dot plot of top marker genes ---------------------------------------
+ggsave(filename = &#39;results/figures/markers_top_5_sct_dot_plot.png&#39;, 
+       plot = top_5_sct_dot_plot, 
+       width = 8, height = 18, units = &#39;in&#39;) </code></pre>
+<p>In the dotplot we can see that the color indicates the expression of
+the gene while the size of the dot indicates the proportion of cells
+expressing that gene in each cluster (<a
+href="https://ouyanglab.com/singlecell/clust.html#visualising-marker-genes">source</a>).</p>
+<details>
+<summary>
+<em>Using raw RNA values in Dotplots</em>
+</summary>
+<p>In addition to plotting the SCT values, the raw or normalized RNA
+values can be plotted as well:</p>
+<pre class="r"><code># Add RNA values to dot plot  ---------------------------------------------
+top_5_rna_dot_plot = DotPlot(geo_so, features = unique(top_5_by_log2FC$gene), assay = &#39;RNA&#39;) + 
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+    labs(title = &#39;Top 5 Cluster Genes by FDR and avg_log2FC&#39;) + coord_flip()
+
+ggsave(filename = &#39;results/figures/markers_top_5_rna_dot_plot.png&#39;, plot = top_5_rna_dot_plot, width = 8, height = 18, units = &#39;in&#39;) </code></pre>
+</details>
+<p><br> <br></p>
+<p>Before proceeding with cluster annotations, we’ll also check the
+percentage of mitochondrial genes to determine if there are any clusters
+(or sub populations) that might correspond to interesting cell death
+patterns (or might indicate further filtering is needed):</p>
+<pre class="r"><code># Check mitochondrial gene expression -------------------------------------
+percent_mito_plot = FeaturePlot(geo_so, features=&#39;percent.mt&#39;)
+
+# save to file
+ggsave(filename = &#39;results/figures/percent_umap_mito_plot.png&#39;, 
+       plot = percent_mito_plot, 
+       width = 6, height = 6, units = &#39;in&#39;)
+
+percent_mito_plot</code></pre>
+<p><img src="images/curriculum/06-MarkerVisualization/06-unnamed-chunk-2-1.png" width="816" style="display: block; margin: auto;" /></p>
+<p>We see that a higher % seem to be somewhat concentrated in a few
+places, but if cell death might be of interest for the research
+question, we’d want to consider investigating this pattern further by
+splitting up the plots by day and/or waiting until after running initial
+differential expression analysis to determine if these cell populations
+are interesting biology or not.</p>
+<pre class="r"><code># Remove the plot variables from the environment to avoid excessive memory usage
+plots = c(&quot;top_5_sct_dot_plot&quot;, 
+          &quot;top_5_rna_dot_plot&quot;, 
+          &quot;percent_mito_plot&quot;)
+
+# Only remove plots that actually exist in the environment
+rm(list=Filter(exists, plots))
+gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
+Ncells   6834996  365.1   11863601  633.6   11863601  633.6
+Vcells 335135444 2556.9 1109312410 8463.4 1108694243 8458.7</code></pre>
+</div>
+</div>
+<div id="save-our-progress" class="section level1">
+<h1>Save our progress</h1>
+<p>Finally, we’ll create an output file for our updated Seurat object
+and for the cluster marker results:</p>
+<pre class="r"><code># Save Seurat object and gene marker data ---------------------------------
+saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_integrated_with_markers.rds&#39;)
+saveRDS(geo_markers, file = &#39;results/rdata/geo_markers.rds&#39;)</code></pre>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<p>Now that we have characterized the expression of both analytical
+marker genes and literature / knowledge-based marker genes, we may have
+a better sense of what cell-types or subtypes our clusters might
+correspond to.</p>
+<p>However, marker genes alone might not be sufficient to determine
+cell-type or sub-type labels for our clusters so we will discuss other
+more automated approaches to complement these results.</p>
+<p>Next steps: Cell type prediction tools</p>
+<hr />
+<p>These materials have been adapted and extended from materials listed
+above. These are open access materials distributed under the terms of
+the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
+Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
+use, distribution, and reproduction in any medium, provided the original
+author and source are credited.</p>
+<br/> <br/>
+<hr/>
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="05-ProjectionAndClustering.html">Previous
+lesson</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="07-CellTypeAnnos.html">Next lesson</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+
+<html lang="en" xml:lang="en">
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core Workshop Team" />
+
+<meta name="date" content="2025-02-09" />
+
+<title>Orienting on scRNA-Seq</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<!--
+Favicon dervied from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<link rel="manifest" href="site.webmanifest">
+<link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+    </li>
+    <li>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+    </li>
+    <li>
+      <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
+    </li>
+    <li>
+      <a href="03-Normalization.html">Normalization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
+    </li>
+    <li>
+      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="06-MarkerVisualization.html">Marker identification and visualization</a>
+    </li>
+    <li>
+      <a href="07-CellTypeAnnos.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="08-DifferentialExpression.html">Differential expression analysis</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Orienting on scRNA-Seq</h1>
+<h4 class="author">UM Bioinformatics Core Workshop Team</h4>
+<h4 class="date">2025-02-09</h4>
+
+</div>
+
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+
+table.fig, th.fig, td.fig {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 15px;
+}
+  
+</style>
+<p><img src="images/wayfinder/00-FullWayfinder.png"
+title="Wayfinder: Orienting on scRNA-Seq" /> <br/> <br/></p>
+<div id="objectives" class="section level1">
+<h1>Objectives</h1>
+<ul>
+<li>List some applications of scRNA-Seq.</li>
+<li>Compare and contrast the capabilities and challenges in scRNA-Seq vs
+bulk RNA-Seq approaches.</li>
+<li>Introduce a specific experimental model to guide discussion and
+learning.</li>
+<li>Outline the abstract approach to single-cell sequencing and consider
+the 10x Genomics platform in more detail.</li>
+<li>Consider common challenges in executing these initial steps.</li>
+</ul>
+<p><br/> <br/></p>
+</div>
+<div id="overview-of-bulk-rna-seq-and-scrna-seq" class="section level1">
+<h1>Overview of bulk RNA-seq and scRNA-Seq</h1>
+<p>Next Generation Sequencing (NGS) enables many powerful experimental
+designs and analysis approaches including variant identification,
+chromatin accessibility, gene expression, and more. Before we dive into
+the complexities of single-cell RNA-Seq analysis, it’s beneficial to
+review the new perspectives afforded by a scRNA-Seq single cell approach
+and helpful to consider scRNA-Seq alongside a traditional bulk RNA-Seq
+approach.</p>
+<table class="fig">
+<tr>
+<th class="fig">
+Bulk RNA-Seq approach
+</th>
+</tr>
+<tr>
+<td class="fig">
+<img
+src="images/00A-OrientingOnScRNASeq/bulkRNA-Seq-capabilities.png" />
+</td>
+</tr>
+<tr>
+<td class="fig">
+Bulk RNA-seq typically involves comparing the expression levels of genes
+between sets of tissues, e.g. untreated and treated mice. This enables
+researchers to characterize distinct expression patterns for a specific
+gene and also expression changes across functionally related genes or
+pathways. This is valuable because it provides an overall snapshot of
+the average expression program across the sample. However, considering
+the sample a single homogeneous population of cells can obscure subtle
+changes or patterns in expression.
+</td>
+</tr>
+</table>
+<br/> <br/>
+<table class="fig">
+<tr>
+<th class="fig">
+Single-cell RNA-Seq approach
+</th>
+</tr>
+<tr>
+<td class="fig">
+<img src="images/00A-OrientingOnScRNASeq/scRNA-Seq-capabilities.png" />
+</td>
+</tr>
+<tr>
+<td class="fig">
+<p>Instead of looking at the whole forest, that is to say, the average
+of the gene expression in a tissue or a biofluid, single cell
+illuminates expression for a collection of individual cells (i.e. you
+can now see consider individual trees). This enables similar
+perspectives to bulk (e.g. insight into biological mechanisms and
+distinct response to interventions) but also new views informed by
+cellular heterogeneity:</p>
+<ol style="list-style-type: decimal">
+<li>What kinds of cells are present in this sample?</li>
+<li>How does the cell population structure change between
+groups/conditions?</li>
+<li>What are the expression patterns between cell types or between
+groups/conditions?</li>
+<li>How do cells change over time and how might we affect that
+development?</li>
+</ol>
+</td>
+</tr>
+</table>
+<p><br/> <br/></p>
+</div>
+<div id="consider-a-specific-scrna-seq-experiment"
+class="section level1">
+<h1>Consider a specific scRNA-Seq experiment</h1>
+<p>These concepts can be abstract. Acknowledging that the basic concepts
+are broadly applicable, it’s helpful to ground the conversation in a
+specific scRNA-Seq experiment.</p>
+<table class="fig">
+<tr>
+<th class="fig">
+Consider a specific experiment
+</th>
+</tr>
+<tr>
+<td class="fig">
+<img src="images/00A-OrientingOnScRNASeq/specific-experiment.png" />
+</td>
+</tr>
+<tr>
+<td class="fig">
+<p>In this workshop we will be focusing on an experiment conducted at UM
+on a mouse model where a soft tissue injury is followed by an aberrant
+injury response that generates bone tissue. For more details on this
+experiment, it’s original analysis and the biology of heterotopic
+ossification, see the full paper <a href="#references">[1]</a>.</p>
+<ol style="list-style-type: upper-alpha">
+<li>A simplified version of the experiment:</li>
+</ol>
+<ol style="list-style-type: decimal">
+<li>A sample of mouse tissue is extracted from a healthy mouse.</li>
+<li>The researcher induces a burn at the sample site.</li>
+<li>The researchers re-sample tissue from the site at several time
+points.</li>
+<li>Each sample undergoes scRNA-Seq prep and analysis. (This is
+replicated across four mice.)</li>
+</ol>
+<ol start="2" style="list-style-type: upper-alpha">
+<li>The scRNA-Seq analysis of this sample can reveal the population of
+cell types present and also the gene expression patterns of each cell
+time over time.</li>
+</ol>
+</td>
+</tr>
+</table>
+<p><br/> <br/></p>
+</div>
+<div id="how-scrna-seq-works" class="section level1">
+<h1>How scRNA-Seq works</h1>
+<p>It’s also useful to orient on how scRNA-Seq works at an abstract
+level. There are many different platforms and protocols, but many have
+steps similar to below.</p>
+<table class="fig">
+<tr>
+<th class="fig">
+Single cell protocol (from 30k feet)
+</th>
+</tr>
+<tr>
+<td class="fig">
+<img src="images/00A-OrientingOnScRNASeq/scRNA-Seq-from-30k.png" />
+</td>
+</tr>
+<tr>
+<td class="fig">
+<ol style="list-style-type: upper-alpha">
+<li>Sample tissue (or biofluid) is collected. <br/></li>
+<li>Tissue is dissociated into a suspension of <strong>healthy,
+intact</strong> cells</li>
+<li>Cells are physically isolated.</li>
+<li>Cell transcripts converted to cDNA labeled with their cell of
+origin.</li>
+<li>cDNAs from all cells is pooled</li>
+<li>cDNAs undergo library prep and are sequenced</li>
+<li>The resulting transcript sequences can be partitioned into
+(putative) cells computationally.</li>
+</ol>
+</td>
+</tr>
+</table>
+<p><br/> <br/></p>
+<div id="x-genomics-3-gene-expression" class="section level2">
+<h2>10x Genomics 3’ gene expression</h2>
+<p>It’s useful to elaborate how transcripts are labeled with their cell
+of origin because this will help us understand how downstream QC and
+analysis works. The specifics of the steps depend on the platform and
+the specific library prep protocol. We will focus on the <strong>10x
+Genomics 3’ gene expression</strong> approach<a
+href="#references">[2]</a>.</p>
+<table class="fig">
+<tr>
+<th class="fig">
+A 10x Genomics single cell protocol (from 10k feet)
+</th>
+</tr>
+<tr>
+<td class="fig">
+<img
+src="images/00A-OrientingOnScRNASeq/10x-genomics-scRNA-Seq-from-10k.png" />
+</td>
+</tr>
+<tr>
+<td class="fig">
+<ol style="list-style-type: upper-alpha">
+<li>10x Genomics uses microfluidics to combine an isolated cell with a
+manufactured oligo-bead in an aqueous droplet in an oil emulsion. The
+oil isolates each droplet, effectively creating a reaction vessel for
+each cell-bead dyad.</li>
+<li>Ideally, each droplet contains reaction enzymes (carried in the
+aqueous solution), a single bead and a single healthy, intact cell. The
+cell is lysed to release the mRNA transcripts into the droplet.</li>
+<li>The beads are covered with a lawn of millions of oligos. Each oligo
+is designed to interact with poly-A tailed mRNAs and the enzymes to
+produce a complementary DNA molecule (cDNA).</li>
+<li>Each cDNA contains:</li>
+</ol>
+<ul>
+<li>the sequence of an individual mRNA transcript (from the cell)</li>
+<li>flanking sequence added for downstream library prep</li>
+<li>a 12bp Unique Molecular Identifier (UMI): the UMIs are unique for
+each of the oligos on the bead ensuring <strong>each UMI represents a
+single mRNA</strong>. (This enables reliable de-duplication following
+sequencing.)</li>
+<li>16 bp barcode sequence: all barcodes are identical for a given bead,
+so the barcode sequence acts as a molecular label for each transcript;
+<strong>each barcode represent a distinct cell of origin for that
+mRNA</strong>.</li>
+</ul>
+</td>
+</tr>
+</table>
+<p><br/> <br/></p>
+<table class="fig">
+<tr>
+<th class="fig">
+Consider (just) two droplets
+</th>
+</tr>
+<tr>
+<td class="fig">
+<img src="images/00A-OrientingOnScRNASeq/two-droplets.png" />
+</td>
+</tr>
+<tr>
+<td class="fig">
+<ul>
+<li>Each droplet converts mRNAs into cDNAs that contain the oligo
+sequence and the mRNA sequence.</li>
+<li>Each mRNA sequence will get a distinct UMI, so one UMI = one
+mRNA.</li>
+<li>For a single droplet, the cell barcodes will all match. Cell
+barcodes will be distinct across droplets.</li>
+</ul>
+</td>
+</tr>
+</table>
+<p><br/> <br/></p>
+<table class="fig">
+<tr>
+<th class="fig">
+From droplets to matrix
+</th>
+</tr>
+<tr>
+<td class="fig">
+<img src="images/00A-OrientingOnScRNASeq/droplets-to-matrix.png" />
+</td>
+</tr>
+<tr>
+<td class="fig">
+<ol style="list-style-type: upper-alpha">
+<li>Once mRNA transcripts have been converted to barcode-labeled cDNA
+the oil emulsion can be broken and the cDNA molecules are pooled
+together.</li>
+<li>cDNA molecules undergo several conventional library prep steps to
+enable sequencing.</li>
+<li>The sequencer calls bases for each sequence. For a large sequencing
+run, this might contain many samples, several experiments, and even
+multiple experiment types.</li>
+<li>The resulting 10x FASTQ files have a specific structure.</li>
+</ol>
+<ul>
+<li>Read2 represents the mRNA sequence.</li>
+<li>Read1 represents the barcode and UMI</li>
+</ul>
+<ol start="5" style="list-style-type: upper-alpha">
+<li>Specialized software bins each distinct barcode into a putative cell
+and aligns the mRNA sequence against a genome build.</li>
+<li>Alignments for features (genes) are quantified across all barcodes
+to create a feature barcode matrix.</li>
+</ol>
+</td>
+</tr>
+</table>
+<p><br/> <br/></p>
+</div>
+</div>
+<div id="common-problems-and-challenges" class="section level1">
+<h1>Common problems and challenges</h1>
+<table class="fig">
+<tr>
+<th class="fig">
+Some droplets don’t work as intended
+</th>
+</tr>
+<tr>
+<td class="fig">
+<img src="images/00A-OrientingOnScRNASeq/problem-droplets.png" />
+</td>
+</tr>
+<tr>
+<td class="fig">
+<ol style="list-style-type: upper-alpha">
+<li>Interpreting the sequencing outputs is simplest when each droplet
+contains a single bead and a single healthy cell. The system is
+optimized for this outcome and typically the majority of droplets will
+follow this pattern. However, in each run there are always a few
+complicating edge cases to consider.</li>
+<li>Sometimes a droplet contains a bead but no cell. This is actually
+common but it’s impact is slight because in the absence of mRNA, the
+enzymes won’t produce cDNA. In effect, the droplet appears empty and is
+discarded.</li>
+<li>Sometimes two beads land in the same droplet with a cell. In theory,
+the cells mRNA would appear to come from two droplets (i.e. two cells)
+each with half the expected expression levels. In practice this rarely
+happens because the microfluidics are tuned to avoid this.</li>
+<li>Sometimes two cells join with a single bead in a droplet creating a
+<strong>doublet</strong>. This happens when some of the cells are not
+fully dissociated from each other. In this case, the mRNAs from two
+cells will receive the same label; the expression programs are merged
+and the overall expected expression is roughly doubled.</li>
+<li>Sometimes the stress of the protocol induces cells to start
+apoptosis. This confounds analysis because the expression programs
+aren’t about the model biology but instead artifacts from the
+experimental platform.</li>
+<li>Sometimes dissociated cells become so stressed they start to break
+down in the suspension. When that happens, the mRNAs from the popped
+cell’s combine together in the aqueous flow to create a soup of ambient
+RNA. This appears as a droplet with extremely low expression.</li>
+</ol>
+</td>
+</tr>
+</table>
+<p><br/> <br/></p>
+<div id="contrasting-bulk-rna-seq-with-scrna-seq"
+class="section level2">
+<h2>Contrasting bulk RNA-seq with scRNA-Seq</h2>
+<p>Bulk and single-cell approaches are fundamentally complementary
+approaches where bulk RNA-Seq provides a “forest-level” view while
+scRNA-Seq shows the individual trees. Compared to bulk RNA-Seq,
+scRNA-Seq provides powerful new perspectives. But it isn’t without
+challenges or downsides.</p>
+<table class="fig">
+<tr>
+<th class="fig">
+Bulk vs. Single-Cell
+</th>
+</tr>
+<tr>
+<td class="fig">
+<img src="images/00A-OrientingOnScRNASeq/bulk_v_sc.png" />
+</td>
+</tr>
+<tr>
+<td class="fig">
+<ol style="list-style-type: decimal">
+<li>Single-cell is less mature than bulk.</li>
+<li>Single-cell sample prep is more complex than bulk.</li>
+<li>Single-cell typically sees only the subset of highly expressed
+genes.</li>
+<li>Single cell analysis is typically more complex.</li>
+<li>Single cell analysis costs more than bulk analysis.</li>
+</ol>
+</td>
+</tr>
+</table>
+<p><br/> <br/></p>
+</div>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<ul>
+<li>scRNA-seq offers a powerful and nuanced approach to studying gene
+expression at the cellular level. This technique can illuminate
+biological mechanisms of healthy tissue or disease as well as extend our
+understanding of cellular heterogeneity, responses to interventions, and
+the cell state dynamics.</li>
+<li>scRNA-Seq experiments are typically more complex and often more
+expensive than bulk RNA-Seq.</li>
+</ul>
+<table class="fig">
+<tr>
+<th class="fig">
+scRNA-Seq steps in summary
+</th>
+</tr>
+<tr>
+<td class="fig">
+<img src="images/00A-OrientingOnScRNASeq/summary.png" />
+</td>
+</tr>
+<tr>
+<td class="fig">
+<ol style="list-style-type: upper-alpha">
+<li>A sample of tissue is extracted</li>
+<li>Tissue is dissociated into a clean suspension of healthy cells</li>
+<li>A reaction creates a cDNA molecule which combines a barcode label
+with mRNA sequence.</li>
+<li>cDNAs are pooled together, library prep’ed and sequenced</li>
+<li>Computationally connect all the mRNAs back to a distinct cell of
+origin</li>
+<li>Align the mRNA sequences to create a count matrix across all the
+features and all the cells</li>
+<li>Bioinformatically separate the healthy cells from the experimental
+artifacts</li>
+</ol>
+<p>The last three steps are complex and also computationally demanding.
+In 10x Genomics experiments, they are typically expedited by the tool
+<strong>Cell Ranger</strong> which we cover in detail in the next
+lesson.</p>
+</td>
+</tr>
+</table>
+<p><br/> <br/></p>
+</div>
+<div id="references" class="section level1">
+<h1>References</h1>
+<ol style="list-style-type: decimal">
+<li>Sorkin, Michael et al. <strong>“Regulation of heterotopic
+ossification by monocytes in a mouse model of aberrant wound
+healing.”</strong> Nature communications vol. 11,1 722. 5
+Feb. 2020.<br/> <a href="https://pubmed.ncbi.nlm.nih.gov/32024825"
+target="_blank">https://pubmed.ncbi.nlm.nih.gov/32024825</a></li>
+<li><a
+href="https://www.10xgenomics.com/support/single-cell-gene-expression/documentation/steps/experimental-design-and-planning/getting-started-single-cell-3-gene-expression"
+target="_blank">10x Genomics 3’ gene expression</a> <br/> <br/>
+<hr/>
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="workshop_intro.html">Back to
+introduction</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="01-GettingStarted.html">Next lesson</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table></li>
+</ol>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
