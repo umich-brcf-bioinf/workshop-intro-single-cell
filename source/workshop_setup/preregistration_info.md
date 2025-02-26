@@ -1,6 +1,5 @@
 ---
-title: "Workshop: Introduction to Single-Cell Analysis"
-author: "UM Bioinformatics Core"
+title: "Bioinformatics Spring Workshop Series"
 output:
         html_document:
             includes:
@@ -19,23 +18,21 @@ body{ /* Normal  */
   }
 </style>
 
-This workshop is targeted toward researchers who would like to better understand the analysis of single-cell RNA-Seq data. By the end of this workshop, participants will be able to:
+### Intro to R & RStudio (April 2-3, 9am-12pm ET)
 
-* Describe (at a high level) how single-cell samples are sequenced along with strengths of a few popular library preps.
-* Create and interpret preliminary QC visualizations from a single-cell experiment.
-* Use PCA and UMAP to create cell-type clusters.
-* Execute and visualize differential expression across clusters.
-* Identify marker genes and annotate clusters based on gene expression.
+### Intro to Single Cell Analysis (April 16-18, 9am-1pm ET)
 
-### More details:
+<hr/>
 
-* The workshop runs 9am-1pm ET for three days: 2/12-14. (Registration closes 2/5/2025.)
-* The cost is $390/seat. (University of Michigan (UM) participants can pay with a UM shortcode.)
-* The workshop is entirely online and will be conducted over Zoom and Slack.
-* Basic understanding of NGS sequencing protocols and/or familiarity with bulk RNA-Seq analysis is desirable. **This workshop assumes some experience working with R/R-Studio.** (Previous attendance in a Computational Foundations workshop or Software Carpentry workshop is sufficient.)  
-* The workshop experience is designed to be interactive and includes a combination of lecture, live-coding, and opportunities for questions throughout.
-
-
+- **Intro to Single Cell Analysis** costs $390/seat. **Intro to R & RStudio** is 
+  free to those enrolled in **Intro to Single Cell Analysis**.
+- **Intro to R & RStudio**assumes no previous coding/programming experience.
+- **Intro to Single Cell Analysis** assumes:
+  1. A basic knowledge of genetics and  
+  2. Experience using R & RStudio -or- prior enrollment in a R workshop, e.g.
+     - **Intro to R & RStudio** *or*
+     - Computational Foundations *or*
+     - Software Carpentry workshop
 
 <table style="margin-left:auto; margin-right:auto;"><tr><td><a title="Learn More and Register" href="https://michmed.org/xAZVd" style="padding:18px; background-color:#00B2A9; font-weight:bold;letter-spacing:normal;line-height:100%;text-align:center;text-decoration:none;color:#ffffff;display:block" target="_blank">Learn More and Register</a></td></tr></table>
 <br/>
