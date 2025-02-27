@@ -26,7 +26,7 @@ body{ /* Normal  */
 
 - **Intro to Single Cell Analysis** costs $390/seat. **Intro to R & RStudio** is 
   free to those enrolled in **Intro to Single Cell Analysis**.
-- **Intro to R & RStudio**assumes no previous coding/programming experience.
+- **Intro to R & RStudio** assumes no previous coding/programming experience.
 - **Intro to Single Cell Analysis** assumes:
   1. A basic knowledge of genetics and  
   2. Experience using R & RStudio -or- prior enrollment in a R workshop, e.g.
