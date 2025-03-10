@@ -357,7 +357,7 @@ If you want to load multiple samples from .h5 files, see the function
 
 FYI
 
-- Be aware, using HDF5 file=s from R support requires the hdf5 library which entails a 
+- Be aware, using HDF5 files from R support requires the hdf5 library which entails a 
 few more steps to install than a typical library. Brew a nice cup of (decaf) tea
 and review how to [install hdf5](https://github.com/hhoeflin/hdf5r){target="_blank"}.
 - See the Seurat function [Read10X](https://satijalab.org/seurat/reference/read10x){target="_blank"}.

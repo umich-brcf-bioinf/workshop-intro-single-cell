@@ -116,7 +116,13 @@ We can add arbitrary per-cell information to this table such as:
 - Cell cycle phase for each cell.
 - Other custom annotations for each cell.
 
-The following code chunk will create new columns for `day` and `replicate`, and ensure that certain categorical data appears in correct order, e.g. Day0, Day7, and Day21 instead of Day0, Day21, and Day7.
+<!--- cooking show moment - phenotype table --->
+<table>
+	<tr>
+	<td>![](./images/curriculum/cooking_show-1.png){width=15%}</td>
+	<td>We'll start with a table we created named `phenos.csv` that includes phenotype labels for each sample.</td>
+	</tr>
+</table>
 
 ```{r, read_phenotypes}
 # Make metadata more granular ------------------------------------------
@@ -124,6 +130,8 @@ The following code chunk will create new columns for `day` and `replicate`, and 
 phenos = read.csv('inputs/phenos.csv')
 head(phenos, 3)
 ```
+
+The following code chunk will add columns for `day` and `replicate` to the automatically generated metadata and ensure that certain categorical data appears in correct order, e.g. Day0, Day7, and Day21 instead of Day0, Day21, and Day7.
 
 ```{r, alter_metadata}
 # Make a temp table that joins Seurat loaded metadata with expanded phenotype columns
