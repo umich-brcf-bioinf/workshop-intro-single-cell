@@ -55,8 +55,7 @@ knitr_fig_path("07-CellTypeAnnotation/07-")
 
 # Introduction
 
-A frequent bottleneck in single-cell analysis is annotating the algorithmicly generated clusters, as it requires bridging the gap between the data and prior knowledge ([source](https://bioconductor.org/books/3.15/OSCA.basic/cell-type-annotation.html)). While generating markers for each cluster it important, it may or may not be sufficient to assign cell-type or sub-type labels without bringing in additional sources. 
-
+<br/>
 <table class='fig'><tr><td class='fig'>
 ![](images/graphical_abstracts/07-CellTypeAnnos-Abstract.png)
 </td></tr><tr><tr class='fig'><td class='fig'>Starting with clustered data, we can summarize and compare gene expression for known gene markers within each cluster, irrespective of sample or condition, to help label clusters with the appropriate cell-type or subtype.
@@ -64,17 +63,17 @@ A frequent bottleneck in single-cell analysis is annotating the algorithmicly ge
 </table>
 <br/>
 
+A frequent bottleneck in single-cell analysis is annotating the algorithmicly generated clusters, as it requires bridging the gap between the data and prior knowledge ([source](https://bioconductor.org/books/3.15/OSCA.basic/cell-type-annotation.html)). While generating markers for each cluster it important, it may or may not be sufficient to assign cell-type or sub-type labels without bringing in additional sources. 
+<br/>
 
 ## Objectives
 
 -  Understand the complexities of cell-type annotation    
 -  Use `scCATCH` cell-type predictions to annotate our clusters   
 
-<br>
-
-Like the previous sections, the process to assign cell-types to clusters can be very iterative. In addition, the steps to reach a "Figure 1" of labeled clusters may not be presented in detail, can be very dataset dependent, and often is more challenging for less characterized tissues. 
-
-<br>
+<br/>
+Like the previous sections, the steps to assign cell-types to clusters might require some iteration, can be very dataset dependent, and often is more challenging for less characterized tissues. 
+<br/>
 
 ----
 
@@ -412,7 +411,20 @@ saveRDS(geo_catch, file = 'results/rdata/geo_catch.rds')
 
 # Summary
 
-Now that we have generated reasonable annotations for our clusters, we can proceed with the step of differential expression which is essential to addressing our biological question for this experiment.
+<br/>
+<table class='fig'><tr><td class='fig'>
+![](images/graphical_abstracts/07-CellTypeAnnos-Abstract.png)
+</td></tr><tr><tr class='fig'><td class='fig'>Starting with clustered data, we can summarize and compare gene expression for known gene markers within each cluster, irrespective of sample or condition, to help label clusters with the appropriate cell-type or subtype.
+</td></tr>
+</table>
+<br/>
+
+In this section we:  
+   
+- Used `scCATCH` to generate predicted cell-type annotations for our initial clusters    
+- Plotted the expression per cluster of known markers to confirm and refine the predictions   
+- Finalized cell type labels for our clusters     
+
 
 Next steps: Differential Expression
 

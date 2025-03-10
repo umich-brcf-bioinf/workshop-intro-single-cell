@@ -58,15 +58,15 @@ knitr_fig_path("04-PCAandIntegration/04-")
 
 # Introduction 
 
-After filtering and normalization, our next goal is to cluster the cells according to their expression profiles. However, even after filtering, we expect to still have several thousand cells assayed with approximately 21,000 genes measured per cell. This means that we are working very "high-dimensional" data that presents some challenges. 
 <br/>
-
 <table class='fig'><tr><td class='fig'>
 ![](images/graphical_abstracts/04-PCAandIntegration-Abstract.png)
 </td></tr><tr><td class='fig'>Starting with filtered, normalized data [gene x cell] for all samples - principal component analysis (PCA) can be used to reduce the dimensionality while still representing the overall gene expression patterns for each cell
 </td></tr></table>
 <br/>
 
+After filtering and normalization, our next goal is to cluster the cells according to their expression profiles. However, even after filtering, we expect to still have several thousand cells assayed with approximately 21,000 genes measured per cell. This means that we are working very "high-dimensional" data that presents some challenges. 
+<br/>
 
 ## Objectives
 
@@ -554,6 +554,13 @@ saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated.rds')
 >
 
 # Summary
+
+<br/>
+<table class='fig'><tr><td class='fig'>
+![](images/graphical_abstracts/04-PCAandIntegration-Abstract.png)
+</td></tr><tr><td class='fig'>Starting with filtered, normalized data [gene x cell] for all samples - principal component analysis (PCA) can be used to reduce the dimensionality while still representing the overall gene expression patterns for each cell
+</td></tr></table>
+<br/>
 
 In this section, we:
 

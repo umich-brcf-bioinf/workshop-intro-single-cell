@@ -53,19 +53,19 @@ knitr_fig_path("05-ProjectionAndClustering/05-")
 <br/>
 ![](images/wayfinder/05-ProjectionAndClustering-Wayfinder.png)
 <br/>
-<br/>
 
 # Introduction
 
-<!--- General goal: to generate clusters that reasonably approximate cell-types or sub-types of interest --->
-One of our goals in a single-cell analysis is to generate clusters that reasonably approximate cell-types or sub-types of interest in our samples before we can determine any differences in gene expression or relative proportion between experimental conditions.
-
+<br/>
 <table class='fig'><tr><td class='fig'>
 ![](images/graphical_abstracts/05-ProjectionAndClustering-Abstract.png)
 </td></tr><tr><td class='fig'>Starting with reduced dimensionality data [PCs x cells] for all samples - cells are organized into networks and then split up to into clusters with similar expression programs, regardless of experimental condition.</td></tr>
 </table>
 <br/>
 
+<!--- General goal: to generate clusters that reasonably approximate cell-types or sub-types of interest --->
+One of our goals in a single-cell analysis is to generate clusters that reasonably approximate cell-types or sub-types of interest in our samples before we can determine any differences in gene expression or relative proportion between experimental conditions.
+<br/>
 
 ## Objectives
 
@@ -74,8 +74,8 @@ One of our goals in a single-cell analysis is to generate clusters that reasonab
 - Visualize our clustering results
 
 <br/>
-
 Like other steps in our analysis, multiple parameters may need to be tested and evaluated while we would expect that only the final would be reported. Clustering is considered part of data exploration so an iterative approach is reasonable, and often expected ([source](https://bioconductor.org/books/3.15/OSCA.basic/clustering.html)). 
+<br/>
 
 ---
 
@@ -455,6 +455,13 @@ saveRDS(geo_so, file = 'results/rdata/geo_so_sct_clustered.rds')
 
 
 # Summary
+
+<br/>
+<table class='fig'><tr><td class='fig'>
+![](images/graphical_abstracts/05-ProjectionAndClustering-Abstract.png)
+</td></tr><tr><td class='fig'>Starting with reduced dimensionality data [PCs x cells] for all samples - cells are organized into networks and then split up to into clusters with similar expression programs, regardless of experimental condition.</td></tr>
+</table>
+<br/>
 
 In this section we:
 

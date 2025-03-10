@@ -54,8 +54,7 @@ knitr_fig_path("08-DifferentialExpression/08-")
 
 # Introduction
 
-After identifying what cell-types are likely present in our data, we can finally consider experimental conditions and use differential expression comparisons to address the biological question at hand for an experiment.
-
+<br/>
 <table class='fig'><tr><td class='fig'>
 ![](images/graphical_abstracts/08-DifferentialExpression-Abstract.png)
 </td></tr><tr><tr class='fig'><td class='fig'>Starting with labeled clustered data, for each labeled cluster, we can compare between case and control within that cluster to identify genes that are impacted by the experimental perturbation(s) for that cell-type or subtype.
@@ -63,6 +62,8 @@ After identifying what cell-types are likely present in our data, we can finally
 </table>
 <br/>
 
+After identifying what cell-types are likely present in our data, we can finally consider experimental conditions and use differential expression comparisons to address the biological question at hand for an experiment.
+<br/>
 
 ## Objectives
 
@@ -70,12 +71,11 @@ After identifying what cell-types are likely present in our data, we can finally
 - Run "standard" differential expression comparisons with cells as replicates
 - Run "pseudobulk" differential expression comparisons with samples as replicates
 
+We already introduced DE comparisons in the [marker identification section of this workshop](06-MarkerVisualization.html), but here we will show how to run comparisons between experimental conditions for each annotated cluster.
 
 As a reminder, our data includes cells isolated from issue from day 0 (prior to injury) as controls, and days 7 and 21 post-injury as experimental conditions.
 
 ![](./images/curriculum/experimental_design.jpg)
-
-We already introduced DE comparisons in the [marker identification section of this workshop](06-MarkerVisualization.html), but here we will show how to run comparisons between experimental conditions for each annotated cluster.
 
 <br/>
 
@@ -316,7 +316,6 @@ saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated_final.rds')
 ```
 
 
-
 ---
 
 # Downstream approaches
@@ -336,6 +335,14 @@ Beyond differential expression within clusters and , there are many other possib
 We would recommend looking for studies in similar tissues or experimental questions and see what kind of approaches and tools were used to answer questions related to your biological question
 
 # Summary
+
+<br/>
+<table class='fig'><tr><td class='fig'>
+![](images/graphical_abstracts/08-DifferentialExpression-Abstract.png)
+</td></tr><tr><tr class='fig'><td class='fig'>Starting with labeled clustered data, for each labeled cluster, we can compare between case and control within that cluster to identify genes that are impacted by the experimental perturbation(s) for that cell-type or subtype.
+</td></tr>
+</table>
+<br/>
 
 Reviewing these results should allow us to identify genes of interest that are impacted by injury and in the context of the cell-types in which they are differentially expressed, formalize some hypotheses for what cell-types or biological processes might be contributing to aberrant bone formation. 
 

@@ -55,8 +55,7 @@ knitr_fig_path("02-QCandFiltering/02-")
 
 # Introduction
 
-Single-cell experiments using the 10x Chromium instrument are expected to have one cell and one bead in one droplet. However this is an imperfect process and there are other important considerations like how healthy or intact the cell was at the time of measurement. In this section, we will use filtering thresholds to remove "cells" that were poorly measured, aren't actually cells, or had more than one cell.
-
+<br/>
 <table class='fig'><tr><td class='fig'>
 ![](images/graphical_abstracts/02-QCandFiltering-Abstract.png)
 </td></tr><tr><td class='fig'>
@@ -64,12 +63,17 @@ The filtered Cell Ranger barcode feature matrix consists of cells that range in 
 </td></tr></table>
 <br/>
 
-Similar to many other areas of research, there are often gaps between how single-cell data is presented versus the reality of running an analysis. For example, only the final filtering thresholds might be reported in a paper but our process for choosing those is likely to be more iterative and include some trial and error.
+Single-cell experiments using the 10x Chromium instrument are expected to have one cell and one bead in one droplet. However this is an imperfect process and there are other important considerations like how healthy or intact the cell was at the time of measurement. In this section, we will use filtering thresholds to remove "cells" that were poorly measured, aren't actually cells, or had more than one cell.
+<br/>
 
 ## Objectives
 
 - Discuss QC measures and learn how to calculate and plot them.
 - Discuss cell-filtering approaches and apply them to our dataset.
+
+<br>
+Similar to many other areas of research, there are often gaps between how single-cell data is presented versus the reality of running an analysis. For example, only the final filtering thresholds might be reported in a paper but our process for choosing those is likely to be more iterative and include some trial and error.
+<br>
 
 <!-- Challenge for instructors: Every vignette uses different filters, how to harmonize/give guidance? Related, how much to discuss arbitrary cutoffs and continued maturation of field?--> 
 <!-- Add links to relevant resources throughout --> 
@@ -328,6 +332,13 @@ saveRDS(geo_so, file = 'results/rdata/geo_so_filtered.rds')
 ```
 
 # Summary
+
+<table class='fig'><tr><td class='fig'>
+![](images/graphical_abstracts/02-QCandFiltering-Abstract.png)
+</td></tr><tr><td class='fig'>
+The filtered Cell Ranger barcode feature matrix consists of cells that range in quality. We can use different metrics to visualize and filter to a subset of putative healthy cells to improve downstream analysis.
+</td></tr></table>
+<br/>
 
 In this section we:
 

@@ -51,8 +51,6 @@ knitr_fig_path("03-Normalization/03-")
 
 # Introduction 
 
-After removing low-quality cells from the data, the next task is the normalization and variance stabilization of the counts for downstream analysis. 
-
 <br/>
 <table class='fig'><tr><td class='fig'>
 ![](images/graphical_abstracts/03-Normalization-Abstract.png)
@@ -61,12 +59,21 @@ After removing low-quality cells from the data, the next task is the normalizati
 </table>
 <br/>
 
+After removing low-quality cells from the data, the next task is the normalization and variance stabilization of the counts to prepare for downstream analysis including integrating between samples and clustering. 
+<br/>
+
 ## Objectives
 
 - Understand why normalization is needed.
 - Describe the essence of the `SCTransform()` method.
 - Understand normalization options.
 - Normalize the counts with `SCTransform()`.
+
+<!--- 
+<br/>
+Add qualifier statement for possiblity of iteration/, e.g.: As in the previous section,
+<br/>
+ --->
 
 ---
 
@@ -202,9 +209,17 @@ if(!file.exists('results/rdata/geo_so_sct_normalized.rds')) {
 saveRDS(geo_so, file = 'results/rdata/geo_so_sct_normalized.rds')
 ```
 
-Once that completes, we'll power down the session as we earlier.
+Once that completes, we'll power down the session as we did earlier.
 
 # Summary
+
+<br/>
+<table class='fig'><tr><td class='fig'>
+![](images/graphical_abstracts/03-Normalization-Abstract.png)
+</td></tr>
+<tr class='fig'><td class='fig'>The counts in the feature barcode matrix are a blend of technical and biological effects. Technical effects can distort or mask the biological effects of interest, confounding downstream analyses. Seurat can model the technical effects based on overall patterns in expression across all cells. Once these technical effects are minimized, the remaining signal is primarily due to biological variance.</td></tr>
+</table>
+<br/>
 
 In this section we have run the `SCTransform()` function to account for variation in cell sequencing depth and to stabilize the variance of the counts. 
 
