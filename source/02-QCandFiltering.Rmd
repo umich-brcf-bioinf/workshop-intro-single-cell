@@ -37,6 +37,7 @@ table.fig, th.fig, td.fig {
 table{
    width:100%;
 }
+
 </style>
 
 ```{r klippy, echo=FALSE, include=TRUE}
@@ -65,15 +66,16 @@ The filtered Cell Ranger barcode feature matrix consists of cells that range in 
 
 Single-cell experiments using the 10x Chromium instrument are expected to have one cell and one bead in one droplet. However this is an imperfect process and there are other important considerations like how healthy or intact the cell was at the time of measurement. In this section, we will use filtering thresholds to remove "cells" that were poorly measured, aren't actually cells, or had more than one cell.
 <br/>
+<br/>
 
 ## Objectives
 
 - Discuss QC measures and learn how to calculate and plot them.
 - Discuss cell-filtering approaches and apply them to our dataset.
 
-<br>
 Similar to many other areas of research, there are often gaps between how single-cell data is presented versus the reality of running an analysis. For example, only the final filtering thresholds might be reported in a paper but our process for choosing those is likely to be more iterative and include some trial and error.
-<br>
+<br/>
+<br/>
 
 <!-- Challenge for instructors: Every vignette uses different filters, how to harmonize/give guidance? Related, how much to discuss arbitrary cutoffs and continued maturation of field?--> 
 <!-- Add links to relevant resources throughout --> 
@@ -117,12 +119,7 @@ We can add arbitrary per-cell information to this table such as:
 - Other custom annotations for each cell.
 
 <!--- cooking show moment - phenotype table --->
-<table>
-	<tr>
-	<td>![](./images/curriculum/cooking_show-1.png){width=15%}</td>
-	<td>We'll start with a table we created named `phenos.csv` that includes phenotype labels for each sample.</td>
-	</tr>
-</table>
+<table><tr><td>We'll start by reading in a table named `phenos.csv` that includes phenotype labels for each sample.</td><td><img src="./images/curriculum/cooking_show-1.png" alt = "Cooking show moment" width="60" height="55"></td></tr></table>
 
 ```{r, read_phenotypes}
 # Make metadata more granular ------------------------------------------
@@ -131,7 +128,7 @@ phenos = read.csv('inputs/phenos.csv')
 head(phenos, 3)
 ```
 
-The following code chunk will add columns for `day` and `replicate` to the automatically generated metadata and ensure that certain categorical data appears in correct order, e.g. Day0, Day7, and Day21 instead of Day0, Day21, and Day7.
+The following code chunk will annotated a copy of the metadata with columns for `day` and `replicate` and ensure that certain categorical data appears in correct order, e.g. Day0, Day7, and Day21 instead of Day0, Day21, and Day7.
 
 ```{r, alter_metadata}
 # Make a temp table that joins Seurat loaded metadata with expanded phenotype columns
