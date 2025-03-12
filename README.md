@@ -10,7 +10,10 @@ This is the custom curriculum for the UM Bioinformatics Core Intro to Single Cel
   - [2/12/2025](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/2025-02-12/html/)
   - [10/23/2024](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/2024-10-23/html/)
 
-__For site knitting:___
+* Input data for learners:
+   - Copies of files pushed to learner's home directories are located in `/efs/workshop/isc/workshop_setup/shared_sample_data` on the AWS server
+
+__For site knitting:__
 
 * For repo setup, run `repo_setup.sh` script to ensure that untracked input files are copied to individual/local copy
 	* Note that when working on LH/GL
