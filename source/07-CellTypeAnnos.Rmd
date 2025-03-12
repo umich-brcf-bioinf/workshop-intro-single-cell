@@ -407,7 +407,8 @@ saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated_with_catch.rds')
 saveRDS(geo_catch, file = 'results/rdata/geo_catch.rds')
 ```
 
-
+<br/>
+<br/>
 
 # Summary
 

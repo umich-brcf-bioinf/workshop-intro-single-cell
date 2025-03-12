@@ -425,6 +425,8 @@ Now that the state of our analysis is saved on disk, we'll demonstrate how to po
 # Load the Seurat object ----------------------------------------------
 geo_so = readRDS('results/rdata/geo_so_unfiltered.rds')
 ```
+<br/>
+<br/>
 
 # Summary
 

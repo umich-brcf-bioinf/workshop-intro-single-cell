@@ -335,6 +335,8 @@ if(!file.exists('results/rdata/geo_so_filtered.rds')) {
 # Save the current Seurat object ---------------------------------------
 saveRDS(geo_so, file = 'results/rdata/geo_so_filtered.rds')
 ```
+<br/>
+<br/>
 
 # Summary
 

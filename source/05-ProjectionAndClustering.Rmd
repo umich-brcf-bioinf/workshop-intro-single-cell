@@ -64,17 +64,17 @@ knitr_fig_path("05-ProjectionAndClustering/05-")
 <br/>
 
 <!--- General goal: to generate clusters that reasonably approximate cell-types or sub-types of interest --->
-One of our goals in a single-cell analysis is to generate clusters that reasonably approximate cell-types or sub-types of interest in our samples before we can determine any differences in gene expression or relative proportion between experimental conditions.
+Before making any comparisons between experimental conditions, its important to identify cell-types or sub-types present across all samples and unsupervised clustering is a reasonable starting point to accomplish this.
 <br/>
 
 ## Objectives
 
 - Understand the clustering process and input parameters
-- Generate initial clusters using `FindNeighbors` and `FindClusters`
-- Visualize our clustering results
+- Generate initial clusters using `FindNeighbors()` and `FindClusters()`
+- Visualize our clustering results with `DimPlot()`
 
 <br/>
-Like other steps in our analysis, multiple parameters may need to be tested and evaluated while we would expect that only the final would be reported. Clustering is considered part of data exploration so an iterative approach is reasonable, and often expected ([source](https://bioconductor.org/books/3.15/OSCA.basic/clustering.html)). 
+Like other steps in our analysis, multiple parameters may need to be tested and evaluated while we would expect that only the final would be reported. Clustering is considered part of data exploration so an iterative approach is common ([source](https://bioconductor.org/books/3.15/OSCA.basic/clustering.html)). 
 <br/>
 
 ---
@@ -207,6 +207,7 @@ The result of `FindNeighbors()` adds graph information to the `graphs` slot:
 The result of `FindClusters()` adds two columns to the `meta.data` table and changes the `active.ident` to the "seurat_clusters" column. In other words, the cells now belong to clusters rather than to their `orig.ident`.
 
 ![Image: Schematic after FindClusters().](images/seurat_schematic/Slide9.png)
+<br>
 
 Generally it's preferable to err on the side of too many clusters, as they can be combined manually in later steps. In our experience, this is another parameter that often needs to be iteratively revised and reviewed. 
 
@@ -452,7 +453,8 @@ if(!file.exists('results/rdata/geo_so_sct_clustered.rds')) {
 # Save Seurat object ------------------------------------------------------
 saveRDS(geo_so, file = 'results/rdata/geo_so_sct_clustered.rds')
 ```
-
+<br/>
+<br/>
 
 # Summary
 

@@ -276,6 +276,8 @@ if(!file.exists('results/rdata/geo_markers.rds')) {
 saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated_with_markers.rds')
 saveRDS(geo_markers, file = 'results/rdata/geo_markers.rds')
 ```
+<br/>
+<br/>
 
 # Summary
 

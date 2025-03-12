@@ -209,7 +209,10 @@ if(!file.exists('results/rdata/geo_so_sct_normalized.rds')) {
 saveRDS(geo_so, file = 'results/rdata/geo_so_sct_normalized.rds')
 ```
 
-Once that completes, we'll power down the session as we did earlier.
+Once that completes, we'll power down the session.
+
+<br/>
+<br/>
 
 # Summary
 
