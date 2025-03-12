@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-02-10" />
+<meta name="date" content="2025-02-14" />
 
 <title>Cell Type Annotation</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -416,7 +416,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Cell Type Annotation</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-02-10</h4>
+<h4 class="date">2025-02-14</h4>
 
 </div>
 
@@ -450,13 +450,13 @@ table.fig, th.fig, td.fig {
 </div>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>A frequent bottleneck in the single-cell RNA-seq analysis workflow is
-annotating our clustering results, as it requires bridging the gap
+<p>A frequent bottleneck in single-cell analysis is annotating the
+algorithmicly generated clusters, as it requires bridging the gap
 between the data and prior knowledge (<a
 href="https://bioconductor.org/books/3.15/OSCA.basic/cell-type-annotation.html">source</a>).
-While generating markers for each cluster and evaluating the expression
-of known marker genes is important, it may or may not be sufficient to
-assign cell-type or sub-type labels.</p>
+While generating markers for each cluster it important, it may or may
+not be sufficient to assign cell-type or sub-type labels without
+bringing in additional sources.</p>
 <table class='fig'>
 <tr>
 <td class="fig">
@@ -466,21 +466,14 @@ assign cell-type or sub-type labels.</p>
 <tr>
 <tr class="fig">
 <td class="fig">
-Starting with clustered data and ignoring sample/condition - we can
-summarize and compare gene expression for known gene markers within each
-cluster to aid with labeling clusters with the appropriate cell-type or
-subtype.
+Starting with clustered data, we can summarize and compare gene
+expression for known gene markers within each cluster, irrespective of
+sample or condition, to help label clusters with the appropriate
+cell-type or subtype.
 </td>
 </tr>
 </table>
 <p><br/></p>
-<p>In this section, our goal is to use an automated annotation tool to
-generate cell type predictions for our clusters.</p>
-<p>Like the previous sections, the process to assign cell-types to
-clusters can be very iterative. In addition, the steps to reach a
-“Figure 1” level of labeled clusters may not be presented in detail, can
-be very dataset dependent, and often is more challenging for less
-characterized tissues.</p>
 <div id="objectives" class="section level2">
 <h2>Objectives</h2>
 <ul>
@@ -489,6 +482,13 @@ characterized tissues.</p>
 <li>Use <code>scCATCH</code> cell-type predictions to annotate our
 clusters</li>
 </ul>
+<p><br></p>
+<p>Like the previous sections, the process to assign cell-types to
+clusters can be very iterative. In addition, the steps to reach a
+“Figure 1” of labeled clusters may not be presented in detail, can be
+very dataset dependent, and often is more challenging for less
+characterized tissues.</p>
+<p><br></p>
 <hr />
 </div>
 </div>
@@ -618,30 +618,30 @@ geo_catch = findcelltype(geo_catch)
 
 # look at the predictions
 geo_catch@celltype %&gt;% select(cluster, cell_type, celltype_score)</code></pre>
-<pre><code>   cluster                                 cell_type   celltype_score
-1        0                                  Pericyte             0.75
-2        1                                 Stem Cell             0.83
-3        2                   Hematopoietic Stem Cell             0.92
-4        3                            Dendritic Cell             0.86
-5        4                                Macrophage             0.82
-6        5                    Muscle Progenitor Cell             0.71
-7        6                   Hematopoietic Stem Cell             0.87
-8        7                                  Monocyte             0.82
-9        8                     Muscle Satellite Cell             0.93
-10       9                                Macrophage             0.82
-11      10                   Hematopoietic Stem Cell             0.86
-12      11                                Macrophage             0.79
-13      12                         Regulatory T Cell              0.9
-14      13                            Dendritic Cell             0.85
-15      14 Dendritic Cell, Monocyte, Progenitor Cell 0.71, 0.71, 0.71
-16      15                    Muscle Progenitor Cell             0.71
-17      16                               CD8+ T Cell             0.88
-18      17                                 Stem Cell             0.84
-19      18                   Hematopoietic Stem Cell             0.87
-20      19                   Hematopoietic Stem Cell             0.87
-21      20                               Muscle Cell             0.69
-22      21                    Muscle Progenitor Cell             0.76
-23      22                        Basophil, Platelet       0.71, 0.71</code></pre>
+<pre><code>   cluster                       cell_type celltype_score
+1        0                        Pericyte           0.75
+2        1         Hematopoietic Stem Cell           0.86
+3        2                        Monocyte           0.82
+4        3          Muscle Progenitor Cell           0.71
+5        4                      Macrophage           0.82
+6        5                  Dendritic Cell           0.86
+7        6         Hematopoietic Stem Cell            0.9
+8        7                       Stem Cell           0.88
+9        8         Hematopoietic Stem Cell           0.91
+10       9         Hematopoietic Stem Cell           0.86
+11      10        Dendritic Cell, Monocyte     0.82, 0.82
+12      11               Regulatory T Cell            0.9
+13      12                  Dendritic Cell           0.85
+14      13 Dendritic Cell, Progenitor Cell     0.71, 0.71
+15      14           Muscle Satellite Cell           0.94
+16      15                     CD8+ T Cell           0.88
+17      16                       Stem Cell           0.84
+18      17         Hematopoietic Stem Cell           0.87
+19      18                    Stromal Cell           0.66
+20      19         Hematopoietic Stem Cell           0.88
+21      20                     Muscle Cell           0.69
+22      21                        Basophil           0.73
+23      22                       Stem Cell            0.8</code></pre>
 <p>When we look at our results we can see the cell type score, which
 gives us an idea of the confidence of that prediction. Not shown here
 but the full <code>celltype</code> table also includes marker genes and
@@ -679,9 +679,14 @@ immune_markers[[&#39;B-cell&#39;]] = c( &#39;Ly6d&#39;, &#39;Cd19&#39;, &#39;Cd7
 immune_markers[[&#39;T-cell&#39;]] = c( &#39;Cd3d&#39;,&#39;Cd3e&#39;,&#39;Cd3g&#39;) # also Thy1</code></pre>
 <pre class="r"><code># Plot other immune to assist with cluster identification ---------------
 immune_markers_plot = DotPlot(geo_so, features = immune_markers, assay = &#39;SCT&#39;)  +
-  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
-
-# save to file
+  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))</code></pre>
+<pre><code>Warning: The `facets` argument of `facet_grid()` is deprecated as of ggplot2 2.2.0.
+ℹ Please use the `rows` argument instead.
+ℹ The deprecated feature was likely used in the Seurat package.
+  Please report the issue at &lt;https://github.com/satijalab/seurat/issues&gt;.
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+<pre class="r"><code># save to file
 ggsave(filename = &#39;results/figures/immune_markers_sct_dot_plot.png&#39;, 
        plot = immune_markers_plot, width = 10, height = 5, units = &#39;in&#39;)
 
@@ -802,30 +807,30 @@ so we have to add them back.
 celltype_annos = geo_catch@celltype %&gt;% select(cluster, cell_type) %&gt;% 
   mutate(cluster = factor(cluster, levels = c(0:22))) %&gt;% arrange(cluster)
 celltype_annos</code></pre>
-<pre><code>   cluster                                 cell_type
-1        0                                  Pericyte
-2        1                                 Stem Cell
-3        2                   Hematopoietic Stem Cell
-4        3                            Dendritic Cell
-5        4                                Macrophage
-6        5                    Muscle Progenitor Cell
-7        6                   Hematopoietic Stem Cell
-8        7                                  Monocyte
-9        8                     Muscle Satellite Cell
-10       9                                Macrophage
-11      10                   Hematopoietic Stem Cell
-12      11                                Macrophage
-13      12                         Regulatory T Cell
-14      13                            Dendritic Cell
-15      14 Dendritic Cell, Monocyte, Progenitor Cell
-16      15                    Muscle Progenitor Cell
-17      16                               CD8+ T Cell
-18      17                                 Stem Cell
-19      18                   Hematopoietic Stem Cell
-20      19                   Hematopoietic Stem Cell
-21      20                               Muscle Cell
-22      21                    Muscle Progenitor Cell
-23      22                        Basophil, Platelet</code></pre>
+<pre><code>   cluster                       cell_type
+1        0                        Pericyte
+2        1         Hematopoietic Stem Cell
+3        2                        Monocyte
+4        3          Muscle Progenitor Cell
+5        4                      Macrophage
+6        5                  Dendritic Cell
+7        6         Hematopoietic Stem Cell
+8        7                       Stem Cell
+9        8         Hematopoietic Stem Cell
+10       9         Hematopoietic Stem Cell
+11      10        Dendritic Cell, Monocyte
+12      11               Regulatory T Cell
+13      12                  Dendritic Cell
+14      13 Dendritic Cell, Progenitor Cell
+15      14           Muscle Satellite Cell
+16      15                     CD8+ T Cell
+17      16                       Stem Cell
+18      17         Hematopoietic Stem Cell
+19      18                    Stromal Cell
+20      19         Hematopoietic Stem Cell
+21      20                     Muscle Cell
+22      21                        Basophil
+23      22                       Stem Cell</code></pre>
 <pre class="r"><code># Update annotations, remembering that cluster 0 = row 1 in table ---------
 celltype_annos$cell_type[c(6,15,16)] &lt;- &quot;Inflammatory macrophage&quot; # resolve cluster 5, 14, 15
 celltype_annos$cell_type[c(12)] &lt;- &quot;Macrophage&quot;
@@ -918,22 +923,22 @@ replicate1
 1.240962
 </td>
 <td style="text-align:right;">
-6061
+6062
 </td>
 <td style="text-align:right;">
 2867
 </td>
 <td style="text-align:left;">
-6
+1
 </td>
 <td style="text-align:left;">
-3
+2
 </td>
 <td style="text-align:left;">
-3
+2
 </td>
 <td style="text-align:left;">
-Myofibroblast
+Fibroblast
 </td>
 </tr>
 <tr>
@@ -959,22 +964,22 @@ replicate1
 7.536416
 </td>
 <td style="text-align:right;">
-4609
+4607
 </td>
 <td style="text-align:right;">
 1509
 </td>
 <td style="text-align:left;">
-6
+1
 </td>
 <td style="text-align:left;">
-3
+2
 </td>
 <td style="text-align:left;">
-3
+2
 </td>
 <td style="text-align:left;">
-Myofibroblast
+Fibroblast
 </td>
 </tr>
 <tr>
@@ -1000,19 +1005,19 @@ replicate1
 3.112002
 </td>
 <td style="text-align:right;">
-5319
+5314
 </td>
 <td style="text-align:right;">
-2386
+2370
 </td>
 <td style="text-align:left;">
 1
 </td>
 <td style="text-align:left;">
-3
+2
 </td>
 <td style="text-align:left;">
-3
+2
 </td>
 <td style="text-align:left;">
 Fibroblast
@@ -1041,22 +1046,22 @@ replicate1
 1.559792
 </td>
 <td style="text-align:right;">
-3880
+3877
 </td>
 <td style="text-align:right;">
-1032
+1031
 </td>
 <td style="text-align:left;">
-11
+10
 </td>
 <td style="text-align:left;">
-11
+8
 </td>
 <td style="text-align:left;">
-11
+8
 </td>
 <td style="text-align:left;">
-Macrophage
+Mesenchymal stem/stromal cell
 </td>
 </tr>
 <tr>
@@ -1082,7 +1087,7 @@ replicate1
 3.700589
 </td>
 <td style="text-align:right;">
-4186
+4166
 </td>
 <td style="text-align:right;">
 915
@@ -1091,10 +1096,10 @@ replicate1
 1
 </td>
 <td style="text-align:left;">
-3
+2
 </td>
 <td style="text-align:left;">
-3
+2
 </td>
 <td style="text-align:left;">
 Fibroblast
@@ -1123,22 +1128,22 @@ replicate1
 2.938131
 </td>
 <td style="text-align:right;">
-5855
+5865
 </td>
 <td style="text-align:right;">
-2587
+2588
 </td>
 <td style="text-align:left;">
-6
+1
 </td>
 <td style="text-align:left;">
-3
+2
 </td>
 <td style="text-align:left;">
-3
+2
 </td>
 <td style="text-align:left;">
-Myofibroblast
+Fibroblast
 </td>
 </tr>
 </tbody>
@@ -1168,7 +1173,7 @@ ggsave(filename = &#39;results/figures/umap_integrated_catch.png&#39;, plot = ca
 catch_umap_condition_plot = DimPlot(geo_so, group.by = &#39;cell_type&#39;, split.by = &#39;day&#39;, label = TRUE, reduction = &#39;umap.integrated.sct.rpca&#39;)
 
 ggsave(filename = &#39;results/figures/umap_integrated_catch_byCondition.png&#39;, 
-       plot = catch_umap_plot, width = 10, height = 8, units = &#39;in&#39;)
+       plot = catch_umap_condition_plot, width = 10, height = 8, units = &#39;in&#39;)
 
 catch_umap_condition_plot</code></pre>
 <p><img src="images/curriculum/07-CellTypeAnnotation/07-catch_umap_plot-1.png" width="960" style="display: block; margin: auto;" /><img src="images/curriculum/07-CellTypeAnnotation/07-catch_umap_plot-2.png" width="960" style="display: block; margin: auto;" /></p>
@@ -1181,9 +1186,9 @@ catch_umap_condition_plot</code></pre>
 # Ok since we saved the plots as we went along
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells   7573843  404.5   11382044   607.9   11382044   607.9
-Vcells 698668305 5330.5 2110648647 16103.0 2110191873 16099.5</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
+Ncells   6904063  368.8   11863601  633.6   11863601  633.6
+Vcells 336463314 2567.1 1109312410 8463.4 1108694243 8458.7</code></pre>
 <p>We’ll save the scCATCH object. The Seurat object has not been changed
 in this module.</p>
 <pre class="r"><code># Save Seurat object and annotations --------------------------------------

@@ -24,6 +24,7 @@ render('source/workshop_setup/setup_instructions.md', output_dir='html/workshop_
 render('source/workshop_setup/setup_instructions_advanced.md', output_dir='html/workshop_setup/')
 render('source/workshop_setup/prereq_check.md', output_dir='html/workshop_setup/')
 
+
 # The html from the files below do have the nav bar, so if you make changes 
 # that impact the navbar (e.g. file name changes or reordering) you should 
 # re-knit all of them.
@@ -31,6 +32,7 @@ render('source/workshop_setup/prereq_check.md', output_dir='html/workshop_setup/
 render_site('source/index.md');
 render_site('source/workshop_intro.md');
 render_site('source/instructor_cheatsheet.Rmd');
+render_site('source/isc_analysis_scripts.Rmd');
 
 ## add content pages
 render_site('source/00A-OrientingOnScRNASeq.Rmd');

@@ -279,7 +279,7 @@ devtools::session_info()
 ## Looking ahead
 
 #### Workshop environment
-- RStudio workshop compute environment will be available until **3/7/2025**.
+- RStudio workshop compute environment will be available until **5/2/2025**.
   - _Please save all your R scripts now_ so that we can "right-size" the compute environment immediately following today's workshop session.
 - You can download files from the workshop environment from your terminal/command line window as below. 
   (You will need to substitute your actual workshop username and type workshop password when prompted.)
@@ -324,16 +324,10 @@ devtools::session_info()
 <details>
 <summary>*University of Michigan Resources*</summary>
 - [UM CoderSpaces "office hours"](https://datascience.isr.umich.edu/events/coderspaces/){target="_blank"} and UM CoderSpaces Slack workspace. _(See "Useful Resources" section of the CoderSpaces page for instructions on how to join the CoderSpaces Slack workspace.)_
-- Upcoming [UM Advanced Research Computing workshops](https://arc.umich.edu/events/){target="_blank"}.
-- Advanced Research Computing (ARC) at University of Michigan hosts a
-  high-performance computing (HPC) platform called _Great Lakes_ which combines
-  high-end computers, fast/resilient storage, and pre-installed software.
-  Great Lakes may be a good resource for folks who need to run the more compute
-  intensive steps and a substantial block of compute and storage is subsidized
-  by ARC making it essentially free to many UM researchers.
-  - About [Great Lakes](https://arc.umich.edu/greatlakes/){target="_blank"}.
-  - About the ARC [Research Computing Package](https://arc.umich.edu/umrcp/){target="_blank"}.
-  - Videos on [getting started with Great Lakes](https://www.mivideo.it.umich.edu/channel/ARC-TS%2BTraining/181860561/){target="_blank"}. (Videos are available to UM folks.)
+- [Advanced Research Computing](https://its.umich.edu/advanced-research-computing){target="_blank"}
+  - [Research Computing Package](https://its.umich.edu/advanced-research-computing/research-computing-package){target="_blank"}
+  - Upcoming [UM Advanced Research Computing workshops](https://ttc.iss.lsa.umich.edu/ttc/sessions/tag/arc/){target="_blank"}
+  - Videos on [getting started with Great Lakes](https://www.mivideo.it.umich.edu/channel/ARC-TS%2BTraining/181860561/){target="_blank"}
 
 
 ## Resources for continued learning

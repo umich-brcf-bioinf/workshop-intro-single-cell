@@ -50,7 +50,7 @@ body, td {
 | 9:20 | [Principal Component Analysis & Integration](04-PCAandIntegration.html) (Dana) |
 |      | [Clustering & Projection](05-ProjectionAndClustering.html) |
 | 11:00 | Break |
-| 11:15 | A review of sequencing approaches (Tricia) |
+| 11:15 | [An overview of different sequencing approaches](IntroSingleCellApproaches.pdf) (Tricia) |
 |      | [Clustering & Projection (continued)](05-ProjectionAndClustering.html) | 
 | 1:00 | Day 2 concludes |
 
@@ -61,6 +61,7 @@ body, td {
 | 9:20 | [Marker identification & Visualization](06-MarkerVisualization.html)
 |       | [Cell type annotation](07-CellTypeAnnos.html) |
 | 11:00 | Break |
+|       | [Cell type annotation (continued)](07-CellTypeAnnos.html) |
 | 11:15 | [Differential expression analysis](08-DifferentialExpression.html) |
 | 12:45 | [Wrap-up](workshop_wrap_up.html) (Chris) |
 | 1:00 | Workshop concludes |
