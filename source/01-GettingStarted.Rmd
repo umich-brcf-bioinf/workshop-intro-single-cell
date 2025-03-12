@@ -62,13 +62,14 @@ knitr_fig_path("01-GettingStarted/01-")
 
 # Introduction
 
-One of the goals of this workshop is to work through an example from start to end, and to highlight some of the decision points and rationales behind the decisions. The first step of any single-cell project will be to get the data into R for analysis.
-
 <table class='fig'><tr><td class='fig'>
 ![](images/graphical_abstracts/01-GettingStarted-Abstract.png)
 </td></tr><tr><td class='fig'>
 Cell Ranger outputs can be read into R via the triple of files directly, or via a memory saving route with the BPCells package. We provide code for both routes in this section.
 </td></tr></table>
+<br/>
+
+One of the goals of this workshop is to work through an example from start to end, and to highlight some of the decision points and rationales behind the decisions. The first step of any single-cell project will be to get the data into R for analysis.
 <br/>
 
 ## Objectives
@@ -82,6 +83,8 @@ Cell Ranger outputs can be read into R via the triple of files directly, or via 
 ---
 
 # Orienting on RStudio
+
+<!-- `welcome.R` script section to be revised to move to introduce copy/paste pattern for commands later in materials --> 
 
 We've created a simple `welcome.R` script to demonstrate the wheres and hows of the interface. The "File" pane in the lower right should have a `welcome.R` script. Click on it to open.
 
@@ -354,7 +357,7 @@ If you want to load multiple samples from .h5 files, see the function
 
 FYI
 
-- Be aware, using HDF5 file=s from R support requires the hdf5 library which entails a 
+- Be aware, using HDF5 files from R support requires the hdf5 library which entails a 
 few more steps to install than a typical library. Brew a nice cup of (decaf) tea
 and review how to [install hdf5](https://github.com/hhoeflin/hdf5r){target="_blank"}.
 - See the Seurat function [Read10X](https://satijalab.org/seurat/reference/read10x){target="_blank"}.
@@ -422,8 +425,17 @@ Now that the state of our analysis is saved on disk, we'll demonstrate how to po
 # Load the Seurat object ----------------------------------------------
 geo_so = readRDS('results/rdata/geo_so_unfiltered.rds')
 ```
+<br/>
+<br/>
 
 # Summary
+
+<table class='fig'><tr><td class='fig'>
+![](images/graphical_abstracts/01-GettingStarted-Abstract.png)
+</td></tr><tr><td class='fig'>
+Cell Ranger outputs can be read into R via the triple of files directly, or via a memory saving route with the BPCells package. We provide code for both routes in this section.
+</td></tr></table>
+<br/>
 
 In this section we:
 

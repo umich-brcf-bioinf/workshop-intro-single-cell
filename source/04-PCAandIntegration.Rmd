@@ -58,22 +58,22 @@ knitr_fig_path("04-PCAandIntegration/04-")
 
 # Introduction 
 
-After filtering and normalization, our next goal is to cluster the cells according to their expression profiles. However, even after filtering, we expect to still have several thousand cells assayed with approximately 21,000 genes measured per cell. This means that we are working very "high-dimensional" data that presents some challenges. 
 <br/>
-
 <table class='fig'><tr><td class='fig'>
 ![](images/graphical_abstracts/04-PCAandIntegration-Abstract.png)
 </td></tr><tr><td class='fig'>Starting with filtered, normalized data [gene x cell] for all samples - principal component analysis (PCA) can be used to reduce the dimensionality while still representing the overall gene expression patterns for each cell
 </td></tr></table>
 <br/>
 
+After filtering and normalization, our next goal is to cluster the cells according to their expression profiles. However, even after filtering, we expect to still have several thousand cells assayed with approximately 21,000 genes measured per cell. This means that we are working very "high-dimensional" data that presents some challenges. 
+<br/>
 
 ## Objectives
 
 - Understand why PCA is used prior to integration and clustering for single-cell data   
 - Use the `RunPCA()` function to generate principal components for our data    
 - Choose an appropriate number of principal components to represent our data   
-- Use `IntegrateLayers` to integrate our sample data prior to clustering   
+- Use `IntegrateLayers()` to integrate our sample data prior to clustering   
 
 <br/>
 
@@ -453,7 +453,7 @@ In the first plot with each cell labeled by the original sample name, it looks l
 
 # Integrate Layers
 
-Before proceeding with clustering, we will integrate our data across all samples. This is a common step for scRNA-seq analyses that include multiple samples and should mitigate the differences between samples we saw in our PCA plot. Currently, each sample is stored as a layer in our `geo_so` object, Since earlier in the workshop, we used `SCTransform()` to normalize our data, select variable genes and then have generated a PCA reduction, we can use the `IntegrateLayers()` function to do that.
+Before proceeding with clustering, we want to integrate our data across all samples. This is a common step for scRNA-seq analyses that include multiple samples and should mitigate the differences between samples we saw in our PCA plot. Currently, each sample is stored as a layer in our `geo_so` object. Since earlier in the workshop, we used `SCTransform()` to normalize our data, select variable genes and then have generated a PCA reduction, we'll use the `IntegrateLayers()` function.
 
 ![CCA integration illustration, modified from Stuart and Butler, 2018 -https://doi.org/10.1101/460147](./images/curriculum/04-PCAandIntegration/HBC-CCA-Integration_simplified.png)
 
@@ -487,16 +487,16 @@ geo_so = IntegrateLayers(
 
 Note that the integration is run on the layers, which from our prior steps each correspond to a single sample, in our `geo_so` Seurat object. For additional information, refer to the Seurat v5 vignette on integrative analysis ([link](https://satijalab.org/seurat/articles/seurat5_integration#perform-streamlined-one-line-integrative-analysis)) provides examples of each integration method. Note, that the vignette code uses the `NormalizeData()`, `ScaleData()`, `FindVariableFeatures()` pipeline, so their `IntegrateLayers()` call does not include `normalization.method = 'SCT'`, as ours must.
 
-Note we have specified the unintegrated reduction `unintegrated.sct.pca`, which is what `IntegrateLayers()` operates on, along with the `SCT` assay. Let's take a look to see what's different about the `Seurat` object:
+<table><tr><td>Because the `IntegrateLayers()` function takes a while to run, we will load the RPCA integrated `geo_so` object from a file we have previously generated.</td><td><img src="./images/curriculum/cooking_show-1.png" alt = "Cooking show moment" width="60" height="55"></td></tr></table>
 
 > **Load integrated data**
-> 
-> Because the `IntegrateLayers()` function takes a while to run, we will simply load the RPCA integrated `geo_so` object from a file we have previously generated.
 > 
 > ```{r, eval = FALSE}
 > geo_so = readRDS('/home/workshop/rcavalca/ISC_R/results/rdata/geo_so_sct_integrated.rds')
 > ```
 > 
+
+Note we have specified the unintegrated reduction `unintegrated.sct.pca`, which is what `IntegrateLayers()` operates on, along with the `SCT` assay. Let's take a look to see what's different about the `Seurat` object:
 
 ```{r, preview_seurat}
 # Check our updated object that we've read in from file ------------------- 
@@ -553,7 +553,17 @@ saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated.rds')
 > ```
 >
 
+<br/>
+<br/>
+
 # Summary
+
+<br/>
+<table class='fig'><tr><td class='fig'>
+![](images/graphical_abstracts/04-PCAandIntegration-Abstract.png)
+</td></tr><tr><td class='fig'>Starting with filtered, normalized data [gene x cell] for all samples - principal component analysis (PCA) can be used to reduce the dimensionality while still representing the overall gene expression patterns for each cell
+</td></tr></table>
+<br/>
 
 In this section, we:
 
