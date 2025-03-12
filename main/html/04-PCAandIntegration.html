@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-02-11" />
+<meta name="date" content="2025-03-11" />
 
 <title>PCA and Integration</title>
 
-<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -414,7 +414,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">PCA and Integration</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-02-11</h4>
+<h4 class="date">2025-03-11</h4>
 
 </div>
 
@@ -450,12 +450,7 @@ src="images/wayfinder/04-PCAandIntegration-Wayfinder.png" /> <br/>
 <br/></p>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>After filtering and normalization, our next goal is to cluster the
-cells according to their expression profiles. However, even after
-filtering, we expect to still have several thousand cells assayed with
-approximately 21,000 genes measured per cell. This means that we are
-working very “high-dimensional” data that presents some challenges.
-<br/></p>
+<br/>
 <table class="fig">
 <tr>
 <td class="fig">
@@ -473,6 +468,12 @@ patterns for each cell
 </tr>
 </table>
 <p><br/></p>
+<p>After filtering and normalization, our next goal is to cluster the
+cells according to their expression profiles. However, even after
+filtering, we expect to still have several thousand cells assayed with
+approximately 21,000 genes measured per cell. This means that we are
+working very “high-dimensional” data that presents some challenges.
+<br/></p>
 <div id="objectives" class="section level2">
 <h2>Objectives</h2>
 <ul>
@@ -485,8 +486,8 @@ components for our data<br />
 <li>Choose an appropriate number of principal components to represent
 our data<br />
 </li>
-<li>Use <code>IntegrateLayers</code> to integrate our sample data prior
-to clustering</li>
+<li>Use <code>IntegrateLayers()</code> to integrate our sample data
+prior to clustering</li>
 </ul>
 <p><br/></p>
 <p>Similar to the previous sections, while you may see only a single
@@ -793,7 +794,7 @@ optimal_pcs = function(so, reduction) {
 # Apply function to our data
 pcs = optimal_pcs(geo_so, &#39;unintegrated.sct.pca&#39;)
 pcs</code></pre>
-<pre><code>[1] 16</code></pre>
+<pre><code>[1] 15</code></pre>
 <pre class="r"><code># Based on the heatmap, we&#39;ll modify to 13 PCs
 pcs = 13
 
@@ -882,11 +883,11 @@ optimal_pcs_advanced = function(so, reduction, print_plot=TRUE, verbose=TRUE) {
 # =========================================================================</code></pre>
 <pre class="r"><code># Apply function to our data ----------------------------------------------
 optimal_pcs = optimal_pcs_advanced(geo_so, &#39;unintegrated.sct.pca&#39;)</code></pre>
-<pre><code>Reduction unintegrated.sct.pca: 50 PCs (total var = 100)
-    PC 42 (total var = 90.98) : Smallest PC that explains at least 90% total variance
-    PC 16 (total var = 53.21) : Largest PC with incremental variance step at least 0.1%
-    Recommended num of PCs: 16</code></pre>
 <p><img src="images/curriculum/04-PCAandIntegration/04-apply_estimate_optimal_pcs-1.png" width="816" style="display: block; margin: auto;" /></p>
+<pre><code>Reduction unintegrated.sct.pca: 50 PCs (total var = 100)
+    PC 42 (total var = 90.99) : Smallest PC that explains at least 90% total variance
+    PC 15 (total var = 50.82) : Largest PC with incremental variance step at least 0.1%
+    Recommended num of PCs: 15</code></pre>
 <pre class="r"><code># Save plot of PCs --------------------------------------------------------
 ggsave(filename = &#39;results/figures/optimal_pcs.png&#39;,
        plot=optimal_pcs$plot,
@@ -947,14 +948,14 @@ differences and better align our data.</p>
 </div>
 <div id="integrate-layers" class="section level1">
 <h1>Integrate Layers</h1>
-<p>Before proceeding with clustering, we will integrate our data across
-all samples. This is a common step for scRNA-seq analyses that include
-multiple samples and should mitigate the differences between samples we
-saw in our PCA plot. Currently, each sample is stored as a layer in our
-<code>geo_so</code> object, Since earlier in the workshop, we used
-<code>SCTransform()</code> to normalize our data, select variable genes
-and then have generated a PCA reduction, we can use the
-<code>IntegrateLayers()</code> function to do that.</p>
+<p>Before proceeding with clustering, we want to integrate our data
+across all samples. This is a common step for scRNA-seq analyses that
+include multiple samples and should mitigate the differences between
+samples we saw in our PCA plot. Currently, each sample is stored as a
+layer in our <code>geo_so</code> object. Since earlier in the workshop,
+we used <code>SCTransform()</code> to normalize our data, select
+variable genes and then have generated a PCA reduction, we’ll use the
+<code>IntegrateLayers()</code> function.</p>
 <div class="float">
 <img
 src="images/curriculum/04-PCAandIntegration/HBC-CCA-Integration_simplified.png"
@@ -1000,18 +1001,27 @@ code uses the <code>NormalizeData()</code>, <code>ScaleData()</code>,
 <code>FindVariableFeatures()</code> pipeline, so their
 <code>IntegrateLayers()</code> call does not include
 <code>normalization.method = 'SCT'</code>, as ours must.</p>
+<table>
+<tr>
+<td>
+Because the <code>IntegrateLayers()</code> function takes a while to
+run, we will load the RPCA integrated <code>geo_so</code> object from a
+file we have previously generated.
+</td>
+<td>
+<img src="images/curriculum/cooking_show-1.png" alt = "Cooking show moment" width="60" height="55">
+</td>
+</tr>
+</table>
+<blockquote>
+<p><strong>Load integrated data</strong></p>
+<pre class="r"><code>geo_so = readRDS(&#39;/home/workshop/rcavalca/ISC_R/results/rdata/geo_so_sct_integrated.rds&#39;)</code></pre>
+</blockquote>
 <p>Note we have specified the unintegrated reduction
 <code>unintegrated.sct.pca</code>, which is what
 <code>IntegrateLayers()</code> operates on, along with the
 <code>SCT</code> assay. Let’s take a look to see what’s different about
 the <code>Seurat</code> object:</p>
-<blockquote>
-<p><strong>Load integrated data</strong></p>
-<p>Because the <code>IntegrateLayers()</code> function takes a while to
-run, we will simply load the RPCA integrated <code>geo_so</code> object
-from a file we have previously generated.</p>
-<pre class="r"><code>geo_so = readRDS(&#39;/home/workshop/rcavalca/ISC_R/results/rdata/geo_so_sct_integrated.rds&#39;)</code></pre>
-</blockquote>
 <pre class="r"><code># Check our updated object that we&#39;ve read in from file ------------------- 
 # Observe that we now have a new reduction, `integrated.sct.rpca`
 geo_so </code></pre>
@@ -1059,9 +1069,28 @@ geo_so = IntegrateLayers(
     new.reduction = &#39;integrated.sct.cca&#39;)
 ### DO NOT RUN ###</code></pre>
 </blockquote>
+<p><br/> <br/></p>
 </div>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
+<br/>
+<table class="fig">
+<tr>
+<td class="fig">
+<img
+src="images/graphical_abstracts/04-PCAandIntegration-Abstract.png" />
+</td>
+</tr>
+<tr>
+<td class="fig">
+Starting with filtered, normalized data [gene x cell] for all samples -
+principal component analysis (PCA) can be used to reduce the
+dimensionality while still representing the overall gene expression
+patterns for each cell
+</td>
+</tr>
+</table>
+<p><br/></p>
 <p>In this section, we:</p>
 <ul>
 <li>Discussed how PCA is used in scRNA-seq analysis.</li>
