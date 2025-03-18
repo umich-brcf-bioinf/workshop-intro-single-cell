@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-03-11" />
+<meta name="date" content="2025-03-13" />
 
 <title>Secondary Quality Control and Filtering</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -415,7 +415,7 @@ div.tocify {
 <h1 class="title toc-ignore">Secondary Quality Control and
 Filtering</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-03-11</h4>
+<h4 class="date">2025-03-13</h4>
 
 </div>
 
@@ -439,6 +439,16 @@ table.fig, th.fig, td.fig {
 
 table{
    width:100%;
+}
+
+.prepared_content {
+  border-radius: 10px;
+  padding: 5px 5px 5px 95px;
+  background: #FFF8DC left 10px top 10px / 65px no-repeat;
+}
+
+.cooking_show {
+  background-image: url("images/curriculum/cooking_show-1.png");
 }
 
 </style>
@@ -505,13 +515,55 @@ ourselves.</p>
 
 # Examine Seurat metdata  ----------------------------------------------
 head(geo_so@meta.data)</code></pre>
-<pre><code>                                          orig.ident nCount_RNA nFeature_RNA
-HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1      10234         3226
-HODay0replicate1_AAACCTGGTCATGCAT-1 HODay0replicate1       3158         1499
-HODay0replicate1_AAACCTGTCAGAGCTT-1 HODay0replicate1      13464         4102
-HODay0replicate1_AAACGGGAGAGACTTA-1 HODay0replicate1        577          346
-HODay0replicate1_AAACGGGAGGCCCGTT-1 HODay0replicate1       1189          629
-HODay0replicate1_AAACGGGCAACTGGCC-1 HODay0replicate1       7726         2602</code></pre>
+<pre><code>                                          orig.ident nCount_RNA nFeature_RNA condition.x day.x replicate.x
+HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1      10234         3226          HO  Day0  replicate1
+HODay0replicate1_AAACCTGGTCATGCAT-1 HODay0replicate1       3158         1499          HO  Day0  replicate1
+HODay0replicate1_AAACCTGTCAGAGCTT-1 HODay0replicate1      13464         4102          HO  Day0  replicate1
+HODay0replicate1_AAACGGGAGAGACTTA-1 HODay0replicate1        577          346          HO  Day0  replicate1
+HODay0replicate1_AAACGGGAGGCCCGTT-1 HODay0replicate1       1189          629          HO  Day0  replicate1
+HODay0replicate1_AAACGGGCAACTGGCC-1 HODay0replicate1       7726         2602          HO  Day0  replicate1
+                                    percent.mt condition.y day.y replicate.y day.x.x condition.x.x day.y.y
+HODay0replicate1_AAACCTGAGAGAACAG-1   1.240962          HO  Day0  replicate1    &lt;NA&gt;            HO    Day0
+HODay0replicate1_AAACCTGGTCATGCAT-1   7.536415          HO  Day0  replicate1    &lt;NA&gt;            HO    Day0
+HODay0replicate1_AAACCTGTCAGAGCTT-1   3.112002          HO  Day0  replicate1    &lt;NA&gt;            HO    Day0
+HODay0replicate1_AAACGGGAGAGACTTA-1   1.559792          HO  Day0  replicate1    &lt;NA&gt;            HO    Day0
+HODay0replicate1_AAACGGGAGGCCCGTT-1   3.700589          HO  Day0  replicate1    &lt;NA&gt;            HO    Day0
+HODay0replicate1_AAACGGGCAACTGGCC-1   2.938131          HO  Day0  replicate1    &lt;NA&gt;            HO    Day0
+                                    replicate.x.x day.x.x.x condition.y.y day.y.y.y replicate.y.y day.x.x.x.x
+HODay0replicate1_AAACCTGAGAGAACAG-1    replicate1      &lt;NA&gt;            HO      Day0    replicate1        &lt;NA&gt;
+HODay0replicate1_AAACCTGGTCATGCAT-1    replicate1      &lt;NA&gt;            HO      Day0    replicate1        &lt;NA&gt;
+HODay0replicate1_AAACCTGTCAGAGCTT-1    replicate1      &lt;NA&gt;            HO      Day0    replicate1        &lt;NA&gt;
+HODay0replicate1_AAACGGGAGAGACTTA-1    replicate1      &lt;NA&gt;            HO      Day0    replicate1        &lt;NA&gt;
+HODay0replicate1_AAACGGGAGGCCCGTT-1    replicate1      &lt;NA&gt;            HO      Day0    replicate1        &lt;NA&gt;
+HODay0replicate1_AAACGGGCAACTGGCC-1    replicate1      &lt;NA&gt;            HO      Day0    replicate1        &lt;NA&gt;
+                                    condition.x.x.x day.y.y.y.y replicate.x.x.x day.x.x.x.x.x condition.y.y.y
+HODay0replicate1_AAACCTGAGAGAACAG-1              HO        Day0      replicate1          &lt;NA&gt;              HO
+HODay0replicate1_AAACCTGGTCATGCAT-1              HO        Day0      replicate1          &lt;NA&gt;              HO
+HODay0replicate1_AAACCTGTCAGAGCTT-1              HO        Day0      replicate1          &lt;NA&gt;              HO
+HODay0replicate1_AAACGGGAGAGACTTA-1              HO        Day0      replicate1          &lt;NA&gt;              HO
+HODay0replicate1_AAACGGGAGGCCCGTT-1              HO        Day0      replicate1          &lt;NA&gt;              HO
+HODay0replicate1_AAACGGGCAACTGGCC-1              HO        Day0      replicate1          &lt;NA&gt;              HO
+                                    day.y.y.y.y.y replicate.y.y.y day.x.x.x.x.x.x condition.x.x.x.x
+HODay0replicate1_AAACCTGAGAGAACAG-1          Day0      replicate1            &lt;NA&gt;                HO
+HODay0replicate1_AAACCTGGTCATGCAT-1          Day0      replicate1            &lt;NA&gt;                HO
+HODay0replicate1_AAACCTGTCAGAGCTT-1          Day0      replicate1            &lt;NA&gt;                HO
+HODay0replicate1_AAACGGGAGAGACTTA-1          Day0      replicate1            &lt;NA&gt;                HO
+HODay0replicate1_AAACGGGAGGCCCGTT-1          Day0      replicate1            &lt;NA&gt;                HO
+HODay0replicate1_AAACGGGCAACTGGCC-1          Day0      replicate1            &lt;NA&gt;                HO
+                                    day.y.y.y.y.y.y replicate.x.x.x.x day.x.x.x.x.x.x.x condition.y.y.y.y
+HODay0replicate1_AAACCTGAGAGAACAG-1            Day0        replicate1              &lt;NA&gt;                HO
+HODay0replicate1_AAACCTGGTCATGCAT-1            Day0        replicate1              &lt;NA&gt;                HO
+HODay0replicate1_AAACCTGTCAGAGCTT-1            Day0        replicate1              &lt;NA&gt;                HO
+HODay0replicate1_AAACGGGAGAGACTTA-1            Day0        replicate1              &lt;NA&gt;                HO
+HODay0replicate1_AAACGGGAGGCCCGTT-1            Day0        replicate1              &lt;NA&gt;                HO
+HODay0replicate1_AAACGGGCAACTGGCC-1            Day0        replicate1              &lt;NA&gt;                HO
+                                    day.y.y.y.y.y.y.y replicate.y.y.y.y  day
+HODay0replicate1_AAACCTGAGAGAACAG-1              Day0        replicate1 &lt;NA&gt;
+HODay0replicate1_AAACCTGGTCATGCAT-1              Day0        replicate1 &lt;NA&gt;
+HODay0replicate1_AAACCTGTCAGAGCTT-1              Day0        replicate1 &lt;NA&gt;
+HODay0replicate1_AAACGGGAGAGACTTA-1              Day0        replicate1 &lt;NA&gt;
+HODay0replicate1_AAACGGGAGGCCCGTT-1              Day0        replicate1 &lt;NA&gt;
+HODay0replicate1_AAACGGGCAACTGGCC-1              Day0        replicate1 &lt;NA&gt;</code></pre>
 <p>We can add arbitrary per-cell information to this table such as:</p>
 <ul>
 <li>Summary statistics, such as percent mitochondrial reads for each
@@ -522,18 +574,25 @@ cell.</li>
 <li>Other custom annotations for each cell.</li>
 </ul>
 <!--- cooking show moment - phenotype table --->
-<table>
-<tr>
-<td>
-We’ll start by reading in a table named <code>phenos.csv</code> that
-includes phenotype labels for each sample.
-</td>
-<td>
-<img src="images/curriculum/cooking_show-1.png" alt = "Cooking show moment" width="60" height="55">
-</td>
-</tr>
-</table>
-<pre class="r"><code># Make metadata more granular ------------------------------------------
+<p>Each sample has a few interesting attributes like “condition”, “day”,
+and “replicate”. The sample attributes are actually part of the
+directory name for each sample:</p>
+<ul>
+<li>Sample directory = count_run_<span style="color:red">HO</span><span
+style="color:blue">Day0</span><span
+style="color:green">replicate1</span>
+<ul>
+<li><span style="color:red">Condition = HO</span></li>
+<li><span style="color:blue">Day = Day0</span></li>
+<li><span style="color:green">Replicate = 1</span></li>
+</ul></li>
+</ul>
+<p>We could make a fancy script to pull the file names apart into
+attributes, but instead we’ll keep things simple and read the sample
+attributes from a table in the file <code>phenos.csv</code>:</p>
+<div class="prepared_content cooking_show">
+<p><strong>Load a pre-prepared file:</strong></p>
+<pre class="r"><code># Read sample attributes  ------------------------------------------
 # Load the expanded phenotype columns (condition, day, and replicate)
 phenos = read.csv(&#39;inputs/phenos.csv&#39;)
 head(phenos, 3)</code></pre>
@@ -541,33 +600,78 @@ head(phenos, 3)</code></pre>
 1 HODay0replicate1        HO Day0 replicate1
 2 HODay0replicate2        HO Day0 replicate2
 3 HODay0replicate3        HO Day0 replicate3</code></pre>
+</div>
 <p>The following code chunk will annotated a copy of the metadata with
 columns for <code>day</code> and <code>replicate</code> and ensure that
 certain categorical data appears in correct order, e.g. Day0, Day7, and
 Day21 instead of Day0, Day21, and Day7.</p>
 <pre class="r"><code># Make a temp table that joins Seurat loaded metadata with expanded phenotype columns
 # (Also, preserve the rownames and order samples based on order in phenos.csv)
+# Note that column &quot;day&quot; is quoted in ...factor(&quot;day&quot;,...) because day is also 
+# the name of a function in R
 tmp_meta = geo_so@meta.data %&gt;% 
   rownames_to_column(&#39;tmp_rowname&#39;) %&gt;%
   left_join(phenos, by = &#39;orig.ident&#39;) %&gt;%
   mutate(orig.ident = factor(orig.ident, phenos$orig.ident)) %&gt;%
-  mutate(day = factor(day, unique(phenos$day))) %&gt;%
+  mutate(day = factor(&quot;day&quot;, unique(phenos$day))) %&gt;%
   column_to_rownames(&#39;tmp_rowname&#39;)
 head(tmp_meta)</code></pre>
-<pre><code>                                          orig.ident nCount_RNA nFeature_RNA condition  day
-HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1      10234         3226        HO Day0
-HODay0replicate1_AAACCTGGTCATGCAT-1 HODay0replicate1       3158         1499        HO Day0
-HODay0replicate1_AAACCTGTCAGAGCTT-1 HODay0replicate1      13464         4102        HO Day0
-HODay0replicate1_AAACGGGAGAGACTTA-1 HODay0replicate1        577          346        HO Day0
-HODay0replicate1_AAACGGGAGGCCCGTT-1 HODay0replicate1       1189          629        HO Day0
-HODay0replicate1_AAACGGGCAACTGGCC-1 HODay0replicate1       7726         2602        HO Day0
-                                     replicate
-HODay0replicate1_AAACCTGAGAGAACAG-1 replicate1
-HODay0replicate1_AAACCTGGTCATGCAT-1 replicate1
-HODay0replicate1_AAACCTGTCAGAGCTT-1 replicate1
-HODay0replicate1_AAACGGGAGAGACTTA-1 replicate1
-HODay0replicate1_AAACGGGAGGCCCGTT-1 replicate1
-HODay0replicate1_AAACGGGCAACTGGCC-1 replicate1</code></pre>
+<pre><code>                                          orig.ident nCount_RNA nFeature_RNA condition.x day.x replicate.x
+HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1      10234         3226          HO  Day0  replicate1
+HODay0replicate1_AAACCTGGTCATGCAT-1 HODay0replicate1       3158         1499          HO  Day0  replicate1
+HODay0replicate1_AAACCTGTCAGAGCTT-1 HODay0replicate1      13464         4102          HO  Day0  replicate1
+HODay0replicate1_AAACGGGAGAGACTTA-1 HODay0replicate1        577          346          HO  Day0  replicate1
+HODay0replicate1_AAACGGGAGGCCCGTT-1 HODay0replicate1       1189          629          HO  Day0  replicate1
+HODay0replicate1_AAACGGGCAACTGGCC-1 HODay0replicate1       7726         2602          HO  Day0  replicate1
+                                    percent.mt condition.y day.y replicate.y day.x.x condition.x.x day.y.y
+HODay0replicate1_AAACCTGAGAGAACAG-1   1.240962          HO  Day0  replicate1    &lt;NA&gt;            HO    Day0
+HODay0replicate1_AAACCTGGTCATGCAT-1   7.536415          HO  Day0  replicate1    &lt;NA&gt;            HO    Day0
+HODay0replicate1_AAACCTGTCAGAGCTT-1   3.112002          HO  Day0  replicate1    &lt;NA&gt;            HO    Day0
+HODay0replicate1_AAACGGGAGAGACTTA-1   1.559792          HO  Day0  replicate1    &lt;NA&gt;            HO    Day0
+HODay0replicate1_AAACGGGAGGCCCGTT-1   3.700589          HO  Day0  replicate1    &lt;NA&gt;            HO    Day0
+HODay0replicate1_AAACGGGCAACTGGCC-1   2.938131          HO  Day0  replicate1    &lt;NA&gt;            HO    Day0
+                                    replicate.x.x day.x.x.x condition.y.y day.y.y.y replicate.y.y day.x.x.x.x
+HODay0replicate1_AAACCTGAGAGAACAG-1    replicate1      &lt;NA&gt;            HO      Day0    replicate1        &lt;NA&gt;
+HODay0replicate1_AAACCTGGTCATGCAT-1    replicate1      &lt;NA&gt;            HO      Day0    replicate1        &lt;NA&gt;
+HODay0replicate1_AAACCTGTCAGAGCTT-1    replicate1      &lt;NA&gt;            HO      Day0    replicate1        &lt;NA&gt;
+HODay0replicate1_AAACGGGAGAGACTTA-1    replicate1      &lt;NA&gt;            HO      Day0    replicate1        &lt;NA&gt;
+HODay0replicate1_AAACGGGAGGCCCGTT-1    replicate1      &lt;NA&gt;            HO      Day0    replicate1        &lt;NA&gt;
+HODay0replicate1_AAACGGGCAACTGGCC-1    replicate1      &lt;NA&gt;            HO      Day0    replicate1        &lt;NA&gt;
+                                    condition.x.x.x day.y.y.y.y replicate.x.x.x day.x.x.x.x.x condition.y.y.y
+HODay0replicate1_AAACCTGAGAGAACAG-1              HO        Day0      replicate1          &lt;NA&gt;              HO
+HODay0replicate1_AAACCTGGTCATGCAT-1              HO        Day0      replicate1          &lt;NA&gt;              HO
+HODay0replicate1_AAACCTGTCAGAGCTT-1              HO        Day0      replicate1          &lt;NA&gt;              HO
+HODay0replicate1_AAACGGGAGAGACTTA-1              HO        Day0      replicate1          &lt;NA&gt;              HO
+HODay0replicate1_AAACGGGAGGCCCGTT-1              HO        Day0      replicate1          &lt;NA&gt;              HO
+HODay0replicate1_AAACGGGCAACTGGCC-1              HO        Day0      replicate1          &lt;NA&gt;              HO
+                                    day.y.y.y.y.y replicate.y.y.y day.x.x.x.x.x.x condition.x.x.x.x
+HODay0replicate1_AAACCTGAGAGAACAG-1          Day0      replicate1            &lt;NA&gt;                HO
+HODay0replicate1_AAACCTGGTCATGCAT-1          Day0      replicate1            &lt;NA&gt;                HO
+HODay0replicate1_AAACCTGTCAGAGCTT-1          Day0      replicate1            &lt;NA&gt;                HO
+HODay0replicate1_AAACGGGAGAGACTTA-1          Day0      replicate1            &lt;NA&gt;                HO
+HODay0replicate1_AAACGGGAGGCCCGTT-1          Day0      replicate1            &lt;NA&gt;                HO
+HODay0replicate1_AAACGGGCAACTGGCC-1          Day0      replicate1            &lt;NA&gt;                HO
+                                    day.y.y.y.y.y.y replicate.x.x.x.x day.x.x.x.x.x.x.x condition.y.y.y.y
+HODay0replicate1_AAACCTGAGAGAACAG-1            Day0        replicate1              &lt;NA&gt;                HO
+HODay0replicate1_AAACCTGGTCATGCAT-1            Day0        replicate1              &lt;NA&gt;                HO
+HODay0replicate1_AAACCTGTCAGAGCTT-1            Day0        replicate1              &lt;NA&gt;                HO
+HODay0replicate1_AAACGGGAGAGACTTA-1            Day0        replicate1              &lt;NA&gt;                HO
+HODay0replicate1_AAACGGGAGGCCCGTT-1            Day0        replicate1              &lt;NA&gt;                HO
+HODay0replicate1_AAACGGGCAACTGGCC-1            Day0        replicate1              &lt;NA&gt;                HO
+                                    day.y.y.y.y.y.y.y replicate.y.y.y.y day.x.x.x.x.x.x.x.x condition
+HODay0replicate1_AAACCTGAGAGAACAG-1              Day0        replicate1                &lt;NA&gt;        HO
+HODay0replicate1_AAACCTGGTCATGCAT-1              Day0        replicate1                &lt;NA&gt;        HO
+HODay0replicate1_AAACCTGTCAGAGCTT-1              Day0        replicate1                &lt;NA&gt;        HO
+HODay0replicate1_AAACGGGAGAGACTTA-1              Day0        replicate1                &lt;NA&gt;        HO
+HODay0replicate1_AAACGGGAGGCCCGTT-1              Day0        replicate1                &lt;NA&gt;        HO
+HODay0replicate1_AAACGGGCAACTGGCC-1              Day0        replicate1                &lt;NA&gt;        HO
+                                    day.y.y.y.y.y.y.y.y  replicate  day
+HODay0replicate1_AAACCTGAGAGAACAG-1                Day0 replicate1 &lt;NA&gt;
+HODay0replicate1_AAACCTGGTCATGCAT-1                Day0 replicate1 &lt;NA&gt;
+HODay0replicate1_AAACCTGTCAGAGCTT-1                Day0 replicate1 &lt;NA&gt;
+HODay0replicate1_AAACGGGAGAGACTTA-1                Day0 replicate1 &lt;NA&gt;
+HODay0replicate1_AAACGGGAGGCCCGTT-1                Day0 replicate1 &lt;NA&gt;
+HODay0replicate1_AAACGGGCAACTGGCC-1                Day0 replicate1 &lt;NA&gt;</code></pre>
 <pre class="r"><code># Assign tmp_meta back to geo_so@meta.data and reset the default identity cell name
 geo_so@meta.data = tmp_meta
 Idents(geo_so) = &#39;orig.ident&#39;</code></pre>
@@ -576,20 +680,62 @@ factor with ordering we prefer. We also have <code>day</code> and
 <code>replicate</code> columns that will be useful downstream.</p>
 <pre class="r"><code># Re-examine Seurat metdata  -------------------------------------------
 head(geo_so@meta.data)</code></pre>
-<pre><code>                                          orig.ident nCount_RNA nFeature_RNA condition  day
-HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1      10234         3226        HO Day0
-HODay0replicate1_AAACCTGGTCATGCAT-1 HODay0replicate1       3158         1499        HO Day0
-HODay0replicate1_AAACCTGTCAGAGCTT-1 HODay0replicate1      13464         4102        HO Day0
-HODay0replicate1_AAACGGGAGAGACTTA-1 HODay0replicate1        577          346        HO Day0
-HODay0replicate1_AAACGGGAGGCCCGTT-1 HODay0replicate1       1189          629        HO Day0
-HODay0replicate1_AAACGGGCAACTGGCC-1 HODay0replicate1       7726         2602        HO Day0
-                                     replicate
-HODay0replicate1_AAACCTGAGAGAACAG-1 replicate1
-HODay0replicate1_AAACCTGGTCATGCAT-1 replicate1
-HODay0replicate1_AAACCTGTCAGAGCTT-1 replicate1
-HODay0replicate1_AAACGGGAGAGACTTA-1 replicate1
-HODay0replicate1_AAACGGGAGGCCCGTT-1 replicate1
-HODay0replicate1_AAACGGGCAACTGGCC-1 replicate1</code></pre>
+<pre><code>                                          orig.ident nCount_RNA nFeature_RNA condition.x day.x replicate.x
+HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1      10234         3226          HO  Day0  replicate1
+HODay0replicate1_AAACCTGGTCATGCAT-1 HODay0replicate1       3158         1499          HO  Day0  replicate1
+HODay0replicate1_AAACCTGTCAGAGCTT-1 HODay0replicate1      13464         4102          HO  Day0  replicate1
+HODay0replicate1_AAACGGGAGAGACTTA-1 HODay0replicate1        577          346          HO  Day0  replicate1
+HODay0replicate1_AAACGGGAGGCCCGTT-1 HODay0replicate1       1189          629          HO  Day0  replicate1
+HODay0replicate1_AAACGGGCAACTGGCC-1 HODay0replicate1       7726         2602          HO  Day0  replicate1
+                                    percent.mt condition.y day.y replicate.y day.x.x condition.x.x day.y.y
+HODay0replicate1_AAACCTGAGAGAACAG-1   1.240962          HO  Day0  replicate1    &lt;NA&gt;            HO    Day0
+HODay0replicate1_AAACCTGGTCATGCAT-1   7.536415          HO  Day0  replicate1    &lt;NA&gt;            HO    Day0
+HODay0replicate1_AAACCTGTCAGAGCTT-1   3.112002          HO  Day0  replicate1    &lt;NA&gt;            HO    Day0
+HODay0replicate1_AAACGGGAGAGACTTA-1   1.559792          HO  Day0  replicate1    &lt;NA&gt;            HO    Day0
+HODay0replicate1_AAACGGGAGGCCCGTT-1   3.700589          HO  Day0  replicate1    &lt;NA&gt;            HO    Day0
+HODay0replicate1_AAACGGGCAACTGGCC-1   2.938131          HO  Day0  replicate1    &lt;NA&gt;            HO    Day0
+                                    replicate.x.x day.x.x.x condition.y.y day.y.y.y replicate.y.y day.x.x.x.x
+HODay0replicate1_AAACCTGAGAGAACAG-1    replicate1      &lt;NA&gt;            HO      Day0    replicate1        &lt;NA&gt;
+HODay0replicate1_AAACCTGGTCATGCAT-1    replicate1      &lt;NA&gt;            HO      Day0    replicate1        &lt;NA&gt;
+HODay0replicate1_AAACCTGTCAGAGCTT-1    replicate1      &lt;NA&gt;            HO      Day0    replicate1        &lt;NA&gt;
+HODay0replicate1_AAACGGGAGAGACTTA-1    replicate1      &lt;NA&gt;            HO      Day0    replicate1        &lt;NA&gt;
+HODay0replicate1_AAACGGGAGGCCCGTT-1    replicate1      &lt;NA&gt;            HO      Day0    replicate1        &lt;NA&gt;
+HODay0replicate1_AAACGGGCAACTGGCC-1    replicate1      &lt;NA&gt;            HO      Day0    replicate1        &lt;NA&gt;
+                                    condition.x.x.x day.y.y.y.y replicate.x.x.x day.x.x.x.x.x condition.y.y.y
+HODay0replicate1_AAACCTGAGAGAACAG-1              HO        Day0      replicate1          &lt;NA&gt;              HO
+HODay0replicate1_AAACCTGGTCATGCAT-1              HO        Day0      replicate1          &lt;NA&gt;              HO
+HODay0replicate1_AAACCTGTCAGAGCTT-1              HO        Day0      replicate1          &lt;NA&gt;              HO
+HODay0replicate1_AAACGGGAGAGACTTA-1              HO        Day0      replicate1          &lt;NA&gt;              HO
+HODay0replicate1_AAACGGGAGGCCCGTT-1              HO        Day0      replicate1          &lt;NA&gt;              HO
+HODay0replicate1_AAACGGGCAACTGGCC-1              HO        Day0      replicate1          &lt;NA&gt;              HO
+                                    day.y.y.y.y.y replicate.y.y.y day.x.x.x.x.x.x condition.x.x.x.x
+HODay0replicate1_AAACCTGAGAGAACAG-1          Day0      replicate1            &lt;NA&gt;                HO
+HODay0replicate1_AAACCTGGTCATGCAT-1          Day0      replicate1            &lt;NA&gt;                HO
+HODay0replicate1_AAACCTGTCAGAGCTT-1          Day0      replicate1            &lt;NA&gt;                HO
+HODay0replicate1_AAACGGGAGAGACTTA-1          Day0      replicate1            &lt;NA&gt;                HO
+HODay0replicate1_AAACGGGAGGCCCGTT-1          Day0      replicate1            &lt;NA&gt;                HO
+HODay0replicate1_AAACGGGCAACTGGCC-1          Day0      replicate1            &lt;NA&gt;                HO
+                                    day.y.y.y.y.y.y replicate.x.x.x.x day.x.x.x.x.x.x.x condition.y.y.y.y
+HODay0replicate1_AAACCTGAGAGAACAG-1            Day0        replicate1              &lt;NA&gt;                HO
+HODay0replicate1_AAACCTGGTCATGCAT-1            Day0        replicate1              &lt;NA&gt;                HO
+HODay0replicate1_AAACCTGTCAGAGCTT-1            Day0        replicate1              &lt;NA&gt;                HO
+HODay0replicate1_AAACGGGAGAGACTTA-1            Day0        replicate1              &lt;NA&gt;                HO
+HODay0replicate1_AAACGGGAGGCCCGTT-1            Day0        replicate1              &lt;NA&gt;                HO
+HODay0replicate1_AAACGGGCAACTGGCC-1            Day0        replicate1              &lt;NA&gt;                HO
+                                    day.y.y.y.y.y.y.y replicate.y.y.y.y day.x.x.x.x.x.x.x.x condition
+HODay0replicate1_AAACCTGAGAGAACAG-1              Day0        replicate1                &lt;NA&gt;        HO
+HODay0replicate1_AAACCTGGTCATGCAT-1              Day0        replicate1                &lt;NA&gt;        HO
+HODay0replicate1_AAACCTGTCAGAGCTT-1              Day0        replicate1                &lt;NA&gt;        HO
+HODay0replicate1_AAACGGGAGAGACTTA-1              Day0        replicate1                &lt;NA&gt;        HO
+HODay0replicate1_AAACGGGAGGCCCGTT-1              Day0        replicate1                &lt;NA&gt;        HO
+HODay0replicate1_AAACGGGCAACTGGCC-1              Day0        replicate1                &lt;NA&gt;        HO
+                                    day.y.y.y.y.y.y.y.y  replicate  day
+HODay0replicate1_AAACCTGAGAGAACAG-1                Day0 replicate1 &lt;NA&gt;
+HODay0replicate1_AAACCTGGTCATGCAT-1                Day0 replicate1 &lt;NA&gt;
+HODay0replicate1_AAACCTGTCAGAGCTT-1                Day0 replicate1 &lt;NA&gt;
+HODay0replicate1_AAACGGGAGAGACTTA-1                Day0 replicate1 &lt;NA&gt;
+HODay0replicate1_AAACGGGAGGCCCGTT-1                Day0 replicate1 &lt;NA&gt;
+HODay0replicate1_AAACGGGCAACTGGCC-1                Day0 replicate1 &lt;NA&gt;</code></pre>
 </div>
 <div id="quality-metrics" class="section level1">
 <h1>Quality Metrics</h1>
@@ -641,7 +787,7 @@ peaks (e.g. accessible areas of DNA) per cell.</p>
 <!-- Matt may have discussed UMIs as part of CellRanger processing and Liv/Tricia may touch on as part of library generation at end of Day 2 -->
 <div id="cell-counts" class="section level2">
 <h2>Cell counts</h2>
-<p>Cell counts per sample (based on the numbrer of unique cellular
+<p>Cell counts per sample (based on the number of unique cellular
 barcodes detected by Cell Ranger) can indicate if an entire sample was
 of poor quality. The table below is the number of cells called by Cell
 Ranger, with the added filter from <code>CreateSeurateObject()</code> in
@@ -653,18 +799,18 @@ genes.</p>
 cell_counts_pre_tbl = geo_so@meta.data %&gt;% count(orig.ident, name = &#39;prefilter_cells&#39;)
 cell_counts_pre_tbl</code></pre>
 <pre><code>          orig.ident prefilter_cells
-1   HODay0replicate1            1183
-2   HODay0replicate2             689
-3   HODay0replicate3            1310
-4   HODay0replicate4            1052
-5   HODay7replicate1            5762
-6   HODay7replicate2            6020
-7   HODay7replicate3            6286
-8   HODay7replicate4            5167
-9  HODay21replicate1            2321
-10 HODay21replicate2            1322
-11 HODay21replicate3            1275
-12 HODay21replicate4            2829</code></pre>
+1   HODay0replicate1            1053
+2   HODay0replicate2             629
+3   HODay0replicate3            1222
+4   HODay0replicate4             970
+5   HODay7replicate1            5213
+6   HODay7replicate2            5324
+7   HODay7replicate3            5626
+8   HODay7replicate4            4691
+9  HODay21replicate1            2004
+10 HODay21replicate2            1186
+11 HODay21replicate3            1178
+12 HODay21replicate4            2463</code></pre>
 <p>It appears that the Day 7 samples have systematically more cells than
 the other days. If you had an idea of how many cells you expected to see
 per sample, this table can help you check that expectation and determine
@@ -689,8 +835,12 @@ is essentially showing the density of the cells at different values of
 <p>Let’s look at the <code>nFeature_RNA</code> violin plot across all
 the samples. Again, this is the number of genes detected per cell.</p>
 <pre class="r"><code># Review feature violin plots   ----------------------------------------
-VlnPlot(geo_so, features = &#39;nFeature_RNA&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + NoLegend() + geom_hline(yintercept = 500) + geom_hline(yintercept = 400) + geom_hline(yintercept = 300) + geom_hline(yintercept = 200)
-ggsave(filename = &#39;results/figures/qc_nFeature_violin.png&#39;, width = 12, height = 6, units = &#39;in&#39;)</code></pre>
+VlnPlot(geo_so, features = &#39;nFeature_RNA&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + NoLegend() + geom_hline(yintercept = 500) + geom_hline(yintercept = 400) + geom_hline(yintercept = 300) + geom_hline(yintercept = 200)</code></pre>
+<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range (`geom_hline()`).
+Removed 1 row containing missing values or values outside the scale range (`geom_hline()`).</code></pre>
+<pre class="r"><code>ggsave(filename = &#39;results/figures/qc_nFeature_violin.png&#39;, width = 12, height = 6, units = &#39;in&#39;)</code></pre>
+<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range (`geom_hline()`).
+Removed 1 row containing missing values or values outside the scale range (`geom_hline()`).</code></pre>
 <p><img src="images/curriculum/02-QCandFiltering/02-feature_plot-1.png" width="816" style="display: block; margin: auto;" /></p>
 <p>We observe that samples behave similarly within a day, but have
 different distributions across days. We also note that many cells appear
@@ -724,7 +874,7 @@ geo_so$percent.mt = PercentageFeatureSet(geo_so, pattern = &#39;^mt-&#39;)
 # Use summary() to quickly check the range of values
 summary(geo_so$percent.mt)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  0.000   1.817   2.582   5.282   3.865  98.244 </code></pre>
+  0.000   1.860   2.548   3.155   3.567  14.950 </code></pre>
 <p>Just looking at the summary, we can see that there are some cells
 with a high percentage of mitochondrial reads. Our Seurat object has
 changed by adding the <code>percent.mt</code> column to the meta
@@ -781,18 +931,18 @@ thresholds:</p>
 subset(geo_so, subset = nFeature_RNA &gt; 500 &amp; percent.mt &lt; 25)@meta.data %&gt;% 
     count(orig.ident, name = &#39;postfilter_cells&#39;)</code></pre>
 <pre><code>          orig.ident postfilter_cells
-1   HODay0replicate1             1049
-2   HODay0replicate2              615
-3   HODay0replicate3             1191
-4   HODay0replicate4              943
-5   HODay7replicate1             4928
-6   HODay7replicate2             4933
-7   HODay7replicate3             4897
-8   HODay7replicate4             4243
-9  HODay21replicate1             2000
-10 HODay21replicate2             1182
-11 HODay21replicate3             1166
-12 HODay21replicate4             2471</code></pre>
+1   HODay0replicate1             1020
+2   HODay0replicate2              604
+3   HODay0replicate3             1174
+4   HODay0replicate4              926
+5   HODay7replicate1             4773
+6   HODay7replicate2             4803
+7   HODay7replicate3             4771
+8   HODay7replicate4             4143
+9  HODay21replicate1             1968
+10 HODay21replicate2             1161
+11 HODay21replicate3             1140
+12 HODay21replicate4             2401</code></pre>
 </div>
 <div id="adaptive-thresholds" class="section level2">
 <h2>Adaptive thresholds</h2>
@@ -840,18 +990,18 @@ cell_counts_post_tbl</code></pre>
 cell_counts_tbl = cell_counts_pre_tbl %&gt;% left_join(cell_counts_post_tbl, by = &#39;orig.ident&#39;)
 cell_counts_tbl</code></pre>
 <pre><code>          orig.ident prefilter_cells postfilter_cells
-1   HODay0replicate1            1183             1053
-2   HODay0replicate2             689              629
-3   HODay0replicate3            1310             1222
-4   HODay0replicate4            1052              970
-5   HODay7replicate1            5762             5213
-6   HODay7replicate2            6020             5324
-7   HODay7replicate3            6286             5626
-8   HODay7replicate4            5167             4691
-9  HODay21replicate1            2321             2004
-10 HODay21replicate2            1322             1186
-11 HODay21replicate3            1275             1178
-12 HODay21replicate4            2829             2463</code></pre>
+1   HODay0replicate1            1053             1053
+2   HODay0replicate2             629              629
+3   HODay0replicate3            1222             1222
+4   HODay0replicate4             970              970
+5   HODay7replicate1            5213             5213
+6   HODay7replicate2            5324             5324
+7   HODay7replicate3            5626             5626
+8   HODay7replicate4            4691             4691
+9  HODay21replicate1            2004             2004
+10 HODay21replicate2            1186             1186
+11 HODay21replicate3            1178             1178
+12 HODay21replicate4            2463             2463</code></pre>
 <p>We can now easily see how many cells we started with, and how many we
 retained for downstream analysis. Let’s write this table to a file.</p>
 <pre class="r"><code>write_csv(cell_counts_tbl, file = &#39;results/tables/cell_filtering_counts.csv&#39;)</code></pre>
