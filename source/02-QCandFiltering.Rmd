@@ -38,6 +38,16 @@ table{
    width:100%;
 }
 
+.prepared_content {
+  border-radius: 10px;
+  padding: 5px 5px 5px 95px;
+  background: #FFF8DC left 10px top 10px / 65px no-repeat;
+}
+
+.cooking_show {
+  background-image: url("images/curriculum/cooking_show-1.png");
+}
+
 </style>
 
 ```{r klippy, echo=FALSE, include=TRUE}
@@ -47,6 +57,7 @@ klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
 ```{r, include = FALSE}
 source("../bin/chunk-options.R")
 knitr_fig_path("02-QCandFiltering/02-")
+library(kableExtra)
 ```
 
 <br/>
@@ -103,12 +114,27 @@ if(!exists('geo_so')) {
 
 We're going to alter and add some columns to `meta.data` to ease some downstream analysis and plotting steps. This will often be necessary, as sample names contain combined information about phenotypes. Let's take a look at the first few rows again, to reacquaint ourselves.
 
-```{r, preview_metadata1}
+```{r, preview_metadata1A, eval = FALSE}
 ##### Day 1 - Secondary QC and filtering
 
 # Examine Seurat metdata  ----------------------------------------------
+
+# We could do this to show metadata in the console pane:
 head(geo_so@meta.data)
+
+# For readability, we'll use View() to open the result in a scrollable tab
+View(head(geo_so@meta.data))
 ```
+
+```{r, preview_metadata1B, warning = FALSE, message = FALSE, echo=FALSE}
+head(geo_so@meta.data) %>%
+  kable("html") %>%
+  kable_styling(font_size = 12,
+                bootstrap_options='condensed',
+                html_font = '"Arial Narrow", arial, helvetica, sans-serif') %>%
+  scroll_box(height='100%', width='1000px')
+```
+<br/>
 
 We can add arbitrary per-cell information to this table such as:
 
@@ -119,29 +145,70 @@ We can add arbitrary per-cell information to this table such as:
 - Other custom annotations for each cell.
 
 <!--- cooking show moment - phenotype table --->
-<table><tr><td>We'll start by reading in a table named `phenos.csv` that includes phenotype labels for each sample.</td><td><img src="./images/curriculum/cooking_show-1.png" alt = "Cooking show moment" width="60" height="55"></td></tr></table>
+Each sample has a few interesting attributes like "condition", "day", and 
+"replicate". The sample attributes are actually part of the directory name for 
+each sample:
+
+- Sample directory = count_run_<span style="color:red">HO</span><span style="color:blue">Day0</span><span style="color:green">replicate1</span>
+  - <span style="color:red">Condition = HO</span>
+  - <span style="color:blue">Day = Day0</span>
+  - <span style="color:green">Replicate = 1</span>
+
+We could make a fancy script to pull the file names apart into attributes, but 
+instead we'll keep things simple and read the sample attributes from a table in 
+the file `phenos.csv`:
+
+::: {.prepared_content .cooking_show data-latex="{cooking_show}"}
+**Load a pre-prepared file:**
 
 ```{r, read_phenotypes}
-# Make metadata more granular ------------------------------------------
+# Read sample attributes  ------------------------------------------
 # Load the expanded phenotype columns (condition, day, and replicate)
 phenos = read.csv('inputs/phenos.csv')
 head(phenos, 3)
 ```
 
+:::
+
 The following code chunk will annotated a copy of the metadata with columns for `day` and `replicate` and ensure that certain categorical data appears in correct order, e.g. Day0, Day7, and Day21 instead of Day0, Day21, and Day7.
 
-```{r, alter_metadata}
+```{r, alter_metadataA, eval = FALSE}
 # Make a temp table that joins Seurat loaded metadata with expanded phenotype columns
 # (Also, preserve the rownames and order samples based on order in phenos.csv)
+# Note that column "day" is quoted in ...factor("day",...) because day is also 
+# the name of a function in R
 tmp_meta = geo_so@meta.data %>% 
   rownames_to_column('tmp_rowname') %>%
   left_join(phenos, by = 'orig.ident') %>%
   mutate(orig.ident = factor(orig.ident, phenos$orig.ident)) %>%
-  mutate(day = factor(day, unique(phenos$day))) %>%
+  mutate(day = factor("day", unique(phenos$day))) %>%
   column_to_rownames('tmp_rowname')
-head(tmp_meta)
+
+View(head(tmp_meta))
 
 ```
+
+```{r, alter_metadataB, warning = FALSE, message = FALSE, echo=FALSE}
+# Make a temp table that joins Seurat loaded metadata with expanded phenotype columns
+# (Also, preserve the rownames and order samples based on order in phenos.csv)
+# Note that column "day" is quoted in ...factor("day",...) because day is also 
+# the name of a function in R
+tmp_meta = geo_so@meta.data %>% 
+  rownames_to_column('tmp_rowname') %>%
+  left_join(phenos, by = 'orig.ident') %>%
+  mutate(orig.ident = factor(orig.ident, phenos$orig.ident)) %>%
+  mutate(day = factor("day", unique(phenos$day))) %>%
+  column_to_rownames('tmp_rowname')
+
+head(tmp_meta) %>%
+  kable("html") %>%
+  kable_styling(font_size = 12,
+                bootstrap_options='condensed',
+                html_font = '"Arial Narrow", arial, helvetica, sans-serif') %>%
+  scroll_box(height='100%', width='1000px')
+```
+<br/>
+
 
 ```{r, assign_extended_metadata}
 # Assign tmp_meta back to geo_so@meta.data and reset the default identity cell name
@@ -151,10 +218,22 @@ Idents(geo_so) = 'orig.ident'
 
 The `orig.ident` column looks the same, but is now a factor with ordering we prefer. We also have `day` and `replicate` columns that will be useful downstream.
 
-```{r, preview_metadata3}
+```{r, preview_metadata3A, eval = FALSE}
 # Re-examine Seurat metdata  -------------------------------------------
-head(geo_so@meta.data)
+View(head(geo_so@meta.data))
 ```
+
+```{r, preview_metadata3B, warning = FALSE, message = FALSE, echo=FALSE}
+# Re-examine Seurat metdata  -------------------------------------------
+head(geo_so@meta.data) %>%
+  kable("html") %>%
+  kable_styling(font_size = 12,
+                bootstrap_options='condensed',
+                html_font = '"Arial Narrow", arial, helvetica, sans-serif') %>%
+  scroll_box(height='100%', width='1000px')
+```
+<br/>
+
 
 # Quality Metrics
 
@@ -184,7 +263,7 @@ The number of UMIs detected (`nCount`) and number of expressed features (`nFeatu
 
 ## Cell counts
 
-Cell counts per sample (based on the numbrer of unique cellular barcodes detected by Cell Ranger) can indicate if an entire sample was of poor quality. The table below is the number of cells called by Cell Ranger, with the added filter from `CreateSeurateObject()` in the previous lesson: `min.cells = 1, min.features = 50`. Recall, this means a gene is removed if it is expressed in 1 or fewer cells, and a cell is removed if it contains reads for 50 or fewer genes.
+Cell counts per sample (based on the number of unique cellular barcodes detected by Cell Ranger) can indicate if an entire sample was of poor quality. The table below is the number of cells called by Cell Ranger, with the added filter from `CreateSeurateObject()` in the previous lesson: `min.cells = 1, min.features = 50`. Recall, this means a gene is removed if it is expressed in 1 or fewer cells, and a cell is removed if it contains reads for 50 or fewer genes.
 
 ```{r, prefilter_cell_counts}
 # Assign overall cell counts  ------------------------------------------
@@ -247,7 +326,7 @@ Just looking at the summary, we can see that there are some cells with a high pe
 
 Finally, lets plot the percent mitochondrial reads, `percent.mt`.
 
-```{r, mito_plot, fig.show = 'hold'}
+```{r, mito_plot, warning=FALSE, fig.show = 'hold'}
 # Review mitochondrial violin plots   ----------------------------------
 VlnPlot(geo_so, features = 'percent.mt', assay = 'RNA', layer = 'counts') + NoLegend() + geom_hline(yintercept = 25) + geom_hline(yintercept = 20) + geom_hline(yintercept = 15) + geom_hline(yintercept = 10)
 ggsave(filename = 'results/figures/qc_mito_violin.png', width = 12, height = 6, units = 'in')
