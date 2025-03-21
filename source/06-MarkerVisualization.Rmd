@@ -54,9 +54,7 @@ knitr_fig_path("06-MarkerVisualization/06-")
 
 # Introduction
 
-To interpret our initial clustering result, we need to have a better understanding of what biologically relevant populations the clusters might correspond to across all samples or conditions. 
 <br/>
-
 <table class='fig'><tr><td class='fig'>
 ![](images/graphical_abstracts/06-MarkerVisualization-Abstract.png)
 </td></tr><tr><tr class='fig'><td class='fig'>Starting with numbered cluster data, gene expression is compared between cells in one cluster versus cells in all other clusters - ignoring sample/condition at this step - to characterize the similarities and differences between clusters.
@@ -64,6 +62,8 @@ To interpret our initial clustering result, we need to have a better understandi
 </table>
 <br/>
 
+To interpret our initial clustering result, we need to have a better understanding of what biologically relevant populations the clusters might correspond to across all samples or conditions. 
+<br/>
 
 ## Objectives
 <!--Add specific goals for section-->
@@ -276,12 +276,25 @@ if(!file.exists('results/rdata/geo_markers.rds')) {
 saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated_with_markers.rds')
 saveRDS(geo_markers, file = 'results/rdata/geo_markers.rds')
 ```
+<br/>
+<br/>
 
 # Summary
 
-Now that we have characterized the expression of both analytical marker genes and literature / knowledge-based marker genes, we may have a better sense of what cell-types or subtypes our clusters might correspond to.   
+<br/>
+<table class='fig'><tr><td class='fig'>
+![](images/graphical_abstracts/06-MarkerVisualization-Abstract.png)
+</td></tr><tr><tr class='fig'><td class='fig'>Starting with numbered cluster data, gene expression is compared between cells in one cluster versus cells in all other clusters - ignoring sample/condition at this step - to characterize the similarities and differences between clusters.
+</td></tr>
+</table>
+<br/>
 
-However, marker genes alone might not be sufficient to determine cell-type or sub-type labels for our clusters so we will discuss other more automated approaches to complement these results.
+In this section we:
+
+- Discussed differential expression options    
+- Generated analytical marker genes for each cluster   
+
+Since marker genes alone might not be sufficient to determine cell-type or sub-type labels for our clusters so we will discuss other approaches to complement these results.
 
 Next steps: Cell type prediction tools
 
