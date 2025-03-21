@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-02-11" />
+<meta name="date" content="2025-03-11" />
 
 <title>Getting Started with Seurat</title>
 
-<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -414,7 +414,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Getting Started with Seurat</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-02-11</h4>
+<h4 class="date">2025-03-11</h4>
 
 </div>
 
@@ -454,10 +454,6 @@ background-color: CornSilk;
 <br/> <br/></p>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>One of the goals of this workshop is to work through an example from
-start to end, and to highlight some of the decision points and
-rationales behind the decisions. The first step of any single-cell
-project will be to get the data into R for analysis.</p>
 <table class="fig">
 <tr>
 <td class="fig">
@@ -473,6 +469,10 @@ for both routes in this section.
 </tr>
 </table>
 <p><br/></p>
+<p>One of the goals of this workshop is to work through an example from
+start to end, and to highlight some of the decision points and
+rationales behind the decisions. The first step of any single-cell
+project will be to get the data into R for analysis. <br/></p>
 <div id="objectives" class="section level2">
 <h2>Objectives</h2>
 <ul>
@@ -487,6 +487,7 @@ for both routes in this section.
 </div>
 <div id="orienting-on-rstudio" class="section level1">
 <h1>Orienting on RStudio</h1>
+<!-- `welcome.R` script section to be revised to move to introduce copy/paste pattern for commands later in materials -->
 <p>We’ve created a simple <code>welcome.R</code> script to demonstrate
 the wheres and hows of the interface. The “File” pane in the lower right
 should have a <code>welcome.R</code> script. Click on it to open.</p>
@@ -819,7 +820,7 @@ href="https://samuel-marsh.github.io/scCustomize/index.html"
 target="_blank">scCustomize</a> R library.</p>
 <p>FYI</p>
 <ul>
-<li>Be aware, using HDF5 file=s from R support requires the hdf5 library
+<li>Be aware, using HDF5 files from R support requires the hdf5 library
 which entails a few more steps to install than a typical library. Brew a
 nice cup of (decaf) tea and review how to <a
 href="https://github.com/hhoeflin/hdf5r" target="_blank">install
@@ -932,9 +933,25 @@ session.</li>
 </ol>
 <pre class="r"><code># Load the Seurat object ----------------------------------------------
 geo_so = readRDS(&#39;results/rdata/geo_so_unfiltered.rds&#39;)</code></pre>
+<p><br/> <br/></p>
 </div>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
+<table class="fig">
+<tr>
+<td class="fig">
+<img src="images/graphical_abstracts/01-GettingStarted-Abstract.png" />
+</td>
+</tr>
+<tr>
+<td class="fig">
+Cell Ranger outputs can be read into R via the triple of files directly,
+or via a memory saving route with the BPCells package. We provide code
+for both routes in this section.
+</td>
+</tr>
+</table>
+<p><br/></p>
 <p>In this section we:</p>
 <ul>
 <li>Created an RStudio project for analysis.</li>

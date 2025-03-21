@@ -449,23 +449,30 @@ alternatively</li>
 </ul>
 <p><img
 src="images/curriculum/instructor_cheatsheet/rstudio_project_selector.png" /></p>
-<pre class="r"><code># Day 2
-# ==============================================================
+<pre class="r"><code>#### Day 2 setup -----------------------
+
+# Confirm you are in the right working directory
+# Should be ~/ISC_R
 getwd()
-setwd(&quot;~/ISC_R&quot;)</code></pre>
-<pre class="r"><code># Load libraries  ----------------------------------------------
+# Reset if necessary
+setwd(&quot;~/ISC_R&quot;)
+
+# Load libraries  ----------------------------------------------
 library(Seurat)
 library(BPCells)
 library(tidyverse)
 options(future.globals.maxSize = 1e9)
 
 # Load data  ---------------------------------------------------
+# read in Raymond&#39;s output file so that we are all starting with the same data
+#geo_so = readRDS(&#39;home/workshop/rcavalca/ISC_R/results/rdata/geo_so_sct_normalized.rds&#39;)
+#geo_so = readRDS(&#39;/home/workshop/rcavalca/ISC_R/results/rdata/geo_so_filtered.rds&#39;)
 
-# This starts from the data you saved yesterday
-geo_so = readRDS(&#39;~/ISC_R/results/rdata/geo_so_sct_normalized.rds&#39;)
+# Alternatively, this starts from the data you saved yesterday
+#geo_so = readRDS(&#39;~/ISC_R/results/rdata/geo_so_filtered.rds&#39;)
+#geo_so = readRDS(&#39;~/ISC_R/results/rdata/geo_so_sct_normalized.rds&#39;)
 
-# Alternatively, you can start with the instructor&#39;s data object
-#geo_so = readRDS(&#39;home/workshop/rcavalca/ISC_R/results/rdata/geo_so_sct_normalized.rds&#39;)</code></pre>
+### setup end ----------------------------------</code></pre>
 </div>
 <div id="day-3-startup" class="section level2">
 <h2>Day 3 startup</h2>
@@ -481,11 +488,14 @@ alternatively</li>
 </ul>
 <p><img
 src="images/curriculum/instructor_cheatsheet/rstudio_project_selector.png" /></p>
-<pre class="r"><code># Day 3
-# ==============================================================
+<pre class="r"><code>#### Day 3 setup -----------------
+# Confirm you are in the right working directory
+# Should be ~/ISC_R
 getwd()
-setwd(&quot;~/ISC_R&quot;)</code></pre>
-<pre class="r"><code># Load libraries  ----------------------------------------------
+# Reset if necessary
+setwd(&quot;~/ISC_R&quot;)
+
+# Load libraries  ----------------------------------------------
 library(Seurat)
 library(BPCells)
 library(tidyverse)
@@ -496,11 +506,14 @@ pcs = 13
 # This starts from the data you saved yesterday
 geo_so = readRDS(&#39;~/ISC_R/results/rdata/geo_so_sct_clustered.rds&#39;)
 
-# Alternatively, you can start with the instructor&#39;s data object
-#geo_so = readRDS(&#39;home/workshop/rcavalca/ISC_R/results/rdata/geo_so_sct_clustered.rds&#39;)</code></pre>
+#   load data --------
+# read in Dana&#39;s output file from yesterday so we are all starting with the same data
+geo_so = readRDS(&#39;/home/workshop/damki/ISC_R/results/rdata/geo_so_sct_clustered.rds&#39;)
+
+#### setup end --------------------</code></pre>
 </div>
-<div id="leiden-clustering" class="section level2">
-<h2>Leiden clustering</h2>
+<div id="leiden-clustering-fwiw" class="section level2">
+<h2>Leiden clustering, FWIW</h2>
 <pre class="r"><code># ==============================================================
 # Leiden clustering is an alternative to Louvain clustering ----
 # Note that these code blocks are specific to the workshop 
