@@ -43,15 +43,14 @@ If it shows **Project: (None)**, you can either:
 - Click on **Home** and **ISC_R** in the **Files** tab and then click **ISC_R.Rproj**
 
 ![](images/curriculum/instructor_cheatsheet/rstudio_project_selector.png)
-```{r day_2_wd, eval = FALSE}
-# Day 2
-# ==============================================================
+```{r day_2_setup, eval = FALSE}
+#### Day 2 setup -----------------------
+
+# Confirm you are in the right working directory
+# Should be ~/ISC_R
 getwd()
+# Reset if necessary
 setwd("~/ISC_R")
-```
-
-
-```{r day_2_startup, eval = FALSE}
 
 # Load libraries  ----------------------------------------------
 library(Seurat)
@@ -60,12 +59,16 @@ library(tidyverse)
 options(future.globals.maxSize = 1e9)
 
 # Load data  ---------------------------------------------------
-
-# This starts from the data you saved yesterday
-geo_so = readRDS('~/ISC_R/results/rdata/geo_so_sct_normalized.rds')
-
-# Alternatively, you can start with the instructor's data object
+# read in Raymond's output file so that we are all starting with the same data
 #geo_so = readRDS('home/workshop/rcavalca/ISC_R/results/rdata/geo_so_sct_normalized.rds')
+#geo_so = readRDS('/home/workshop/rcavalca/ISC_R/results/rdata/geo_so_filtered.rds')
+
+# Alternatively, this starts from the data you saved yesterday
+#geo_so = readRDS('~/ISC_R/results/rdata/geo_so_filtered.rds')
+#geo_so = readRDS('~/ISC_R/results/rdata/geo_so_sct_normalized.rds')
+
+### setup end ----------------------------------
+
 ```
 
 ## Day 3 startup
@@ -78,14 +81,14 @@ If it shows **Project: (None)**, you can either;
 ![](images/curriculum/instructor_cheatsheet/rstudio_project_selector.png)
 
 
-```{r day_3_wd, eval = FALSE}
-# Day 3
-# ==============================================================
+```{r day_3_setup, eval = FALSE}
+#### Day 3 setup -----------------
+# Confirm you are in the right working directory
+# Should be ~/ISC_R
 getwd()
+# Reset if necessary
 setwd("~/ISC_R")
-```
 
-```{r day_3_startup, eval = FALSE}
 # Load libraries  ----------------------------------------------
 library(Seurat)
 library(BPCells)
@@ -97,11 +100,15 @@ pcs = 13
 # This starts from the data you saved yesterday
 geo_so = readRDS('~/ISC_R/results/rdata/geo_so_sct_clustered.rds')
 
-# Alternatively, you can start with the instructor's data object
-#geo_so = readRDS('home/workshop/rcavalca/ISC_R/results/rdata/geo_so_sct_clustered.rds')
+#   load data --------
+# read in Dana's output file from yesterday so we are all starting with the same data
+geo_so = readRDS('/home/workshop/damki/ISC_R/results/rdata/geo_so_sct_clustered.rds')
+
+#### setup end --------------------
+
 ```
 
-## Leiden clustering
+## Leiden clustering, FWIW
 
 ```{r leiden_clustering, eval = FALSE}
 # ==============================================================

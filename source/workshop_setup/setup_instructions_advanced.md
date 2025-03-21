@@ -247,6 +247,9 @@ remotes::install_github("bnprks/BPCells/r")
 # https://github.com/ZJUFanLab/scCATCH
 install.packages("scCATCH")
 
+# Differential gene expresion testing
+# https://bioconductor.org/packages/DESeq2/
+BiocManager::install("DESeq2", update = FALSE)
 
 # -----------------------------------------------------------------------------
 # OPTIONAL libraries
