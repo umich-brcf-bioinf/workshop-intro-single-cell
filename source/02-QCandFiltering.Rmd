@@ -164,7 +164,7 @@ the file `phenos.csv`:
 ```{r, read_phenotypes}
 # Read sample attributes  ------------------------------------------
 # Load the expanded phenotype columns (condition, day, and replicate)
-phenos = read.csv('inputs/phenos.csv')
+phenos = read.csv('inputs/prepared_data/phenos.csv')
 head(phenos, 3)
 ```
 
