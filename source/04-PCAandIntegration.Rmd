@@ -503,7 +503,7 @@ Note that the integration is run on the layers, which from our prior steps each 
 Because the `IntegrateLayers()` function takes a while to run, we will load the RPCA integrated `geo_so` object from a file we have previously generated.
 
 ```{r, eval = FALSE}
-geo_so = readRDS('/home/workshop/rcavalca/ISC_R/results/rdata/geo_so_sct_integrated.rds')
+geo_so = readRDS('inputs/prepared_data/geo_so_sct_integrated.rds')
 ```
 
 :::
