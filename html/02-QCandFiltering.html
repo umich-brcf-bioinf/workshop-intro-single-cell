@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-03-18" />
+<meta name="date" content="2025-03-28" />
 
 <title>Secondary Quality Control and Filtering</title>
 
-<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -417,7 +417,7 @@ div.tocify {
 <h1 class="title toc-ignore">Secondary Quality Control and
 Filtering</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-03-18</h4>
+<h4 class="date">2025-03-28</h4>
 
 </div>
 
@@ -538,18 +538,6 @@ nCount_RNA
 <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
 nFeature_RNA
 </th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-condition
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-day
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-replicate
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-percent.mt
-</th>
 </tr>
 </thead>
 <tbody>
@@ -566,18 +554,6 @@ HODay0replicate1
 <td style="text-align:right;">
 3226
 </td>
-<td style="text-align:left;">
-HO
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-replicate1
-</td>
-<td style="text-align:right;">
-1.240962
-</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -591,18 +567,6 @@ HODay0replicate1
 </td>
 <td style="text-align:right;">
 1499
-</td>
-<td style="text-align:left;">
-HO
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-replicate1
-</td>
-<td style="text-align:right;">
-7.536416
 </td>
 </tr>
 <tr>
@@ -618,18 +582,6 @@ HODay0replicate1
 <td style="text-align:right;">
 4102
 </td>
-<td style="text-align:left;">
-HO
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-replicate1
-</td>
-<td style="text-align:right;">
-3.112002
-</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -643,18 +595,6 @@ HODay0replicate1
 </td>
 <td style="text-align:right;">
 346
-</td>
-<td style="text-align:left;">
-HO
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-replicate1
-</td>
-<td style="text-align:right;">
-1.559792
 </td>
 </tr>
 <tr>
@@ -670,18 +610,6 @@ HODay0replicate1
 <td style="text-align:right;">
 629
 </td>
-<td style="text-align:left;">
-HO
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-replicate1
-</td>
-<td style="text-align:right;">
-3.700589
-</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -695,18 +623,6 @@ HODay0replicate1
 </td>
 <td style="text-align:right;">
 2602
-</td>
-<td style="text-align:left;">
-HO
-</td>
-<td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-replicate1
-</td>
-<td style="text-align:right;">
-2.938131
 </td>
 </tr>
 </tbody>
@@ -743,7 +659,7 @@ attributes from a table in the file <code>phenos.csv</code>:</p>
 <p><strong>Load a pre-prepared file:</strong></p>
 <pre class="r"><code># Read sample attributes  ------------------------------------------
 # Load the expanded phenotype columns (condition, day, and replicate)
-phenos = read.csv(&#39;inputs/phenos.csv&#39;)
+phenos = read.csv(&#39;inputs/prepared_data/phenos.csv&#39;)
 head(phenos, 3)</code></pre>
 <pre><code>        orig.ident condition  day  replicate
 1 HODay0replicate1        HO Day0 replicate1
@@ -753,16 +669,17 @@ head(phenos, 3)</code></pre>
 <p>The following code chunk will annotated a copy of the metadata with
 columns for <code>day</code> and <code>replicate</code> and ensure that
 certain categorical data appears in correct order, e.g. Day0, Day7, and
-Day21 instead of Day0, Day21, and Day7.</p>
+Day21 instead of Day0, Day21, and Day7.
+<!--- revised quotes for day since failed in testing on LH --></p>
 <pre class="r"><code># Make a temp table that joins Seurat loaded metadata with expanded phenotype columns
 # (Also, preserve the rownames and order samples based on order in phenos.csv)
-# Note that column &quot;day&quot; is quoted in ...factor(&quot;day&quot;,...) because day is also 
+# Note that column &quot;day&quot; has tick marks in ...factor(`day`,...) because day is also 
 # the name of a function in R
 tmp_meta = geo_so@meta.data %&gt;% 
   rownames_to_column(&#39;tmp_rowname&#39;) %&gt;%
   left_join(phenos, by = &#39;orig.ident&#39;) %&gt;%
   mutate(orig.ident = factor(orig.ident, phenos$orig.ident)) %&gt;%
-  mutate(day = factor(&quot;day&quot;, unique(phenos$day))) %&gt;%
+  mutate(day = factor(`day`, unique(phenos$day))) %&gt;%
   column_to_rownames(&#39;tmp_rowname&#39;)
 
 View(head(tmp_meta))</code></pre>
@@ -783,28 +700,13 @@ nCount_RNA
 nFeature_RNA
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-condition.x
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-day.x
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-replicate.x
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-percent.mt
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-condition.y
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-day.y
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-replicate.y
+condition
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 day
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+replicate
 </th>
 </tr>
 </thead>
@@ -826,25 +728,10 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-replicate1
-</td>
-<td style="text-align:right;">
-1.240962
-</td>
-<td style="text-align:left;">
-HO
-</td>
-<td style="text-align:left;">
 Day0
 </td>
 <td style="text-align:left;">
 replicate1
-</td>
-<td style="text-align:left;">
-NA
 </td>
 </tr>
 <tr>
@@ -864,25 +751,10 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-replicate1
-</td>
-<td style="text-align:right;">
-7.536416
-</td>
-<td style="text-align:left;">
-HO
-</td>
-<td style="text-align:left;">
 Day0
 </td>
 <td style="text-align:left;">
 replicate1
-</td>
-<td style="text-align:left;">
-NA
 </td>
 </tr>
 <tr>
@@ -902,25 +774,10 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-replicate1
-</td>
-<td style="text-align:right;">
-3.112002
-</td>
-<td style="text-align:left;">
-HO
-</td>
-<td style="text-align:left;">
 Day0
 </td>
 <td style="text-align:left;">
 replicate1
-</td>
-<td style="text-align:left;">
-NA
 </td>
 </tr>
 <tr>
@@ -940,25 +797,10 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-replicate1
-</td>
-<td style="text-align:right;">
-1.559792
-</td>
-<td style="text-align:left;">
-HO
-</td>
-<td style="text-align:left;">
 Day0
 </td>
 <td style="text-align:left;">
 replicate1
-</td>
-<td style="text-align:left;">
-NA
 </td>
 </tr>
 <tr>
@@ -978,25 +820,10 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-replicate1
-</td>
-<td style="text-align:right;">
-3.700589
-</td>
-<td style="text-align:left;">
-HO
-</td>
-<td style="text-align:left;">
 Day0
 </td>
 <td style="text-align:left;">
 replicate1
-</td>
-<td style="text-align:left;">
-NA
 </td>
 </tr>
 <tr>
@@ -1016,25 +843,10 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-replicate1
-</td>
-<td style="text-align:right;">
-2.938131
-</td>
-<td style="text-align:left;">
-HO
-</td>
-<td style="text-align:left;">
 Day0
 </td>
 <td style="text-align:left;">
 replicate1
-</td>
-<td style="text-align:left;">
-NA
 </td>
 </tr>
 </tbody>
@@ -1066,28 +878,13 @@ nCount_RNA
 nFeature_RNA
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-condition.x
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-day.x
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-replicate.x
-</th>
-<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
-percent.mt
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-condition.y
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-day.y
-</th>
-<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-replicate.y
+condition
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 day
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+replicate
 </th>
 </tr>
 </thead>
@@ -1109,25 +906,10 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-replicate1
-</td>
-<td style="text-align:right;">
-1.240962
-</td>
-<td style="text-align:left;">
-HO
-</td>
-<td style="text-align:left;">
 Day0
 </td>
 <td style="text-align:left;">
 replicate1
-</td>
-<td style="text-align:left;">
-NA
 </td>
 </tr>
 <tr>
@@ -1147,25 +929,10 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-replicate1
-</td>
-<td style="text-align:right;">
-7.536416
-</td>
-<td style="text-align:left;">
-HO
-</td>
-<td style="text-align:left;">
 Day0
 </td>
 <td style="text-align:left;">
 replicate1
-</td>
-<td style="text-align:left;">
-NA
 </td>
 </tr>
 <tr>
@@ -1185,25 +952,10 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-replicate1
-</td>
-<td style="text-align:right;">
-3.112002
-</td>
-<td style="text-align:left;">
-HO
-</td>
-<td style="text-align:left;">
 Day0
 </td>
 <td style="text-align:left;">
 replicate1
-</td>
-<td style="text-align:left;">
-NA
 </td>
 </tr>
 <tr>
@@ -1223,25 +975,10 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-replicate1
-</td>
-<td style="text-align:right;">
-1.559792
-</td>
-<td style="text-align:left;">
-HO
-</td>
-<td style="text-align:left;">
 Day0
 </td>
 <td style="text-align:left;">
 replicate1
-</td>
-<td style="text-align:left;">
-NA
 </td>
 </tr>
 <tr>
@@ -1261,25 +998,10 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-replicate1
-</td>
-<td style="text-align:right;">
-3.700589
-</td>
-<td style="text-align:left;">
-HO
-</td>
-<td style="text-align:left;">
 Day0
 </td>
 <td style="text-align:left;">
 replicate1
-</td>
-<td style="text-align:left;">
-NA
 </td>
 </tr>
 <tr>
@@ -1299,25 +1021,10 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
-</td>
-<td style="text-align:left;">
-replicate1
-</td>
-<td style="text-align:right;">
-2.938131
-</td>
-<td style="text-align:left;">
-HO
-</td>
-<td style="text-align:left;">
 Day0
 </td>
 <td style="text-align:left;">
 replicate1
-</td>
-<td style="text-align:left;">
-NA
 </td>
 </tr>
 </tbody>
@@ -1387,18 +1094,18 @@ genes.</p>
 cell_counts_pre_tbl = geo_so@meta.data %&gt;% count(orig.ident, name = &#39;prefilter_cells&#39;)
 cell_counts_pre_tbl</code></pre>
 <pre><code>          orig.ident prefilter_cells
-1   HODay0replicate1            1053
-2   HODay0replicate2             629
-3   HODay0replicate3            1222
-4   HODay0replicate4             970
-5   HODay7replicate1            5213
-6   HODay7replicate2            5324
-7   HODay7replicate3            5626
-8   HODay7replicate4            4691
-9  HODay21replicate1            2004
-10 HODay21replicate2            1186
-11 HODay21replicate3            1178
-12 HODay21replicate4            2463</code></pre>
+1   HODay0replicate1            1183
+2   HODay0replicate2             689
+3   HODay0replicate3            1310
+4   HODay0replicate4            1052
+5   HODay7replicate1            5762
+6   HODay7replicate2            6020
+7   HODay7replicate3            6286
+8   HODay7replicate4            5167
+9  HODay21replicate1            2321
+10 HODay21replicate2            1322
+11 HODay21replicate3            1275
+12 HODay21replicate4            2829</code></pre>
 <p>It appears that the Day 7 samples have systematically more cells than
 the other days. If you had an idea of how many cells you expected to see
 per sample, this table can help you check that expectation and determine
@@ -1423,12 +1130,8 @@ is essentially showing the density of the cells at different values of
 <p>Let’s look at the <code>nFeature_RNA</code> violin plot across all
 the samples. Again, this is the number of genes detected per cell.</p>
 <pre class="r"><code># Review feature violin plots   ----------------------------------------
-VlnPlot(geo_so, features = &#39;nFeature_RNA&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + NoLegend() + geom_hline(yintercept = 500) + geom_hline(yintercept = 400) + geom_hline(yintercept = 300) + geom_hline(yintercept = 200)</code></pre>
-<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range (`geom_hline()`).
-Removed 1 row containing missing values or values outside the scale range (`geom_hline()`).</code></pre>
-<pre class="r"><code>ggsave(filename = &#39;results/figures/qc_nFeature_violin.png&#39;, width = 12, height = 6, units = &#39;in&#39;)</code></pre>
-<pre><code>Warning: Removed 1 row containing missing values or values outside the scale range (`geom_hline()`).
-Removed 1 row containing missing values or values outside the scale range (`geom_hline()`).</code></pre>
+VlnPlot(geo_so, features = &#39;nFeature_RNA&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + NoLegend() + geom_hline(yintercept = 500) + geom_hline(yintercept = 400) + geom_hline(yintercept = 300) + geom_hline(yintercept = 200)
+ggsave(filename = &#39;results/figures/qc_nFeature_violin.png&#39;, width = 12, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/02-QCandFiltering/02-feature_plot-1.png" width="816" style="display: block; margin: auto;" /></p>
 <p>We observe that samples behave similarly within a day, but have
 different distributions across days. We also note that many cells appear
@@ -1462,7 +1165,7 @@ geo_so$percent.mt = PercentageFeatureSet(geo_so, pattern = &#39;^mt-&#39;)
 # Use summary() to quickly check the range of values
 summary(geo_so$percent.mt)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
-  0.000   1.860   2.548   3.155   3.567  14.950 </code></pre>
+  0.000   1.817   2.582   5.282   3.865  98.244 </code></pre>
 <p>Just looking at the summary, we can see that there are some cells
 with a high percentage of mitochondrial reads. Our Seurat object has
 changed by adding the <code>percent.mt</code> column to the meta
@@ -1519,18 +1222,18 @@ thresholds:</p>
 subset(geo_so, subset = nFeature_RNA &gt; 500 &amp; percent.mt &lt; 25)@meta.data %&gt;% 
     count(orig.ident, name = &#39;postfilter_cells&#39;)</code></pre>
 <pre><code>          orig.ident postfilter_cells
-1   HODay0replicate1             1020
-2   HODay0replicate2              604
-3   HODay0replicate3             1174
-4   HODay0replicate4              926
-5   HODay7replicate1             4773
-6   HODay7replicate2             4803
-7   HODay7replicate3             4771
-8   HODay7replicate4             4143
-9  HODay21replicate1             1968
-10 HODay21replicate2             1161
-11 HODay21replicate3             1140
-12 HODay21replicate4             2401</code></pre>
+1   HODay0replicate1             1049
+2   HODay0replicate2              615
+3   HODay0replicate3             1191
+4   HODay0replicate4              943
+5   HODay7replicate1             4928
+6   HODay7replicate2             4933
+7   HODay7replicate3             4897
+8   HODay7replicate4             4243
+9  HODay21replicate1             2000
+10 HODay21replicate2             1182
+11 HODay21replicate3             1166
+12 HODay21replicate4             2471</code></pre>
 </div>
 <div id="adaptive-thresholds" class="section level2">
 <h2>Adaptive thresholds</h2>
@@ -1578,18 +1281,18 @@ cell_counts_post_tbl</code></pre>
 cell_counts_tbl = cell_counts_pre_tbl %&gt;% left_join(cell_counts_post_tbl, by = &#39;orig.ident&#39;)
 cell_counts_tbl</code></pre>
 <pre><code>          orig.ident prefilter_cells postfilter_cells
-1   HODay0replicate1            1053             1053
-2   HODay0replicate2             629              629
-3   HODay0replicate3            1222             1222
-4   HODay0replicate4             970              970
-5   HODay7replicate1            5213             5213
-6   HODay7replicate2            5324             5324
-7   HODay7replicate3            5626             5626
-8   HODay7replicate4            4691             4691
-9  HODay21replicate1            2004             2004
-10 HODay21replicate2            1186             1186
-11 HODay21replicate3            1178             1178
-12 HODay21replicate4            2463             2463</code></pre>
+1   HODay0replicate1            1183             1053
+2   HODay0replicate2             689              629
+3   HODay0replicate3            1310             1222
+4   HODay0replicate4            1052              970
+5   HODay7replicate1            5762             5213
+6   HODay7replicate2            6020             5324
+7   HODay7replicate3            6286             5626
+8   HODay7replicate4            5167             4691
+9  HODay21replicate1            2321             2004
+10 HODay21replicate2            1322             1186
+11 HODay21replicate3            1275             1178
+12 HODay21replicate4            2829             2463</code></pre>
 <p>We can now easily see how many cells we started with, and how many we
 retained for downstream analysis. Let’s write this table to a file.</p>
 <pre class="r"><code>write_csv(cell_counts_tbl, file = &#39;results/tables/cell_filtering_counts.csv&#39;)</code></pre>

@@ -28,6 +28,10 @@ pre {
 }
 </style>
 
+```{r, include = FALSE}
+source("../bin/set_values.R")
+```
+
 # Workshop goals and topics
 
  - By the end of the workshop, attendees will be able to
@@ -80,8 +84,7 @@ pre {
   email us at bioinformatics-workshops@umich.edu.
 
 - To report a CoC incident/concern, please email Chris Gates (Bioinformatics Core, Managing
-  Director) at cgates@umich.edu or contact the University of Michigan Office of Institutional
-  Equity at institutional.equity@umich.edu.
+  Director) at cgates@umich.edu or contact the `r intro_coc_contact` at `r intro_coc_contact_email`.
 <br/>
 <br/>
 
@@ -89,6 +92,9 @@ pre {
 
 - We will be recording this session. Recordings will be available to participants  
   following the workshop.
+
+- To see what the instructor is sharing, click the "Chris's Screen" button in the top of the Zoom window. 
+![Zoom meeting/screen toggle](images/workshop_intro/zoom_meeting_screen.png)
 
 
 ## <img src="images/workshop_intro/zoom_logo.png" alt="Zoom" width=120/>
@@ -139,7 +145,7 @@ breakout room.
 
 ![Posting messages to Slack](images/workshop_intro/slack.png)
 
-  - Slack messages will be posted to the **2025-02-intro-single-cell** channel.  
+  - Slack messages will be posted to the **`r intro_slack_channel`** channel.  
     Click on the channel in the left pane (1) to select this channel.
   - You can type in the **message field** (2); click **send** (3) to
     post your message to everyone.
@@ -175,9 +181,7 @@ In your scRNA-Seq experiment, what do/did you hope to find?
 
 To start, we will access our shared RStudio server by opening a web browser to the following URL:
 
-<!--[https://bfx-workshop02.med.umich.edu/](https://bfx-workshop02.med.umich.edu/){target="_blank"}-->
-
-**(The correct URL will be supplied by the instructor via Slack.)**
+[`r rstudio_server_url`](`r rstudio_server_url`){target="blank"}
 
 You should now be looking at a page that will allow you to login to the RStudio server:
 

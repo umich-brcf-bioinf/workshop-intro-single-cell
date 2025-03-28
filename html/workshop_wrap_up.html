@@ -14,7 +14,7 @@
 
 <title>Intro to Single Cell RNA-Seq Workshop</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -521,7 +521,7 @@ then normalized using the SCTransform method with default parameters
 [3].</p>
 <p>Normalized data were integrated using the RPCA method
 (IntegrateLayers function with “SCT” as normalization method. Principal
-Component Analysis (PCA) was then performed and the first significant
+Component Analysis (PCA) was then performed and the first 10 significant
 components were used for finding nearest neighbors followed by
 graph-based, semi-unsupervised Louvain clustering into distinct
 populations (resolution = 0.4). All uniform manifold approximation and
@@ -771,7 +771,7 @@ workshop session.</li>
 <li><p>You can download files from the workshop environment from your
 terminal/command line window as below. (You will need to substitute your
 actual workshop username and type workshop password when prompted.)</p>
-<pre class="bash"><code># download workshop files -------------------------------------------------
+<pre><code># download workshop files -------------------------------------------------
 mkdir intro_scrnaseq_workshop
 cd intro_scrnaseq_workshop
 scp -r YOUR_USERNAME@bfx-workshop01.med.umich.edu:&quot;ISC_R*&quot; .</code></pre>
@@ -802,13 +802,21 @@ non-trivial.</li>
 <ul>
 <li><p>The Seurat inputs (cellranger triples and dbcells files) used in
 this workshop can be installed locally like so:</p>
-<pre class="bash"><code># download Seurat inputs --------------------------------------------------
+<pre><code># download Seurat inputs --------------------------------------------------
 mkdir -p intro_scrnaseq_workshop/ISC_R
 cd intro_scrnaseq_workshop/ISC_R
-# Curl download a ~500Mb tarball
-curl -o workshop_isc_inputs-20250212.tgz https://umich-brcf-bioinf-workshop-intro-single-cell.s3.us-east-1.amazonaws.com/workshop_isc_inputs-20250212.tgz 
-# tar unpacks the tarball into directories and then removes the tarball
-tar xzvf workshop_isc_inputs-20250212.tgz || rm workshop_isc_inputs-20250212.tgz</code></pre></li>
+
+# Use curl to download a ~2 Gb tarball
+# We&#39;ll use evironment variables to avoid extremely long command lines
+source_url=&quot;https://umich-brcf-bioinf-workshop-intro-single-cell.s3.us-east-1.amazonaws.com&quot;
+source_file=&quot;workshop_isc_inputs-20250416.tgz&quot;
+curl -o workshop_isc_inputs.tgz ${source_url}/${source_file}
+
+# tar unpacks the tarball into directories
+tar xzvf workshop_isc_inputs.tgz
+
+# Since we have unpacked the tarball, we can remove it
+rm workshop_isc_inputs.tgz</code></pre></li>
 </ul>
 </div>
 <div id="an-independent-exercise" class="section level4">

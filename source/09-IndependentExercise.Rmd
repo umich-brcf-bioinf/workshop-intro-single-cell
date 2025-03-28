@@ -69,7 +69,7 @@ geo2_so = readRDS('/home/workshop/rcavalca/ISC_R/results/rdata/geo_so_sct_integr
 ElbowPlot(geo2_so, ndims = 50, reduction = 'unintegrated.sct.pca')
 
 # Round 1: try with reduced number of PCs
-pcs = 10
+pcs = 8
 
 # generate nearest neighbor (graph), using selected number of PCs
 geo2_so = FindNeighbors(geo2_so, dims = 1:pcs, reduction = 'integrated.sct.rpca')
@@ -193,7 +193,7 @@ saveRDS(geo2_so, file = paste0('results/rdata/geo_so_sct_integrated_',pcs,'PC.',
 
 ## Clustering - testing with more PCs ------------
 # Round 2 - choose a larger number of PCs
-pcs = 22 # can try 20 or another number
+pcs = 18 # can try a different number
 
 # Set resolution (may need to test other values)
 res = 0.4 
