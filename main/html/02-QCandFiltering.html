@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-03-23" />
+<meta name="date" content="2025-03-28" />
 
 <title>Secondary Quality Control and Filtering</title>
 
-<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -417,7 +417,7 @@ div.tocify {
 <h1 class="title toc-ignore">Secondary Quality Control and
 Filtering</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-03-23</h4>
+<h4 class="date">2025-03-28</h4>
 
 </div>
 
@@ -669,16 +669,17 @@ head(phenos, 3)</code></pre>
 <p>The following code chunk will annotated a copy of the metadata with
 columns for <code>day</code> and <code>replicate</code> and ensure that
 certain categorical data appears in correct order, e.g. Day0, Day7, and
-Day21 instead of Day0, Day21, and Day7.</p>
+Day21 instead of Day0, Day21, and Day7.
+<!--- revised quotes for day since failed in testing on LH --></p>
 <pre class="r"><code># Make a temp table that joins Seurat loaded metadata with expanded phenotype columns
 # (Also, preserve the rownames and order samples based on order in phenos.csv)
-# Note that column &quot;day&quot; is quoted in ...factor(&quot;day&quot;,...) because day is also 
+# Note that column &quot;day&quot; has tick marks in ...factor(`day`,...) because day is also 
 # the name of a function in R
 tmp_meta = geo_so@meta.data %&gt;% 
   rownames_to_column(&#39;tmp_rowname&#39;) %&gt;%
   left_join(phenos, by = &#39;orig.ident&#39;) %&gt;%
   mutate(orig.ident = factor(orig.ident, phenos$orig.ident)) %&gt;%
-  mutate(day = factor(&quot;day&quot;, unique(phenos$day))) %&gt;%
+  mutate(day = factor(`day`, unique(phenos$day))) %&gt;%
   column_to_rownames(&#39;tmp_rowname&#39;)
 
 View(head(tmp_meta))</code></pre>
@@ -727,7 +728,7 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
+Day0
 </td>
 <td style="text-align:left;">
 replicate1
@@ -750,7 +751,7 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
+Day0
 </td>
 <td style="text-align:left;">
 replicate1
@@ -773,7 +774,7 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
+Day0
 </td>
 <td style="text-align:left;">
 replicate1
@@ -796,7 +797,7 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
+Day0
 </td>
 <td style="text-align:left;">
 replicate1
@@ -819,7 +820,7 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
+Day0
 </td>
 <td style="text-align:left;">
 replicate1
@@ -842,7 +843,7 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
+Day0
 </td>
 <td style="text-align:left;">
 replicate1
@@ -905,7 +906,7 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
+Day0
 </td>
 <td style="text-align:left;">
 replicate1
@@ -928,7 +929,7 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
+Day0
 </td>
 <td style="text-align:left;">
 replicate1
@@ -951,7 +952,7 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
+Day0
 </td>
 <td style="text-align:left;">
 replicate1
@@ -974,7 +975,7 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
+Day0
 </td>
 <td style="text-align:left;">
 replicate1
@@ -997,7 +998,7 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
+Day0
 </td>
 <td style="text-align:left;">
 replicate1
@@ -1020,7 +1021,7 @@ HODay0replicate1
 HO
 </td>
 <td style="text-align:left;">
-NA
+Day0
 </td>
 <td style="text-align:left;">
 replicate1
