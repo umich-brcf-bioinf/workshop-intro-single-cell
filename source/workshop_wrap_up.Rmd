@@ -34,6 +34,10 @@ pre {
 klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
 ```
 
+```{r, include = FALSE}
+source("../bin/set_values.R")
+```
+
 ## Wrapping up
 
 We hope you now have more familiarity with key concepts, data types, tools, and how they all
@@ -279,7 +283,7 @@ devtools::session_info()
 ## Looking ahead
 
 #### Workshop environment
-- RStudio workshop compute environment will be available until **5/2/2025**.
+- RStudio workshop compute environment will be available until **`r rstudio_server_enddate`**.
   - _Please save all your R scripts now_ so that we can "right-size" the compute environment immediately following today's workshop session.
 - You can download files from the workshop environment from your terminal/command line window as below. 
   (You will need to substitute your actual workshop username and type workshop password when prompted.)
@@ -287,7 +291,7 @@ devtools::session_info()
   # download workshop files -------------------------------------------------
   mkdir intro_scrnaseq_workshop
   cd intro_scrnaseq_workshop
-  scp -r YOUR_USERNAME@bfx-workshop01.med.umich.edu:"ISC_R*" .
+  scp -r YOUR_USERNAME@`r ssh_download_dns`:"ISC_R*" .
   ```
   - Note that the full download of the R data is about 8Gb, so depending on your internet 
     speeds it could take a while. (We do not recommend you download the full set of Cell 
@@ -311,10 +315,12 @@ devtools::session_info()
     # download Seurat inputs --------------------------------------------------
     mkdir -p intro_scrnaseq_workshop/ISC_R
     cd intro_scrnaseq_workshop/ISC_R
-    # Curl download a ~500Mb tarball
-    curl -o workshop_isc_inputs-20250212.tgz https://umich-brcf-bioinf-workshop-intro-single-cell.s3.us-east-1.amazonaws.com/workshop_isc_inputs-20250212.tgz 
+    # Curl download a ~2 Gb tarball
+    curl -o workshop_isc_inputs.tgz `r aws_s3_bucket` 
+    
     # tar unpacks the tarball into directories and then removes the tarball
-    tar xzvf workshop_isc_inputs-20250212.tgz || rm workshop_isc_inputs-20250212.tgz
+    tar xzvf workshop_isc_inputs.tgz
+    rm workshop_isc_inputs.tgz
     ```
 
 #### [An independent exercise](09-IndependentExercise.html)
