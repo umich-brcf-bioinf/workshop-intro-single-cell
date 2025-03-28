@@ -187,12 +187,11 @@ immune_markers[['T-cell']] = c( 'Cd3d','Cd3e','Cd3g') # also Thy1
 # Plot other immune to assist with cluster identification ---------------
 immune_markers_plot = DotPlot(geo_so, features = immune_markers, assay = 'SCT')  +
   theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
+immune_markers_plot
 
 # save to file
 ggsave(filename = 'results/figures/immune_markers_sct_dot_plot.png', 
        plot = immune_markers_plot, width = 10, height = 5, units = 'in')
-
-immune_markers_plot
 ```
 
 ```{r, marker_genes, fig.show='hold'}
@@ -212,12 +211,11 @@ other_markers[['Erythroid']] = c('Hba-a1')
 # Plot known cell-type markers ---------------------------------------
 other_markers_dot_plot = DotPlot(geo_so, features = other_markers, assay = 'SCT') +
   theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
+other_markers_dot_plot
 
 # save to file
 ggsave(filename = 'results/figures/other_markers_sct_dot_plot.png', 
        plot = other_markers_dot_plot, width = 12, height = 5, units = 'in')
-
-other_markers_dot_plot
 
 ```
 In the first plot, B-cell and T-cell markers seem to line up with the predictions and are limited to single clusters. However, macrophage and dendrocyte markers match to multiple clusters including some annotated with different cell types, so we can consider modifying those cluster labels. 
@@ -285,20 +283,17 @@ celltype_annos
 ```
 
 ```{r, annotate_clusters_customize, eval=FALSE}
-# Update annotations, remembering that cluster 0 = row 1 in table ---------
-celltype_annos$cell_type[c(6,15,16)] <- "Inflammatory macrophage" # resolve cluster 5, 14, 15
-celltype_annos$cell_type[c(12)] <- "Macrophage"
-celltype_annos$cell_type[c(5,8,10)] <- "Platelet" # clusters 4,7,9
+# Update annotations, remembering that row 1  = cluster 0 in table ---------
+celltype_annos$cell_type[c(2)] <- "Fibroblast"
+celltype_annos$cell_type[c(4)] <- "Endothelial"
+celltype_annos$cell_type[c(5)] <- "Platelet"
+celltype_annos$cell_type[c(8)] <- "Myofibroblast"
+celltype_annos$cell_type[c(9)] <- "Keratinocyte"
+celltype_annos$cell_type[c(10)] <- "Endothelial"
+celltype_annos$cell_type[c(7,14,16)] <- "Infl. Macrophage" 
+celltype_annos$cell_type[c(18)] <- "B-cell"
 
-celltype_annos$cell_type[c(1,22)] <- "Pericyte"
-celltype_annos$cell_type[c(2,9)] <- "Fibroblast" # revise clusters 1,8 based on markers
-celltype_annos$cell_type[c(7)] <- "Myofibroblast" # revise cluster 6
-celltype_annos$cell_type[c(4,14,17)] <- "Hematopoietic stem cell" # based on markers but could further revise
-celltype_annos$cell_type[c(11,20)] <- "Mesenchymal stem/stromal cell" # based on Acta2 signal; cluster 10, 19
-celltype_annos$cell_type[c(19)] <- "Erythroid" # cluster 18
-celltype_annos$cell_type[c(23)] <- "Mast"
-
-celltype_annos$cell_type[c(18, 21)] <- "Unknown" # since such small populations, reset cluster 17 & 20 as unknown for now
+celltype_annos$cell_type[c(19)] <- "Unknown" # since such small populations, set as unknown for now
 ```
 
 ```{r, annotate_clusters_seurat, eval=FALSE}
@@ -316,19 +311,15 @@ head(geo_so@meta.data)
 
 ```{r, annotate_clusters_customize_hidden, echo = FALSE, warning = FALSE, message = FALSE}
 # Customize annotations, remembering that cluster 0 = row 1 in table
-celltype_annos$cell_type[c(6,15,16)] <- "Inflammatory macrophage" # resolve cluster 5, 14, 15
-celltype_annos$cell_type[c(12)] <- "Macrophage"
-celltype_annos$cell_type[c(5,8,10)] <- "Platelet" # clusters 4,7,9
-
-celltype_annos$cell_type[c(1,22)] <- "Pericyte"
-celltype_annos$cell_type[c(2,9)] <- "Fibroblast" # revise clusters 1,8 based on markers
-celltype_annos$cell_type[c(7)] <- "Myofibroblast" # revise cluster 6
-celltype_annos$cell_type[c(4,14,17)] <- "Hematopoietic stem cell" # based on markers but could further revise
-celltype_annos$cell_type[c(11,20)] <- "Mesenchymal stem/stromal cell" # based on Acta2 signal; cluster 10, 19
-celltype_annos$cell_type[c(19)] <- "Erythroid" # cluster 18
-celltype_annos$cell_type[c(23)] <- "Mast"
-
-celltype_annos$cell_type[c(18, 21)] <- "Unknown" # since such small populations, reset cluster 17 & 20 as unknown for now
+# Update annotations, remembering that row 1  = cluster 0 in table ---------
+celltype_annos$cell_type[c(2)] <- "Fibroblast"
+celltype_annos$cell_type[c(4)] <- "Endothelial"
+celltype_annos$cell_type[c(5)] <- "Platelet"
+celltype_annos$cell_type[c(8)] <- "Myofibroblast"
+celltype_annos$cell_type[c(9)] <- "Keratinocyte"
+celltype_annos$cell_type[c(10)] <- "Endothelial"
+celltype_annos$cell_type[c(7,14,16)] <- "Infl. Macrophage" 
+celltype_annos$cell_type[c(18)] <- "B-cell"
 
 # copy metadata (and clean up if needed)
 copy_metadata = geo_so@meta.data

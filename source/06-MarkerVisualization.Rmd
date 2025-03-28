@@ -136,6 +136,7 @@ head(geo_markers)
 
 ```
 
+After running `SetIdent()`, cells in our Seurat object are identified by the numeric cluster they belong to, instead of the unique identifiers that are the default identities after reading in the data.
 
 ![Image: Schematic after SetIdent().](images/seurat_schematic/Slide11.png)
 
