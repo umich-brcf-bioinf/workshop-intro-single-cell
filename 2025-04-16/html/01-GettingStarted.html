@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-03-11" />
+<meta name="date" content="2025-03-28" />
 
 <title>Getting Started with Seurat</title>
 
@@ -414,7 +414,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Getting Started with Seurat</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-03-11</h4>
+<h4 class="date">2025-03-28</h4>
 
 </div>
 
@@ -487,38 +487,93 @@ project will be to get the data into R for analysis. <br/></p>
 </div>
 <div id="orienting-on-rstudio" class="section level1">
 <h1>Orienting on RStudio</h1>
-<!-- `welcome.R` script section to be revised to move to introduce copy/paste pattern for commands later in materials -->
-<p>We’ve created a simple <code>welcome.R</code> script to demonstrate
-the wheres and hows of the interface. The “File” pane in the lower right
-should have a <code>welcome.R</code> script. Click on it to open.</p>
-<p><img src="images/curriculum/01-GettingStarted/01-01_start.png" /></p>
-<p>There should now be four panes in the RStudio window, with the
-<code>welcome.R</code> script in the “Script” (or “Source”) pane. It
-displays the code that we will write to perform our analysis.</p>
-<p><img
-src="images/curriculum/01-GettingStarted/01-02_welcome.png" /></p>
-<p>Currently the <code>welcome.R</code> script is inert. We must execute
-it in sequence to bring it to life. Highlight all the code in
-<code>welcome.R</code> and then click the “Run” button located along the
-top of the Script pane. Three things happen in quick succession:</p>
+<p>RStudio is an integrated development environment where you can write,
+execute, and see the results of your code. The interface is arranged in
+different panes:</p>
+<ul>
+<li>The Console pane along the left where you can enter commands and
+execute them.</li>
+<li>The Environment pane in the upper right shows any variables you have
+created, along with their values.</li>
+<li>The pane in the lower right has a few functions:
+<ul>
+<li>The Files tab let’s you navigate the file system.</li>
+<li>The Plots tab displays any plots from code run in the Console.</li>
+<li>The Help tab displays the documentation of functions.</li>
+</ul></li>
+</ul>
+<div id="commands-in-the-console" class="section level2">
+<h2>Commands in the Console</h2>
+<p>We can input commands directly into the Console and press
+<KBD>Enter</KBD> to execute them. Try it with:</p>
+<pre><code>&gt; 2+2
+[1] 4</code></pre>
+<p>If we enter commands directly into the Console and execute them,
+<strong>there is no record</strong> that persists after we close
+RStudio.</p>
+<p><img src="images/03_rstudio_console_execution.png" alt="rstudio console execution" style="width:1000px;"/></p>
+<p><strong>Checkpoint</strong></p>
+</div>
+<div id="commands-in-the-script" class="section level2">
+<h2>Commands in the Script</h2>
+<p>To keep that record, we will enter our commands in a script. When
+first opening RStudio, there is no pane to write code to save as a file.
+But by clicking on the icon in the upper-right-most of the interface (a
+blank piece of paper with a + sign), and selecting <KBD>R Script</KBD> a
+new pane opens. This last pane is the Source (or Script) pane, and it is
+here that we’ll keep a running record of the commands we learn in this
+workshop.</p>
+<p><img src="images/04_rstudio_create_script.png" alt="rstudio create script" style="width:1000px;"/></p>
+<p>Which will swing open the Script pane:</p>
+<p><img src="images/05_rstudio_script_pane.png" alt="rstudio script pane" style="width:1000px;"/></p>
+<p>In the Script pane, enter:</p>
+<pre><code>3+2</code></pre>
+<p>Notice that if we press <KBD>Enter</KBD> in the Source pane, we get a
+new line. <strong>The code does note execute.</strong> In order to
+execute the code we press <KBD>Ctrl + Enter</KBD> <strong>on the line of
+code we want to execute</strong>. We then see that code executed, along
+with its result in in the Console pane.</p>
+<p><img src="images/06_rstudio_script_execution.png" alt="rstudio script execution" style="width:1000px;"/></p>
+<blockquote>
+<h2 id="note-script-pane-and-console-pane">Note: Script Pane and Console
+Pane</h2>
+<p>The code written in the Script Pane is just text until it is executed
+with <KBD>Control + Enter</KBD>. The Console Pane is the record of the
+code that has been executed. <br></p>
+</blockquote>
+</div>
+<div id="configuring-rstudio" class="section level2">
+<h2>Configuring RStudio</h2>
+<p>All of the panes in RStudio have configuration options. For example,
+you can minimize/maximize a pane or resize panes by dragging the
+borders. The most important customization options for pane layout are in
+the <KBD>View</KBD> menu. Other options such as font sizes,
+colors/themes, and more are in the <KBD>Tools</KBD> menu under
+<KBD>Global Options</KBD>.</p>
+<p>We can enable soft-wrapping of code by selecting <KBD>Code</KBD> and
+then <KBD>Soft Wrap Long Lines</KBD>.</p>
+<p><img src="images/07_rstudio_soft_wrap.png" alt="rstudio code execution" style="width:1000px;"/></p>
+</div>
+</div>
+<div id="workshop-flow" class="section level1">
+<h1>Workshop Flow</h1>
+<p>The code we execute together is available in three forms:</p>
 <ol style="list-style-type: decimal">
-<li>The “Console” pane (lower left) shows a record of the code that was
-executed.</li>
-<li>The “Environment” pane (upper right) shows what variables are
-present in the environment.</li>
-<li>The “Plots” pane (lower right) shows a plot that was generated from
-the code in the “Scripts” pane (upper left).</li>
+<li>By viewing the instructor’s Zoom screen share,</li>
+<li>By code pasted into Slack, and</li>
+<li>By code blocks on these web pages.</li>
 </ol>
-<p><img src="images/curriculum/01-GettingStarted/01-03_run.png" /></p>
-<p>We note that code can be run in two ways:</p>
+<p>As a learner you are welcome to get the same code into your Script
+Pane by:</p>
 <ol style="list-style-type: decimal">
-<li>By first writing it out in the Script pane, highlighting it, and
-clicking “Run”, or</li>
-<li>By typing directly into the Console pane and hitting enter to
-execute the code.</li>
+<li>Typing the code from the Zoom screen share into your Script
+Pane,</li>
+<li>Copying the code from Slack and pasting into your Script Pane,
+or</li>
+<li>Copying the code from the code blocks on these web pages and pasting
+into your Script Pane.</li>
 </ol>
-<p><strong>Question:</strong> What is the advantage of the first way
-over the second?</p>
+<p><strong>Questions?</strong></p>
 <div id="creating-a-project" class="section level2">
 <h2>Creating a project</h2>
 <p>We will create an RStudio Project to keep our files and code
@@ -590,8 +645,8 @@ dir.create(&#39;results/tables&#39;, showWarnings = FALSE, recursive = TRUE)
 dir.create(&#39;results/rdata&#39;, showWarnings = FALSE, recursive = TRUE)</code></pre>
 </div>
 </div>
-<div id="analysis-initialization" class="section level1">
-<h1>Analysis initialization</h1>
+<div id="loading-libraries" class="section level1">
+<h1>Loading libraries</h1>
 <p>We begin our analysis script by loading the libraries we expect to
 use. It’s generally good practice to include all <code>library()</code>
 calls at the top of a script for visibility.</p>
@@ -621,13 +676,11 @@ essential for getting a handle on the array of functions in the many
 packages contained therein.</li>
 </ul>
 </div>
-<div id="input-data" class="section level1">
-<h1>Input data</h1>
-<p>The <code>inputs/</code> folder has the data for the workshop stored
-in two forms. The first,
-<code>inputs/10x_cellranger_filtered_triples/</code> is closer to what
-AGC would generate with Cell Ranger, where each sample has a folder, and
-within that folder there are three files:</p>
+<div id="read-in-data" class="section level1">
+<h1>Read in data</h1>
+<p>The <code>inputs/10x_cellranger_filtered_triples/</code> folder is
+closer to what AGC would generate with Cell Ranger, where each sample
+has a folder, and within that folder there are three files:</p>
 <ul>
 <li><code>barcodes.tsv.gz</code></li>
 <li><code>features.tsv.gz</code></li>
@@ -635,57 +688,12 @@ within that folder there are three files:</p>
 </ul>
 <p>Note, these files are filtered matrices, AGC will touch on filtered
 and unfiltered Cell Ranger outputs.</p>
-<!-- Were these files explained earlier? If not, briefly explain them here -->
-<p>The second, <code>inputs/bpcells/</code> is the result of the
-<code>BPCells</code> package, and is more machine-readable than
-human-readable. It is an efficient way of storing the same data
-contained in the three files above. We will use this form of the input
-data because it is more memory efficient.</p>
-<p>While the full dataset we selected has time-series information from
-Day 0, Day 3, Day 7, and Day 21, we have removed Day 3 to reduce the
-memory requirements further.</p>
-<!-- Add context for expected 10x outputs and how we would usually start with the "filtered" outputs (and add dropdown or link out to 10x resources to contrast between filtered and raw outputs and use cases for each) -->
-</div>
-<div id="create-a-seurat-object" class="section level1">
-<h1>Create a Seurat object</h1>
-<p>The most recent release of <code>Seurat</code>, version 5, includes
-changes which take advantage of the memory-efficient storage implemented
-in <code>BPCells</code>. To read the efficiently stored data with
-<code>BPCells</code> we will use the <code>open_matrix_dir()</code>
-function.</p>
-<!-- Introduce BPCell package and how most recent version of Seurat (Seurat 5) supports more efficient data storage to improve performance and accomodate larger datasets -->
-<pre class="r"><code># Puts the data &quot;on disk&quot; rather than &quot;in memory&quot;  -------------
-geo_mat = open_matrix_dir(dir = &#39;inputs/bpcells&#39;)</code></pre>
-<p>This reads in the expression matrix which has genes as rows and cells
-as columns. The expression matrix is the precursor to creating the
-<code>Seurat</code> object upon which all our analysis will be done. To
-create the <code>Seurat</code> object:</p>
-<pre class="r"><code># Create seurat object  ----------------------------------------------
-geo_so = CreateSeuratObject(counts = geo_mat, min.cells = 1, min.features = 50)
-geo_so</code></pre>
-<pre><code>An object of class Seurat 
-26489 features across 35216 samples within 1 assay 
-Active assay: RNA (26489 features, 0 variable features)
- 1 layer present: counts</code></pre>
-<p>We have specified some parameters to remove genes and cells which do
-not contain very much information. Specifically a gene is removed if it
-is expressed in 1 or fewer cells, and a cell is removed if it contains
-reads for 50 or fewer genes. In the context of this workshop, this helps
-us minimize memory usage.</p>
-<div id="reading-in-data-from-scratch" class="section level3">
-<h3>Reading in data from scratch</h3>
-<details>
-<summary>
-<em>How to read in data and create BPCell matrix</em>
-</summary>
-<p>Above, we’ve demonstrated how to read data that was already arranged
-in the <code>BPCells</code> manner. We have done this for the workshop
-to reduce our memory footprint from the start, but when you get data
-back from AGC, you will have to follow the steps below.</p>
-<pre class="default doNotRun"><code># ==========================================================================
-### DO NOT RUN ###
-# To load data from raw files without BPCells
-### DO NOT RUN ###
+<div id="read10x" class="section level2">
+<h2>Read10X</h2>
+<p>The <code>Read10X()</code> function will read in the triples
+organized within sample folders:</p>
+<pre class="r"><code># ==========================================================================
+# To load data from 10X Cell Ranger
 
 # Collect the input directories ---------------------------------------
 # Each sample dir contains barcodes.tsv.gz, features.tsv.gz, matrix.mtx.gz.
@@ -708,60 +716,69 @@ sample_dirs = list(
 
 # Create the expression matrix from sample dirs ----------------------- 
 # Read10X needs a *vector* instead of a *list*, so we use *unlist* to convert
-geo_mat = Read10X(data.dir = unlist(sample_dirs))
-
-# Create a Seurat object from expression matrix -----------------------
-geo_so = CreateSeuratObject(counts = geo_mat, min.cells = 1, min.features = 50)
-geo_so
-
-# Save the Seurat object ----------------------------------------------
-saveRDS(geo_so, file = &#39;results/rdata/geo_so_unfiltered.rds&#39;)
-
-
-# Optional: Build BPCells input dir -----------------------------------
-# If you *wanted* to use BPCells (to save some memory), you can transform 
+geo_mat = Read10X(data.dir = unlist(sample_dirs))</code></pre>
+</div>
+<div id="write-bpcells" class="section level2">
+<h2>Write BPCells</h2>
+<p>We could create a Seurat object with
+<code>CreateSeuratObject(counts = geo_mat)</code>, but we will first
+output <code>geo_mat</code> using the BPCells package to save
+memory:</p>
+<pre class="r"><code># Build BPCells input dir -----------------------------------
+# To use BPCells (to save some memory), you can transform 
 # the expression matrix data structure above into BPCells files.
 # BPCells uses these files for processing, but you typically never look at 
 # their contents directly
-write_matrix_dir(mat = geo_mat, dir = &#39;~/ISC_R/bpcells&#39;)
+write_matrix_dir(mat = geo_mat, dir = &#39;~/ISC_R/bpcells&#39;)</code></pre>
+<pre><code>32285 x 35269 IterableMatrix object with class MatrixDir
 
-# What files did that command above create?
-as.matrix(list.files(&#39;~/ISC_R/bpcells&#39;))
-      [,1]               
- [1,] &quot;col_names&quot;        
- [2,] &quot;idxptr&quot;           
- [3,] &quot;index_data&quot;       
- [4,] &quot;index_idx&quot;        
- [5,] &quot;index_idx_offsets&quot;
- [6,] &quot;index_starts&quot;     
- [7,] &quot;row_names&quot;        
- [8,] &quot;shape&quot;            
- [9,] &quot;storage_order&quot;    
-[10,] &quot;val&quot;              
-[11,] &quot;version&quot; 
+Row names: Xkr4, Gm1992 ... AC149090.1
+Col names: HODay0replicate1_AAACCTGAGAGAACAG-1, HODay0replicate1_AAACCTGGTCATGCAT-1 ... HODay21replicate4_TTTGTCACAGGGAGAG-1
 
+Data type: double
+Storage order: column major
 
-# Create expression matrix and Seurat object from BPCells files ---------
-geo_mat = open_matrix_dir(dir = &#39;~/ISC_R/bpcells&#39;)
-geo_so = CreateSeuratObject(counts = geo_mat, min.cells = 1, min.features = 50)
-geo_so
-
-
-# Cleanup ---------------------------------------------------------------
-# Since we have a Seurat object, we no longer need the geo_mat matrix.
-# We will remove from the environment and then prompt RStudio to run a 
-# &quot;garbage collection&quot; to free up unused memory
+Queued Operations:
+1. Load compressed matrix from directory /home/damki/ISC_R/bpcells</code></pre>
+<pre class="r"><code># Cleanup ------------------------------------------------------------------
+# Since we&#39;ll now be reading in from BPCells files, we will remove geo_mat
+# from the environment and then prompt RStudio to run a &quot;garbage collection&quot;
+# to free up unused memory
 rm(geo_mat)
-gc()
-
-# ========================================================================</code></pre>
-<hr/>
-</details>
-<p><br/></p>
+gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
+Ncells   9869860  527.2   17064035  911.4   17064035  911.4
+Vcells 340820281 2600.3 1072332888 8181.3 1211794406 9245.3</code></pre>
+</div>
+<div id="read-bpcells" class="section level2">
+<h2>Read BPCells</h2>
+<p>Let’s read the BPCells files in, and note that the
+<code>geo_mat</code> object takes up less memory than when we created it
+with <code>Read10X()</code>:</p>
+<pre class="r"><code># Create expression matrix and Seurat object from BPCells files ---------
+geo_mat = open_matrix_dir(dir = &#39;~/ISC_R/bpcells&#39;)</code></pre>
+</div>
+<div id="create-a-seurat-object" class="section level2">
+<h2>Create a Seurat object</h2>
+<p>The expression matrix is the precursor to creating the
+<code>Seurat</code> object upon which all our analysis will be done. To
+create the <code>Seurat</code> object:</p>
+<pre class="r"><code># Create seurat object  ----------------------------------------------
+geo_so = CreateSeuratObject(counts = geo_mat, min.cells = 1, min.features = 50)
+geo_so</code></pre>
+<pre><code>An object of class Seurat 
+26489 features across 35216 samples within 1 assay 
+Active assay: RNA (26489 features, 0 variable features)
+ 1 layer present: counts</code></pre>
+<p>We have specified some parameters to remove genes and cells which do
+not contain very much information. Specifically a gene is removed if it
+is expressed in 1 or fewer cells, and a cell is removed if it contains
+reads for 50 or fewer genes. In the context of this workshop, this helps
+us minimize memory usage.</p>
 </div>
 <div id="molecule_info.h5-as-an-alternative-input-to-seurat"
-class="section level3">
-<h3>molecule_info.h5 as an alternative input to Seurat</h3>
+class="section level2">
+<h2>molecule_info.h5 as an alternative input to Seurat</h2>
 <details>
 <summary>
 <em>H5 (aka HDF5) is an alternative file format</em>
@@ -845,8 +862,9 @@ HDF5 format.</li>
 </details>
 <p><br/></p>
 </div>
-<div id="structure-of-a-seurat-object" class="section level2">
-<h2>Structure of a Seurat object</h2>
+</div>
+<div id="structure-of-a-seurat-object" class="section level1">
+<h1>Structure of a Seurat object</h1>
 <p>The <code>Seurat</code> object is a complex data type, so let’s get a
 birds eye view with an image from <a
 href="https://swbioinf.github.io/scRNAseqInR_Doco/seuratobject.html#discussion-the-seurat-object-in-r">this
@@ -886,8 +904,8 @@ other slots include information about the <code>active.assay</code> and
 <code>active.ident</code> which tell Seurat which expression data to use
 and how the cells are to be identified.</p>
 </div>
-<div id="accessing-parts-of-the-object" class="section level2">
-<h2>Accessing parts of the object</h2>
+<div id="accessing-parts-of-the-object" class="section level1">
+<h1>Accessing parts of the object</h1>
 <p>The only slot of the <code>Seurat</code> object that we’ll typically
 access or modify by hand–that is, without a function from the
 <code>Seurat</code> package–is the <code>meta.data</code> object. In R,
@@ -908,7 +926,6 @@ well as the barcode for that cell. As we continue the workshop, we will
 check in on the <code>meta.data</code> slot and observe changes we want
 to make, and that other functions will make. We’ll also observe the
 other assays and layers and note their changes.</p>
-</div>
 </div>
 <div id="save-our-progress" class="section level1">
 <h1>Save our progress</h1>

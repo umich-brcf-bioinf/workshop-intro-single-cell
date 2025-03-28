@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-03-11" />
+<meta name="date" content="2025-03-28" />
 
 <title>Marker identification and visualization</title>
 
@@ -415,7 +415,7 @@ div.tocify {
 <h1 class="title toc-ignore">Marker identification and
 visualization</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-03-11</h4>
+<h4 class="date">2025-03-28</h4>
 
 </div>
 
@@ -587,12 +587,16 @@ write_csv(geo_markers, file = &#39;results/tables/marker_genes_0.4res.csv&#39;)
 # Take a look at the first few rows of the result
 head(geo_markers)</code></pre>
 <pre><code>        p_val avg_log2FC pct.1 pct.2 p_val_adj cluster    gene
-Col12a1     0   4.064165 0.966 0.156         0       0 Col12a1
-Thbs2       0   3.757858 0.935 0.175         0       0   Thbs2
-Col11a1     0   4.825144 0.832 0.078         0       0 Col11a1
-Tnc         0   3.571279 0.868 0.121         0       0     Tnc
-Lox         0   2.799087 0.923 0.190         0       0     Lox
-C1qtnf3     0   5.206444 0.811 0.098         0       0 C1qtnf3</code></pre>
+Col12a1     0   4.179786 0.946 0.142         0       0 Col12a1
+Tnc         0   3.993223 0.865 0.105         0       0     Tnc
+Thbs2       0   3.712661 0.905 0.164         0       0   Thbs2
+Lox         0   2.872514 0.910 0.177         0       0     Lox
+Col11a1     0   4.849163 0.781 0.070         0       0 Col11a1
+Mxra8       0   2.732598 0.876 0.201         0       0   Mxra8</code></pre>
+<p>After running <code>SetIdent()</code>, cells in our Seurat object are
+identified by the numeric cluster they belong to, instead of the unique
+identifiers that are the default identities after reading in the
+data.</p>
 <div class="float">
 <img src="images/seurat_schematic/Slide11.png"
 alt="Image: Schematic after SetIdent()." />
@@ -632,16 +636,16 @@ head(top_5, n = 10)</code></pre>
 # Groups:   cluster [2]
    p_val avg_log2FC pct.1 pct.2 p_val_adj cluster gene    
    &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;   
- 1     0       4.06 0.966 0.156         0 0       Col12a1 
- 2     0       3.76 0.935 0.175         0 0       Thbs2   
- 3     0       4.83 0.832 0.078         0 0       Col11a1 
- 4     0       3.57 0.868 0.121         0 0       Tnc     
- 5     0       2.80 0.923 0.19          0 0       Lox     
- 6     0       2.16 0.835 0.217         0 1       Dpt     
- 7     0       2.58 0.779 0.165         0 1       Col14a1 
- 8     0       1.86 0.914 0.301         0 1       Serping1
- 9     0       2.55 0.819 0.208         0 1       Bicc1   
-10     0       2.50 0.786 0.189         0 1       Gas1    </code></pre>
+ 1     0       4.18 0.946 0.142         0 0       Col12a1 
+ 2     0       3.99 0.865 0.105         0 0       Tnc     
+ 3     0       3.71 0.905 0.164         0 0       Thbs2   
+ 4     0       2.87 0.91  0.177         0 0       Lox     
+ 5     0       4.85 0.781 0.07          0 0       Col11a1 
+ 6     0       2.33 0.866 0.212         0 1       Dpt     
+ 7     0       2.04 0.945 0.297         0 1       Serping1
+ 8     0       2.57 0.828 0.206         0 1       Bicc1   
+ 9     0       2.66 0.784 0.164         0 1       Col14a1 
+10     0       2.59 0.799 0.187         0 1       Gas1    </code></pre>
 <pre class="r"><code># Optional - Create table of top 5 markers per cluster (ranked by logFC) -------
 top_5_by_log2FC = geo_markers %&gt;% group_by(cluster) %&gt;% arrange(p_val_adj, desc(avg_log2FC)) %&gt;% slice_head(n = 5)
 
@@ -652,16 +656,16 @@ head(top_5_by_log2FC, n = 10) </code></pre>
 # Groups:   cluster [2]
    p_val avg_log2FC pct.1 pct.2 p_val_adj cluster gene  
    &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt; 
- 1     0       6.17 0.153 0.005         0 0       Cilp2 
- 2     0       5.58 0.497 0.018         0 0       Scx   
- 3     0       5.55 0.101 0.004         0 0       Ucma  
- 4     0       5.35 0.686 0.053         0 0       Fmod  
- 5     0       5.24 0.092 0.004         0 0       Matn3 
- 6     0       4.17 0.183 0.015         0 1       Brinp1
- 7     0       4.00 0.099 0.007         0 1       Agtr2 
- 8     0       3.68 0.458 0.063         0 1       Slc1a3
- 9     0       3.09 0.406 0.07          0 1       Ccn5  
-10     0       3.07 0.54  0.141         0 1       Sfrp2 </code></pre>
+ 1     0       6.04 0.092 0.003         0 0       Ucma  
+ 2     0       5.95 0.134 0.005         0 0       Cilp2 
+ 3     0       5.84 0.456 0.014         0 0       Scx   
+ 4     0       5.58 0.087 0.003         0 0       Matn3 
+ 5     0       5.10 0.607 0.053         0 0       Fmod  
+ 6     0       3.88 0.165 0.017         0 1       Brinp1
+ 7     0       3.49 0.432 0.065         0 1       Slc1a3
+ 8     0       3.17 0.632 0.129         0 1       Smoc2 
+ 9     0       3.16 0.175 0.028         0 1       Hmcn2 
+10     0       3.02 0.295 0.053         0 1       Abca8a</code></pre>
 <p>We expect to see several columns:</p>
 <ul>
 <li><code>gene</code>: gene symbol</li>
@@ -757,9 +761,9 @@ plots = c(&quot;top_5_sct_dot_plot&quot;,
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells   9403292  502.2   16779050   896.1   16779050   896.1
-Vcells 700424489 5343.9 1569005712 11970.6 1569005188 11970.6</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
+Ncells   9974980  532.8   17064398  911.4   17064398  911.4
+Vcells 538073446 4105.2 1260050879 9613.5 1260046147 9613.4</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">
