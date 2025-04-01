@@ -7,11 +7,12 @@
 # #remove.packages('klippy');
 # remotes::install_github("umich-brcf-bioinf/workshop-klippy"); 
 # 
-# # install.packages("kable")
+# install.packages("kable")
 # devtools::install_github("haozhu233/kableExtra")
 
 library(rmarkdown)
 library(klippy)
+library(kableExtra)
 
 # IF KNITTING ON AWS:
 # setwd("~/workshop-intro-single-cell")
