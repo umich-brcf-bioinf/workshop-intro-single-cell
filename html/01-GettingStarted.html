@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-03-28" />
+<meta name="date" content="2025-04-01" />
 
 <title>Getting Started with Seurat</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -414,7 +414,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Getting Started with Seurat</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-03-28</h4>
+<h4 class="date">2025-04-01</h4>
 
 </div>
 
@@ -535,8 +535,8 @@ code we want to execute</strong>. We then see that code executed, along
 with its result in in the Console pane.</p>
 <p><img src="images/06_rstudio_script_execution.png" alt="rstudio script execution" style="width:1000px;"/></p>
 <blockquote>
-<h2 id="note-script-pane-and-console-pane">Note: Script Pane and Console
-Pane</h2>
+<h2 id="note-script-pane-and-console-pane"
+class="unlisted unnumbered">Note: Script Pane and Console Pane</h2>
 <p>The code written in the Script Pane is just text until it is executed
 with <KBD>Control + Enter</KBD>. The Console Pane is the record of the
 code that has been executed. <br></p>
@@ -730,6 +730,9 @@ memory:</p>
 # BPCells uses these files for processing, but you typically never look at 
 # their contents directly
 write_matrix_dir(mat = geo_mat, dir = &#39;~/ISC_R/bpcells&#39;)</code></pre>
+<pre><code>Warning: Matrix compression performs poorly with non-integers.
+• Consider calling convert_matrix_type if a compressed integer matrix is intended.
+This message is displayed once every 8 hours.</code></pre>
 <pre><code>32285 x 35269 IterableMatrix object with class MatrixDir
 
 Row names: Xkr4, Gm1992 ... AC149090.1
@@ -739,16 +742,16 @@ Data type: double
 Storage order: column major
 
 Queued Operations:
-1. Load compressed matrix from directory /home/damki/ISC_R/bpcells</code></pre>
+1. Load compressed matrix from directory /home/workshop/rcavalca/ISC_R/bpcells</code></pre>
 <pre class="r"><code># Cleanup ------------------------------------------------------------------
 # Since we&#39;ll now be reading in from BPCells files, we will remove geo_mat
 # from the environment and then prompt RStudio to run a &quot;garbage collection&quot;
 # to free up unused memory
 rm(geo_mat)
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
-Ncells   9869860  527.2   17064035  911.4   17064035  911.4
-Vcells 340820281 2600.3 1072332888 8181.3 1211794406 9245.3</code></pre>
+<pre><code>           used  (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells  6259405 334.3   10728660  573.0   7865174  420.1
+Vcells 11563298  88.3  564234184 4304.8 672842011 5133.4</code></pre>
 </div>
 <div id="read-bpcells" class="section level2">
 <h2>Read BPCells</h2>
