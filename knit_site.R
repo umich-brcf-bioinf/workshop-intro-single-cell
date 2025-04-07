@@ -7,11 +7,12 @@
 # #remove.packages('klippy');
 # remotes::install_github("umich-brcf-bioinf/workshop-klippy"); 
 # 
-# # install.packages("kable")
+# install.packages("kable")
 # devtools::install_github("haozhu233/kableExtra")
 
 library(rmarkdown)
 library(klippy)
+library(kableExtra)
 
 # IF KNITTING ON AWS:
 # setwd("~/workshop-intro-single-cell")
@@ -20,7 +21,7 @@ library(klippy)
 
 render('source/workshop_setup/preregistration_info.md', output_dir='html/workshop_setup/')
 render('source/workshop_setup/preworkshop_checklist.md', output_dir='html/workshop_setup/')
-render('source/workshop_setup/setup_instructions.md', output_dir='html/workshop_setup/')
+render('source/workshop_setup/setup_instructions.Rmd', output_dir='html/workshop_setup/')
 render('source/workshop_setup/setup_instructions_advanced.md', output_dir='html/workshop_setup/')
 render('source/workshop_setup/prereq_check.md', output_dir='html/workshop_setup/')
 

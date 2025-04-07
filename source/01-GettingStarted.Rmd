@@ -128,7 +128,7 @@ Notice that if we press <KBD>Enter</KBD> in the Source pane, we get a new line. 
 
 <img src="images/06_rstudio_script_execution.png" alt="rstudio script execution" style="width:1000px;"/>
 
-> ## Note: Script Pane and Console Pane
+> ## Note: Script Pane and Console Pane {.unlisted .unnumbered}
 >
 > The code written in the Script Pane is just text until it is executed with <KBD>Control + Enter</KBD>. The Console Pane is the record of the code that has been executed.
 <br>
