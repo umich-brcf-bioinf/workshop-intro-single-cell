@@ -89,7 +89,7 @@ if(!exists('geo_so')) {
 
   geo_so = readRDS('results/rdata/geo_so_sct_integrated.rds')
   
-  pcs=13
+  pcs=10
 }
 ```
 
@@ -286,20 +286,37 @@ Similar to the PCA plots, the `day` labeled UMAP can tell us if technical source
 
 Another approach is to evaluate the number of cells per cluster using the `table()` function, split by `day` or split by `orig.ident` to see if the individual samples are driving any of the UMAP structure:
 
-```{r, table_by_day, eval = FALSE}
+```{r, table_by_day, eval = FALSE, message=FALSE}
 # Make tables of cell counts ----------------------------------------------
-# cells per cluster, split by condition
-table(geo_so@meta.data$day, geo_so@meta.data$integrated.sct.rpca.clusters)
+# cells per cluster, split by condition plus total per cluster
+clusters_counts_condition <- geo_so@meta.data %>% 
+  select(day, integrated.sct.rpca.clusters) %>%
+  summarise(counts = n(), .by = c(day, integrated.sct.rpca.clusters)) %>% 
+  pivot_wider(names_from = integrated.sct.rpca.clusters, values_from = counts, names_sort=TRUE) %>%
+  bind_rows(summarise_all(., ~if(is.numeric(.)) sum(.) else "Total"))
+clusters_counts_condition 
+
 
 # cells per cluster per sample
-table(geo_so@meta.data$orig.ident, geo_so@meta.data$integrated.sct.rpca.clusters)
+clusters_counts_sample <- geo_so@meta.data %>% 
+  select(orig.ident, integrated.sct.rpca.clusters) %>%
+  summarise(counts = n(), .by = c(orig.ident, integrated.sct.rpca.clusters)) %>% 
+  pivot_wider(names_from = integrated.sct.rpca.clusters, values_from = counts, names_sort=TRUE) %>%
+  bind_rows(summarise_all(., ~if(is.numeric(.)) sum(.) else "Total"))
+clusters_counts_sample
   
 ```
 
 ```{r, table_by_day_hidden, echo = FALSE}
 # Make tables of cell counts ----------------------------------------------
 # cells per cluster, split by condition
-table(geo_so@meta.data$day, geo_so@meta.data$integrated.sct.rpca.clusters) %>%
+clusters_counts_condition <- geo_so@meta.data %>% 
+  select(day, integrated.sct.rpca.clusters) %>%
+  summarise(counts = n(), .by = c(day, integrated.sct.rpca.clusters)) %>% 
+  pivot_wider(names_from = integrated.sct.rpca.clusters, values_from = counts, names_sort=TRUE) %>%
+  bind_rows(summarise_all(., ~if(is.numeric(.)) sum(.) else "Total"))
+
+clusters_counts_condition  %>%
   kable("html") %>%
   kable_styling(font_size = 12,
                 bootstrap_options='condensed',
@@ -311,7 +328,13 @@ table(geo_so@meta.data$day, geo_so@meta.data$integrated.sct.rpca.clusters) %>%
 
 ```{r, table_by_ident_hidden, echo = FALSE}
 # cells per cluster per sample
-table(geo_so@meta.data$orig.ident, geo_so@meta.data$integrated.sct.rpca.clusters) %>%
+clusters_counts_sample <- geo_so@meta.data %>% 
+  select(orig.ident, integrated.sct.rpca.clusters) %>%
+  summarise(counts = n(), .by = c(orig.ident, integrated.sct.rpca.clusters)) %>% 
+  pivot_wider(names_from = integrated.sct.rpca.clusters, values_from = counts, names_sort=TRUE) %>%
+  bind_rows(summarise_all(., ~if(is.numeric(.)) sum(.) else "Total"))
+
+clusters_counts_sample %>%
   kable("html") %>%
   kable_styling(font_size = 12,
                 bootstrap_options='condensed',
