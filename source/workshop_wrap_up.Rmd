@@ -287,7 +287,7 @@ devtools::session_info()
   - _Please save all your R scripts now_ so that we can "right-size" the compute environment immediately following today's workshop session.
 - You can download files from the workshop environment from your terminal/command line window as below. 
   (You will need to substitute your actual workshop username and type workshop password when prompted.)
-  ```{bash, eval=F, echo=T}
+  ```
   # download workshop files -------------------------------------------------
   mkdir intro_scrnaseq_workshop
   cd intro_scrnaseq_workshop
@@ -311,13 +311,16 @@ devtools::session_info()
   - The Seurat inputs (cellranger triples and dbcells files) used in this 
     workshop can be installed locally like so:
 
-    ```{bash, eval=F, echo=T}
+    ```
     # download Seurat inputs --------------------------------------------------
     mkdir -p intro_scrnaseq_workshop/ISC_R
     cd intro_scrnaseq_workshop/ISC_R
-    # Curl download a ~2 Gb tarball
-    curl -o workshop_isc_inputs.tgz `r aws_s3_bucket` 
     
+    # Curl download a ~2 Gb tarball
+    # The curl command below is split over two lines, but you copy/paste them as a single block
+    curl -o workshop_isc_inputs.tgz \
+        `r aws_s3_bucket` 
+        
     # tar unpacks the tarball into directories and then removes the tarball
     tar xzvf workshop_isc_inputs.tgz
     rm workshop_isc_inputs.tgz
