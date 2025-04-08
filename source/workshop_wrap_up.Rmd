@@ -30,6 +30,10 @@ pre {
 
 </style>
 
+```{r, include = FALSE}
+source("../bin/set_values.R")
+```
+
 ```{r klippy, echo=FALSE, include=TRUE}
 klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
 ```
@@ -75,7 +79,7 @@ used as input to downstream analysis.
 
 All analysis and graphics were generated in R (v4.4.1) [1]. Analysis was performed primarily using the Seurat package (v5.0.1) [2]. Cells with extreme values (which indicate low complexity, doublets, or apoptotic cells) were excluded by filtering to include only cells where Genes/cell >300 and % mitochondrial < 15% resulting in approximately 600-5,600 cells per sample after filtering. Counts were then normalized using the SCTransform method with default parameters [3].
 
-Normalized data were integrated using the RPCA method (IntegrateLayers function with “SCT” as normalization method. Principal Component Analysis (PCA) was then performed and the first significant components were used for finding nearest neighbors followed by graph-based, semi-unsupervised Louvain clustering into distinct populations (resolution = 0.4). All uniform manifold approximation and projection (UMAP) plots were generated using default settings [4]. To identify marker genes, the clusters in the integrated data were compared pairwise for differential gene expression using Wilcoxon rank-sum test for single-cell gene expression (FindAllMarkers function; default parameters) [5]. Additional marker genes and cell-type predictions were generated with scCATCH (3.2.2) [6].
+Normalized data were integrated using the RPCA method (IntegrateLayers function with “SCT” as normalization method. Principal Component Analysis (PCA) was then performed and the first 10 significant components were used for finding nearest neighbors followed by graph-based, semi-unsupervised Louvain clustering into distinct populations (resolution = 0.4). All uniform manifold approximation and projection (UMAP) plots were generated using default settings [4]. To identify marker genes, the clusters in the integrated data were compared pairwise for differential gene expression using Wilcoxon rank-sum test for single-cell gene expression (FindAllMarkers function; default parameters) [5]. Additional marker genes and cell-type predictions were generated with scCATCH (3.2.2) [6].
 
 To identify differentially expressed (DE) genes within the total population, Case and Control samples were compared pairwise for differential expression expression (FindAllMarkers function; log2FC = 1.5; test.use = “Wilcoxon”). For each cluster, the results were further limited to significantly different genes (Benjamini-Hochberg adjusted p-value <= 0.05).  Intra-cluster case-vs-control pseudo bulk comparisons were analyzed using DESeq2 (v1.44.0) [7].
 
@@ -316,13 +320,16 @@ devtools::session_info()
     mkdir -p intro_scrnaseq_workshop/ISC_R
     cd intro_scrnaseq_workshop/ISC_R
     
-    # Curl download a ~2 Gb tarball
-    # The curl command below is split over two lines, but you copy/paste them as a single block
-    curl -o workshop_isc_inputs.tgz \
-        `r aws_s3_bucket` 
-        
-    # tar unpacks the tarball into directories and then removes the tarball
+    # Use curl to download a ~2 Gb tarball
+    # We'll use evironment variables to avoid extremely long command lines
+    source_url="`r aws_s3_bucket`"
+    source_file="`r aws_s3_file`"
+    curl -o workshop_isc_inputs.tgz ${source_url}/${source_file}
+
+    # tar unpacks the tarball into directories
     tar xzvf workshop_isc_inputs.tgz
+
+    # Since we have unpacked the tarball, we can remove it
     rm workshop_isc_inputs.tgz
     ```
 

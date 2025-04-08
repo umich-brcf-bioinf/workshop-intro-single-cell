@@ -164,24 +164,24 @@ the file `phenos.csv`:
 ```{r, read_phenotypes}
 # Read sample attributes  ------------------------------------------
 # Load the expanded phenotype columns (condition, day, and replicate)
-phenos = read.csv('inputs/phenos.csv')
+phenos = read.csv('inputs/prepared_data/phenos.csv')
 head(phenos, 3)
 ```
 
 :::
 
-The following code chunk will annotated a copy of the metadata with columns for `day` and `replicate` and ensure that certain categorical data appears in correct order, e.g. Day0, Day7, and Day21 instead of Day0, Day21, and Day7.
+The following code chunk will annotated a copy of the metadata with columns for `day` and `replicate` and ensure that certain categorical data appears in correct order, e.g. Day0, Day7, and Day21 instead of Day0, Day21, and Day7. <!--- revised quotes for day since failed in testing on LH -->
 
 ```{r, alter_metadataA, eval = FALSE}
 # Make a temp table that joins Seurat loaded metadata with expanded phenotype columns
 # (Also, preserve the rownames and order samples based on order in phenos.csv)
-# Note that column "day" is quoted in ...factor("day",...) because day is also 
+# Note that column "day" has tick marks in ...factor(`day`,...) because day is also 
 # the name of a function in R
 tmp_meta = geo_so@meta.data %>% 
   rownames_to_column('tmp_rowname') %>%
   left_join(phenos, by = 'orig.ident') %>%
   mutate(orig.ident = factor(orig.ident, phenos$orig.ident)) %>%
-  mutate(day = factor("day", unique(phenos$day))) %>%
+  mutate(day = factor(`day`, unique(phenos$day))) %>%
   column_to_rownames('tmp_rowname')
 
 View(head(tmp_meta))
@@ -197,7 +197,7 @@ tmp_meta = geo_so@meta.data %>%
   rownames_to_column('tmp_rowname') %>%
   left_join(phenos, by = 'orig.ident') %>%
   mutate(orig.ident = factor(orig.ident, phenos$orig.ident)) %>%
-  mutate(day = factor("day", unique(phenos$day))) %>%
+  mutate(day = factor(`day`, unique(phenos$day))) %>%
   column_to_rownames('tmp_rowname')
 
 head(tmp_meta) %>%

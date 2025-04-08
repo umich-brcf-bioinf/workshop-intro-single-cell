@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-03-18" />
+<meta name="date" content="2025-04-01" />
 
 <title>PCA and Integration</title>
 
@@ -414,7 +414,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">PCA and Integration</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-03-18</h4>
+<h4 class="date">2025-04-01</h4>
 
 </div>
 
@@ -503,7 +503,7 @@ prior to clustering</li>
 <p>Similar to the previous sections, while you may see only a single
 approach in a paper and we will be showing one example of executing
 these steps here, testing multiple methods or parameters might be
-necessary</p>
+necessary.</p>
 <p><br/></p>
 <hr />
 <!--Before this section - Day 1: Starting w/ Seurat, Initial QC, & Batch correction (SCtransform)-->
@@ -548,7 +548,7 @@ one cell plotted on the x-axis and the second cell plotted on the
 y-axis.</p>
 <div class="float">
 <img
-src="images/curriculum/04-PCAandIntegration/HBC-PCA_2cell_genes.png"
+src="images/curriculum/04-PCAandIntegration/HBC-PCA_2cell_genes_updated.png"
 alt="A simple PCA example (from HBC)" />
 <div class="figcaption">A simple PCA example (from HBC)</div>
 </div>
@@ -561,7 +561,7 @@ first) representing the second most variation in the data - which would
 represent the second PC.</p>
 <div class="float">
 <img
-src="images/curriculum/04-PCAandIntegration/HBC-PCA_2cell_variation3.png"
+src="images/curriculum/04-PCAandIntegration/HBC-PCA_2cell_variation3_updated.png"
 alt="PCA gene loadings (from HBC)" />
 <div class="figcaption">PCA gene loadings (from HBC)</div>
 </div>
@@ -667,10 +667,10 @@ geo_so</code></pre>
 Active assay: SCT (20468 features, 3000 variable features)
  3 layers present: counts, data, scale.data
  1 other assay present: RNA
- 2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca</code></pre>
-<p>After running the command in the console, we should see that the
-<code>geo_so</code> Seurat object has a new reduction. Viewed in our
-running schematic:</p>
+ 1 dimensional reduction calculated: unintegrated.sct.pca</code></pre>
+<p>After running the command in the console, we should see that
+<code>geo_so</code> has a new reduction added to that slot in the Seurat
+object as shown in the schematic:</p>
 <div class="float">
 <img src="images/seurat_schematic/Slide6.png"
 alt="Image: Schematic after RunPCA()." />
@@ -700,6 +700,11 @@ dev.off()
 DimHeatmap for PC1 alone
 </p>
 </div>
+<p>In the plot of just the first PC, we see the rows are labeled with
+gene names and PC scores plotted with positive values in yellow,
+negative values in purple, and zero in black <a
+href="https://davetang.org/muse/2017/08/01/getting-started-seurat/">by
+default</a>.</p>
 <div class="figure" style="text-align: center">
 <img src="images/curriculum/04-PCAandIntegration/04-pca_heatmap_18-1.png" alt="DimHeatmap for PC1-18" width="816" />
 <p class="caption">
@@ -707,9 +712,10 @@ DimHeatmap for PC1-18
 </p>
 </div>
 <p>As we scroll down in this plot, we see less and less structure in our
-plots indicating that no only is less variation is being represented by
-larger PCs overall but also that those PCs are less likely to correspond
-to variation of interest, e.g. corresponding to cell types/subtypes.</p>
+plots and more zero scores (in black) indicating that not only is less
+variation is being represented by larger PCs overall but also that those
+PCs are less likely to correspond to variation of interest,
+e.g. corresponding to cell types/subtypes.</p>
 <details>
 <summary>
 <em>What genes are contributing the most to each PC?</em>
@@ -805,8 +811,8 @@ optimal_pcs = function(so, reduction) {
 pcs = optimal_pcs(geo_so, &#39;unintegrated.sct.pca&#39;)
 pcs</code></pre>
 <pre><code>[1] 16</code></pre>
-<pre class="r"><code># Based on the heatmap, we&#39;ll modify to 13 PCs
-pcs = 13
+<pre class="r"><code># Based on the heatmap (and some behind the scenes testing), we&#39;ll modify the number of PCs
+pcs = 10
 
 # =========================================================================</code></pre>
 <p>Again, this number is likely a starting point and may need to be
@@ -902,9 +908,6 @@ optimal_pcs = optimal_pcs_advanced(geo_so, &#39;unintegrated.sct.pca&#39;)</code
 ggsave(filename = &#39;results/figures/optimal_pcs.png&#39;,
        plot=optimal_pcs$plot,
        width = 8, height = 8, units = &#39;in&#39;)
-
-# Based on the heatmaps above, we&#39;ll cluster on 13 PCs
-pcs = 13
 
 # =========================================================================</code></pre>
 <p>Again, this number is likely a starting point and may need to be
@@ -1006,17 +1009,17 @@ steps each correspond to a single sample, in our <code>geo_so</code>
 Seurat object. For additional information, refer to the Seurat v5
 vignette on integrative analysis (<a
 href="https://satijalab.org/seurat/articles/seurat5_integration#perform-streamlined-one-line-integrative-analysis">link</a>)
-provides examples of each integration method. Note, that the vignette
-code uses the <code>NormalizeData()</code>, <code>ScaleData()</code>,
-<code>FindVariableFeatures()</code> pipeline, so their
-<code>IntegrateLayers()</code> call does not include
+provides examples of each integration method. Note, that the Seurat
+vignette code uses the <code>NormalizeData()</code>,
+<code>ScaleData()</code>, <code>FindVariableFeatures()</code> pipeline,
+so their <code>IntegrateLayers()</code> call does not include
 <code>normalization.method = 'SCT'</code>, as ours must.</p>
 <div class="prepared_content cooking_show">
 <p><strong>Load a pre-prepared integrated data file:</strong></p>
 <p>Because the <code>IntegrateLayers()</code> function takes a while to
 run, we will load the RPCA integrated <code>geo_so</code> object from a
 file we have previously generated.</p>
-<pre class="r"><code>geo_so = readRDS(&#39;/home/workshop/rcavalca/ISC_R/results/rdata/geo_so_sct_integrated.rds&#39;)</code></pre>
+<pre class="r"><code>geo_so = readRDS(&#39;inputs/prepared_data/geo_so_sct_integrated.rds&#39;)</code></pre>
 </div>
 <p>Note we have specified the unintegrated reduction
 <code>unintegrated.sct.pca</code>, which is what
@@ -1032,14 +1035,17 @@ Active assay: SCT (20468 features, 3000 variable features)
  3 layers present: counts, data, scale.data
  1 other assay present: RNA
  2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca</code></pre>
-<p>Viewed in our running schematic:</p>
+<p>And in in our running schematic, we can now see
+<code>integrated.sct.rpca</code> added to the dimensional reduction
+slot:</p>
 <div class="float">
 <img src="images/seurat_schematic/Slide7.png"
 alt="Image: Schematic after IntegrateLayers()." />
 <div class="figcaption">Image: Schematic after IntegrateLayers().</div>
 </div>
 <p>We can also confirm that our integration method has helped to correct
-the <code>Day</code> effects we saw in the initial PCA plots</p>
+the <code>Day</code> effects we saw in the initial PCA plots by
+generating a similar plot for our integrated data.</p>
 <pre class="r"><code># Visualize PCA (PC1 and PC2, integrated) ---------------------------------
 DimPlot(geo_so, reduction = &#39;integrated.sct.rpca&#39;, group.by = &#39;day&#39;)
 ggsave(filename = &#39;results/figures/qc_pca_plot_integrated_sct_day.png&#39;, width = 7, height = 6, units = &#39;in&#39;)

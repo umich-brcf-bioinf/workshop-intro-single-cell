@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-03-11" />
+<meta name="date" content="2025-04-01" />
 
 <title>Marker identification and visualization</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -415,7 +415,7 @@ div.tocify {
 <h1 class="title toc-ignore">Marker identification and
 visualization</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-03-11</h4>
+<h4 class="date">2025-04-01</h4>
 
 </div>
 
@@ -586,13 +586,17 @@ write_csv(geo_markers, file = &#39;results/tables/marker_genes_0.4res.csv&#39;)
 
 # Take a look at the first few rows of the result
 head(geo_markers)</code></pre>
-<pre><code>        p_val avg_log2FC pct.1 pct.2 p_val_adj cluster    gene
-Col12a1     0   4.064165 0.966 0.156         0       0 Col12a1
-Thbs2       0   3.757858 0.935 0.175         0       0   Thbs2
-Col11a1     0   4.825144 0.832 0.078         0       0 Col11a1
-Tnc         0   3.571279 0.868 0.121         0       0     Tnc
-Lox         0   2.799087 0.923 0.190         0       0     Lox
-C1qtnf3     0   5.206444 0.811 0.098         0       0 C1qtnf3</code></pre>
+<pre><code>         p_val avg_log2FC pct.1 pct.2 p_val_adj cluster     gene
+Clec3b       0   5.451670 0.811 0.063         0       0   Clec3b
+Dpt          0   3.412710 0.876 0.154         0       0      Dpt
+Serping1     0   3.453869 0.953 0.238         0       0 Serping1
+Col14a1      0   3.678682 0.769 0.113         0       0  Col14a1
+C1s1         0   3.299230 0.748 0.098         0       0     C1s1
+Fbn1         0   2.975064 0.898 0.258         0       0     Fbn1</code></pre>
+<p>After running <code>SetIdent()</code>, cells in our Seurat object are
+identified by the numeric cluster they belong to, instead of the unique
+identifiers that are the default identities after reading in the
+data.</p>
 <div class="float">
 <img src="images/seurat_schematic/Slide11.png"
 alt="Image: Schematic after SetIdent()." />
@@ -632,16 +636,16 @@ head(top_5, n = 10)</code></pre>
 # Groups:   cluster [2]
    p_val avg_log2FC pct.1 pct.2 p_val_adj cluster gene    
    &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;   
- 1     0       4.06 0.966 0.156         0 0       Col12a1 
- 2     0       3.76 0.935 0.175         0 0       Thbs2   
- 3     0       4.83 0.832 0.078         0 0       Col11a1 
- 4     0       3.57 0.868 0.121         0 0       Tnc     
- 5     0       2.80 0.923 0.19          0 0       Lox     
- 6     0       2.16 0.835 0.217         0 1       Dpt     
- 7     0       2.58 0.779 0.165         0 1       Col14a1 
- 8     0       1.86 0.914 0.301         0 1       Serping1
- 9     0       2.55 0.819 0.208         0 1       Bicc1   
-10     0       2.50 0.786 0.189         0 1       Gas1    </code></pre>
+ 1     0       5.45 0.811 0.063         0 0       Clec3b  
+ 2     0       3.41 0.876 0.154         0 0       Dpt     
+ 3     0       3.45 0.953 0.238         0 0       Serping1
+ 4     0       3.68 0.769 0.113         0 0       Col14a1 
+ 5     0       3.30 0.748 0.098         0 0       C1s1    
+ 6     0       4.20 0.962 0.145         0 1       Col12a1 
+ 7     0       3.85 0.869 0.11          0 1       Tnc     
+ 8     0       3.78 0.924 0.166         0 1       Thbs2   
+ 9     0       4.98 0.812 0.07          0 1       Col11a1 
+10     0       2.90 0.921 0.18          0 1       Lox     </code></pre>
 <pre class="r"><code># Optional - Create table of top 5 markers per cluster (ranked by logFC) -------
 top_5_by_log2FC = geo_markers %&gt;% group_by(cluster) %&gt;% arrange(p_val_adj, desc(avg_log2FC)) %&gt;% slice_head(n = 5)
 
@@ -650,18 +654,18 @@ top_5_by_log2FC = geo_markers %&gt;% group_by(cluster) %&gt;% arrange(p_val_adj,
 head(top_5_by_log2FC, n = 10) </code></pre>
 <pre><code># A tibble: 10 × 7
 # Groups:   cluster [2]
-   p_val avg_log2FC pct.1 pct.2 p_val_adj cluster gene  
-   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt; 
- 1     0       6.17 0.153 0.005         0 0       Cilp2 
- 2     0       5.58 0.497 0.018         0 0       Scx   
- 3     0       5.55 0.101 0.004         0 0       Ucma  
- 4     0       5.35 0.686 0.053         0 0       Fmod  
- 5     0       5.24 0.092 0.004         0 0       Matn3 
- 6     0       4.17 0.183 0.015         0 1       Brinp1
- 7     0       4.00 0.099 0.007         0 1       Agtr2 
- 8     0       3.68 0.458 0.063         0 1       Slc1a3
- 9     0       3.09 0.406 0.07          0 1       Ccn5  
-10     0       3.07 0.54  0.141         0 1       Sfrp2 </code></pre>
+   p_val avg_log2FC pct.1 pct.2 p_val_adj cluster gene     
+   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;    
+ 1     0       6.73 0.094 0.001         0 0       Serpina3c
+ 2     0       6.71 0.167 0.002         0 0       C7       
+ 3     0       6.44 0.084 0.001         0 0       Nat8f7   
+ 4     0       6.16 0.106 0.002         0 0       Gm36107  
+ 5     0       6.01 0.124 0.002         0 0       Lvrn     
+ 6     0       6.37 0.144 0.004         0 1       Cilp2    
+ 7     0       6.11 0.095 0.003         0 1       Ucma     
+ 8     0       5.81 0.473 0.015         0 1       Scx      
+ 9     0       5.56 0.09  0.003         0 1       Matn3    
+10     0       5.54 0.144 0.007         0 1       Kera     </code></pre>
 <p>We expect to see several columns:</p>
 <ul>
 <li><code>gene</code>: gene symbol</li>
@@ -757,9 +761,9 @@ plots = c(&quot;top_5_sct_dot_plot&quot;,
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells   9403292  502.2   16779050   896.1   16779050   896.1
-Vcells 700424489 5343.9 1569005712 11970.6 1569005188 11970.6</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
+Ncells   9333001  498.5   17621174  941.1   17621174   941.1
+Vcells 536213226 4091.0 1134452860 8655.2 1418066075 10819.0</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">

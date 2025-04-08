@@ -129,8 +129,6 @@ unique(geo_so$day.celltype)
 
 
 ```{r, de_make_contrast_hidden, message = FALSE, warning = FALSE, echo=FALSE}
-##### Day 3  - Differential Expression Analysis
-
 # Make a day-celltype contrast --------------------------------------------
 
 # set up combined label of day + celltype & assign as identities

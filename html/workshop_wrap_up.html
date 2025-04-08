@@ -521,7 +521,7 @@ then normalized using the SCTransform method with default parameters
 [3].</p>
 <p>Normalized data were integrated using the RPCA method
 (IntegrateLayers function with “SCT” as normalization method. Principal
-Component Analysis (PCA) was then performed and the first significant
+Component Analysis (PCA) was then performed and the first 10 significant
 components were used for finding nearest neighbors followed by
 graph-based, semi-unsupervised Louvain clustering into distinct
 populations (resolution = 0.4). All uniform manifold approximation and
@@ -806,13 +806,16 @@ this workshop can be installed locally like so:</p>
 mkdir -p intro_scrnaseq_workshop/ISC_R
 cd intro_scrnaseq_workshop/ISC_R
 
-# Curl download a ~2 Gb tarball
-# The curl command below is split over two lines, but you copy/paste them as a single block
-curl -o workshop_isc_inputs.tgz \
-    https://umich-brcf-bioinf-workshop-intro-single-cell.s3.us-east-1.amazonaws.com/workshop_isc_inputs-20250212.tgz 
+# Use curl to download a ~2 Gb tarball
+# We&#39;ll use evironment variables to avoid extremely long command lines
+source_url=&quot;https://umich-brcf-bioinf-workshop-intro-single-cell.s3.us-east-1.amazonaws.com&quot;
+source_file=&quot;workshop_isc_inputs-20250416.tgz&quot;
+curl -o workshop_isc_inputs.tgz ${source_url}/${source_file}
 
-# tar unpacks the tarball into directories and then removes the tarball
+# tar unpacks the tarball into directories
 tar xzvf workshop_isc_inputs.tgz
+
+# Since we have unpacked the tarball, we can remove it
 rm workshop_isc_inputs.tgz</code></pre></li>
 </ul>
 </div>

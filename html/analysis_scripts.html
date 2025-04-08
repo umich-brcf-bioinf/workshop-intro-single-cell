@@ -1,0 +1,1046 @@
+<!DOCTYPE html>
+
+<html lang="en" xml:lang="en">
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core Workshop Team" />
+
+
+<title>Intro to Single Cell RNA-Seq Workshop</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<!--
+Favicon dervied from
+https://twemoji.twitter.com/
+https://favicon.io/
+-->
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<link rel="manifest" href="/site.webmanifest">
+<link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+
+<meta property="og:url" content="https://michmed.org/re39e"/>
+<meta property="og:title" content="Introduction to Single-Cell Analysis"/>
+<meta property="og:description" content="A virtual workshop for researchers that details the analysis steps of single-cell RNA-Seq data using RStudio and Seurat." />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+    </li>
+    <li>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+    </li>
+    <li>
+      <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
+    </li>
+    <li>
+      <a href="03-Normalization.html">Normalization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
+    </li>
+    <li>
+      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="06-MarkerVisualization.html">Marker identification and visualization</a>
+    </li>
+    <li>
+      <a href="07-CellTypeAnnos.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="08-DifferentialExpression.html">Differential expression analysis</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Intro to Single Cell RNA-Seq Workshop</h1>
+<h4 class="author">UM Bioinformatics Core Workshop Team</h4>
+
+</div>
+
+
+<style type="text/css">
+
+body, td {
+   font-size: 18px;
+}
+</style>
+<script>
+  addClassKlippyTo("pre.r, pre.markdown, pre.bash");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<div id="workshop-analysis-scripts" class="section level1">
+<h1>Workshop analysis scripts</h1>
+<div id="day-1" class="section level2">
+<h2>Day 1</h2>
+<pre class="r"><code>##### Day 1 - Getting Started with Seurat
+
+# Create project directories ----------------------------------------------
+dir.create(&#39;scripts&#39;, showWarnings = FALSE, recursive = TRUE)
+dir.create(&#39;results/figures&#39;, showWarnings = FALSE, recursive = TRUE)
+dir.create(&#39;results/tables&#39;, showWarnings = FALSE, recursive = TRUE)
+dir.create(&#39;results/rdata&#39;, showWarnings = FALSE, recursive = TRUE)
+
+# Load libraries  ----------------------------------------------
+library(Seurat)
+library(BPCells)
+library(tidyverse)
+
+options(future.globals.maxSize = 1e9)
+
+# Puts the data &quot;on disk&quot; rather than &quot;in memory&quot;  -------------
+geo_mat = open_matrix_dir(dir = &#39;inputs/bpcells&#39;)
+
+# Create seurat object  ----------------------------------------------
+geo_so = CreateSeuratObject(counts = geo_mat, min.cells = 1, min.features = 50)
+geo_so
+
+# Examine Seurat object ----------------------------------------------
+head(geo_so@meta.data)
+  
+# Save the Seurat object ----------------------------------------------
+saveRDS(geo_so, file = &#39;results/rdata/geo_so_unfiltered.rds&#39;)
+
+##### Day 1 - Secondary QC and filtering
+
+# Examine Seurat metdata  ----------------------------------------------
+head(geo_so@meta.data)
+
+# Make metadata more granular ------------------------------------------
+# Load the expanded phenotype columns (condition, day, and replicate)
+phenos = read.csv(&#39;inputs/phenos.csv&#39;)
+head(phenos, 3)
+
+# Make a temp table that joins Seurat loaded metadata with expanded phenotype columns
+# (Also, preserve the rownames and order samples based on order in phenos.csv)
+tmp_meta = geo_so@meta.data %&gt;% 
+  rownames_to_column(&#39;tmp_rowname&#39;) %&gt;%
+  left_join(phenos, by = &#39;orig.ident&#39;) %&gt;%
+  mutate(orig.ident = factor(orig.ident, phenos$orig.ident)) %&gt;%
+  column_to_rownames(&#39;tmp_rowname&#39;)
+head(tmp_meta)  
+
+# Assign tmp_meta back to geo_so@meta.data and reset the default identity cell name
+geo_so@meta.data = tmp_meta
+Idents(geo_so) = &#39;orig.ident&#39;
+
+# Verify that the change was made with
+head(geo_so@meta.data)
+
+# Assign overall cell counts  ------------------------------------------
+cell_counts_pre_tbl = geo_so@meta.data %&gt;% count(orig.ident, name = &#39;prefilter_cells&#39;)
+cell_counts_pre_tbl
+
+# Review feature violin plots   ----------------------------------------
+VlnPlot(geo_so, features = &#39;nFeature_RNA&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + NoLegend() + geom_hline(yintercept = 500) + geom_hline(yintercept = 400) + geom_hline(yintercept = 300) + geom_hline(yintercept = 200)
+ggsave(filename = &#39;results/figures/qc_nFeature_violin.png&#39;, width = 12, height = 6, units = &#39;in&#39;)
+
+# Review count violin plots   ------------------------------------------
+VlnPlot(geo_so, features = &#39;nCount_RNA&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + NoLegend()
+ggsave(filename = &#39;results/figures/qc_nCount_violin.png&#39;, width = 12, height = 6, units = &#39;in&#39;)
+
+# Consider mitochondrial transcripts  ----------------------------------
+# We use &quot;mt&quot; because this is mouse, depending on the organism, this might need to be changed
+geo_so$percent.mt = PercentageFeatureSet(geo_so, pattern = &#39;^mt-&#39;)
+
+# Use summary() to quickly check the range of values
+summary(geo_so$percent.mt)
+
+# Preview the new meta.data table
+head(geo_so@meta.data)
+
+# Review mitochondrial violin plots   ----------------------------------
+VlnPlot(geo_so, features = &#39;percent.mt&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + NoLegend() + geom_hline(yintercept = 25) + geom_hline(yintercept = 20) + geom_hline(yintercept = 15) + geom_hline(yintercept = 10)
+ggsave(filename = &#39;results/figures/qc_mito_violin.png&#39;, width = 12, height = 6, units = &#39;in&#39;)
+
+# Filter to exclude suspect cells and assign to new Seurat object ------
+geo_so = subset(geo_so, subset = nFeature_RNA &gt; 300 &amp; percent.mt &lt; 15)
+geo_so
+
+# Examine remaining cell counts ----------------------------------------
+cell_counts_post_tbl = geo_so@meta.data %&gt;% count(orig.ident, name = &#39;postfilter_cells&#39;)
+cell_counts_post_tbl
+
+# Show cell counts before and after filtering --------------------------
+cell_counts_tbl = cell_counts_pre_tbl %&gt;% left_join(cell_counts_post_tbl, by = &#39;orig.ident&#39;)
+cell_counts_tbl
+write_csv(cell_counts_tbl, file = &#39;results/tables/cell_filtering_counts.csv&#39;)
+
+# Save the current Seurat object ---------------------------------------
+saveRDS(geo_so, file = &#39;results/rdata/geo_so_filtered.rds&#39;)
+
+# Load the Seurat object ----------------------------------------------
+geo_so = readRDS(&#39;results/rdata/geo_so_filtered.rds&#39;)</code></pre>
+</div>
+<div id="day-2" class="section level2">
+<h2>Day 2</h2>
+<pre class="r"><code>#### Day 2 -----------
+
+# load the libraries
+library(Seurat)
+library(BPCells)
+library(tidyverse)
+
+# load in Raymond&#39;s filtered seurat object 
+geo_so = readRDS(&#39;/home/workshop/rcavalca/ISC_R/results/rdata/geo_so_filtered.rds&#39;)
+
+## Normalization module
+# Separate sample data into layers  ---------------------------------------
+geo_so[[&#39;RNA&#39;]] = split(geo_so[[&#39;RNA&#39;]], f = geo_so$orig.ident)
+geo_so
+
+# Normalize the data with SCTransform  ------------------------------------
+geo_so = SCTransform(geo_so)
+
+# Save Seurat object  -----------------------------------------------------
+saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_normalized.rds&#39;)
+
+# clean up our session
+gc()
+
+
+# Day 2 - PCA and Integration
+# =========================================================================
+
+# Build a PCA and add it to the Seurat object  ----------------------------
+geo_so = RunPCA(geo_so, reduction.name = &#39;unintegrated.sct.pca&#39;)
+geo_so
+
+# Build heatmaps of PCAs  -------------------------------------------------
+# Plot cell by gene heatmaps for first several PCs
+DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;) # look at first PC alone first
+DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;) # first 18 PCs
+
+# note - need to use png() to write to file because this isn&#39;t a ggplot
+png(filename = &#39;results/figures/qc_pca_heatmap.png&#39;, width = 12, height = 40, units = &#39;in&#39;, res = 300)
+DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;)
+dev.off()
+
+#  =========================================================================
+
+
+# Visualize how many PCs to include using an elbow plot -------------------
+ElbowPlot(geo_so, ndims = 50, reduction = &#39;unintegrated.sct.pca&#39;)
+ggsave(filename = &#39;results/figures/qc_sct_elbow_plot.png&#39;, width = 8, height = 8, units = &#39;in&#39;)
+
+#  =========================================================================
+
+
+# Estimate optimal PCs for clustering with a function -------------------------
+optimal_pcs = function(so, reduction) {
+  # quantitative check for number of PCs to include
+  pct = so@reductions[[reduction]]@stdev / sum(so@reductions[[reduction]]@stdev) * 100
+  cum = cumsum(pct)
+  co1 = which(cum &gt; 90 &amp; pct &lt; 5)[1]
+  co2 = sort(which((pct[1:length(pct)-1] - pct[2:length(pct)]) &gt; .1), decreasing = T)[1] + 1
+  pcs = min(co1, co2) 
+  
+  return(pcs)
+}
+
+# Apply function to our data
+pcs = optimal_pcs(geo_so, &#39;unintegrated.sct.pca&#39;)
+pcs
+
+# Based on the heatmap, we&#39;ll modify to 13 PCs
+pcs = 13
+# =========================================================================
+
+# Visualize PCA (PC1 and PC2, unintegrated) -------------------------------
+# first label by sample
+DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;orig.ident&#39;) 
+# then label by day
+DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;day&#39;)
+# save 
+ggsave(filename = &#39;results/figures/qc_pca_plot_unintegrated_sct_day.png&#39;, width = 7, height = 6, units = &#39;in&#39;)
+
+#  =========================================================================
+
+# look at documentation
+?IntegrateLayers
+
+# load the pre-generated integrated data
+geo_so = readRDS(&#39;/home/workshop/rcavalca/ISC_R/results/rdata/geo_so_sct_integrated.rds&#39;)
+
+# Check our updated object that we&#39;ve read in from file ------------------- 
+# Observe that we now have a new reduction, `integrated.sct.rpca`
+geo_so 
+
+# Visualize PCA (PC1 and PC2, integrated) ---------------------------------
+DimPlot(geo_so, reduction = &#39;integrated.sct.rpca&#39;, group.by = &#39;day&#39;)
+ggsave(filename = &#39;results/figures/qc_pca_plot_integrated_sct_day.png&#39;, width = 7, height = 6, units = &#39;in&#39;)
+
+#  =========================================================================
+
+# Cluster PCAs ------------------------------------------------------------
+# Create KNN graph with `FindNeighbors()`
+geo_so = FindNeighbors(geo_so, dims = 1:pcs, reduction = &#39;integrated.sct.rpca&#39;)
+
+# generate clusters
+geo_so = FindClusters(geo_so,
+                      resolution = 0.4,
+                      cluster.name = &#39;integrated.sct.rpca.clusters&#39;)
+
+# look at meta.data to see cluster labels
+head(geo_so@meta.data)
+
+# Create UMAP reduction ---------------------------------------------------
+geo_so = RunUMAP(geo_so, dims = 1:pcs, reduction = &#39;integrated.sct.rpca&#39;, reduction.name = &#39;umap.integrated.sct.rpca&#39;)
+
+# Note a third reduction has been added: `umap.integrated.sct.rpca`
+geo_so 
+
+# Visualize UMAP cluster 1 --------------------------------------------------
+# cluster ID labels
+post_integration_umap_plot_clusters = DimPlot(geo_so, group.by = &#39;seurat_clusters&#39;, label = TRUE, reduction = &#39;umap.integrated.sct.rpca&#39;) + NoLegend()
+post_integration_umap_plot_clusters
+
+ggsave(filename = &#39;results/figures/umap_integrated_sct_clusters.png&#39;, plot = post_integration_umap_plot_clusters, width = 6, height = 6, units = &#39;in&#39;)
+
+# Visualize UMAP cluster 2 --------------------------------------------------
+# clusters with labels, split by condition
+post_integration_umap_plot_split_clusters = DimPlot(geo_so, group.by = &#39;seurat_clusters&#39;, split.by = &#39;day&#39;, label = TRUE, reduction = &#39;umap.integrated.sct.rpca&#39;) + NoLegend()
+post_integration_umap_plot_split_clusters
+
+ggsave(filename = &#39;results/figures/umap_integrated_sct_split_clusters.png&#39;, plot = post_integration_umap_plot_clusters, width = 14, height = 6, units = &#39;in&#39;)
+
+
+# Remove plot variables from the environment to avoid excessive memory usage
+
+plots = c(&quot;pre_integration_umap_plot_day&quot;, 
+          &quot;post_integration_umap_plot_clusters&quot;, 
+          &quot;post_integration_umap_plot_split_clusters&quot;, 
+          &quot;post_integration_umap_plot_day&quot;)
+
+# Only remove plots that actually exist in the environment
+rm(list=Filter(exists, plots))
+gc()
+
+# Save Seurat object ------------------------------------------------------
+saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_clustered.rds&#39;)</code></pre>
+</div>
+<div id="day-3" class="section level2">
+<h2>Day 3</h2>
+<pre class="r"><code>### Day 3 ---------
+
+# load the libraries
+library(Seurat)
+library(BPCells)
+library(tidyverse)
+
+# Load data --------
+geo_so = readRDS(&#39;/home/workshop/damki/ISC_R/results/rdata/geo_so_sct_clustered.rds&#39;)
+
+##### Day 3 - Marker identification and visualization 
+
+# Find empirical markers  -------------------------------------------------
+# Prep for cluster comparisons
+geo_so = SetIdent(geo_so, value = &#39;integrated.sct.rpca.clusters&#39;)
+geo_so = PrepSCTFindMarkers(geo_so)
+
+# Run comparisons for each cluster to generate markers
+geo_markers = FindAllMarkers(geo_so, only.pos = TRUE, min.pct = 0.05)
+
+# Write out full cluster marker results to file
+write_csv(geo_markers, file = &#39;results/tables/marker_genes_0.4res.csv&#39;)
+
+# Take a look at the first few rows of the result
+head(geo_markers)
+
+
+# Identify marker genes for each cluster ----------------------------------
+# Create table of top 5 markers per cluster (using default ranking)
+top_5 = geo_markers %&gt;% filter(p_val_adj &lt; 0.01) %&gt;% group_by(cluster) %&gt;% slice_head(n = 5)
+
+# Look at results
+head(top_5, n = 10)
+
+
+# Visualize top marker genes as dot plot ----------------------------------
+top_5_sct_dot_plot = DotPlot(geo_so, features = unique(top_5$gene)) + 
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
+  labs(title = &#39;Top 5 Cluster Genes by FDR and avg_log2FC&#39;) + coord_flip()
+top_5_sct_dot_plot
+
+
+# Save dot plot of top marker genes ---------------------------------------
+ggsave(filename = &#39;results/figures/markers_top_5_sct_dot_plot.png&#39;, 
+       plot = top_5_sct_dot_plot, 
+       width = 8, height = 18, units = &#39;in&#39;) 
+
+# Check mitochondrial gene expression -------------------------------------
+percent_mito_plot = FeaturePlot(geo_so, features=&#39;percent.mt&#39;)
+
+# save to file
+ggsave(filename = &#39;results/figures/percent_umap_mito_plot.png&#39;, 
+       plot = percent_mito_plot, 
+       width = 6, height = 6, units = &#39;in&#39;)
+
+percent_mito_plot
+
+# Remove the plot variables from the environment to avoid excessive memory usage
+plots = c(&quot;top_5_sct_dot_plot&quot;, 
+          &quot;top_5_rna_dot_plot&quot;, 
+          &quot;percent_mito_plot&quot;)
+
+# Only remove plots that actually exist in the environment
+rm(list=Filter(exists, plots))
+gc()
+
+# Save Seurat object and gene marker data ---------------------------------
+saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_integrated_with_markers.rds&#39;)
+saveRDS(geo_markers, file = &#39;results/rdata/geo_markers.rds&#39;)
+
+
+##### Day 3 - Cell Type Annotation
+
+# Load scCATCH  -----------------------------------------------------------
+library(scCATCH)
+
+# check that cell identities are set to expected resolution 
+all(Idents(geo_so) == geo_so$integrated.sct.rpca.clusters)
+
+# Annotate clusters using scCATCH  ----------------------------------------
+
+# create scCATCH object, using count data
+geo_catch = createscCATCH(data = geo_so@assays$SCT@counts, cluster = as.character(Idents(geo_so)))
+
+# add marker genes to use for predictions
+geo_catch@markergene = geo_markers
+
+# specify tissues/cell-types from the scCATCH reference
+geo_catch@marker = cellmatch[cellmatch$species == &#39;Mouse&#39; &amp; cellmatch$tissue %in% c(&#39;Blood&#39;, &#39;Peripheral Blood&#39;, &#39;Muscle&#39;, &#39;Skeletal muscle&#39;, &#39;Epidermis&#39;, &#39;Skin&#39;), ]
+
+# run scCATCH to generate predictions
+geo_catch = findcelltype(geo_catch)
+
+# look at the predictions
+geo_catch@celltype %&gt;% select(cluster, cell_type, celltype_score)
+
+# Create lists of immune cells and associated gene markers --------------
+immune_markers = list()
+immune_markers[[&#39;Inflam. Macrophage&#39;]] = c(&#39;Cd14&#39;, &#39;Cxcl2&#39;) # Cd14 a- monocyte/macrophage cells
+immune_markers[[&#39;Platelet&#39;]] = c(&#39;Pf4&#39;)
+immune_markers[[&#39;Mast cells&#39;]] = c(&#39;Gata2&#39;, &#39;Kit&#39;)
+immune_markers[[&#39;NK cells&#39;]] = c(&#39;Nkg7&#39;, &#39;Klrd1&#39;)
+immune_markers[[&#39;B-cell&#39;]] = c( &#39;Ly6d&#39;, &#39;Cd19&#39;, &#39;Cd79b&#39;, &#39;Ms4a1&#39;)
+immune_markers[[&#39;T-cell&#39;]] = c( &#39;Cd3d&#39;,&#39;Cd3e&#39;,&#39;Cd3g&#39;) # also Thy1
+
+# Plot other immune to assist with cluster identification ---------------
+immune_markers_plot = DotPlot(geo_so, features = immune_markers, assay = &#39;SCT&#39;)  +
+  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
+
+# save to file
+ggsave(filename = &#39;results/figures/immune_markers_sct_dot_plot.png&#39;, 
+       plot = immune_markers_plot, width = 10, height = 5, units = &#39;in&#39;)
+
+immune_markers_plot
+
+# Create lists of other cells and associated gene markers ---------------------------------------
+other_markers = list()
+other_markers[[&#39;Pericyte&#39;]] = c(&#39;Acan&#39;,&#39;Sox9&#39;)
+other_markers[[&#39;SMC&#39;]] = c(&#39;Acta2&#39;, &#39;Myh11&#39;) # SMC = mesenchymal smooth-muscle cell/mesenchymal lineage
+other_markers[[&#39;Keratinocytes&#39;]] = c(&#39;Thy1&#39;, &#39;Dlk1&#39;) # fibro progenitors aso=Thy1
+other_markers[[&#39;Myofibroblasts&#39;]] = c(&#39;Tmem100&#39;, &#39;Cd34&#39;, &#39;Ly6c1&#39;) # hematopoetic stem/activated fibroblast=Cd34
+other_markers[[&#39;Fibroblast&#39;]] = c(&#39;Dpt&#39;, &#39;Fn1&#39;, &#39;Col3a1&#39;)  # activated fib = Fn1
+other_markers[[&#39;Endothelial&#39;]] = c(&#39;Pecam1&#39;, &#39;Cd38&#39;) # from wound healing; Pecam1 also exp in endothelial
+other_markers[[&#39;HSC&#39;]] = c(&#39;Ltb&#39;, &#39;Cd74&#39;) # less well defined/conflicting definitions
+other_markers[[&#39;Erythroid&#39;]] = c(&#39;Hba-a1&#39;)
+
+
+# Plot known cell-type markers ---------------------------------------
+other_markers_dot_plot = DotPlot(geo_so, features = other_markers, assay = &#39;SCT&#39;) +
+  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
+
+# save to file
+ggsave(filename = &#39;results/figures/other_markers_sct_dot_plot.png&#39;, 
+       plot = other_markers_dot_plot, width = 12, height = 5, units = &#39;in&#39;)
+
+other_markers_dot_plot
+
+# look at gene expression on UMAP plot
+FeaturePlot(geo_so, features=&#39;Col12a1&#39;)
+
+
+# Annotate clusters using modified predictions ----------------------------
+# First - Extract the cell types only from the predictions
+celltype_annos = geo_catch@celltype %&gt;% select(cluster, cell_type) %&gt;% 
+  mutate(cluster = factor(cluster, levels = c(0:22))) %&gt;% arrange(cluster)
+celltype_annos
+
+# Update annotations, remembering that cluster 0 = row 1 in table ---------
+celltype_annos$cell_type[c(6,15,16)] &lt;- &quot;Inflammatory macrophage&quot; # resolve cluster 5, 14, 15
+celltype_annos$cell_type[c(12)] &lt;- &quot;Macrophage&quot;
+celltype_annos$cell_type[c(5,8,10)] &lt;- &quot;Platelet&quot; # clusters 4,7,9
+
+celltype_annos$cell_type[c(1,22)] &lt;- &quot;Pericyte&quot;
+celltype_annos$cell_type[c(2,9)] &lt;- &quot;Fibroblast&quot; # revise clusters 1,8 based on markers
+celltype_annos$cell_type[c(7)] &lt;- &quot;Myofibroblast&quot; # revise cluster 6
+celltype_annos$cell_type[c(4,14,17)] &lt;- &quot;Hematopoietic stem cell&quot; # based on markers but could further revise
+celltype_annos$cell_type[c(11,20)] &lt;- &quot;Mesenchymal stem/stromal cell&quot; # based on Acta2 signal; cluster 10, 19
+celltype_annos$cell_type[c(19)] &lt;- &quot;Erythroid&quot; # cluster 18
+celltype_annos$cell_type[c(23)] &lt;- &quot;Mast&quot;
+
+celltype_annos$cell_type[c(18, 21)] &lt;- &quot;Unknown&quot; # since such small populations, reset cluster 17 &amp; 20 as unknown for now----
+
+# Merge cell types in but as a new table to slide into @meta.data ----------
+copy_metadata = geo_so@meta.data
+new_metadata = copy_metadata %&gt;% left_join(celltype_annos, by = c(&#39;integrated.sct.rpca.clusters&#39; = &#39;cluster&#39;))
+rownames(new_metadata) = rownames(geo_so@meta.data) #  We are implicitly relying on the same row order!
+
+# Replace the meta.data
+geo_so@meta.data = new_metadata 
+
+head(geo_so@meta.data)
+
+# Make a labeled UMAP plot of clusters ------------------------------------
+catch_umap_plot = DimPlot(geo_so, group.by = &#39;cell_type&#39;, label = TRUE, reduction = &#39;umap.integrated.sct.rpca&#39;)
+catch_umap_plot
+
+ggsave(filename = &#39;results/figures/umap_integrated_catch.png&#39;, plot = catch_umap_plot, width = 10, height = 8, units = &#39;in&#39;)
+
+catch_umap_condition_plot = DimPlot(geo_so, group.by = &#39;cell_type&#39;, split.by = &#39;day&#39;, label = TRUE, reduction = &#39;umap.integrated.sct.rpca&#39;)
+
+ggsave(filename = &#39;results/figures/umap_integrated_catch_byCondition.png&#39;, 
+       plot = catch_umap_plot, width = 10, height = 8, units = &#39;in&#39;)
+
+catch_umap_condition_plot
+
+# Discard all ggplot objects currently in environment ---------------------
+# Ok since we saved the plots as we went along
+rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
+gc()
+
+# Save Seurat object and annotations --------------------------------------
+saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_integrated_with_catch.rds&#39;)
+saveRDS(geo_catch, file = &#39;results/rdata/geo_catch.rds&#39;)
+
+##### Day 3  - Differential Expression Analysis
+
+# Make a day-celltype contrast --------------------------------------------
+
+# set up combined label of day + celltype &amp; assign as identities
+geo_so$day.celltype = paste(geo_so$day, geo_so$cell_type, sep = &#39;_&#39;)
+# check labels
+unique(geo_so$day.celltype)
+
+# Consider pericyte cluster D21 v D7 --------------------------------------
+
+# Reset cell identities to the combined condition + cluster label
+Idents(geo_so) = &#39;day.celltype&#39;
+
+# run comparison for D21 vs D0, using wilcoxon test
+de_cell_pericyte_D21_vs_D7 = FindMarkers(
+  object = geo_so,
+  slot = &#39;data&#39;, test = &#39;wilcox&#39;,
+  ident.1 = &#39;Day21_Pericyte&#39;, ident.2 = &#39;Day7_Pericyte&#39;)
+
+head(de_cell_pericyte_D21_vs_D7)
+
+# Add gene symmbols names and save ----------------------------------------
+
+# Add rownames as a column for output
+de_cell_pericyte_D21_vs_D7$gene = rownames(de_cell_pericyte_D21_vs_D7)
+
+# save
+write_csv(de_cell_pericyte_D21_vs_D7, 
+          file = &#39;results/tables/de_standard_pericyte_D21_vs_D7.csv&#39;)
+
+# summarize diffex results
+table(de_cell_pericyte_D21_vs_D7$p_val_adj &lt; 0.05 &amp; 
+        abs(de_cell_pericyte_D21_vs_D7$avg_log2FC) &gt; 1.5)
+
+# Create pseudobulk object -------------------------------------------------
+pseudo_catch_so = AggregateExpression(geo_so, assays = &#39;RNA&#39;, return.seurat = TRUE, group.by = c(&#39;cell_type&#39;, &#39;day&#39;, &#39;replicate&#39;))
+
+# Set up labels to use for comparisons &amp; assign as cell identities
+pseudo_catch_so$day.celltype = paste(pseudo_catch_so$day, pseudo_catch_so$cell_type, sep = &#39;_&#39;)
+Idents(pseudo_catch_so) = &#39;day.celltype&#39;
+
+
+# Run pseudobulk comparison between Day 21 and Day 0, using DESeq2 ----------
+de_pseudo_pericyte_D21_vs_D7 = FindMarkers(
+  object = pseudo_catch_so, 
+  ident.1 = &#39;Day21_Pericyte&#39;, ident.2 = &#39;Day7_Pericyte&#39;, 
+  test.use = &#39;DESeq2&#39;)
+
+# Take a look at the table
+head(de_pseudo_pericyte_D21_vs_D7)
+
+# Add genes and review pseudobulk results ----------------------------------
+
+# Add rownames as a column for output
+de_pseudo_pericyte_D21_vs_D7$gene = rownames(de_pseudo_pericyte_D21_vs_D7)
+
+# save results
+write_csv(de_pseudo_pericyte_D21_vs_D7,
+          file = &#39;results/tables/de_pseudo_pericyte_D21_vs_D7.csv&#39;)
+
+# look at results, using the same thresholds
+table(de_pseudo_pericyte_D21_vs_D7$p_val_adj &lt; 0.05 &amp; 
+        abs(de_pseudo_pericyte_D21_vs_D7$avg_log2FC) &gt; 1.5)
+
+# Make a volcano plot of pseudobulk diffex results ------------------------
+pseudo_pericyte_D21_vs_D7_volcano = ggplot(de_pseudo_pericyte_D21_vs_D7, aes(x = avg_log2FC, y = -log10(p_val))) + geom_point()
+
+ggsave(filename = &#39;results/figures/volcano_de_pseudo_pericyte_D21_vs_D0.png&#39;, 
+       plot = pseudo_pericyte_D21_vs_D7_volcano, width = 7, height = 7, units = &#39;in&#39;)
+
+pseudo_pericyte_D21_vs_D7_volcano
+
+
+# UMAP feature plot of Cd55 gene ------------------------------------------
+FeaturePlot(geo_so, features = &quot;Cd55&quot;, split.by = &quot;day&quot;)
+#FeaturePlot(geo_so, features = &quot;Cd55&quot;, split.by = &quot;day&quot;, label = TRUE)
+
+# Discard all ggplot objects currently in environment ---------------------
+# Ok since we saved the plots as we went along
+rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
+gc()
+
+# Save Seurat object ------------------------------------------------------
+saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_integrated_final.rds&#39;)</code></pre>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
