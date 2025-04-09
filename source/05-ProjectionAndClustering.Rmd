@@ -266,7 +266,7 @@ ggsave(filename = 'results/figures/umap_integrated_sct_clusters.png', plot = pos
 ```{r, umap_by_splitclusters, fig.show='hold', fig.height = 4}
 # Visualize UMAP cluster 2 --------------------------------------------------
 # clusters with labels, split by condition
-post_integration_umap_plot_split_clusters = DimPlot(geo_so, group.by = 'seurat_clusters', split.by = 'day', label = TRUE, reduction = 'umap.integrated.sct.rpca') + NoLegend()
+post_integration_umap_plot_split_clusters = DimPlot(geo_so, group.by = 'seurat_clusters', split.by = 'time', label = TRUE, reduction = 'umap.integrated.sct.rpca') + NoLegend()
 post_integration_umap_plot_split_clusters
 
 ggsave(filename = 'results/figures/umap_integrated_sct_split_clusters.png', plot = post_integration_umap_plot_clusters, width = 14, height = 6, units = 'in')
@@ -287,13 +287,11 @@ Similar to the PCA plots, the `day` labeled UMAP can tell us if technical source
 Another approach is to evaluate the number of cells per cluster using the `table()` function, split by `day` or split by `orig.ident` to see if the individual samples are driving any of the UMAP structure:
 
 ```{r, table_by_day, eval = FALSE, message=FALSE}
-# Make tables of cell counts ----------------------------------------------
-# cells per cluster, split by condition plus total per cluster
 clusters_counts_condition <- geo_so@meta.data %>% 
   select(day, integrated.sct.rpca.clusters) %>%
-  summarise(counts = n(), .by = c(day, integrated.sct.rpca.clusters)) %>% 
+  summarise(counts = n(), .by = c(time, integrated.sct.rpca.clusters)) %>% 
   pivot_wider(names_from = integrated.sct.rpca.clusters, values_from = counts, names_sort=TRUE) %>%
-  bind_rows(summarise_all(., ~if(is.numeric(.)) sum(.) else "Total"))
+  bind_rows(summarise_all(., ~if(is.numeric(.)) sum(.) else "TOTAL"))
 clusters_counts_condition 
 
 
@@ -302,7 +300,7 @@ clusters_counts_sample <- geo_so@meta.data %>%
   select(orig.ident, integrated.sct.rpca.clusters) %>%
   summarise(counts = n(), .by = c(orig.ident, integrated.sct.rpca.clusters)) %>% 
   pivot_wider(names_from = integrated.sct.rpca.clusters, values_from = counts, names_sort=TRUE) %>%
-  bind_rows(summarise_all(., ~if(is.numeric(.)) sum(.) else "Total"))
+  bind_rows(summarise_all(., ~if(is.numeric(.)) sum(., na.rm = TRUE) else "TOTAL"))
 clusters_counts_sample
   
 ```
@@ -312,9 +310,9 @@ clusters_counts_sample
 # cells per cluster, split by condition
 clusters_counts_condition <- geo_so@meta.data %>% 
   select(day, integrated.sct.rpca.clusters) %>%
-  summarise(counts = n(), .by = c(day, integrated.sct.rpca.clusters)) %>% 
+  summarise(counts = n(), .by = c(time, integrated.sct.rpca.clusters)) %>% 
   pivot_wider(names_from = integrated.sct.rpca.clusters, values_from = counts, names_sort=TRUE) %>%
-  bind_rows(summarise_all(., ~if(is.numeric(.)) sum(.) else "Total"))
+  bind_rows(summarise_all(., ~if(is.numeric(.)) sum(.) else "TOTAL"))
 
 clusters_counts_condition  %>%
   kable("html") %>%
@@ -332,7 +330,7 @@ clusters_counts_sample <- geo_so@meta.data %>%
   select(orig.ident, integrated.sct.rpca.clusters) %>%
   summarise(counts = n(), .by = c(orig.ident, integrated.sct.rpca.clusters)) %>% 
   pivot_wider(names_from = integrated.sct.rpca.clusters, values_from = counts, names_sort=TRUE) %>%
-  bind_rows(summarise_all(., ~if(is.numeric(.)) sum(.) else "Total"))
+  bind_rows(summarise_all(., ~if(is.numeric(.)) sum(., na.rm = TRUE) else "TOTAL"))
 
 clusters_counts_sample %>%
   kable("html") %>%
@@ -367,7 +365,7 @@ geo_so = FindClusters(geo_so, resolution = 0.4, cluster.name = 'unintegrated.sct
 
 geo_so = RunUMAP(geo_so, dims = 1:pcs, reduction = 'unintegrated.sct.pca', reduction.name = 'umap.unintegrated.sct.pca')
 
-pre_integration_umap_plot_day = DimPlot(geo_so, group.by = 'day', label = FALSE, reduction = 'umap.unintegrated.sct.pca')
+pre_integration_umap_plot_day = DimPlot(geo_so, group.by = 'time', label = FALSE, reduction = 'umap.unintegrated.sct.pca')
 
 print(pre_integration_umap_plot_day + post_integration_umap_plot_day)
 ```
@@ -391,7 +389,7 @@ The plots above were generated with:
 pre_integration_umap_plot_orig.ident = DimPlot(geo_so, group.by = 'orig.ident', label = FALSE, reduction = 'umap.unintegrated.sct.pca')
 ggsave(filename = 'results/figures/umap_unintegrated_sct_orig.ident.png', plot = pre_integration_umap_plot_orig.ident, width = 8, height = 6, units = 'in')
 
-pre_integration_umap_plot_day = DimPlot(geo_so, group.by = 'day', label = FALSE, reduction = 'umap.unintegrated.sct.pca')
+pre_integration_umap_plot_day = DimPlot(geo_so, group.by = 'time', label = FALSE, reduction = 'umap.unintegrated.sct.pca')
 ggsave(filename = 'results/figures/umap_unintegrated_sct_day.png', plot = pre_integration_umap_plot_day, width = 8, height = 6, units = 'in')
 
 ```

@@ -170,7 +170,7 @@ head(phenos, 3)
 
 :::
 
-The following code chunk will annotated a copy of the metadata with columns for `day` and `replicate` and ensure that certain categorical data appears in correct order, e.g. Day0, Day7, and Day21 instead of Day0, Day21, and Day7. <!--- revised quotes for day since failed in testing on LH -->
+The following code chunk will annotated a copy of the metadata with columns for `day` and `replicate` and ensure that certain categorical data appears in correct order, e.g. Day0, Day7, and Day21 instead of Day0, Day21, and Day7. <!--- updated pheos table to use "time" as column name instead of day to resolve mutate reference error -->
 
 ```{r, alter_metadataA, eval = FALSE}
 # Make a temp table that joins Seurat loaded metadata with expanded phenotype columns
@@ -181,7 +181,7 @@ tmp_meta = geo_so@meta.data %>%
   rownames_to_column('tmp_rowname') %>%
   left_join(phenos, by = 'orig.ident') %>%
   mutate(orig.ident = factor(orig.ident, phenos$orig.ident)) %>%
-  mutate(day = factor(`day`, unique(phenos$day))) %>%
+  mutate(day = factor(time, unique(phenos$time))) %>%
   column_to_rownames('tmp_rowname')
 
 View(head(tmp_meta))
