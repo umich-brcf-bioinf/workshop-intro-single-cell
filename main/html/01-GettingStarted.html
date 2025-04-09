@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-04-01" />
+<meta name="date" content="2025-04-09" />
 
 <title>Getting Started with Seurat</title>
 
@@ -414,7 +414,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Getting Started with Seurat</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-04-01</h4>
+<h4 class="date">2025-04-09</h4>
 
 </div>
 
@@ -729,7 +729,7 @@ memory:</p>
 # the expression matrix data structure above into BPCells files.
 # BPCells uses these files for processing, but you typically never look at 
 # their contents directly
-write_matrix_dir(mat = geo_mat, dir = &#39;~/ISC_R/bpcells&#39;)</code></pre>
+write_matrix_dir(mat = geo_mat, dir = &#39;~/ISC_R/bpcells&#39;, overwrite = TRUE)</code></pre>
 <pre><code>Warning: Matrix compression performs poorly with non-integers.
 • Consider calling convert_matrix_type if a compressed integer matrix is intended.
 This message is displayed once every 8 hours.</code></pre>
@@ -742,7 +742,7 @@ Data type: double
 Storage order: column major
 
 Queued Operations:
-1. Load compressed matrix from directory /home/workshop/rcavalca/ISC_R/bpcells</code></pre>
+1. Load compressed matrix from directory /home/workshop/cgates/ISC_R/bpcells</code></pre>
 <pre class="r"><code># Cleanup ------------------------------------------------------------------
 # Since we&#39;ll now be reading in from BPCells files, we will remove geo_mat
 # from the environment and then prompt RStudio to run a &quot;garbage collection&quot;
@@ -750,8 +750,8 @@ Queued Operations:
 rm(geo_mat)
 gc()</code></pre>
 <pre><code>           used  (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells  6259405 334.3   10728660  573.0   7865174  420.1
-Vcells 11563298  88.3  564234184 4304.8 672842011 5133.4</code></pre>
+Ncells  6235290 333.1   11848572  632.8   8472223  452.5
+Vcells 11527440  88.0  560358037 4275.2 672805445 5133.1</code></pre>
 </div>
 <div id="read-bpcells" class="section level2">
 <h2>Read BPCells</h2>

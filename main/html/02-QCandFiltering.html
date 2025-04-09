@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-04-01" />
+<meta name="date" content="2025-04-09" />
 
 <title>Secondary Quality Control and Filtering</title>
 
@@ -417,7 +417,7 @@ div.tocify {
 <h1 class="title toc-ignore">Secondary Quality Control and
 Filtering</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-04-01</h4>
+<h4 class="date">2025-04-09</h4>
 
 </div>
 
@@ -661,7 +661,7 @@ attributes from a table in the file <code>phenos.csv</code>:</p>
 # Load the expanded phenotype columns (condition, day, and replicate)
 phenos = read.csv(&#39;inputs/prepared_data/phenos.csv&#39;)
 head(phenos, 3)</code></pre>
-<pre><code>        orig.ident condition  day  replicate
+<pre><code>        orig.ident condition time  replicate
 1 HODay0replicate1        HO Day0 replicate1
 2 HODay0replicate2        HO Day0 replicate2
 3 HODay0replicate3        HO Day0 replicate3</code></pre>
@@ -670,7 +670,7 @@ head(phenos, 3)</code></pre>
 columns for <code>day</code> and <code>replicate</code> and ensure that
 certain categorical data appears in correct order, e.g. Day0, Day7, and
 Day21 instead of Day0, Day21, and Day7.
-<!--- revised quotes for day since failed in testing on LH --></p>
+<!--- updated pheos table to use "time" as column name instead of day to resolve mutate reference error --></p>
 <pre class="r"><code># Make a temp table that joins Seurat loaded metadata with expanded phenotype columns
 # (Also, preserve the rownames and order samples based on order in phenos.csv)
 # Note that column &quot;day&quot; has tick marks in ...factor(`day`,...) because day is also 
@@ -679,7 +679,7 @@ tmp_meta = geo_so@meta.data %&gt;%
   rownames_to_column(&#39;tmp_rowname&#39;) %&gt;%
   left_join(phenos, by = &#39;orig.ident&#39;) %&gt;%
   mutate(orig.ident = factor(orig.ident, phenos$orig.ident)) %&gt;%
-  mutate(day = factor(`day`, unique(phenos$day))) %&gt;%
+  mutate(day = factor(time, unique(phenos$time))) %&gt;%
   column_to_rownames(&#39;tmp_rowname&#39;)
 
 View(head(tmp_meta))</code></pre>
@@ -703,10 +703,13 @@ nFeature_RNA
 condition
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-day
+time
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 replicate
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+day
 </th>
 </tr>
 </thead>
@@ -733,6 +736,9 @@ Day0
 <td style="text-align:left;">
 replicate1
 </td>
+<td style="text-align:left;">
+Day0
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -755,6 +761,9 @@ Day0
 </td>
 <td style="text-align:left;">
 replicate1
+</td>
+<td style="text-align:left;">
+Day0
 </td>
 </tr>
 <tr>
@@ -779,6 +788,9 @@ Day0
 <td style="text-align:left;">
 replicate1
 </td>
+<td style="text-align:left;">
+Day0
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -801,6 +813,9 @@ Day0
 </td>
 <td style="text-align:left;">
 replicate1
+</td>
+<td style="text-align:left;">
+Day0
 </td>
 </tr>
 <tr>
@@ -825,6 +840,9 @@ Day0
 <td style="text-align:left;">
 replicate1
 </td>
+<td style="text-align:left;">
+Day0
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -847,6 +865,9 @@ Day0
 </td>
 <td style="text-align:left;">
 replicate1
+</td>
+<td style="text-align:left;">
+Day0
 </td>
 </tr>
 </tbody>
@@ -881,10 +902,13 @@ nFeature_RNA
 condition
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-day
+time
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 replicate
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+day
 </th>
 </tr>
 </thead>
@@ -911,6 +935,9 @@ Day0
 <td style="text-align:left;">
 replicate1
 </td>
+<td style="text-align:left;">
+Day0
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -933,6 +960,9 @@ Day0
 </td>
 <td style="text-align:left;">
 replicate1
+</td>
+<td style="text-align:left;">
+Day0
 </td>
 </tr>
 <tr>
@@ -957,6 +987,9 @@ Day0
 <td style="text-align:left;">
 replicate1
 </td>
+<td style="text-align:left;">
+Day0
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -979,6 +1012,9 @@ Day0
 </td>
 <td style="text-align:left;">
 replicate1
+</td>
+<td style="text-align:left;">
+Day0
 </td>
 </tr>
 <tr>
@@ -1003,6 +1039,9 @@ Day0
 <td style="text-align:left;">
 replicate1
 </td>
+<td style="text-align:left;">
+Day0
+</td>
 </tr>
 <tr>
 <td style="text-align:left;">
@@ -1025,6 +1064,9 @@ Day0
 </td>
 <td style="text-align:left;">
 replicate1
+</td>
+<td style="text-align:left;">
+Day0
 </td>
 </tr>
 </tbody>
