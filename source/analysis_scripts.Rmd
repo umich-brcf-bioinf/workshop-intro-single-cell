@@ -31,15 +31,15 @@ klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
 # Workshop analysis scripts
 
 ## Day 1
-```{r isc_day1, file='isc_day1.R', eval=FALSE}
+```{r day1, file='analysis_scripts/day1.R', eval=FALSE}
 ```
 
 
 ## Day 2
-```{r isc_day2, file='isc_day2.R', eval=FALSE}
+```{r day2, file='analysis_scripts/day2.R', eval=FALSE}
 ```
 
 
 ## Day 3
-```{r isc_day3, file='isc_day3.R', eval=FALSE}
+```{r day3, file='analysis_scripts/day3.R', eval=FALSE}
 ```

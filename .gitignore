@@ -4,6 +4,7 @@
 **/~$*.pptx
 html/**/*.md
 html/**/*.pptx
+html/analysis_scripts/
 html/data/
 html/figures/
 html/images/source
