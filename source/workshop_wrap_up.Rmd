@@ -366,7 +366,7 @@ devtools::session_info()
         Center's [Satija lab](https://satijalab.org/){target="_blank"} publishes
         many excellent step-by-step tutorials on single-cell analysis, e.g.
         [Seurat - Guided Clustering Tutorial](https://satijalab.org/seurat/articles/pbmc3k_tutorial){target="_blank"}.
-        The Satija lab also hosts [Single Cell Genomics Day](https://satijalab.org/scgd24/){target="_blank"}, 
+        The Satija lab also hosts [Single Cell Genomics Day](`r workshop_vars$satija_scgd`){target="_blank"}, 
         a live-streamed annual symposium on emerging techniques in single-cell
         analysis.
       - Nayak, Richa, and Yasha Hasija. **“A hitchhiker's guide to single-cell transcriptomics and data analysis pipelines.”** 
@@ -400,8 +400,8 @@ devtools::session_info()
 | **Chris** | **Marci** | **Raymond** |
 | ![](images/headshots/headshot_damki.jpg) | ![](images/headshots/headshot_dfhannum.jpg) | ![](images/headshots/headshot_trsaari.jpg) |
 | **Dana** | **Ford** | **Travis** |
-| ![](images/headshots/headshot_phillipa.jpg) | ![](images/headshots/headshot_ncarruth.jpg) | ![](images/headshots/headshot_mkdohert.jpg) |
-| **Tricia** | **Nick** | **Matt** |
+| ![](images/headshots/headshot_phillipa.jpg) | ![](images/headshots/headshot_clairis.jpg) | ![](images/headshots/headshot_mkdohert.jpg) |
+| **Tricia** | **Clair** | **Matt** |
 <br/>
 
 

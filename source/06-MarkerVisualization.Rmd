@@ -115,7 +115,7 @@ First, we'll change identities of the cells to "integrated.sct.rpca.clusters" ex
 
 <!-- if we want to use the normalized RNA data (not the integrated data) `DefaultAssay(geo_so) <- "RNA"`, although need to check if that still makes sense for Seurat v5 --> 
 
-Then we'll run the`FindAllMarkers()` [function](https://satijalab.org/seurat/reference/findallmarkers) to generate comparisons between each cluster and all other cells, regardless of the experimental group. Note - the statistical test to perform can be specified in `FindAllMarkers()`, but the default is a Wilcoxon test. 
+Then we'll run the`FindAllMarkers()` [function](https://satijalab.org/seurat/reference/findallmarkers) to generate comparisons between each cluster and all other cells, regardless of the experimental group. Note - the statistical test to perform can be specified in `FindAllMarkers()`, but the default is a Wilcoxon test. <!--- `PrepSCTFindMarkers` uses BPCell data on disk so requires that the integrated data loaded from the .rds file were generated with the updated directory structure (e.g. prepared_data/bpcells) --->
 
 ```{r, find_all_markers, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
 ##### Day 3 - Marker identification and visualization 

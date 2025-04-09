@@ -121,7 +121,7 @@ First we'll run cell-level comparisons for our data for the pericyte cluster, st
 # Make a day-celltype contrast --------------------------------------------
 
 # set up combined label of day + celltype & assign as identities
-geo_so$day.celltype = paste(geo_so$day, geo_so$cell_type, sep = '_')
+geo_so$day.celltype = paste(geo_so$time, geo_so$cell_type, sep = '_')
 # check labels
 unique(geo_so$day.celltype)
 
@@ -132,7 +132,7 @@ unique(geo_so$day.celltype)
 # Make a day-celltype contrast --------------------------------------------
 
 # set up combined label of day + celltype & assign as identities
-geo_so$day.celltype = paste(geo_so$day, geo_so$cell_type, sep = '_')
+geo_so$day.celltype = paste(geo_so$time, geo_so$cell_type, sep = '_')
 # check labels
 unique(geo_so$day.celltype) %>%
   kable("html") %>%
@@ -219,10 +219,10 @@ We'll run psuedobulk comparisons for our data for the monocyte cluster, starting
 
 ```{r, de_pseudobulk_a, message = FALSE, warning = FALSE}
 # Create pseudobulk object -------------------------------------------------
-pseudo_catch_so = AggregateExpression(geo_so, assays = 'RNA', return.seurat = TRUE, group.by = c('cell_type', 'day', 'replicate'))
+pseudo_catch_so = AggregateExpression(geo_so, assays = 'RNA', return.seurat = TRUE, group.by = c('cell_type', 'time', 'replicate'))
 
 # Set up labels to use for comparisons & assign as cell identities
-pseudo_catch_so$day.celltype = paste(pseudo_catch_so$day, pseudo_catch_so$cell_type, sep = '_')
+pseudo_catch_so$day.celltype = paste(pseudo_catch_so$time, pseudo_catch_so$cell_type, sep = '_')
 Idents(pseudo_catch_so) = 'day.celltype'
 ```
 
@@ -280,7 +280,7 @@ We can also overlay the expression of interesting differentially expressed genes
 
 ```{r, show_DE_featurePlot, warning = FALSE, message = FALSE, fig.height = 4}
 # UMAP feature plot of Cd55 gene ------------------------------------------
-FeaturePlot(geo_so, features = "Cd55", split.by = "day")
+FeaturePlot(geo_so, features = "Cd55", split.by = "time")
 ```
 So we found Cd55 based on differential expression comparison in the Pericyte population between Day 7 and Day 21 but in looking at the Feature plot of expression, we also see high expression in a subset of cells on Day 0. This interesting, since according to [Shin et al (2019)](https://onlinelibrary.wiley.com/doi/full/10.1002/jbmr.3861), CD55 regulates bone mass in mice.
 

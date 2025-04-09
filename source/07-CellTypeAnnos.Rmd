@@ -146,7 +146,6 @@ all(Idents(geo_so) == geo_so$integrated.sct.rpca.clusters)
 
 ```{r, sccatch_annotate, message = FALSE, warning = FALSE}
 # Annotate clusters using scCATCH  ----------------------------------------
-
 # create scCATCH object, using count data
 geo_catch = createscCATCH(data = geo_so@assays$SCT@counts, cluster = as.character(Idents(geo_so)))
 
@@ -160,13 +159,22 @@ geo_catch@marker = cellmatch[cellmatch$species == 'Mouse' & cellmatch$tissue %in
 geo_catch = findcelltype(geo_catch)
 
 # look at the predictions
-geo_catch@celltype %>% select(cluster, cell_type, celltype_score)
+sc_pred_tbl = geo_catch@celltype %>% 
+  select(cluster, cell_type, celltype_score) %>%
+  rename(cell_type_prediction = cell_type)
+sc_pred_tbl
 
 ```
 
 When we look at our results we can see the cell type score, which gives us an idea of the confidence of that prediction. Not shown here but the full `celltype` table also includes marker genes and PMIDs for relevant literature for each prediction.
 
-In our experience, these kinds of results often help guide cluster annotation but scores can vary and the predictions may need to be revised based on researcher's knowledge of the biological system. As these cell-types correspond to the cell-types and subtypes we'd expect to be present in these data and most of the prediction scores are quite high, we can reasonably use these results to annotate our clusters with some minor adjustments. 
+In our experience, these kinds of results often help guide cluster annotation but scores can vary and the predictions may need to be revised based on researcher's knowledge of the biological system. As these cell-types correspond to the cell-types and subtypes we'd expect to be present in these data and most of the prediction scores are quite high, we can reasonably use these results to help annotate our clusters with some minor adjustments. 
+
+To revise the cluster annotation from those predicted by scCATCH, it can be helpful to output a table that can be edited in excel or a text editor.
+```{r, sccatch_write, message = FALSE, warning = FALSE}
+# Write scCATCH predictions to file  ----------------------------------------
+write_csv(sc_pred_tbl, file = 'results/tables/scCATCH_cluster_predictions.csv')
+```
 
 ## Using known cell-type markers
 
@@ -272,29 +280,21 @@ ggsave(filename = 'results/figures/markers_fig1h_rna_dot_plot.png', plot = fig1h
 
 # Annotate clusters
 
-Next, we'll modify the cell type predictions and add the labels to our Seurat object to replace our clusters' numerical identities. Note: we will create a new metadata object where we join cell types. However, this will destroy the row names - which will cause a problem in Seurat - so we have to add them back. <!--- modify to have a hidden block that runs after to keep this large block intact -->
+Next, we'll use a revised version of the cell type predictions from a file that we prepared and add those labels to our Seurat object to replace our clusters' numerical identities. Note: we will create a new metadata object where we join cell types. However, this will destroy the row names - which will cause a problem in Seurat - so we have to add them back. <!--- modify to have a hidden block that runs after to keep this large block intact -->
 
-```{r, annotate_clusters}
-# Annotate clusters using modified predictions ----------------------------
-# First - Extract the cell types only from the predictions
-celltype_annos = geo_catch@celltype %>% select(cluster, cell_type) %>% 
-  mutate(cluster = factor(cluster, levels = c(0:22))) %>% arrange(cluster)
-celltype_annos
-```
+
+
+::: {.prepared_content .cooking_show data-latex="{cooking_show}"}
+**Load a pre-prepared file:**
 
 ```{r, annotate_clusters_customize, eval=FALSE}
-# Update annotations, remembering that row 1  = cluster 0 in table ---------
-celltype_annos$cell_type[c(2)] <- "Fibroblast"
-celltype_annos$cell_type[c(4)] <- "Endothelial"
-celltype_annos$cell_type[c(5)] <- "Platelet"
-celltype_annos$cell_type[c(8)] <- "Myofibroblast"
-celltype_annos$cell_type[c(9)] <- "Keratinocyte"
-celltype_annos$cell_type[c(10)] <- "Endothelial"
-celltype_annos$cell_type[c(7,14,16)] <- "Infl. Macrophage" 
-celltype_annos$cell_type[c(18)] <- "B-cell"
-
-celltype_annos$cell_type[c(19)] <- "Unknown" # since such small populations, set as unknown for now
+# Load the revised annotations from file --------------
+celltype_annos = read_csv('inputs/prepared_data/revised_cluster_annotations.csv') %>%
+  mutate(cluster=factor(cluster))
+head(celltype_annos)
 ```
+
+:::
 
 ```{r, annotate_clusters_seurat, eval=FALSE}
 # Merge cell types in but as a new table to slide into @meta.data ----------
@@ -310,23 +310,17 @@ head(geo_so@meta.data)
 ```
 
 ```{r, annotate_clusters_customize_hidden, echo = FALSE, warning = FALSE, message = FALSE}
-# Customize annotations, remembering that cluster 0 = row 1 in table
-# Update annotations, remembering that row 1  = cluster 0 in table ---------
-celltype_annos$cell_type[c(2)] <- "Fibroblast"
-celltype_annos$cell_type[c(4)] <- "Endothelial"
-celltype_annos$cell_type[c(5)] <- "Platelet"
-celltype_annos$cell_type[c(8)] <- "Myofibroblast"
-celltype_annos$cell_type[c(9)] <- "Keratinocyte"
-celltype_annos$cell_type[c(10)] <- "Endothelial"
-celltype_annos$cell_type[c(7,14,16)] <- "Infl. Macrophage" 
-celltype_annos$cell_type[c(18)] <- "B-cell"
+celltype_annos = read_csv('inputs/prepared_data/revised_cluster_annotations.csv') %>%
+  mutate(cluster=factor(cluster))
 
 # copy metadata (and clean up if needed)
 copy_metadata = geo_so@meta.data
 copy_metadata = copy_metadata[, 1:11]
 
 # Merge cell types in but as a new table to slide into @meta.data
-new_metadata = copy_metadata %>% dplyr::left_join(celltype_annos, by = c('integrated.sct.rpca.clusters' = 'cluster'))
+new_metadata = copy_metadata %>% 
+  dplyr::left_join(celltype_annos, 
+                   by = c('integrated.sct.rpca.clusters' = 'cluster'))
 rownames(new_metadata) = rownames(geo_so@meta.data) #  We are implicitly relying on the same row order!
 
 # Replace the meta.data
@@ -358,7 +352,7 @@ catch_umap_plot
 
 ggsave(filename = 'results/figures/umap_integrated_catch.png', plot = catch_umap_plot, width = 10, height = 8, units = 'in')
 
-catch_umap_condition_plot = DimPlot(geo_so, group.by = 'cell_type', split.by = 'day', label = TRUE, reduction = 'umap.integrated.sct.rpca')
+catch_umap_condition_plot = DimPlot(geo_so, group.by = 'cell_type', split.by = 'time', label = TRUE, reduction = 'umap.integrated.sct.rpca')
 
 ggsave(filename = 'results/figures/umap_integrated_catch_byCondition.png', 
        plot = catch_umap_condition_plot, width = 10, height = 8, units = 'in')

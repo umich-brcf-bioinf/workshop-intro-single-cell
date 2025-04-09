@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-04-01" />
+<meta name="date" content="2025-04-09" />
 
 <title>Marker identification and visualization</title>
 
@@ -415,7 +415,7 @@ div.tocify {
 <h1 class="title toc-ignore">Marker identification and
 visualization</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-04-01</h4>
+<h4 class="date">2025-04-09</h4>
 
 </div>
 
@@ -570,7 +570,8 @@ href="https://satijalab.org/seurat/reference/findallmarkers">function</a>
 to generate comparisons between each cluster and all other cells,
 regardless of the experimental group. Note - the statistical test to
 perform can be specified in <code>FindAllMarkers()</code>, but the
-default is a Wilcoxon test.</p>
+default is a Wilcoxon test.
+<!--- `PrepSCTFindMarkers` uses BPCell data on disk so requires that the integrated data loaded from the .rds file were generated with the updated directory structure (e.g. prepared_data/bpcells) ---></p>
 <pre class="r"><code>##### Day 3 - Marker identification and visualization 
 
 # Find empirical markers  -------------------------------------------------
@@ -762,8 +763,8 @@ plots = c(&quot;top_5_sct_dot_plot&quot;,
 rm(list=Filter(exists, plots))
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
-Ncells   9333001  498.5   17621174  941.1   17621174   941.1
-Vcells 536213226 4091.0 1134452860 8655.2 1418066075 10819.0</code></pre>
+Ncells   7368538  393.6   12035949  642.8   12035949   642.8
+Vcells 336244484 2565.4 1065194568 8126.8 1331492516 10158.5</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">
