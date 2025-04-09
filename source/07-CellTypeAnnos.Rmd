@@ -287,9 +287,10 @@ Next, we'll use a revised version of the cell type predictions from a file that 
 ::: {.prepared_content .cooking_show data-latex="{cooking_show}"}
 **Load a pre-prepared file:**
 
-``````{r, annotate_clusters_customize, eval=FALSE}
+```{r, annotate_clusters_customize, eval=FALSE}
 # Load the revised annotations from file --------------
-celltype_annos = read.csv('results/tables/revised_celltype_annos.csv')
+celltype_annos = read_csv('inputs/prepared_data/revised_cluster_annotations.csv') %>%
+  mutate(cluster=factor(cluster))
 head(celltype_annos)
 ```
 
@@ -309,14 +310,17 @@ head(geo_so@meta.data)
 ```
 
 ```{r, annotate_clusters_customize_hidden, echo = FALSE, warning = FALSE, message = FALSE}
-celltype_annos = read.csv('results/tables/revised_celltype_annos.csv')
+celltype_annos = read_csv('inputs/prepared_data/revised_cluster_annotations.csv') %>%
+  mutate(cluster=factor(cluster))
 
 # copy metadata (and clean up if needed)
 copy_metadata = geo_so@meta.data
 copy_metadata = copy_metadata[, 1:11]
 
 # Merge cell types in but as a new table to slide into @meta.data
-new_metadata = copy_metadata %>% dplyr::left_join(celltype_annos, by = c('integrated.sct.rpca.clusters' = 'cluster'))
+new_metadata = copy_metadata %>% 
+  dplyr::left_join(celltype_annos, 
+                   by = c('integrated.sct.rpca.clusters' = 'cluster'))
 rownames(new_metadata) = rownames(geo_so@meta.data) #  We are implicitly relying on the same row order!
 
 # Replace the meta.data

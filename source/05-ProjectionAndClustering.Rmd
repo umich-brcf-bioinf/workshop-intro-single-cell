@@ -288,7 +288,7 @@ Another approach is to evaluate the number of cells per cluster using the `table
 
 ```{r, table_by_day, eval = FALSE, message=FALSE}
 clusters_counts_condition <- geo_so@meta.data %>% 
-  select(day, integrated.sct.rpca.clusters) %>%
+  select(time, integrated.sct.rpca.clusters) %>%
   summarise(counts = n(), .by = c(time, integrated.sct.rpca.clusters)) %>% 
   pivot_wider(names_from = integrated.sct.rpca.clusters, values_from = counts, names_sort=TRUE) %>%
   bind_rows(summarise_all(., ~if(is.numeric(.)) sum(.) else "TOTAL"))
@@ -309,7 +309,7 @@ clusters_counts_sample
 # Make tables of cell counts ----------------------------------------------
 # cells per cluster, split by condition
 clusters_counts_condition <- geo_so@meta.data %>% 
-  select(day, integrated.sct.rpca.clusters) %>%
+  select(time, integrated.sct.rpca.clusters) %>%
   summarise(counts = n(), .by = c(time, integrated.sct.rpca.clusters)) %>% 
   pivot_wider(names_from = integrated.sct.rpca.clusters, values_from = counts, names_sort=TRUE) %>%
   bind_rows(summarise_all(., ~if(is.numeric(.)) sum(.) else "TOTAL"))

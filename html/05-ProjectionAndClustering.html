@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-04-01" />
+<meta name="date" content="2025-04-09" />
 
 <title>Clustering and Projection</title>
 
@@ -416,7 +416,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Clustering and Projection</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-04-01</h4>
+<h4 class="date">2025-04-09</h4>
 
 </div>
 
@@ -614,7 +614,7 @@ Number of edges: 1024599
 Running Louvain algorithm...
 Maximum modularity in 10 random starts: 0.9441
 Number of communities: 18
-Elapsed time: 4 seconds</code></pre>
+Elapsed time: 5 seconds</code></pre>
 <div
 style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:100%; overflow-x: scroll; width:1000px; ">
 <table class="table table-condensed" style="font-size: 12px; font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
@@ -635,10 +635,13 @@ nFeature_RNA
 condition
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-day
+time
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 replicate
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+day
 </th>
 <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
 percent.mt
@@ -680,6 +683,9 @@ Day0
 <td style="text-align:left;">
 replicate1
 </td>
+<td style="text-align:left;">
+Day0
+</td>
 <td style="text-align:right;">
 1.240962
 </td>
@@ -717,6 +723,9 @@ Day0
 </td>
 <td style="text-align:left;">
 replicate1
+</td>
+<td style="text-align:left;">
+Day0
 </td>
 <td style="text-align:right;">
 7.536416
@@ -756,6 +765,9 @@ Day0
 <td style="text-align:left;">
 replicate1
 </td>
+<td style="text-align:left;">
+Day0
+</td>
 <td style="text-align:right;">
 3.112002
 </td>
@@ -793,6 +805,9 @@ Day0
 </td>
 <td style="text-align:left;">
 replicate1
+</td>
+<td style="text-align:left;">
+Day0
 </td>
 <td style="text-align:right;">
 1.559792
@@ -832,6 +847,9 @@ Day0
 <td style="text-align:left;">
 replicate1
 </td>
+<td style="text-align:left;">
+Day0
+</td>
 <td style="text-align:right;">
 3.700589
 </td>
@@ -869,6 +887,9 @@ Day0
 </td>
 <td style="text-align:left;">
 replicate1
+</td>
+<td style="text-align:left;">
+Day0
 </td>
 <td style="text-align:right;">
 2.938131
@@ -998,7 +1019,7 @@ ggsave(filename = &#39;results/figures/umap_integrated_sct_clusters.png&#39;, pl
 <p><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_clusters-1.png" width="576" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># Visualize UMAP cluster 2 --------------------------------------------------
 # clusters with labels, split by condition
-post_integration_umap_plot_split_clusters = DimPlot(geo_so, group.by = &#39;seurat_clusters&#39;, split.by = &#39;day&#39;, label = TRUE, reduction = &#39;umap.integrated.sct.rpca&#39;) + NoLegend()
+post_integration_umap_plot_split_clusters = DimPlot(geo_so, group.by = &#39;seurat_clusters&#39;, split.by = &#39;time&#39;, label = TRUE, reduction = &#39;umap.integrated.sct.rpca&#39;) + NoLegend()
 post_integration_umap_plot_split_clusters
 
 ggsave(filename = &#39;results/figures/umap_integrated_sct_split_clusters.png&#39;, plot = post_integration_umap_plot_clusters, width = 14, height = 6, units = &#39;in&#39;)</code></pre>
@@ -1018,18 +1039,28 @@ steps should be revisted before proceeding.</p>
 the <code>table()</code> function, split by <code>day</code> or split by
 <code>orig.ident</code> to see if the individual samples are driving any
 of the UMAP structure:</p>
-<pre class="r"><code># Make tables of cell counts ----------------------------------------------
-# cells per cluster, split by condition
-table(geo_so@meta.data$day, geo_so@meta.data$integrated.sct.rpca.clusters)
+<pre class="r"><code>clusters_counts_condition &lt;- geo_so@meta.data %&gt;% 
+  select(time, integrated.sct.rpca.clusters) %&gt;%
+  summarise(counts = n(), .by = c(time, integrated.sct.rpca.clusters)) %&gt;% 
+  pivot_wider(names_from = integrated.sct.rpca.clusters, values_from = counts, names_sort=TRUE) %&gt;%
+  bind_rows(summarise_all(., ~if(is.numeric(.)) sum(.) else &quot;TOTAL&quot;))
+clusters_counts_condition 
+
 
 # cells per cluster per sample
-table(geo_so@meta.data$orig.ident, geo_so@meta.data$integrated.sct.rpca.clusters)</code></pre>
+clusters_counts_sample &lt;- geo_so@meta.data %&gt;% 
+  select(orig.ident, integrated.sct.rpca.clusters) %&gt;%
+  summarise(counts = n(), .by = c(orig.ident, integrated.sct.rpca.clusters)) %&gt;% 
+  pivot_wider(names_from = integrated.sct.rpca.clusters, values_from = counts, names_sort=TRUE) %&gt;%
+  bind_rows(summarise_all(., ~if(is.numeric(.)) sum(., na.rm = TRUE) else &quot;TOTAL&quot;))
+clusters_counts_sample</code></pre>
 <div
 style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:100%; overflow-x: scroll; width:825px; ">
 <table class="table table-condensed" style="font-size: 12px; font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
 <thead>
 <tr>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+time
 </th>
 <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
 0
@@ -1265,6 +1296,65 @@ Day21
 16
 </td>
 </tr>
+<tr>
+<td style="text-align:left;">
+TOTAL
+</td>
+<td style="text-align:right;">
+5636
+</td>
+<td style="text-align:right;">
+4464
+</td>
+<td style="text-align:right;">
+2854
+</td>
+<td style="text-align:right;">
+2805
+</td>
+<td style="text-align:right;">
+2414
+</td>
+<td style="text-align:right;">
+2390
+</td>
+<td style="text-align:right;">
+1558
+</td>
+<td style="text-align:right;">
+1515
+</td>
+<td style="text-align:right;">
+1430
+</td>
+<td style="text-align:right;">
+1316
+</td>
+<td style="text-align:right;">
+924
+</td>
+<td style="text-align:right;">
+893
+</td>
+<td style="text-align:right;">
+771
+</td>
+<td style="text-align:right;">
+755
+</td>
+<td style="text-align:right;">
+664
+</td>
+<td style="text-align:right;">
+525
+</td>
+<td style="text-align:right;">
+499
+</td>
+<td style="text-align:right;">
+146
+</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -1275,6 +1365,7 @@ style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:100%; ov
 <thead>
 <tr>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+orig.ident
 </th>
 <th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
 0
@@ -1421,7 +1512,7 @@ HODay0replicate2
 35
 </td>
 <td style="text-align:right;">
-0
+NA
 </td>
 <td style="text-align:right;">
 55
@@ -1498,7 +1589,7 @@ HODay0replicate3
 5
 </td>
 <td style="text-align:right;">
-0
+NA
 </td>
 <td style="text-align:right;">
 59
@@ -1557,7 +1648,7 @@ HODay0replicate4
 7
 </td>
 <td style="text-align:right;">
-0
+NA
 </td>
 <td style="text-align:right;">
 42
@@ -1607,7 +1698,7 @@ HODay7replicate1
 83
 </td>
 <td style="text-align:right;">
-0
+NA
 </td>
 <td style="text-align:right;">
 174
@@ -1616,7 +1707,7 @@ HODay7replicate1
 212
 </td>
 <td style="text-align:right;">
-0
+NA
 </td>
 <td style="text-align:right;">
 68
@@ -1666,7 +1757,7 @@ HODay7replicate2
 106
 </td>
 <td style="text-align:right;">
-0
+NA
 </td>
 <td style="text-align:right;">
 183
@@ -1675,7 +1766,7 @@ HODay7replicate2
 164
 </td>
 <td style="text-align:right;">
-0
+NA
 </td>
 <td style="text-align:right;">
 93
@@ -1725,7 +1816,7 @@ HODay7replicate3
 141
 </td>
 <td style="text-align:right;">
-0
+NA
 </td>
 <td style="text-align:right;">
 174
@@ -1734,7 +1825,7 @@ HODay7replicate3
 165
 </td>
 <td style="text-align:right;">
-0
+NA
 </td>
 <td style="text-align:right;">
 104
@@ -2041,6 +2132,65 @@ HODay21replicate4
 3
 </td>
 </tr>
+<tr>
+<td style="text-align:left;">
+TOTAL
+</td>
+<td style="text-align:right;">
+5636
+</td>
+<td style="text-align:right;">
+4464
+</td>
+<td style="text-align:right;">
+2854
+</td>
+<td style="text-align:right;">
+2805
+</td>
+<td style="text-align:right;">
+2414
+</td>
+<td style="text-align:right;">
+2390
+</td>
+<td style="text-align:right;">
+1558
+</td>
+<td style="text-align:right;">
+1515
+</td>
+<td style="text-align:right;">
+1430
+</td>
+<td style="text-align:right;">
+1316
+</td>
+<td style="text-align:right;">
+924
+</td>
+<td style="text-align:right;">
+893
+</td>
+<td style="text-align:right;">
+771
+</td>
+<td style="text-align:right;">
+755
+</td>
+<td style="text-align:right;">
+664
+</td>
+<td style="text-align:right;">
+525
+</td>
+<td style="text-align:right;">
+499
+</td>
+<td style="text-align:right;">
+146
+</td>
+</tr>
 </tbody>
 </table>
 </div>
@@ -2067,7 +2217,7 @@ Number of edges: 977875
 Running Louvain algorithm...
 Maximum modularity in 10 random starts: 0.9522
 Number of communities: 22
-Elapsed time: 4 seconds</code></pre>
+Elapsed time: 5 seconds</code></pre>
 <p><img src="images/curriculum/05-ProjectionAndClustering/05-run_umap_unintegrated-1.png" width="816" style="display: block; margin: auto;" /></p>
 <p>In the plot at left, we see that while there are distinct clusters,
 those clusters seem to stratified by day. This suggests that without
@@ -2091,7 +2241,7 @@ geo_so = RunUMAP(geo_so, dims = 1:pcs, reduction = &#39;unintegrated.sct.pca&#39
 pre_integration_umap_plot_orig.ident = DimPlot(geo_so, group.by = &#39;orig.ident&#39;, label = FALSE, reduction = &#39;umap.unintegrated.sct.pca&#39;)
 ggsave(filename = &#39;results/figures/umap_unintegrated_sct_orig.ident.png&#39;, plot = pre_integration_umap_plot_orig.ident, width = 8, height = 6, units = &#39;in&#39;)
 
-pre_integration_umap_plot_day = DimPlot(geo_so, group.by = &#39;day&#39;, label = FALSE, reduction = &#39;umap.unintegrated.sct.pca&#39;)
+pre_integration_umap_plot_day = DimPlot(geo_so, group.by = &#39;time&#39;, label = FALSE, reduction = &#39;umap.unintegrated.sct.pca&#39;)
 ggsave(filename = &#39;results/figures/umap_unintegrated_sct_day.png&#39;, plot = pre_integration_umap_plot_day, width = 8, height = 6, units = &#39;in&#39;)</code></pre>
 <pre class="r"><code># Remove the plot variables from the environment to avoid excessive memory usage
 rm(pre_integration_umap_plot_orig.ident) 
@@ -2148,9 +2298,9 @@ plots = c(&quot;pre_integration_umap_plot_day&quot;,
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
-Ncells   9220768  492.5   17621174  941.1   17621174   941.1
-Vcells 387582962 2957.1 1134452860 8655.2 1418066075 10819.0</code></pre>
+<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells   7200805  384.6   12035948   642.8   12035948   642.8
+Vcells 745939034 5691.1 1331493210 10158.5 1330520953 10151.1</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">
