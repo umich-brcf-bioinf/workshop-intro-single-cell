@@ -7,8 +7,9 @@
 # #remove.packages('klippy');
 # remotes::install_github("umich-brcf-bioinf/workshop-klippy"); 
 # 
-# install.packages("kable")
-# devtools::install_github("haozhu233/kableExtra")
+#install.packages("kable")
+#install.packages('devtools'); library(devtools)
+#devtools::install_github("haozhu233/kableExtra")
 
 library(rmarkdown)
 library(klippy)

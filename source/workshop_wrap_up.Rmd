@@ -287,7 +287,7 @@ devtools::session_info()
 ## Looking ahead
 
 #### Workshop environment
-- RStudio workshop compute environment will be available until **`r rstudio_server_enddate`**.
+- RStudio workshop compute environment will be available until **`r workshop_vars$rstudio_server_enddate`**.
   - _Please save all your R scripts now_ so that we can "right-size" the compute environment immediately following today's workshop session.
 - You can download files from the workshop environment from your terminal/command line window as below. 
   (You will need to substitute your actual workshop username and type workshop password when prompted.)
@@ -295,7 +295,7 @@ devtools::session_info()
   # download workshop files -------------------------------------------------
   mkdir intro_scrnaseq_workshop
   cd intro_scrnaseq_workshop
-  scp -r YOUR_USERNAME@`r ssh_download_dns`:"ISC_R*" .
+  scp -r YOUR_USERNAME@`r workshop_vars$ssh_download_dns`:"ISC_R*" .
   ```
   - Note that the full download of the R data is about 8Gb, so depending on your internet 
     speeds it could take a while. (We do not recommend you download the full set of Cell 
@@ -322,8 +322,8 @@ devtools::session_info()
     
     # Use curl to download a ~2 Gb tarball
     # We'll use evironment variables to avoid extremely long command lines
-    source_url="`r aws_s3_bucket`"
-    source_file="`r aws_s3_file`"
+    source_url="`r workshop_vars$aws_s3_bucket`"
+    source_file="`r workshop_vars$aws_s3_file`"
     curl -o workshop_isc_inputs.tgz ${source_url}/${source_file}
 
     # tar unpacks the tarball into directories
