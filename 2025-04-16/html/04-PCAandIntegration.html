@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-03-28" />
+<meta name="date" content="2025-04-09" />
 
 <title>PCA and Integration</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -414,7 +414,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">PCA and Integration</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-03-28</h4>
+<h4 class="date">2025-04-09</h4>
 
 </div>
 
@@ -685,8 +685,12 @@ plot. <em>Note - you may need to increase your plot window size to
 resolve errors regarding figure margins.</em></p>
 <pre class="r"><code># Build heatmaps of PCAs  -------------------------------------------------
 # Plot cell by gene heatmaps for first several PCs
-DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;) # look at first PC alone first
-DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;) # first 18 PCs
+
+# look at first PC alone first
+DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;) 
+
+# first 18 PCs
+DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;)
 
 # note - need to use png() to write to file because this isn&#39;t a ggplot
 png(filename = &#39;results/figures/qc_pca_heatmap.png&#39;, width = 12, height = 40, units = &#39;in&#39;, res = 300)
@@ -810,7 +814,7 @@ optimal_pcs = function(so, reduction) {
 # Apply function to our data
 pcs = optimal_pcs(geo_so, &#39;unintegrated.sct.pca&#39;)
 pcs</code></pre>
-<pre><code>[1] 15</code></pre>
+<pre><code>[1] 16</code></pre>
 <pre class="r"><code># Based on the heatmap (and some behind the scenes testing), we&#39;ll modify the number of PCs
 pcs = 10
 
@@ -899,11 +903,11 @@ optimal_pcs_advanced = function(so, reduction, print_plot=TRUE, verbose=TRUE) {
 # =========================================================================</code></pre>
 <pre class="r"><code># Apply function to our data ----------------------------------------------
 optimal_pcs = optimal_pcs_advanced(geo_so, &#39;unintegrated.sct.pca&#39;)</code></pre>
-<p><img src="images/curriculum/04-PCAandIntegration/04-apply_estimate_optimal_pcs-1.png" width="816" style="display: block; margin: auto;" /></p>
 <pre><code>Reduction unintegrated.sct.pca: 50 PCs (total var = 100)
-    PC 42 (total var = 90.99) : Smallest PC that explains at least 90% total variance
-    PC 15 (total var = 50.82) : Largest PC with incremental variance step at least 0.1%
-    Recommended num of PCs: 15</code></pre>
+    PC 42 (total var = 90.98) : Smallest PC that explains at least 90% total variance
+    PC 16 (total var = 53.21) : Largest PC with incremental variance step at least 0.1%
+    Recommended num of PCs: 16</code></pre>
+<p><img src="images/curriculum/04-PCAandIntegration/04-apply_estimate_optimal_pcs-1.png" width="816" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># Save plot of PCs --------------------------------------------------------
 ggsave(filename = &#39;results/figures/optimal_pcs.png&#39;,
        plot=optimal_pcs$plot,
@@ -941,9 +945,11 @@ column:</p>
 <pre class="r"><code># Visualize PCA (PC1 and PC2, unintegrated) -------------------------------
 # first label by sample
 DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;orig.ident&#39;) 
- # then label by day
+
+# then label by day
 DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;day&#39;)
- # save 
+
+# save 
 ggsave(filename = &#39;results/figures/qc_pca_plot_unintegrated_sct_day.png&#39;, width = 7, height = 6, units = &#39;in&#39;)
 
 #  =========================================================================</code></pre>

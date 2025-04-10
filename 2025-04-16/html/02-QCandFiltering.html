@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-03-28" />
+<meta name="date" content="2025-04-09" />
 
 <title>Secondary Quality Control and Filtering</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -417,7 +417,7 @@ div.tocify {
 <h1 class="title toc-ignore">Secondary Quality Control and
 Filtering</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-03-28</h4>
+<h4 class="date">2025-04-09</h4>
 
 </div>
 
@@ -661,7 +661,7 @@ attributes from a table in the file <code>phenos.csv</code>:</p>
 # Load the expanded phenotype columns (condition, day, and replicate)
 phenos = read.csv(&#39;inputs/prepared_data/phenos.csv&#39;)
 head(phenos, 3)</code></pre>
-<pre><code>        orig.ident condition  day  replicate
+<pre><code>        orig.ident condition time  replicate
 1 HODay0replicate1        HO Day0 replicate1
 2 HODay0replicate2        HO Day0 replicate2
 3 HODay0replicate3        HO Day0 replicate3</code></pre>
@@ -670,16 +670,14 @@ head(phenos, 3)</code></pre>
 columns for <code>day</code> and <code>replicate</code> and ensure that
 certain categorical data appears in correct order, e.g. Day0, Day7, and
 Day21 instead of Day0, Day21, and Day7.
-<!--- revised quotes for day since failed in testing on LH --></p>
+<!--- updated pheos table to use "time" as column name instead of day to resolve mutate reference error --></p>
 <pre class="r"><code># Make a temp table that joins Seurat loaded metadata with expanded phenotype columns
 # (Also, preserve the rownames and order samples based on order in phenos.csv)
-# Note that column &quot;day&quot; has tick marks in ...factor(`day`,...) because day is also 
-# the name of a function in R
 tmp_meta = geo_so@meta.data %&gt;% 
   rownames_to_column(&#39;tmp_rowname&#39;) %&gt;%
   left_join(phenos, by = &#39;orig.ident&#39;) %&gt;%
   mutate(orig.ident = factor(orig.ident, phenos$orig.ident)) %&gt;%
-  mutate(day = factor(`day`, unique(phenos$day))) %&gt;%
+  mutate(time = factor(time, unique(phenos$time))) %&gt;%
   column_to_rownames(&#39;tmp_rowname&#39;)
 
 View(head(tmp_meta))</code></pre>
@@ -703,7 +701,7 @@ nFeature_RNA
 condition
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-day
+time
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 replicate
@@ -881,7 +879,7 @@ nFeature_RNA
 condition
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
-day
+time
 </th>
 <th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
 replicate
@@ -1130,7 +1128,12 @@ is essentially showing the density of the cells at different values of
 <p>Let’s look at the <code>nFeature_RNA</code> violin plot across all
 the samples. Again, this is the number of genes detected per cell.</p>
 <pre class="r"><code># Review feature violin plots   ----------------------------------------
-VlnPlot(geo_so, features = &#39;nFeature_RNA&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + NoLegend() + geom_hline(yintercept = 500) + geom_hline(yintercept = 400) + geom_hline(yintercept = 300) + geom_hline(yintercept = 200)
+VlnPlot(geo_so, features = &#39;nFeature_RNA&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + 
+  NoLegend() + 
+  geom_hline(yintercept = 500) + 
+  geom_hline(yintercept = 400) + 
+  geom_hline(yintercept = 300) + 
+  geom_hline(yintercept = 200)
 ggsave(filename = &#39;results/figures/qc_nFeature_violin.png&#39;, width = 12, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/02-QCandFiltering/02-feature_plot-1.png" width="816" style="display: block; margin: auto;" /></p>
 <p>We observe that samples behave similarly within a day, but have
@@ -1142,7 +1145,8 @@ to have a low number of genes detected (&lt; 500).</p>
 <p>Now let’s look at <code>nCount_RNA</code> plot, the total number of
 UMIs detected.</p>
 <pre class="r"><code># Review count violin plots   ------------------------------------------
-VlnPlot(geo_so, features = &#39;nCount_RNA&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + NoLegend()
+VlnPlot(geo_so, features = &#39;nCount_RNA&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + 
+  NoLegend()
 ggsave(filename = &#39;results/figures/qc_nCount_violin.png&#39;, width = 12, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/02-QCandFiltering/02-count_plot-1.png" width="816" style="display: block; margin: auto;" /></p>
 <p>We observe a similar within-and-across day behavior among the
@@ -1179,7 +1183,12 @@ columns.</div>
 <p>Finally, lets plot the percent mitochondrial reads,
 <code>percent.mt</code>.</p>
 <pre class="r"><code># Review mitochondrial violin plots   ----------------------------------
-VlnPlot(geo_so, features = &#39;percent.mt&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + NoLegend() + geom_hline(yintercept = 25) + geom_hline(yintercept = 20) + geom_hline(yintercept = 15) + geom_hline(yintercept = 10)
+VlnPlot(geo_so, features = &#39;percent.mt&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + 
+  NoLegend() + 
+  geom_hline(yintercept = 25) + 
+  geom_hline(yintercept = 20) + 
+  geom_hline(yintercept = 15) + 
+  geom_hline(yintercept = 10)
 ggsave(filename = &#39;results/figures/qc_mito_violin.png&#39;, width = 12, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/02-QCandFiltering/02-mito_plot-1.png" width="816" style="display: block; margin: auto;" /></p>
 <p>We observe the majority of cells seem to have &lt; 25% mitochondrial
