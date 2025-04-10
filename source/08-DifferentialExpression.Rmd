@@ -219,7 +219,11 @@ We'll run psuedobulk comparisons for our data for the monocyte cluster, starting
 
 ```{r, de_pseudobulk_a, message = FALSE, warning = FALSE}
 # Create pseudobulk object -------------------------------------------------
-pseudo_catch_so = AggregateExpression(geo_so, assays = 'RNA', return.seurat = TRUE, group.by = c('cell_type', 'time', 'replicate'))
+pseudo_catch_so = 
+  AggregateExpression(geo_so, 
+                      assays = 'RNA',
+                      return.seurat = TRUE,
+                      group.by = c('cell_type', 'time', 'replicate'))
 
 # Set up labels to use for comparisons & assign as cell identities
 pseudo_catch_so$day.celltype = paste(pseudo_catch_so$time, pseudo_catch_so$cell_type, sep = '_')
@@ -260,10 +264,13 @@ Since we're working with pseudobulk data, unlike in the marker identification se
 
 ```{r, de_pseudobulk_volcano, warning = FALSE, message = FALSE}
 # Make a volcano plot of pseudobulk diffex results ------------------------
-pseudo_pericyte_D21_vs_D7_volcano = ggplot(de_pseudo_pericyte_D21_vs_D7, aes(x = avg_log2FC, y = -log10(p_val))) + geom_point()
+pseudo_pericyte_D21_vs_D7_volcano = 
+  ggplot(de_pseudo_pericyte_D21_vs_D7, aes(x = avg_log2FC, y = -log10(p_val))) + 
+  geom_point()
 
 ggsave(filename = 'results/figures/volcano_de_pseudo_pericyte_D21_vs_D0.png', 
-       plot = pseudo_pericyte_D21_vs_D7_volcano, width = 7, height = 7, units = 'in')
+       plot = pseudo_pericyte_D21_vs_D7_volcano,
+       width = 7, height = 7, units = 'in')
 
 pseudo_pericyte_D21_vs_D7_volcano
 

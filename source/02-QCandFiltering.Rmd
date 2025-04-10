@@ -285,7 +285,12 @@ Let's look at the `nFeature_RNA` violin plot across all the samples. Again, this
 
 ```{r, feature_plot, fig.show = 'hold'}
 # Review feature violin plots   ----------------------------------------
-VlnPlot(geo_so, features = 'nFeature_RNA', assay = 'RNA', layer = 'counts') + NoLegend() + geom_hline(yintercept = 500) + geom_hline(yintercept = 400) + geom_hline(yintercept = 300) + geom_hline(yintercept = 200)
+VlnPlot(geo_so, features = 'nFeature_RNA', assay = 'RNA', layer = 'counts') + 
+  NoLegend() + 
+  geom_hline(yintercept = 500) + 
+  geom_hline(yintercept = 400) + 
+  geom_hline(yintercept = 300) + 
+  geom_hline(yintercept = 200)
 ggsave(filename = 'results/figures/qc_nFeature_violin.png', width = 12, height = 6, units = 'in')
 ```
 
@@ -297,7 +302,8 @@ Now let's look at `nCount_RNA` plot, the total number of UMIs detected.
 
 ```{r, count_plot, fig.show = 'hold'}
 # Review count violin plots   ------------------------------------------
-VlnPlot(geo_so, features = 'nCount_RNA', assay = 'RNA', layer = 'counts') + NoLegend()
+VlnPlot(geo_so, features = 'nCount_RNA', assay = 'RNA', layer = 'counts') + 
+  NoLegend()
 ggsave(filename = 'results/figures/qc_nCount_violin.png', width = 12, height = 6, units = 'in')
 ```
 
@@ -324,7 +330,12 @@ Finally, lets plot the percent mitochondrial reads, `percent.mt`.
 
 ```{r, mito_plot, warning=FALSE, fig.show = 'hold'}
 # Review mitochondrial violin plots   ----------------------------------
-VlnPlot(geo_so, features = 'percent.mt', assay = 'RNA', layer = 'counts') + NoLegend() + geom_hline(yintercept = 25) + geom_hline(yintercept = 20) + geom_hline(yintercept = 15) + geom_hline(yintercept = 10)
+VlnPlot(geo_so, features = 'percent.mt', assay = 'RNA', layer = 'counts') + 
+  NoLegend() + 
+  geom_hline(yintercept = 25) + 
+  geom_hline(yintercept = 20) + 
+  geom_hline(yintercept = 15) + 
+  geom_hline(yintercept = 10)
 ggsave(filename = 'results/figures/qc_mito_violin.png', width = 12, height = 6, units = 'in')
 ```
 
