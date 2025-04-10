@@ -208,8 +208,12 @@ We can then visualize the first several PCs using the `DimHeatmp()` function, wh
 ```{r, pca_heatmap_plot, eval=FALSE}
 # Build heatmaps of PCAs  -------------------------------------------------
 # Plot cell by gene heatmaps for first several PCs
-DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca') # look at first PC alone first
-DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca') # first 18 PCs
+
+# look at first PC alone first
+DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca') 
+
+# first 18 PCs
+DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca')
 
 # note - need to use png() to write to file because this isn't a ggplot
 png(filename = 'results/figures/qc_pca_heatmap.png', width = 12, height = 40, units = 'in', res = 300)
@@ -448,9 +452,11 @@ In addition to selecting a reduced number of PCs to represent our data, we can a
 # Visualize PCA (PC1 and PC2, unintegrated) -------------------------------
 # first label by sample
 DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'orig.ident') 
- # then label by day
+
+# then label by day
 DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'day')
- # save 
+
+# save 
 ggsave(filename = 'results/figures/qc_pca_plot_unintegrated_sct_day.png', width = 7, height = 6, units = 'in')
 
 #  =========================================================================

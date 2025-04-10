@@ -843,7 +843,11 @@ condition. Then we will run our comparison using
 <code>FindMarker()</code> but specifying DESeq2 as our method before
 summarizing the results:</p>
 <pre class="r"><code># Create pseudobulk object -------------------------------------------------
-pseudo_catch_so = AggregateExpression(geo_so, assays = &#39;RNA&#39;, return.seurat = TRUE, group.by = c(&#39;cell_type&#39;, &#39;time&#39;, &#39;replicate&#39;))
+pseudo_catch_so = 
+  AggregateExpression(geo_so, 
+                      assays = &#39;RNA&#39;,
+                      return.seurat = TRUE,
+                      group.by = c(&#39;cell_type&#39;, &#39;time&#39;, &#39;replicate&#39;))
 
 # Set up labels to use for comparisons &amp; assign as cell identities
 pseudo_catch_so$day.celltype = paste(pseudo_catch_so$time, pseudo_catch_so$cell_type, sep = &#39;_&#39;)
@@ -883,10 +887,13 @@ identification section, there is no percentage of cells expressing to
 need to represent so we can summarize our DE results with a volcano
 plot:</p>
 <pre class="r"><code># Make a volcano plot of pseudobulk diffex results ------------------------
-pseudo_pericyte_D21_vs_D7_volcano = ggplot(de_pseudo_pericyte_D21_vs_D7, aes(x = avg_log2FC, y = -log10(p_val))) + geom_point()
+pseudo_pericyte_D21_vs_D7_volcano = 
+  ggplot(de_pseudo_pericyte_D21_vs_D7, aes(x = avg_log2FC, y = -log10(p_val))) + 
+  geom_point()
 
 ggsave(filename = &#39;results/figures/volcano_de_pseudo_pericyte_D21_vs_D0.png&#39;, 
-       plot = pseudo_pericyte_D21_vs_D7_volcano, width = 7, height = 7, units = &#39;in&#39;)
+       plot = pseudo_pericyte_D21_vs_D7_volcano,
+       width = 7, height = 7, units = &#39;in&#39;)
 
 pseudo_pericyte_D21_vs_D7_volcano</code></pre>
 <p><img src="images/curriculum/08-DifferentialExpression/08-de_pseudobulk_volcano-1.png" width="816" style="display: block; margin: auto;" />
@@ -933,9 +940,9 @@ pathway enrichment, and GSEA with mSigDB.</p>
 # Ok since we saved the plots as we went along
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
-Ncells   9937667  530.8   19243741 1027.8   19243741  1027.8
-Vcells 349280219 2664.8 1065194568 8126.8 1331492516 10158.5</code></pre>
+<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells   9458055  505.2   17925587   957.4   12265318   655.1
+Vcells 708559367 5405.9 1942157236 14817.5 1614004057 12313.9</code></pre>
 <p>We’ll save the scCATCH object. The Seurat object has not been changed
 in this module.</p>
 <pre class="r"><code># Save Seurat object ------------------------------------------------------
