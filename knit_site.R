@@ -7,11 +7,13 @@
 # #remove.packages('klippy');
 # remotes::install_github("umich-brcf-bioinf/workshop-klippy"); 
 # 
-# # install.packages("kable")
-# devtools::install_github("haozhu233/kableExtra")
+#install.packages("kable")
+#install.packages('devtools'); library(devtools)
+#devtools::install_github("haozhu233/kableExtra")
 
 library(rmarkdown)
 library(klippy)
+library(kableExtra)
 
 # IF KNITTING ON AWS:
 # setwd("~/workshop-intro-single-cell")
@@ -32,7 +34,7 @@ render('source/workshop_setup/prereq_check.md', output_dir='html/workshop_setup/
 render_site('source/index.md');
 render_site('source/workshop_intro.Rmd');
 render_site('source/instructor_cheatsheet.Rmd');
-render_site('source/isc_analysis_scripts.Rmd');
+render_site('source/analysis_scripts.Rmd');
 
 ## add content pages
 render_site('source/00A-OrientingOnScRNASeq.Rmd');

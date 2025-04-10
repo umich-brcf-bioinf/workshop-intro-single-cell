@@ -115,7 +115,7 @@ First, we'll change identities of the cells to "integrated.sct.rpca.clusters" ex
 
 <!-- if we want to use the normalized RNA data (not the integrated data) `DefaultAssay(geo_so) <- "RNA"`, although need to check if that still makes sense for Seurat v5 --> 
 
-Then we'll run the`FindAllMarkers()` [function](https://satijalab.org/seurat/reference/findallmarkers) to generate comparisons between each cluster and all other cells, regardless of the experimental group. Note - the statistical test to perform can be specified in `FindAllMarkers()`, but the default is a Wilcoxon test. 
+Then we'll run the`FindAllMarkers()` [function](https://satijalab.org/seurat/reference/findallmarkers) to generate comparisons between each cluster and all other cells, regardless of the experimental group. Note - the statistical test to perform can be specified in `FindAllMarkers()`, but the default is a Wilcoxon test. <!--- `PrepSCTFindMarkers` uses BPCell data on disk so requires that the integrated data loaded from the .rds file were generated with the updated directory structure (e.g. prepared_data/bpcells) --->
 
 ```{r, find_all_markers, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
 ##### Day 3 - Marker identification and visualization 
@@ -166,7 +166,10 @@ head(top_5, n = 10)
 
 ```{r, top_5_cluster_markers_rankedfc}
 # Optional - Create table of top 5 markers per cluster (ranked by logFC) -------
-top_5_by_log2FC = geo_markers %>% group_by(cluster) %>% arrange(p_val_adj, desc(avg_log2FC)) %>% slice_head(n = 5)
+top_5_by_log2FC = geo_markers %>% 
+  group_by(cluster) %>% 
+  arrange(p_val_adj, desc(avg_log2FC)) %>% 
+  slice_head(n = 5)
 
 # Look at results after ranking
 # Note difference in pct.1 column between tables
@@ -215,11 +218,15 @@ In the dotplot we can see that the color indicates the expression of the gene wh
 
 ```{r, top_5_dot_plot_rna, eval=FALSE}
 # Add RNA values to dot plot  ---------------------------------------------
-top_5_rna_dot_plot = DotPlot(geo_so, features = unique(top_5_by_log2FC$gene), assay = 'RNA') + 
+top_5_rna_dot_plot = 
+  DotPlot(geo_so, features = unique(top_5_by_log2FC$gene), assay = 'RNA') + 
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
-    labs(title = 'Top 5 Cluster Genes by FDR and avg_log2FC') + coord_flip()
+    labs(title = 'Top 5 Cluster Genes by FDR and avg_log2FC') + 
+    coord_flip()
 
-ggsave(filename = 'results/figures/markers_top_5_rna_dot_plot.png', plot = top_5_rna_dot_plot, width = 8, height = 18, units = 'in') 
+ggsave(filename = 'results/figures/markers_top_5_rna_dot_plot.png',
+       plot = top_5_rna_dot_plot,
+       width = 8, height = 18, units = 'in') 
 ```
 
 

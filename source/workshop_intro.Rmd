@@ -61,8 +61,8 @@ source("../bin/set_values.R")
 | **Chris** | **Marci** | **Raymond** |
 | ![](images/headshots/headshot_damki.jpg) | ![](images/headshots/headshot_dfhannum.jpg) | ![](images/headshots/headshot_trsaari.jpg) |
 | **Dana** | **Ford** | **Travis** |
-| ![](images/headshots/headshot_phillipa.jpg) | ![](images/headshots/headshot_ncarruth.jpg) | ![](images/headshots/headshot_mkdohert.jpg) |
-| **Tricia** | **Nick** | **Matt** |
+| ![](images/headshots/headshot_phillipa.jpg) | ![](images/headshots/headshot_clairis.jpg) | ![](images/headshots/headshot_mkdohert.jpg) |
+| **Tricia** | **Clair** | **Matt** |
 <br/>
 
 # Code of Conduct
@@ -84,7 +84,7 @@ source("../bin/set_values.R")
   email us at bioinformatics-workshops@umich.edu.
 
 - To report a CoC incident/concern, please email Chris Gates (Bioinformatics Core, Managing
-  Director) at cgates@umich.edu or contact the `r intro_coc_contact` at `r intro_coc_contact_email`.
+  Director) at cgates@umich.edu or contact the `r workshop_vars$coc_contact` at `r workshop_vars$coc_contact_email`.
 <br/>
 <br/>
 
@@ -145,7 +145,7 @@ breakout room.
 
 ![Posting messages to Slack](images/workshop_intro/slack.png)
 
-  - Slack messages will be posted to the **`r intro_slack_channel`** channel.  
+  - Slack messages will be posted to the **`r workshop_vars$slack_channel`** channel.  
     Click on the channel in the left pane (1) to select this channel.
   - You can type in the **message field** (2); click **send** (3) to
     post your message to everyone.
@@ -181,7 +181,7 @@ In your scRNA-Seq experiment, what do/did you hope to find?
 
 To start, we will access our shared RStudio server by opening a web browser to the following URL:
 
-[`r rstudio_server_url`](`r rstudio_server_url`){target="blank"}
+[`r workshop_vars$rstudio_server_url`](`r workshop_vars$rstudio_server_url`){target="blank"}
 
 You should now be looking at a page that will allow you to login to the RStudio server:
 
