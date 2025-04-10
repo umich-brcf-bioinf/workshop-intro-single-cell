@@ -973,7 +973,10 @@ dimensionality choices carry through the downstream analysis and that
 the number of PCs selected in the previous steps are included as an
 argument.</p>
 <pre class="r"><code># Create UMAP reduction ---------------------------------------------------
-geo_so = RunUMAP(geo_so, dims = 1:pcs, reduction = &#39;integrated.sct.rpca&#39;, reduction.name = &#39;umap.integrated.sct.rpca&#39;)
+geo_so = RunUMAP(geo_so,
+                 dims = 1:pcs,
+                 reduction = &#39;integrated.sct.rpca&#39;,
+                 reduction.name = &#39;umap.integrated.sct.rpca&#39;)
 
 # Note a third reduction has been added: `umap.integrated.sct.rpca`
 geo_so </code></pre>
@@ -1012,24 +1015,45 @@ visually inspect if the UMAP structure corresponds to the
 <code>day</code>.</p>
 <pre class="r"><code># Visualize UMAP cluster 1 --------------------------------------------------
 # cluster ID labels
-post_integration_umap_plot_clusters = DimPlot(geo_so, group.by = &#39;seurat_clusters&#39;, label = TRUE, reduction = &#39;umap.integrated.sct.rpca&#39;) + NoLegend()
+post_integration_umap_plot_clusters = 
+  DimPlot(geo_so, 
+          group.by = &#39;seurat_clusters&#39;,
+          label = TRUE,
+          reduction = &#39;umap.integrated.sct.rpca&#39;) + 
+  NoLegend()
 post_integration_umap_plot_clusters
 
-ggsave(filename = &#39;results/figures/umap_integrated_sct_clusters.png&#39;, plot = post_integration_umap_plot_clusters, width = 6, height = 6, units = &#39;in&#39;)</code></pre>
+ggsave(filename = &#39;results/figures/umap_integrated_sct_clusters.png&#39;,
+       plot = post_integration_umap_plot_clusters,
+       width = 6, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_clusters-1.png" width="576" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># Visualize UMAP cluster 2 --------------------------------------------------
 # clusters with labels, split by condition
-post_integration_umap_plot_split_clusters = DimPlot(geo_so, group.by = &#39;seurat_clusters&#39;, split.by = &#39;time&#39;, label = TRUE, reduction = &#39;umap.integrated.sct.rpca&#39;) + NoLegend()
+post_integration_umap_plot_split_clusters = 
+  DimPlot(geo_so,
+          group.by = &#39;seurat_clusters&#39;,
+          split.by = &#39;time&#39;,
+          label = TRUE,
+          reduction = &#39;umap.integrated.sct.rpca&#39;) + 
+  NoLegend()
 post_integration_umap_plot_split_clusters
 
-ggsave(filename = &#39;results/figures/umap_integrated_sct_split_clusters.png&#39;, plot = post_integration_umap_plot_clusters, width = 14, height = 6, units = &#39;in&#39;)</code></pre>
+ggsave(filename = &#39;results/figures/umap_integrated_sct_split_clusters.png&#39;,
+       plot = post_integration_umap_plot_clusters, 
+       width = 14, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_splitclusters-1.png" width="816" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># Visualize UMAP cluster 3 --------------------------------------------------
 # UMAP with day labels (note - we added this column to the meta-data yesterday)
-post_integration_umap_plot_day = DimPlot(geo_so, group.by = &#39;day&#39;, label = FALSE, reduction = &#39;umap.integrated.sct.rpca&#39;)
+post_integration_umap_plot_day = 
+  DimPlot(geo_so,
+          group.by = &#39;day&#39;,
+          label = FALSE,
+          reduction = &#39;umap.integrated.sct.rpca&#39;)
 post_integration_umap_plot_day
 
-ggsave(filename = &#39;results/figures/umap_integrated_sct_day.png&#39;, plot = post_integration_umap_plot_day, width = 8, height = 6, units = &#39;in&#39;)</code></pre>
+ggsave(filename = &#39;results/figures/umap_integrated_sct_day.png&#39;,
+       plot = post_integration_umap_plot_day,
+       width = 8, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_dayclusters-1.png" width="672" style="display: block; margin: auto;" /></p>
 <p>Similar to the PCA plots, the <code>day</code> labeled UMAP can tell
 us if technical sources of variation might be driving or stratifying the
@@ -2298,9 +2322,9 @@ plots = c(&quot;pre_integration_umap_plot_day&quot;,
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells   7200805  384.6   12035948   642.8   12035948   642.8
-Vcells 745939034 5691.1 1331493210 10158.5 1330520953 10151.1</code></pre>
+<pre><code>             used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells    6740906  360.1   12265318   655.1   12265318   655.1
+Vcells 1105055092 8431.0 1942157236 14817.5 1614004057 12313.9</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">

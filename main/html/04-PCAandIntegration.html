@@ -685,8 +685,12 @@ plot. <em>Note - you may need to increase your plot window size to
 resolve errors regarding figure margins.</em></p>
 <pre class="r"><code># Build heatmaps of PCAs  -------------------------------------------------
 # Plot cell by gene heatmaps for first several PCs
-DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;) # look at first PC alone first
-DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;) # first 18 PCs
+
+# look at first PC alone first
+DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;) 
+
+# first 18 PCs
+DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;)
 
 # note - need to use png() to write to file because this isn&#39;t a ggplot
 png(filename = &#39;results/figures/qc_pca_heatmap.png&#39;, width = 12, height = 40, units = &#39;in&#39;, res = 300)
@@ -941,9 +945,11 @@ column:</p>
 <pre class="r"><code># Visualize PCA (PC1 and PC2, unintegrated) -------------------------------
 # first label by sample
 DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;orig.ident&#39;) 
- # then label by day
+
+# then label by day
 DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;day&#39;)
- # save 
+
+# save 
 ggsave(filename = &#39;results/figures/qc_pca_plot_unintegrated_sct_day.png&#39;, width = 7, height = 6, units = &#39;in&#39;)
 
 #  =========================================================================</code></pre>
