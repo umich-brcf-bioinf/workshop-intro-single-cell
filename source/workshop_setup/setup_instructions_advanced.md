@@ -226,47 +226,54 @@ See detailed [installation instructions](https://www.10xgenomics.com/support/sof
       no downstream impact). 
       
 ```
+# -------------------------------------------------------------------------
+install.packages("devtools")
+install.packages("remotes")
+
 if (!requireNamespace(\"BiocManager\", quietly = TRUE)) {\
     install.packages(\"BiocManager\")\
     requireNamespace(\"BiocManager\", quietly = TRUE)
 }
 
-install.packages("devtools")
-install.packages("remotes")
-
+# -------------------------------------------------------------------------
 remotes::install_github("satijalab/seurat", "seurat5")
 remotes::install_github("satijalab/seurat-data", "seurat5")
 remotes::install_github("satijalab/seurat-wrappers", "seurat5")
 
+# -------------------------------------------------------------------------
 # Allows data to live on disk instead of in RAM
 # https://github.com/bnprks/BPCells
 remotes::install_github("bnprks/BPCells/r")
 
 
+# -------------------------------------------------------------------------
 # Automatic Annotation on Cell Types of Clusters from Single-Cell RNA Sequencing Data
 # https://github.com/ZJUFanLab/scCATCH
 install.packages("scCATCH")
 
+# -------------------------------------------------------------------------
 # Differential gene expresion testing
 # https://bioconductor.org/packages/DESeq2/
 BiocManager::install("DESeq2", update = FALSE)
 
-# -----------------------------------------------------------------------------
+# =========================================================================
 # OPTIONAL libraries
-# Some of the libraries make the code execute faster and some enable some off-menu options (e.g. Leiden clustering)
-# The workshop notes will work fine without these libraries below but may be slower.
-# -----------------------------------------------------------------------------
+# Some of the libraries make the code execute faster and some enable some 
+# off-menu options (e.g. Leiden clustering). The workshop notes will work fine 
+# without these libraries below but may be slower.
+# =========================================================================
 
+# -------------------------------------------------------------------------
 # Presto makes it fast and easy to run Wilcoxon rank sum test and auROC analysis on large datasets
 # https://github.com/immunogenomics/presto
 devtools::install_github("immunogenomics/presto")
 
-
+# -------------------------------------------------------------------------
 # Accelerates DESeq2 diffex analysis by fiting Gamma-Poisson Generalized Linear Models Reliably
 # https://github.com/const-ae/glmGamPoi
 BiocManager::install("glmGamPoi")
 
-
+# -------------------------------------------------------------------------
 # An alternative to Louvain clustering algorithm
 # https://cran.r-project.org/package=leiden ; https://github.com/TomKellyGenetics/leiden
 install.packages("leiden")

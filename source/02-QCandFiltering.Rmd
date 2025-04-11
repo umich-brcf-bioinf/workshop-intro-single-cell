@@ -115,9 +115,12 @@ if(!exists('geo_so')) {
 We're going to alter and add some columns to `meta.data` to ease some downstream analysis and plotting steps. This will often be necessary, as sample names contain combined information about phenotypes. Let's take a look at the first few rows again, to reacquaint ourselves.
 
 ```{r, preview_metadata1A, eval = FALSE}
-##### Day 1 - Secondary QC and filtering
+# =========================================================================
+# Secondary QC and filtering
+# =========================================================================
 
-# Examine Seurat metdata  ----------------------------------------------
+# -------------------------------------------------------------------------
+# Examine Seurat metdata
 
 # We could do this to show metadata in the console pane:
 head(geo_so@meta.data)
@@ -162,7 +165,8 @@ the file `phenos.csv`:
 **Load a pre-prepared file:**
 
 ```{r, read_phenotypes}
-# Read sample attributes  ------------------------------------------
+# -------------------------------------------------------------------------
+# Read sample attributes
 # Load the expanded phenotype columns (condition, day, and replicate)
 phenos = read.csv('inputs/prepared_data/phenos.csv')
 head(phenos, 3)
@@ -173,8 +177,9 @@ head(phenos, 3)
 The following code chunk will annotated a copy of the metadata with columns for `day` and `replicate` and ensure that certain categorical data appears in correct order, e.g. Day0, Day7, and Day21 instead of Day0, Day21, and Day7. <!--- updated pheos table to use "time" as column name instead of day to resolve mutate reference error -->
 
 ```{r, alter_metadataA, eval = FALSE}
+# -------------------------------------------------------------------------
 # Make a temp table that joins Seurat loaded metadata with expanded phenotype columns
-# (Also, preserve the rownames and order samples based on order in phenos.csv)
+# Preserve the rownames and order samples based on order in phenos.csv.
 tmp_meta = geo_so@meta.data %>% 
   rownames_to_column('tmp_rowname') %>%
   left_join(phenos, by = 'orig.ident') %>%
@@ -207,7 +212,9 @@ head(tmp_meta) %>%
 
 
 ```{r, assign_extended_metadata}
-# Assign tmp_meta back to geo_so@meta.data and reset the default identity cell name
+# -------------------------------------------------------------------------
+# Assign tmp_meta back to geo_so@meta.data and 
+# reset the default identity cell name
 geo_so@meta.data = tmp_meta
 Idents(geo_so) = 'orig.ident'
 ```
@@ -215,7 +222,8 @@ Idents(geo_so) = 'orig.ident'
 The `orig.ident` column looks the same, but is now a factor with ordering we prefer. We also have `day` and `replicate` columns that will be useful downstream.
 
 ```{r, preview_metadata3A, eval = FALSE}
-# Re-examine Seurat metdata  -------------------------------------------
+# -------------------------------------------------------------------------
+# Re-examine Seurat metdata
 View(head(geo_so@meta.data))
 ```
 
@@ -262,7 +270,7 @@ The number of UMIs detected (`nCount`) and number of expressed features (`nFeatu
 Cell counts per sample (based on the number of unique cellular barcodes detected by Cell Ranger) can indicate if an entire sample was of poor quality. The table below is the number of cells called by Cell Ranger, with the added filter from `CreateSeurateObject()` in the previous lesson: `min.cells = 1, min.features = 50`. Recall, this means a gene is removed if it is expressed in 1 or fewer cells, and a cell is removed if it contains reads for 50 or fewer genes.
 
 ```{r, prefilter_cell_counts}
-# Assign overall cell counts  ------------------------------------------
+# -------------------------------------------------------------------------
 cell_counts_pre_tbl = geo_so@meta.data %>% count(orig.ident, name = 'prefilter_cells')
 cell_counts_pre_tbl
 ```
@@ -284,7 +292,8 @@ A violin plot is similar to a box plot, but it shows the density of the data at 
 Let's look at the `nFeature_RNA` violin plot across all the samples. Again, this is the number of genes detected per cell.
 
 ```{r, feature_plot, fig.show = 'hold'}
-# Review feature violin plots   ----------------------------------------
+# -------------------------------------------------------------------------
+# Review feature violin plots
 VlnPlot(geo_so, features = 'nFeature_RNA', assay = 'RNA', layer = 'counts') + 
   NoLegend() + 
   geom_hline(yintercept = 500) + 
@@ -301,7 +310,8 @@ We observe that samples behave similarly within a day, but have different distri
 Now let's look at `nCount_RNA` plot, the total number of UMIs detected.
 
 ```{r, count_plot, fig.show = 'hold'}
-# Review count violin plots   ------------------------------------------
+# -------------------------------------------------------------------------
+# Review count violin plots
 VlnPlot(geo_so, features = 'nCount_RNA', assay = 'RNA', layer = 'counts') + 
   NoLegend()
 ggsave(filename = 'results/figures/qc_nCount_violin.png', width = 12, height = 6, units = 'in')
@@ -314,7 +324,8 @@ We observe a similar within-and-across day behavior among the samples. Overall i
 The `PercentageFeatureSet()` function enables us to quickly determine the counts belonging to a subset of the possible features for each cell. Since mitochondrial transcripts in mouse begin with "mt", we will use that pattern to count the percentage of reads coming from mitochondrial transcripts.
 
 ```{r, assign_percent_mt}
-# Consider mitochondrial transcripts  ----------------------------------
+# -------------------------------------------------------------------------
+# Consider mitochondrial transcripts
 # We use "mt" because this is mouse, depending on the organism, this might need to be changed
 geo_so$percent.mt = PercentageFeatureSet(geo_so, pattern = '^mt-')
 
@@ -329,7 +340,8 @@ Just looking at the summary, we can see that there are some cells with a high pe
 Finally, lets plot the percent mitochondrial reads, `percent.mt`.
 
 ```{r, mito_plot, warning=FALSE, fig.show = 'hold'}
-# Review mitochondrial violin plots   ----------------------------------
+# -------------------------------------------------------------------------
+# Review mitochondrial violin plots
 VlnPlot(geo_so, features = 'percent.mt', assay = 'RNA', layer = 'counts') + 
   NoLegend() + 
   geom_hline(yintercept = 25) + 
@@ -356,7 +368,8 @@ Fixed thresholds for any combination of `nFeature_RNA`, `nCount_RNA`, and `perce
 In other words, cells with > 500 `nFeature_RNA` and < 25% `percent.mt` were retained by the authors. We could preview what the resulting cell counts would be with these thresholds:
 
 ```{r, preview_postfilter_cell_counts}
-# Consider excluding suspect cells -------------------------------------
+# -------------------------------------------------------------------------
+# Consider excluding suspect cells
 subset(geo_so, subset = nFeature_RNA > 500 & percent.mt < 25)@meta.data %>% 
     count(orig.ident, name = 'postfilter_cells')
 ```
@@ -370,7 +383,8 @@ For this workshop we will use fixed thresholds, but another option is to remove 
 We will deviate from the publication slightly and retain the cells with `nFeature_RNA > 300` and `percent.mt < 15`. Noting that the `nFeature_RNA` plot had a gap around 300, and that we want to be more lenient than the usual 5-10% cutoff for mitochondrial reads.
 
 ```{r, filter_seurat}
-# Filter to exclude suspect cells and assign to new Seurat object ------
+# -------------------------------------------------------------------------
+# Filter to exclude suspect cells and assign to new Seurat object
 geo_so = subset(geo_so, subset = nFeature_RNA > 300 & percent.mt < 15)
 geo_so
 ```
@@ -378,7 +392,8 @@ geo_so
 And let's record the number of cells remaining after filtering:
 
 ```{r, postfilter_cell_counts}
-# Examine remaining cell counts ----------------------------------------
+# -------------------------------------------------------------------------
+# Examine remaining cell counts
 cell_counts_post_tbl = geo_so@meta.data %>% count(orig.ident, name = 'postfilter_cells')
 cell_counts_post_tbl
 ```
@@ -386,7 +401,8 @@ cell_counts_post_tbl
 Let's combine the pre and post tables:
 
 ```{r, cell_counts}
-# Show cell counts before and after filtering --------------------------
+# -------------------------------------------------------------------------
+# Show cell counts before and after filtering
 cell_counts_tbl = cell_counts_pre_tbl %>% left_join(cell_counts_post_tbl, by = 'orig.ident')
 cell_counts_tbl
 ```
@@ -394,6 +410,7 @@ cell_counts_tbl
 We can now easily see how many cells we started with, and how many we retained for downstream analysis. Let's write this table to a file.
 
 ```{r, write_cell_counts}
+# -------------------------------------------------------------------------
 write_csv(cell_counts_tbl, file = 'results/tables/cell_filtering_counts.csv')
 ```
 
@@ -418,7 +435,8 @@ if(!file.exists('results/rdata/geo_so_filtered.rds')) {
 ```
 
 ```{r, save_rds, eval = FALSE}
-# Save the current Seurat object ---------------------------------------
+# -------------------------------------------------------------------------
+# Save the current Seurat object
 saveRDS(geo_so, file = 'results/rdata/geo_so_filtered.rds')
 ```
 <br/>

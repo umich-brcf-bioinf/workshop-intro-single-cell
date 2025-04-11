@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-04-09" />
+<meta name="date" content="2025-04-11" />
 
 <title>Clustering and Projection</title>
 
@@ -416,7 +416,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Clustering and Projection</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-04-09</h4>
+<h4 class="date">2025-04-11</h4>
 
 </div>
 
@@ -595,7 +595,13 @@ higher resolution for smaller/more rare clusters and a lower resolution
 for larger/more general clusters.</p>
 <p>Then, when we look at the meta data we should see that cluster labels
 have been added for each cell:</p>
-<pre class="r"><code># Cluster PCAs ------------------------------------------------------------
+<pre class="r"><code># =========================================================================
+# Clustering and Projection
+# =========================================================================
+
+# -------------------------------------------------------------------------
+# Cluster PCAs
+
 # Create KNN graph with `FindNeighbors()`
 geo_so = FindNeighbors(geo_so, dims = 1:pcs, reduction = &#39;integrated.sct.rpca&#39;)
 
@@ -972,7 +978,8 @@ calculate the UMAP reduction for our data. Notice how the previous
 dimensionality choices carry through the downstream analysis and that
 the number of PCs selected in the previous steps are included as an
 argument.</p>
-<pre class="r"><code># Create UMAP reduction ---------------------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Create UMAP reduction
 geo_so = RunUMAP(geo_so,
                  dims = 1:pcs,
                  reduction = &#39;integrated.sct.rpca&#39;,
@@ -1013,7 +1020,8 @@ clusters that’s not necessarily a problem.</p>
 <p>We can also look at the same UMAP labeled by <code>day</code> to
 visually inspect if the UMAP structure corresponds to the
 <code>day</code>.</p>
-<pre class="r"><code># Visualize UMAP cluster 1 --------------------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Visualize UMAP cluster 1
 # cluster ID labels
 post_integration_umap_plot_clusters = 
   DimPlot(geo_so, 
@@ -1027,7 +1035,8 @@ ggsave(filename = &#39;results/figures/umap_integrated_sct_clusters.png&#39;,
        plot = post_integration_umap_plot_clusters,
        width = 6, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_clusters-1.png" width="576" style="display: block; margin: auto;" /></p>
-<pre class="r"><code># Visualize UMAP cluster 2 --------------------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Visualize UMAP cluster 2
 # clusters with labels, split by condition
 post_integration_umap_plot_split_clusters = 
   DimPlot(geo_so,
@@ -1042,7 +1051,8 @@ ggsave(filename = &#39;results/figures/umap_integrated_sct_split_clusters.png&#3
        plot = post_integration_umap_plot_clusters, 
        width = 14, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_splitclusters-1.png" width="816" style="display: block; margin: auto;" /></p>
-<pre class="r"><code># Visualize UMAP cluster 3 --------------------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Visualize UMAP cluster 3
 # UMAP with day labels (note - we added this column to the meta-data yesterday)
 post_integration_umap_plot_day = 
   DimPlot(geo_so,
@@ -1063,7 +1073,9 @@ steps should be revisted before proceeding.</p>
 the <code>table()</code> function, split by <code>day</code> or split by
 <code>orig.ident</code> to see if the individual samples are driving any
 of the UMAP structure:</p>
-<pre class="r"><code>clusters_counts_condition &lt;- geo_so@meta.data %&gt;% 
+<pre class="r"><code># -------------------------------------------------------------------------
+# Make tables of cell counts
+clusters_counts_condition &lt;- geo_so@meta.data %&gt;% 
   select(time, integrated.sct.rpca.clusters) %&gt;%
   summarise(counts = n(), .by = c(time, integrated.sct.rpca.clusters)) %&gt;% 
   pivot_wider(names_from = integrated.sct.rpca.clusters, values_from = counts, names_sort=TRUE) %&gt;%
@@ -2241,7 +2253,7 @@ Number of edges: 977875
 Running Louvain algorithm...
 Maximum modularity in 10 random starts: 0.9522
 Number of communities: 22
-Elapsed time: 5 seconds</code></pre>
+Elapsed time: 4 seconds</code></pre>
 <p><img src="images/curriculum/05-ProjectionAndClustering/05-run_umap_unintegrated-1.png" width="816" style="display: block; margin: auto;" /></p>
 <p>In the plot at left, we see that while there are distinct clusters,
 those clusters seem to stratified by day. This suggests that without
@@ -2257,17 +2269,20 @@ effects.</p>
 <p>Prior to integration, we could follow the same steps we’ve just run
 for the integrated to see if the resulting clusters tend to be
 determined by sample or condition (in this case, the day):</p>
-<pre class="r"><code>geo_so = FindNeighbors(geo_so, dims = 1:pcs, assay = &#39;RNA&#39;, reduction = &#39;unintegrated.sct.pca&#39;, graph.name = c(&#39;RNA_nn&#39;, &#39;RNA_snn&#39;))
+<pre class="r"><code># -------------------------------------------------------------------------
+geo_so = FindNeighbors(geo_so, dims = 1:pcs, assay = &#39;RNA&#39;, reduction = &#39;unintegrated.sct.pca&#39;, graph.name = c(&#39;RNA_nn&#39;, &#39;RNA_snn&#39;))
 geo_so = FindClusters(geo_so, resolution = 0.4, graph.name = &#39;RNA_snn&#39;, cluster.name = &#39;unintegrated.sct.clusters&#39;)
 geo_so = RunUMAP(geo_so, dims = 1:pcs, reduction = &#39;unintegrated.sct.pca&#39;, reduction.name = &#39;umap.unintegrated.sct.pca&#39;)</code></pre>
 <p>The plots above were generated with:</p>
-<pre class="r"><code># Code block - show unintegrated
+<pre class="r"><code># -------------------------------------------------------------------------
+# Show PCA of unintegrated data
 pre_integration_umap_plot_orig.ident = DimPlot(geo_so, group.by = &#39;orig.ident&#39;, label = FALSE, reduction = &#39;umap.unintegrated.sct.pca&#39;)
 ggsave(filename = &#39;results/figures/umap_unintegrated_sct_orig.ident.png&#39;, plot = pre_integration_umap_plot_orig.ident, width = 8, height = 6, units = &#39;in&#39;)
 
 pre_integration_umap_plot_day = DimPlot(geo_so, group.by = &#39;time&#39;, label = FALSE, reduction = &#39;umap.unintegrated.sct.pca&#39;)
 ggsave(filename = &#39;results/figures/umap_unintegrated_sct_day.png&#39;, plot = pre_integration_umap_plot_day, width = 8, height = 6, units = &#39;in&#39;)</code></pre>
-<pre class="r"><code># Remove the plot variables from the environment to avoid excessive memory usage
+<pre class="r"><code># -------------------------------------------------------------------------
+# Remove the plot variables from the environment to avoid excessive memory usage
 rm(pre_integration_umap_plot_orig.ident) 
 rm(pre_integration_umap_plot_day)
 gc()</code></pre>
@@ -2280,7 +2295,8 @@ gc()</code></pre>
 <p>While we show a single resolution, we can generate and plot multiple
 resolutions iteratively and compare between them before selecting a
 clustering result for the next steps:</p>
-<pre class="r"><code>resolutions = c(0.4, 0.8)
+<pre class="r"><code># -------------------------------------------------------------------------
+resolutions = c(0.4, 0.8)
 
 for(res in resolutions) {
     message(res)
@@ -2290,12 +2306,18 @@ for(res in resolutions) {
 
     geo_so = FindClusters(geo_so, resolution = res)
 
-    DimPlot(geo_so, group.by = cluster_column, label = TRUE, reduction = &#39;umap.integrated.sct.rpca&#39;) + NoLegend()
-    ggsave(filename = umap_file, width = 8, height = 7, units = &#39;in&#39;)
+    DimPlot(geo_so,
+            group.by = cluster_column,
+            label = TRUE,
+            reduction = &#39;umap.integrated.sct.rpca&#39;) 
+      + NoLegend()
+    ggsave(filename = umap_file,
+           width = 8, height = 7, units = &#39;in&#39;)
 }</code></pre>
 <p>In the results, we’ll see multiple resolutions should now be added to
 the metadata slot.</p>
-<pre class="r"><code>head(geo_so@meta.data)</code></pre>
+<pre class="r"><code># -------------------------------------------------------------------------
+head(geo_so@meta.data)</code></pre>
 </details>
 <p><br> <br></p>
 <div id="remove-plot-variables-once-they-are-saved"
@@ -2312,7 +2334,8 @@ but can drastically increase your load time and memory usage.</p>
 <p>Since (a) we have the script to recreate the plots and (b) we
 explicitly saved them as graphic objects - we can simply remove them
 from memory.</p>
-<pre class="r"><code># Remove plot variables from the environment to avoid excessive memory usage
+<pre class="r"><code># -------------------------------------------------------------------------
+# Remove plot variables from the environment to avoid excessive memory usage
 
 plots = c(&quot;pre_integration_umap_plot_day&quot;, 
           &quot;post_integration_umap_plot_clusters&quot;, 
@@ -2323,15 +2346,16 @@ plots = c(&quot;pre_integration_umap_plot_day&quot;,
 rm(list=Filter(exists, plots))
 gc()</code></pre>
 <pre><code>             used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells    6740906  360.1   12265318   655.1   12265318   655.1
-Vcells 1105055092 8431.0 1942157236 14817.5 1614004057 12313.9</code></pre>
+Ncells    9298643  496.7   17466748   932.9   17466748   932.9
+Vcells 1133838473 8650.6 1786666329 13631.2 1715926858 13091.5</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">
 <h1>Save our progress</h1>
 <p>Before moving on to our next section, we will output our updated
 Seurat object to file:</p>
-<pre class="r"><code># Save Seurat object ------------------------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Save Seurat object
 saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_clustered.rds&#39;)</code></pre>
 <p><br/> <br/></p>
 </div>
