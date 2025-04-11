@@ -191,10 +191,12 @@ Since PCA is sensitive to scale, we will use the SCT normalized assay ([referenc
 
 
 ```{r, run_pca, warning = FALSE, message = FALSE}
-# Day 2 - PCA and Integration
+# =========================================================================
+# PCA and Integration
 # =========================================================================
 
-# Build a PCA and add it to the Seurat object  ----------------------------
+# -------------------------------------------------------------------------
+# Build a PCA and add it to the Seurat object
 geo_so = RunPCA(geo_so, reduction.name = 'unintegrated.sct.pca')
 geo_so
 ```
@@ -206,7 +208,8 @@ After running the command in the console, we should see that `geo_so` has a new 
 We can then visualize the first several PCs using the `DimHeatmp()` function, which orders both cells and features (genes) according to their PCA scores and allows us to see some general patterns in the data. Here we will specify that the first 24 PCs be included in the figure and that 500 cells are randomly subsetted for the plot. _Note - you may need to increase your plot window size to resolve errors regarding figure margins._  
 
 ```{r, pca_heatmap_plot, eval=FALSE}
-# Build heatmaps of PCAs  -------------------------------------------------
+# -------------------------------------------------------------------------
+# Build heatmaps of PCAs
 # Plot cell by gene heatmaps for first several PCs
 
 # look at first PC alone first
@@ -219,15 +222,12 @@ DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = 'unintegrate
 png(filename = 'results/figures/qc_pca_heatmap.png', width = 12, height = 40, units = 'in', res = 300)
   DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca')
 dev.off()
-
-#  =========================================================================
 ```
 
 ```{r, pca_heatmap_one, echo=FALSE, message = FALSE, out.width='50%', fig.cap='DimHeatmap for PC1 alone'}
-# look at first PC alone first ---------------------------------------------
+# -------------------------------------------------------------------------
+# look at first PC alone first
 DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca' ) 
-
-#  =========================================================================
 ```
 
 In the plot of just the first PC, we see the rows are labeled with gene names and PC scores plotted with positive values in yellow, negative values in purple, and zero in black [by default](https://davetang.org/muse/2017/08/01/getting-started-seurat/).
@@ -236,8 +236,6 @@ In the plot of just the first PC, we see the rows are labeled with gene names an
 # Plot cell by gene heatmaps for first several PCs  -----------------------
 # first 18 PCs
 DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca') 
-
-#  =========================================================================
 ```
 
 As we scroll down in this plot, we see less and less structure in our plots and more zero scores (in black) indicating that not only is less variation is being represented by larger PCs overall but also that those PCs are less likely to correspond to variation of interest, e.g. corresponding to cell types/subtypes.
@@ -250,11 +248,10 @@ As we scroll down in this plot, we see less and less structure in our plots and 
   We can highlight genes loaded for dimenstions of interest using using `VizDimLoadings()`:
 
 ```{r, pca_loading_plot, eval = TRUE, fig.show='hold'}
-# Visualize gene loadings for PC1 and PC2 ---------------------------------
+# -------------------------------------------------------------------------
+# Visualize gene loadings for PC1 and PC2
 VizDimLoadings(geo_so, dims = 1:2, reduction = 'unintegrated.sct.pca')
 ggsave(filename = 'results/figures/qc_pca_loadings.png', width = 12, height = 6, units = 'in')
-
-#  =========================================================================
 ```
 </details>
 <br>
@@ -272,11 +269,10 @@ ggsave(filename = 'results/figures/qc_pca_loadings.png', width = 12, height = 6,
 So how do we determine how many PCs to use before classifying cells into clusters based on their expression? One way to evaluate how many PCs to use for clustering is by looking at an elbow plot, which shows the percent variance explained by successive PCs. We'll use the `ElbowPlot()` function to do this, specifying that the first 50 PCs be plotted. 
 
 ```{r, elbow_plot, fig.show='hold', out.width='80%'}
-# Visualize how many PCs to include using an elbow plot -------------------
+# -------------------------------------------------------------------------
+# Visualize how many PCs to include using an elbow plot
 ElbowPlot(geo_so, ndims = 50, reduction = 'unintegrated.sct.pca')
 ggsave(filename = 'results/figures/qc_sct_elbow_plot.png', width = 8, height = 8, units = 'in')
-
-#  =========================================================================
 ```
 
 In this plot, we could arbitrarily choose a number along the x-axis that looks like a sharp change in the variance from one PC to the next, that is, an elbow. Of course, while that's often the recommendation in tutorials, the choice of where the point of the "elbow" is, is not always obvious, and this plot is no different.
@@ -303,7 +299,8 @@ starting point for number of PCs to include.
 
 
 ```{r, optimal_pcs}
-# Estimate optimal PCs for clustering with a function -------------------------
+# -------------------------------------------------------------------------
+# Estimate optimal PCs for clustering with a function
 optimal_pcs = function(so, reduction) {
     # quantitative check for number of PCs to include
     pct = so@reductions[[reduction]]@stdev / sum(so@reductions[[reduction]]@stdev) * 100
@@ -318,11 +315,12 @@ optimal_pcs = function(so, reduction) {
 # Apply function to our data
 pcs = optimal_pcs(geo_so, 'unintegrated.sct.pca')
 pcs
+```
 
+```{r, revised_optimal_pcs}
+# -------------------------------------------------------------------------
 # Based on the heatmap (and some behind the scenes testing), we'll modify the number of PCs
 pcs = 10
-
-# =========================================================================
 ```
 
 
@@ -341,7 +339,8 @@ It returns the same recommended PCs as the original function, but also:
 
 
 ```{r, estimate_optimal_pcs_fn}
-# Define a function to estimate optimal PCs for clustering ----------------
+# -------------------------------------------------------------------------
+# Define a function to estimate optimal PCs for clustering
 optimal_pcs_advanced = function(so, reduction, print_plot=TRUE, verbose=TRUE) {
   # quantitative check for number of PCs to include
   threshold_var_cum_min = 90
@@ -407,21 +406,21 @@ optimal_pcs_advanced = function(so, reduction, print_plot=TRUE, verbose=TRUE) {
   return(list(recommended_pcs=pcs, plot=p, co1=co1, co2=co2, df=plot_df))
 }
 
-# =========================================================================
 ```
 
 ```{r, apply_estimate_optimal_pcs}
-# Apply function to our data ----------------------------------------------
+# -------------------------------------------------------------------------
+# Apply function to our data
 optimal_pcs = optimal_pcs_advanced(geo_so, 'unintegrated.sct.pca')
 ```
 
 ```{r, set_pcs}
-# Save plot of PCs --------------------------------------------------------
+# -------------------------------------------------------------------------
+# Save plot of PCs
 ggsave(filename = 'results/figures/optimal_pcs.png',
        plot=optimal_pcs$plot,
        width = 8, height = 8, units = 'in')
 
-# =========================================================================
 ```
 
 
@@ -449,7 +448,8 @@ In addition to selecting a reduced number of PCs to represent our data, we can a
 ~~~
 
 ```{r, pca_loading_plots, message=FALSE, fig.show='hold'}
-# Visualize PCA (PC1 and PC2, unintegrated) -------------------------------
+# -------------------------------------------------------------------------
+# Visualize PCA (PC1 and PC2, unintegrated)
 # first label by sample
 DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'orig.ident') 
 
@@ -457,9 +457,9 @@ DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'orig.ident')
 DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'day')
 
 # save 
-ggsave(filename = 'results/figures/qc_pca_plot_unintegrated_sct_day.png', width = 7, height = 6, units = 'in')
+ggsave(filename = 'results/figures/qc_pca_plot_unintegrated_sct_day.png',
+       width = 7, height = 6, units = 'in')
 
-#  =========================================================================
 ```
 
 In the first plot with each cell labeled by the original sample name, it looks like there might be some batches but it's hard to distinguish. From the second by `day`, we can see that even after normalization there seems to be variation that corresponds more to a batch effect related to the day status than interesting biological variation. This suggests that clustering our data using our selected number of PCs, integration should be performed to mitigate these differences and better align our data.
@@ -494,8 +494,6 @@ geo_so = IntegrateLayers(
   normalization.method = 'SCT',
   new.reduction = 'integrated.sct.rpca')
 ### DO NOT RUN ###
-#  =========================================================================
-
 ```
 
 
@@ -507,6 +505,7 @@ Note that the integration is run on the layers, which from our prior steps each 
 Because the `IntegrateLayers()` function takes a while to run, we will load the RPCA integrated `geo_so` object from a file we have previously generated.
 
 ```{r, eval = FALSE}
+# -------------------------------------------------------------------------
 geo_so = readRDS('inputs/prepared_data/geo_so_sct_integrated.rds')
 ```
 
@@ -515,7 +514,8 @@ geo_so = readRDS('inputs/prepared_data/geo_so_sct_integrated.rds')
 Note we have specified the unintegrated reduction `unintegrated.sct.pca`, which is what `IntegrateLayers()` operates on, along with the `SCT` assay. Let's take a look to see what's different about the `Seurat` object:
 
 ```{r, preview_seurat}
-# Check our updated object that we've read in from file ------------------- 
+# -------------------------------------------------------------------------
+# Check our updated object that we've read in from file
 # Observe that we now have a new reduction, `integrated.sct.rpca`
 geo_so 
 ```
@@ -527,11 +527,11 @@ And in in our running schematic, we can now see `integrated.sct.rpca` added to t
 We can also confirm that our integration method has helped to correct the `Day` effects we saw in the initial PCA plots by generating a similar plot for our integrated data.
 
 ```{r, check_integration, fig.show='hold'}
-# Visualize PCA (PC1 and PC2, integrated) ---------------------------------
+# -------------------------------------------------------------------------
+# Visualize PCA (PC1 and PC2, integrated)
 DimPlot(geo_so, reduction = 'integrated.sct.rpca', group.by = 'day')
 ggsave(filename = 'results/figures/qc_pca_plot_integrated_sct_day.png', width = 7, height = 6, units = 'in')
 
-#  =========================================================================
 ```
 
 <!--- confirmed in testing that PCA plot is updated if run on catched geo_so object --->
@@ -547,10 +547,9 @@ if(!file.exists('results/rdata/geo_so_sct_integrated.rds')) {
 ```
 
 ```{r, save_rds, eval = FALSE}
-# Save updated seurat object to file  -------------------------------------
+# -------------------------------------------------------------------------
+# Save updated seurat object to file
 saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated.rds')
-
-#  =========================================================================
 ```
 
 > **Other integration methods**

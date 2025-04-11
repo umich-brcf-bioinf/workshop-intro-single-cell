@@ -118,9 +118,13 @@ First, we'll change identities of the cells to "integrated.sct.rpca.clusters" ex
 Then we'll run the`FindAllMarkers()` [function](https://satijalab.org/seurat/reference/findallmarkers) to generate comparisons between each cluster and all other cells, regardless of the experimental group. Note - the statistical test to perform can be specified in `FindAllMarkers()`, but the default is a Wilcoxon test. <!--- `PrepSCTFindMarkers` uses BPCell data on disk so requires that the integrated data loaded from the .rds file were generated with the updated directory structure (e.g. prepared_data/bpcells) --->
 
 ```{r, find_all_markers, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
-##### Day 3 - Marker identification and visualization 
+# =========================================================================
+# Marker identification and visualization
+# =========================================================================
 
-# Find empirical markers  -------------------------------------------------
+# -------------------------------------------------------------------------
+# Find empirical markers
+
 # Prep for cluster comparisons
 geo_so = SetIdent(geo_so, value = 'integrated.sct.rpca.clusters')
 geo_so = PrepSCTFindMarkers(geo_so)
@@ -155,7 +159,8 @@ Note that over-interpretation of these results should be avoided, since each cel
 Therefore, it's useful to filter the results to highlight the top positive markers (since a positive fold-change would mean that gene is more highly expressed in the cluster compared to all other cells), before looking at our results
 
 ```{r, top_5_cluster_markers}
-# Identify marker genes for each cluster ----------------------------------
+# -------------------------------------------------------------------------
+# Identify marker genes for each cluster
 # Create table of top 5 markers per cluster (using default ranking)
 top_5 = geo_markers %>% filter(p_val_adj < 0.01) %>% group_by(cluster) %>% slice_head(n = 5)
 
@@ -165,7 +170,8 @@ head(top_5, n = 10)
 ```
 
 ```{r, top_5_cluster_markers_rankedfc}
-# Optional - Create table of top 5 markers per cluster (ranked by logFC) -------
+# -------------------------------------------------------------------------
+# Optional - Create table of top 5 markers per cluster (ranked by logFC)
 top_5_by_log2FC = geo_markers %>% 
   group_by(cluster) %>% 
   arrange(p_val_adj, desc(avg_log2FC)) %>% 
@@ -196,7 +202,8 @@ Now that we have generated a set of marker genes for our clusters, it is useful 
 We'll use the `DotPlot()` [function](https://satijalab.org/seurat/reference/dotplot) with the SCT values to visualize the top 5 marker genes per cluster:
 
 ```{r, top_5_dot_plot_sct, fig.height = 18, fig.width = 8}
-# Visualize top marker genes as dot plot ----------------------------------
+# -------------------------------------------------------------------------
+# Visualize top marker genes as dot plot
 top_5_sct_dot_plot = DotPlot(geo_so, features = unique(top_5$gene)) + 
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
     labs(title = 'Top 5 Cluster Genes by FDR and avg_log2FC') + coord_flip()
@@ -204,7 +211,8 @@ top_5_sct_dot_plot
 ```
 
 ```{r, top_5_dot_plot_sct_save}
-# Save dot plot of top marker genes ---------------------------------------
+# -------------------------------------------------------------------------
+# Save dot plot of top marker genes
 ggsave(filename = 'results/figures/markers_top_5_sct_dot_plot.png', 
        plot = top_5_sct_dot_plot, 
        width = 8, height = 18, units = 'in') 
@@ -217,7 +225,8 @@ In the dotplot we can see that the color indicates the expression of the gene wh
     In addition to plotting the SCT values, the raw or normalized RNA values can be plotted as well:
 
 ```{r, top_5_dot_plot_rna, eval=FALSE}
-# Add RNA values to dot plot  ---------------------------------------------
+# -------------------------------------------------------------------------
+# Add RNA values to dot plot
 top_5_rna_dot_plot = 
   DotPlot(geo_so, features = unique(top_5_by_log2FC$gene), assay = 'RNA') + 
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
@@ -236,7 +245,8 @@ ggsave(filename = 'results/figures/markers_top_5_rna_dot_plot.png',
 
 Before proceeding with cluster annotations, we'll also check the percentage of mitochondrial genes to determine if there are any clusters (or sub populations) that might correspond to interesting cell death patterns (or might indicate further filtering is needed):
 ```{r, echo=TRUE, eval= TRUE}
-# Check mitochondrial gene expression -------------------------------------
+# -------------------------------------------------------------------------
+# Check mitochondrial gene expression
 percent_mito_plot = FeaturePlot(geo_so, features='percent.mt')
 
 # save to file
@@ -253,6 +263,7 @@ We see that a higher % seem to be somewhat concentrated in a few places, but if 
 
 
 ```{r}
+# -------------------------------------------------------------------------
 # Remove the plot variables from the environment to avoid excessive memory usage
 plots = c("top_5_sct_dot_plot", 
           "top_5_rna_dot_plot", 
@@ -280,7 +291,8 @@ if(!file.exists('results/rdata/geo_markers.rds')) {
 ```
 
 ```{r, save_rds, eval=FALSE}
-# Save Seurat object and gene marker data ---------------------------------
+# -------------------------------------------------------------------------
+# Save Seurat object and gene marker data
 saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated_with_markers.rds')
 saveRDS(geo_markers, file = 'results/rdata/geo_markers.rds')
 ```

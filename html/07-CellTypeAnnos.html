@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-04-09" />
+<meta name="date" content="2025-04-11" />
 
 <title>Cell Type Annotation</title>
 
@@ -416,7 +416,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Cell Type Annotation</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-04-09</h4>
+<h4 class="date">2025-04-11</h4>
 
 </div>
 
@@ -591,15 +591,20 @@ query of relevant tissues (which requires some prior knowledge of the
 experiment and using the <a
 href="https://github.com/ZJUFanLab/scCATCH/wiki">scCATCH wiki</a> to
 select tissues from the species) before we run the tool:</p>
-<pre class="r"><code>##### Day 3 - Cell Type Annotation
+<pre class="r"><code># =========================================================================
+# Cell Type Annotation
+# =========================================================================
 
-# Load scCATCH  -----------------------------------------------------------
+# -------------------------------------------------------------------------
+# Load scCATCH
 library(scCATCH)
 
 # check that cell identities are set to expected resolution 
 all(Idents(geo_so) == geo_so$integrated.sct.rpca.clusters)</code></pre>
 <pre><code>[1] TRUE</code></pre>
-<pre class="r"><code># Annotate clusters using scCATCH  ----------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Annotate clusters using scCATCH
+
 # create scCATCH object, using count data
 geo_catch = createscCATCH(data = geo_so@assays$SCT@counts, cluster = as.character(Idents(geo_so)))
 
@@ -652,7 +657,8 @@ with some minor adjustments.</p>
 <p>To revise the cluster annotation from those predicted by scCATCH, it
 can be helpful to output a table that can be edited in excel or a text
 editor.</p>
-<pre class="r"><code># Write scCATCH predictions to file  ----------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Write scCATCH predictions to file
 write_csv(sc_pred_tbl, file = &#39;results/tables/scCATCH_cluster_predictions.csv&#39;)</code></pre>
 <div id="using-known-cell-type-markers" class="section level2">
 <h2>Using known cell-type markers</h2>
@@ -670,7 +676,8 @@ et al (2022)</a> and <a
 href="https://ashpublications.org/blood/article/128/8/e20/35749/A-single-cell-resolution-map-of-mouse">Nestorowa
 et al (2016)</a> to see if other modifications should be made to the
 scCATCH predictions:</p>
-<pre class="r"><code># Create lists of immune cells and associated gene markers --------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Create lists of immune cells and associated gene markers
 immune_markers = list()
 immune_markers[[&#39;Inflam. Macrophage&#39;]] = c(&#39;Cd14&#39;, &#39;Cxcl2&#39;) # Cd14 a- monocyte/macrophage cells
 immune_markers[[&#39;Platelet&#39;]] = c(&#39;Pf4&#39;)
@@ -678,22 +685,18 @@ immune_markers[[&#39;Mast cells&#39;]] = c(&#39;Gata2&#39;, &#39;Kit&#39;)
 immune_markers[[&#39;NK cells&#39;]] = c(&#39;Nkg7&#39;, &#39;Klrd1&#39;)
 immune_markers[[&#39;B-cell&#39;]] = c( &#39;Ly6d&#39;, &#39;Cd19&#39;, &#39;Cd79b&#39;, &#39;Ms4a1&#39;)
 immune_markers[[&#39;T-cell&#39;]] = c( &#39;Cd3d&#39;,&#39;Cd3e&#39;,&#39;Cd3g&#39;) # also Thy1</code></pre>
-<pre class="r"><code># Plot other immune to assist with cluster identification ---------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Plot other immune to assist with cluster identification
 immune_markers_plot = DotPlot(geo_so, features = immune_markers, assay = &#39;SCT&#39;)  +
-  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))</code></pre>
-<pre><code>Warning: The `facets` argument of `facet_grid()` is deprecated as of ggplot2 2.2.0.
-ℹ Please use the `rows` argument instead.
-ℹ The deprecated feature was likely used in the Seurat package.
-  Please report the issue at &lt;https://github.com/satijalab/seurat/issues&gt;.
-This warning is displayed once every 8 hours.
-Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
-<pre class="r"><code>immune_markers_plot
+  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
+immune_markers_plot
 
 # save to file
 ggsave(filename = &#39;results/figures/immune_markers_sct_dot_plot.png&#39;, 
        plot = immune_markers_plot, width = 10, height = 5, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/07-CellTypeAnnotation/07-imm_marker_gene_check-1.png" width="816" style="display: block; margin: auto;" /></p>
-<pre class="r"><code># Create lists of other cells and associated gene markers ---------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Create lists of other cells and associated gene markers
 other_markers = list()
 other_markers[[&#39;Pericyte&#39;]] = c(&#39;Acan&#39;,&#39;Sox9&#39;)
 other_markers[[&#39;SMC&#39;]] = c(&#39;Acta2&#39;, &#39;Myh11&#39;) # SMC = mesenchymal smooth-muscle cell/mesenchymal lineage
@@ -703,7 +706,8 @@ other_markers[[&#39;Fibroblast&#39;]] = c(&#39;Dpt&#39;, &#39;Fn1&#39;, &#39;Col
 other_markers[[&#39;Endothelial&#39;]] = c(&#39;Pecam1&#39;, &#39;Cd38&#39;) # from wound healing; Pecam1 also exp in endothelial
 other_markers[[&#39;HSC&#39;]] = c(&#39;Ltb&#39;, &#39;Cd74&#39;) # less well defined/conflicting definitions
 other_markers[[&#39;Erythroid&#39;]] = c(&#39;Hba-a1&#39;)</code></pre>
-<pre class="r"><code># Plot known cell-type markers ---------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Plot known cell-type markers
 other_markers_dot_plot = DotPlot(geo_so, features = other_markers, assay = &#39;SCT&#39;) +
   theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
 other_markers_dot_plot
@@ -740,8 +744,10 @@ href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7002453/">original
 paper</a> before using the same <code>DotPlot()</code> function to
 visualize the expression level and frequency of these genes in our
 current clusters:</p>
-<pre class="r"><code># Visualize manually selected marker genes --------------------------------
-# Create lists of genes from paper 
+<pre class="r"><code># -------------------------------------------------------------------------
+# Visualize manually selected marker genes
+
+# Create lists of genes from paper
 fig1g_markers = c(&#39;Cxcl1&#39;, &#39;Cxcl2&#39;, &#39;Ccl2&#39;, &#39;Ccl3&#39;, &#39;Ccl4&#39;, &#39;Il1b&#39;, &#39;Il6b&#39;, &#39;Tnf&#39;, &#39;Tgfb1&#39;, &#39;Tgfb2&#39;, &#39;Tgfb3&#39;, &#39;Cxcl5&#39;)
 fig1h_markers = c(&#39;Cxcr2&#39;, &#39;Csf1r&#39;, &#39;Csf3r&#39;, &#39;Tgfbr1&#39;, &#39;Tgfbr3&#39;, &#39;Il1r1&#39;, &#39;Il6ra&#39;, &#39;Lifr&#39;, &#39;Tgfbr2&#39;)
 
@@ -783,12 +789,17 @@ al</em>
 </summary>
 <p>We can also generate the same plots, but using the unintegrated data
 by specifying the <code>RNA</code> assay:</p>
-<pre class="r"><code># Visualize manually selected marker genes (from unintegrated data) ------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Visualize manually selected marker genes (from unintegrated data)
 rna_dot_plot = DotPlot(geo_so, features = fig1g_markers, assay = &#39;RNA&#39;)
 fig1h_rna_dot_plot = DotPlot(geo_so, features = fig1h_markers, assay = &#39;RNA&#39;)
 
-ggsave(filename = &#39;results/figures/markers_fig1g_rna_dot_plot.png&#39;, plot = fig1g_rna_dot_plot, width = 8, height = 6, units = &#39;in&#39;)
-ggsave(filename = &#39;results/figures/markers_fig1h_rna_dot_plot.png&#39;, plot = fig1h_rna_dot_plot, width = 8, height = 6, units = &#39;in&#39;)</code></pre>
+ggsave(filename = &#39;results/figures/markers_fig1g_rna_dot_plot.png&#39;,
+       plot = fig1g_rna_dot_plot,
+       width = 8, height = 6, units = &#39;in&#39;)
+ggsave(filename = &#39;results/figures/markers_fig1h_rna_dot_plot.png&#39;,
+       plot = fig1h_rna_dot_plot,
+       width = 8, height = 6, units = &#39;in&#39;)</code></pre>
 </details>
 <p><br></p>
 </div>
@@ -805,12 +816,14 @@ them back.
 <!--- modify to have a hidden block that runs after to keep this large block intact --></p>
 <div class="prepared_content cooking_show">
 <p><strong>Load a pre-prepared file:</strong></p>
-<pre class="r"><code># Load the revised annotations from file --------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Load the revised annotations from file
 celltype_annos = read_csv(&#39;inputs/prepared_data/revised_cluster_annotations.csv&#39;) %&gt;%
   mutate(cluster=factor(cluster))
 head(celltype_annos)</code></pre>
 </div>
-<pre class="r"><code># Merge cell types in but as a new table to slide into @meta.data ----------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Merge cell types in but as a new table to slide into @meta.data
 copy_metadata = geo_so@meta.data
 new_metadata = copy_metadata %&gt;% 
   left_join(celltype_annos, by = c(&#39;integrated.sct.rpca.clusters&#39; = &#39;cluster&#39;))
@@ -1173,7 +1186,8 @@ column.</div>
 <p>Lastly, we can generate a revised UMAP plot with our descriptive
 cluster labels by using our updated Seurat object and providing the new
 <code>cell_type</code> label for the <code>group.by</code> argument:</p>
-<pre class="r"><code># Make a labeled UMAP plot of clusters ------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Make a labeled UMAP plot of clusters
 catch_umap_plot = 
   DimPlot(geo_so, group.by = &#39;cell_type&#39;, label = TRUE, reduction = &#39;umap.integrated.sct.rpca&#39;)
 catch_umap_plot
@@ -1200,16 +1214,18 @@ catch_umap_condition_plot</code></pre>
 </div>
 <div id="save-our-progress" class="section level1">
 <h1>Save our progress</h1>
-<pre class="r"><code># Discard all ggplot objects currently in environment ---------------------
-# Ok since we saved the plots as we went along
+<pre class="r"><code># -------------------------------------------------------------------------
+# Discard all ggplot objects currently in environment
+# (Ok since we saved the plots as we went along)
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells   7067022  377.5   12265318   655.1   12265318   655.1
-Vcells 697113920 5318.6 1942157236 14817.5 1614004057 12313.9</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
+Ncells   9331880  498.4   17466748  932.9   17466748   932.9
+Vcells 364749914 2782.9 1143466452 8724.0 1715926858 13091.5</code></pre>
 <p>We’ll save the scCATCH object. The Seurat object has not been changed
 in this module.</p>
-<pre class="r"><code># Save Seurat object and annotations --------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Save Seurat object and annotations
 saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_integrated_with_catch.rds&#39;)
 saveRDS(geo_catch, file = &#39;results/rdata/geo_catch.rds&#39;)</code></pre>
 <p><br/> <br/></p>
