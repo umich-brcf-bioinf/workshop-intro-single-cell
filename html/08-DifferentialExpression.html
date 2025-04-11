@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-04-09" />
+<meta name="date" content="2025-04-11" />
 
 <title>Differential Expression Analysis</title>
 
@@ -416,7 +416,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Differential Expression Analysis</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-04-09</h4>
+<h4 class="date">2025-04-11</h4>
 
 </div>
 
@@ -529,9 +529,12 @@ to ensure our cells are labeled to reflect both the cluster and
 condition identities before running our comparison using
 <code>FindMarker()</code> and summarizing the results:</p>
 <!-- add UMAP with facets by groups to show what's being compared? -->
-<pre class="r"><code>##### Day 3  - Differential Expression Analysis
+<pre class="r"><code># =========================================================================
+# Differential Expression Analysis
+# =========================================================================
 
-# Make a day-celltype contrast --------------------------------------------
+# -------------------------------------------------------------------------
+# Make a day-celltype contrast
 
 # set up combined label of day + celltype &amp; assign as identities
 geo_so$day.celltype = paste(geo_so$time, geo_so$cell_type, sep = &#39;_&#39;)
@@ -746,7 +749,8 @@ Day21_B cell
 </tbody>
 </table>
 </div>
-<pre class="r"><code># Consider pericyte cluster D21 v D7 --------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Consider pericyte cluster D21 v D7
 
 # Reset cell identities to the combined condition + cluster label
 Idents(geo_so) = &#39;day.celltype&#39;
@@ -765,7 +769,8 @@ Gm10076 1.873982e-301 -1.2351650 0.818 0.964 3.835667e-297
 Cilp2   1.170085e-283  5.8112649 0.418 0.014 2.394930e-279
 Tpt1    9.251339e-282  0.7933017 0.998 0.981 1.893564e-277
 Wfdc1   3.601155e-265  6.2241539 0.372 0.006 7.370845e-261</code></pre>
-<pre class="r"><code># Add gene symmbols names and save ----------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Add gene symbols names and save
 
 # Add rownames as a column for output
 de_cell_pericyte_D21_vs_D7$gene = rownames(de_cell_pericyte_D21_vs_D7)
@@ -794,7 +799,8 @@ quite stringent as the default log2FC threshold for the function is
 in RNA levels, which is quite permissive.</p>
 <p>If there is enough time - we can also compare between cells from the
 D7 and D0 conditions.</p>
-<pre class="r"><code># Compare pericyte cluster D7 v D0 ----------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Compare pericyte cluster D7 v D0
 de_cell_pericyte_D7_vs_D0 = FindMarkers(
     object = geo_so,
     slot = &#39;data&#39;, test = &#39;wilcox&#39;,
@@ -808,7 +814,8 @@ Ptx4     1.193446e-261  -7.268218 0.005 0.551 2.442744e-257
 Chodl    6.033985e-243  -7.172540 0.006 0.536 1.235036e-238
 Myoc     1.921030e-188  -9.424580 0.002 0.348 3.931963e-184
 Crispld1 8.254509e-153  -7.185990 0.010 0.449 1.689533e-148</code></pre>
-<pre class="r"><code># Add rownames for D7 v D0 results ----------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Add rownames for D7 v D0 results
 de_cell_pericyte_D7_vs_D0$gene = rownames(de_cell_pericyte_D7_vs_D0)
 
 # summarize results
@@ -842,7 +849,8 @@ replicate labels), before labeling the cells to reflect the cluster and
 condition. Then we will run our comparison using
 <code>FindMarker()</code> but specifying DESeq2 as our method before
 summarizing the results:</p>
-<pre class="r"><code># Create pseudobulk object -------------------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Create pseudobulk object
 pseudo_catch_so = 
   AggregateExpression(geo_so, 
                       assays = &#39;RNA&#39;,
@@ -852,7 +860,8 @@ pseudo_catch_so =
 # Set up labels to use for comparisons &amp; assign as cell identities
 pseudo_catch_so$day.celltype = paste(pseudo_catch_so$time, pseudo_catch_so$cell_type, sep = &#39;_&#39;)
 Idents(pseudo_catch_so) = &#39;day.celltype&#39;</code></pre>
-<pre class="r"><code># Run pseudobulk comparison between Day 21 and Day 0, using DESeq2 ----------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Run pseudobulk comparison between Day 21 and Day 0, using DESeq2
 de_pseudo_pericyte_D21_vs_D7 = FindMarkers(
     object = pseudo_catch_so, 
     ident.1 = &#39;Day21_Pericyte&#39;, ident.2 = &#39;Day7_Pericyte&#39;, 
@@ -867,7 +876,8 @@ Cd55     1.853515e-95   1.290895     1     1  4.909776e-91
 Prss23   2.598750e-87   1.644203     1     1  6.883828e-83
 Nav3     3.019557e-87  -1.594133     1     1  7.998504e-83
 Gm42418  7.456053e-82   2.249675     1     1  1.975034e-77</code></pre>
-<pre class="r"><code># Add genes and review pseudobulk results ----------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Add genes and review pseudobulk results
 
 # Add rownames as a column for output
 de_pseudo_pericyte_D21_vs_D7$gene = rownames(de_pseudo_pericyte_D21_vs_D7)
@@ -886,7 +896,8 @@ FALSE  TRUE
 identification section, there is no percentage of cells expressing to
 need to represent so we can summarize our DE results with a volcano
 plot:</p>
-<pre class="r"><code># Make a volcano plot of pseudobulk diffex results ------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Make a volcano plot of pseudobulk diffex results
 pseudo_pericyte_D21_vs_D7_volcano = 
   ggplot(de_pseudo_pericyte_D21_vs_D7, aes(x = avg_log2FC, y = -log10(p_val))) + 
   geom_point()
@@ -908,7 +919,8 @@ Add code to generate pseudobulk results for each cluster for all Day 7 vs Day 21
 expressed genes back onto our UMAP plots to highlight the localization
 and possible function, again using the <code>FeaturePlot</code>
 function.</p>
-<pre class="r"><code># UMAP feature plot of Cd55 gene ------------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# UMAP feature plot of Cd55 gene
 FeaturePlot(geo_so, features = &quot;Cd55&quot;, split.by = &quot;time&quot;)</code></pre>
 <p><img src="images/curriculum/08-DifferentialExpression/08-show_DE_featurePlot-1.png" width="816" style="display: block; margin: auto;" />
 So we found Cd55 based on differential expression comparison in the
@@ -936,16 +948,18 @@ pathway enrichment, and GSEA with mSigDB.</p>
 </div>
 <div id="save-our-progress" class="section level1">
 <h1>Save our progress</h1>
-<pre class="r"><code># Discard all ggplot objects currently in environment ---------------------
-# Ok since we saved the plots as we went along
+<pre class="r"><code># -------------------------------------------------------------------------
+# Discard all ggplot objects currently in environment
+# (Ok since we saved the plots as we went along.)
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells   9458055  505.2   17925587   957.4   12265318   655.1
-Vcells 708559367 5405.9 1942157236 14817.5 1614004057 12313.9</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
+Ncells   9226885  492.8   17466748  932.9   11848562  632.8
+Vcells 370895417 2829.8 1071989147 8178.7 1071451558 8174.6</code></pre>
 <p>We’ll save the scCATCH object. The Seurat object has not been changed
 in this module.</p>
-<pre class="r"><code># Save Seurat object ------------------------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Save Seurat object
 saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_integrated_final.rds&#39;)</code></pre>
 <hr />
 </div>
