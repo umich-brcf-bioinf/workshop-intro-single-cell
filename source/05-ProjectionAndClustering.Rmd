@@ -306,7 +306,7 @@ ggsave(filename = 'results/figures/umap_integrated_sct_split_clusters.png',
 # UMAP with day labels (note - we added this column to the meta-data yesterday)
 post_integration_umap_plot_day = 
   DimPlot(geo_so,
-          group.by = 'day',
+          group.by = 'time',
           label = FALSE,
           reduction = 'umap.integrated.sct.rpca')
 post_integration_umap_plot_day

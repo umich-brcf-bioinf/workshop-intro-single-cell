@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-04-11" />
+<meta name="date" content="2025-04-14" />
 
 <title>PCA and Integration</title>
 
@@ -414,7 +414,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">PCA and Integration</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-04-11</h4>
+<h4 class="date">2025-04-14</h4>
 
 </div>
 
@@ -946,7 +946,7 @@ column:</p>
 DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;orig.ident&#39;) 
 
 # then label by day
-DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;day&#39;)
+DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;time&#39;)
 
 # save 
 ggsave(filename = &#39;results/figures/qc_pca_plot_unintegrated_sct_day.png&#39;,
@@ -1022,6 +1022,7 @@ so their <code>IntegrateLayers()</code> call does not include
 run, we will load the RPCA integrated <code>geo_so</code> object from a
 file we have previously generated.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
+# Load integrated data from prepared file
 geo_so = readRDS(&#39;inputs/prepared_data/geo_so_sct_integrated.rds&#39;)</code></pre>
 </div>
 <p>Note we have specified the unintegrated reduction
@@ -1052,8 +1053,9 @@ the <code>Day</code> effects we saw in the initial PCA plots by
 generating a similar plot for our integrated data.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Visualize PCA (PC1 and PC2, integrated)
-DimPlot(geo_so, reduction = &#39;integrated.sct.rpca&#39;, group.by = &#39;day&#39;)
-ggsave(filename = &#39;results/figures/qc_pca_plot_integrated_sct_day.png&#39;, width = 7, height = 6, units = &#39;in&#39;)</code></pre>
+DimPlot(geo_so, reduction = &#39;integrated.sct.rpca&#39;, group.by = &#39;time&#39;)
+ggsave(filename = &#39;results/figures/qc_pca_plot_integrated_sct_day.png&#39;, 
+       width = 7, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/04-PCAandIntegration/04-check_integration-1.png" width="816" style="display: block; margin: auto;" /></p>
 <!--- confirmed in testing that PCA plot is updated if run on catched geo_so object --->
 </div>
