@@ -457,7 +457,7 @@ In addition to selecting a reduced number of PCs to represent our data, we can a
 DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'orig.ident') 
 
 # then label by day
-DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'day')
+DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'time')
 
 # save 
 ggsave(filename = 'results/figures/qc_pca_plot_unintegrated_sct_day.png',
@@ -509,6 +509,7 @@ Because the `IntegrateLayers()` function takes a while to run, we will load the 
 
 ```{r, eval = FALSE}
 # -------------------------------------------------------------------------
+# Load integrated data from prepared file
 geo_so = readRDS('inputs/prepared_data/geo_so_sct_integrated.rds')
 ```
 
@@ -532,8 +533,9 @@ We can also confirm that our integration method has helped to correct the `Day` 
 ```{r, check_integration, fig.show='hold'}
 # -------------------------------------------------------------------------
 # Visualize PCA (PC1 and PC2, integrated)
-DimPlot(geo_so, reduction = 'integrated.sct.rpca', group.by = 'day')
-ggsave(filename = 'results/figures/qc_pca_plot_integrated_sct_day.png', width = 7, height = 6, units = 'in')
+DimPlot(geo_so, reduction = 'integrated.sct.rpca', group.by = 'time')
+ggsave(filename = 'results/figures/qc_pca_plot_integrated_sct_day.png', 
+       width = 7, height = 6, units = 'in')
 
 ```
 

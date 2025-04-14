@@ -438,6 +438,13 @@ Now that the state of our analysis is saved on disk, we'll demonstrate how to po
 
 ```{r, load_rds, eval = FALSE}
 # -------------------------------------------------------------------------
+# Load libraries
+library(Seurat)
+library(BPCells)
+library(tidyverse)
+options(future.globals.maxSize = 1e9)
+
+# -------------------------------------------------------------------------
 # Load the Seurat object
 geo_so = readRDS('results/rdata/geo_so_unfiltered.rds')
 ```
