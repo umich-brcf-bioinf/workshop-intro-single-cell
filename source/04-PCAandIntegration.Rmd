@@ -207,16 +207,24 @@ After running the command in the console, we should see that `geo_so` has a new 
 
 We can then visualize the first several PCs using the `DimHeatmp()` function, which orders both cells and features (genes) according to their PCA scores and allows us to see some general patterns in the data. Here we will specify that the first 24 PCs be included in the figure and that 500 cells are randomly subsetted for the plot. _Note - you may need to increase your plot window size to resolve errors regarding figure margins._  
 
-```{r, pca_heatmap_plot, eval=FALSE}
+
+```{r, pca_heatmap_one, message = FALSE, out.width='50%', fig.cap='DimHeatmap for PC1 alone'}
 # -------------------------------------------------------------------------
-# Build heatmaps of PCAs
-# Plot cell by gene heatmaps for first several PCs
-
 # look at first PC alone first
-DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca') 
+heatmap_1 <- DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, fast = FALSE, reduction = 'unintegrated.sct.pca') # works but doesn't include PC numbers
+heatmap_1 + 
+  labs(title="PC1: top 30 genes x top 500 cells") + 
+  theme(plot.title = element_text(hjust = 0.5, face = "bold")) 
+```
 
-# first 18 PCs
-DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca')
+In the plot of just the first PC, we see the rows are labeled with gene names and PC scores plotted with positive values in yellow, negative values in purple, and zero in black [by default](https://davetang.org/muse/2017/08/01/getting-started-seurat/), with each column representing a cell. Note that by using `fast=FALSE` our output is a `ggplot` object, which allows for customization like adding a more informative, formatted title. 
+
+What about the other PCs that have been calculated for these data? We can look at additional dimensions using the same `DimHeatmap()` function. However, we'll use the default plotting where `fast=TRUE` so base plotting will be used instead of `ggplot`.
+
+```{r, pca_heatmap_18, message = FALSE, fig.cap='DimHeatmap for PC1-18'}
+# Plot cell by gene heatmaps for larger set of dimensions -----------------------
+# look at first 18 PCs
+DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, combine = FALSE, reduction = 'unintegrated.sct.pca')
 
 # note - need to use png() to write to file because this isn't a ggplot
 png(filename = 'results/figures/qc_pca_heatmap.png', width = 12, height = 40, units = 'in', res = 300)
@@ -224,21 +232,16 @@ png(filename = 'results/figures/qc_pca_heatmap.png', width = 12, height = 40, un
 dev.off()
 ```
 
-```{r, pca_heatmap_one, echo=FALSE, message = FALSE, out.width='50%', fig.cap='DimHeatmap for PC1 alone'}
-# -------------------------------------------------------------------------
-# look at first PC alone first
-DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca' ) 
+As we scroll down in this plot, we see less and less structure in our plots and more zero scores (in black) indicating that less variation is being represented by larger PCs overall. However, these patterns can be hard to see so we can also select a few PCs to take a closer look at, again using the default `fast=TRUE` option and getting a base plot.
+
+```{r, pca_heatmap_zoom, message = FALSE,  out.width='75%', fig.cap='DimHeatmap for select PCs'}
+# Plot cell by gene heatmaps for a subset of dimensions -----------------------
+# zoom in on a few selected dims (CG suggestion)
+DimHeatmap(geo_so, dims=c(1,5,10,20, 30,50), cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca', nfeatures=20)
 ```
 
-In the plot of just the first PC, we see the rows are labeled with gene names and PC scores plotted with positive values in yellow, negative values in purple, and zero in black [by default](https://davetang.org/muse/2017/08/01/getting-started-seurat/).
+When we look at the selected PCs, we can see that PC10 has quite a bit of blocky structure that is separating about half the cells for a subset of genes. For the later PCs, we are seeing less 'blocks' suggesting that the variation explained by these later components might not correspond to the larger cell-type differences that we want to capture for the purposes of clustering.
 
-```{r, pca_heatmap_18, echo=FALSE, message = FALSE, fig.cap='DimHeatmap for PC1-18'}
-# Plot cell by gene heatmaps for first several PCs  -----------------------
-# first 18 PCs
-DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca') 
-```
-
-As we scroll down in this plot, we see less and less structure in our plots and more zero scores (in black) indicating that not only is less variation is being represented by larger PCs overall but also that those PCs are less likely to correspond to variation of interest, e.g. corresponding to cell types/subtypes.
 
 
 <details>
@@ -454,7 +457,7 @@ In addition to selecting a reduced number of PCs to represent our data, we can a
 DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'orig.ident') 
 
 # then label by day
-DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'day')
+DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'time')
 
 # save 
 ggsave(filename = 'results/figures/qc_pca_plot_unintegrated_sct_day.png',
@@ -506,7 +509,8 @@ Because the `IntegrateLayers()` function takes a while to run, we will load the 
 
 ```{r, eval = FALSE}
 # -------------------------------------------------------------------------
-geo_so = readRDS('inputs/prepared_data/geo_so_sct_integrated.rds')
+# Load integrated data from prepared file
+geo_so = readRDS('inputs/prepared_data/rdata/geo_so_sct_integrated.rds')
 ```
 
 :::
@@ -529,8 +533,9 @@ We can also confirm that our integration method has helped to correct the `Day` 
 ```{r, check_integration, fig.show='hold'}
 # -------------------------------------------------------------------------
 # Visualize PCA (PC1 and PC2, integrated)
-DimPlot(geo_so, reduction = 'integrated.sct.rpca', group.by = 'day')
-ggsave(filename = 'results/figures/qc_pca_plot_integrated_sct_day.png', width = 7, height = 6, units = 'in')
+DimPlot(geo_so, reduction = 'integrated.sct.rpca', group.by = 'time')
+ggsave(filename = 'results/figures/qc_pca_plot_integrated_sct_day.png', 
+       width = 7, height = 6, units = 'in')
 
 ```
 

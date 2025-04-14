@@ -44,30 +44,33 @@ If it shows **Project: (None)**, you can either:
 
 ![](images/curriculum/instructor_cheatsheet/rstudio_project_selector.png)
 ```{r day_2_setup, eval = FALSE}
-#### Day 2 setup -----------------------
+# =========================================================================
+# Day 2 set up
+# =========================================================================
 
-# Confirm you are in the right working directory
-# Should be ~/ISC_R
+# -------------------------------------------------------------------------
+# Set working directory
+# Confirm you are in the right working directory; should be ~/ISC_R
 getwd()
 # Reset if necessary
 setwd("~/ISC_R")
 
-# Load libraries  ----------------------------------------------
+# -------------------------------------------------------------------------
+# Load libraries
 library(Seurat)
 library(BPCells)
 library(tidyverse)
 options(future.globals.maxSize = 1e9)
 
+
 # Load data  ---------------------------------------------------
-# read in Raymond's output file so that we are all starting with the same data
-#geo_so = readRDS('home/workshop/rcavalca/ISC_R/results/rdata/geo_so_sct_normalized.rds')
-#geo_so = readRDS('/home/workshop/rcavalca/ISC_R/results/rdata/geo_so_filtered.rds')
+geo_so = readRDS('~/ISC_R/inputs/prepared_data/geo_so_sct_normalized.rds')
 
 # Alternatively, this starts from the data you saved yesterday
 #geo_so = readRDS('~/ISC_R/results/rdata/geo_so_filtered.rds')
 #geo_so = readRDS('~/ISC_R/results/rdata/geo_so_sct_normalized.rds')
 
-### setup end ----------------------------------
+
 
 ```
 
@@ -94,7 +97,7 @@ library(Seurat)
 library(BPCells)
 library(tidyverse)
 options(future.globals.maxSize = 1e9)
-pcs = 13
+pcs = 10
 
 # Load data  ---------------------------------------------------
 # This starts from the data you saved yesterday

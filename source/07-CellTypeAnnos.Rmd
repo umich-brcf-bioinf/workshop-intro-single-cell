@@ -34,6 +34,16 @@ table.fig, th.fig, td.fig {
   border-collapse: collapse;
   padding: 12px;
 }
+
+.prepared_content {
+  border-radius: 10px;
+  padding: 5px 5px 5px 95px;
+  background: #FFF8DC left 10px top 10px / 65px no-repeat;
+}
+
+.cooking_show {
+  background-image: url("images/curriculum/cooking_show-1.png");
+}
 </style>
 
 ```{r klippy, include=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
@@ -308,7 +318,7 @@ Next, we'll use a revised version of the cell type predictions from a file that 
 
 ```{r, annotate_clusters_customize, eval=FALSE}
 # -------------------------------------------------------------------------
-# Load the revised annotations from file
+# Load the revised annotations from prepared file
 celltype_annos = read_csv('inputs/prepared_data/revised_cluster_annotations.csv') %>%
   mutate(cluster=factor(cluster))
 head(celltype_annos)
