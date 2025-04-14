@@ -510,7 +510,7 @@ Because the `IntegrateLayers()` function takes a while to run, we will load the 
 ```{r, eval = FALSE}
 # -------------------------------------------------------------------------
 # Load integrated data from prepared file
-geo_so = readRDS('inputs/prepared_data/geo_so_sct_integrated.rds')
+geo_so = readRDS('inputs/prepared_data/rdata/geo_so_sct_integrated.rds')
 ```
 
 :::
