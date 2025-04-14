@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-04-11" />
+<meta name="date" content="2025-04-14" />
 
 <title>PCA and Integration</title>
 
@@ -414,7 +414,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">PCA and Integration</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-04-11</h4>
+<h4 class="date">2025-04-14</h4>
 
 </div>
 
@@ -686,19 +686,11 @@ included in the figure and that 500 cells are randomly subsetted for the
 plot. <em>Note - you may need to increase your plot window size to
 resolve errors regarding figure margins.</em></p>
 <pre class="r"><code># -------------------------------------------------------------------------
-# Build heatmaps of PCAs
-# Plot cell by gene heatmaps for first several PCs
-
 # look at first PC alone first
-DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;) 
-
-# first 18 PCs
-DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;)
-
-# note - need to use png() to write to file because this isn&#39;t a ggplot
-png(filename = &#39;results/figures/qc_pca_heatmap.png&#39;, width = 12, height = 40, units = &#39;in&#39;, res = 300)
-  DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;)
-dev.off()</code></pre>
+heatmap_1 &lt;- DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, fast = FALSE, reduction = &#39;unintegrated.sct.pca&#39;) # works but doesn&#39;t include PC numbers
+heatmap_1 + 
+  labs(title=&quot;PC1: top 30 genes x top 500 cells&quot;) + 
+  theme(plot.title = element_text(hjust = 0.5, face = &quot;bold&quot;)) </code></pre>
 <div class="figure" style="text-align: center">
 <img src="images/curriculum/04-PCAandIntegration/04-pca_heatmap_one-1.png" alt="DimHeatmap for PC1 alone" width="50%" />
 <p class="caption">
@@ -709,18 +701,51 @@ DimHeatmap for PC1 alone
 gene names and PC scores plotted with positive values in yellow,
 negative values in purple, and zero in black <a
 href="https://davetang.org/muse/2017/08/01/getting-started-seurat/">by
-default</a>.</p>
+default</a>, with each column representing a cell. Note that by using
+<code>fast=FALSE</code> our output is a <code>ggplot</code> object,
+which allows for customization like adding a more informative, formatted
+title.</p>
+<p>What about the other PCs that have been calculated for these data? We
+can look at additional dimensions using the same
+<code>DimHeatmap()</code> function. However, we’ll use the default
+plotting where <code>fast=TRUE</code> so base plotting will be used
+instead of <code>ggplot</code>.</p>
+<pre class="r"><code># Plot cell by gene heatmaps for larger set of dimensions -----------------------
+# look at first 18 PCs
+DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, combine = FALSE, reduction = &#39;unintegrated.sct.pca&#39;)</code></pre>
 <div class="figure" style="text-align: center">
 <img src="images/curriculum/04-PCAandIntegration/04-pca_heatmap_18-1.png" alt="DimHeatmap for PC1-18" width="816" />
 <p class="caption">
 DimHeatmap for PC1-18
 </p>
 </div>
+<pre class="r"><code># note - need to use png() to write to file because this isn&#39;t a ggplot
+png(filename = &#39;results/figures/qc_pca_heatmap.png&#39;, width = 12, height = 40, units = &#39;in&#39;, res = 300)
+  DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;)
+dev.off()</code></pre>
+<pre><code>png 
+  2 </code></pre>
 <p>As we scroll down in this plot, we see less and less structure in our
-plots and more zero scores (in black) indicating that not only is less
-variation is being represented by larger PCs overall but also that those
-PCs are less likely to correspond to variation of interest,
-e.g. corresponding to cell types/subtypes.</p>
+plots and more zero scores (in black) indicating that less variation is
+being represented by larger PCs overall. However, these patterns can be
+hard to see so we can also select a few PCs to take a closer look at,
+again using the default <code>fast=TRUE</code> option and getting a base
+plot.</p>
+<pre class="r"><code># Plot cell by gene heatmaps for a subset of dimensions -----------------------
+# zoom in on a few selected dims (CG suggestion)
+DimHeatmap(geo_so, dims=c(1,5,10,20, 30,50), cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;, nfeatures=20)</code></pre>
+<div class="figure" style="text-align: center">
+<img src="images/curriculum/04-PCAandIntegration/04-pca_heatmap_zoom-1.png" alt="DimHeatmap for select PCs" width="75%" />
+<p class="caption">
+DimHeatmap for select PCs
+</p>
+</div>
+<p>When we look at the selected PCs, we can see that PC10 has quite a
+bit of blocky structure that is separating about half the cells for a
+subset of genes. For the later PCs, we are seeing less ‘blocks’
+suggesting that the variation explained by these later components might
+not correspond to the larger cell-type differences that we want to
+capture for the purposes of clustering.</p>
 <details>
 <summary>
 <em>What genes are contributing the most to each PC?</em>
@@ -946,7 +971,7 @@ column:</p>
 DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;orig.ident&#39;) 
 
 # then label by day
-DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;day&#39;)
+DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;time&#39;)
 
 # save 
 ggsave(filename = &#39;results/figures/qc_pca_plot_unintegrated_sct_day.png&#39;,
@@ -1022,6 +1047,7 @@ so their <code>IntegrateLayers()</code> call does not include
 run, we will load the RPCA integrated <code>geo_so</code> object from a
 file we have previously generated.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
+# Load integrated data from prepared file
 geo_so = readRDS(&#39;inputs/prepared_data/geo_so_sct_integrated.rds&#39;)</code></pre>
 </div>
 <p>Note we have specified the unintegrated reduction
@@ -1052,8 +1078,9 @@ the <code>Day</code> effects we saw in the initial PCA plots by
 generating a similar plot for our integrated data.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Visualize PCA (PC1 and PC2, integrated)
-DimPlot(geo_so, reduction = &#39;integrated.sct.rpca&#39;, group.by = &#39;day&#39;)
-ggsave(filename = &#39;results/figures/qc_pca_plot_integrated_sct_day.png&#39;, width = 7, height = 6, units = &#39;in&#39;)</code></pre>
+DimPlot(geo_so, reduction = &#39;integrated.sct.rpca&#39;, group.by = &#39;time&#39;)
+ggsave(filename = &#39;results/figures/qc_pca_plot_integrated_sct_day.png&#39;, 
+       width = 7, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/04-PCAandIntegration/04-check_integration-1.png" width="816" style="display: block; margin: auto;" /></p>
 <!--- confirmed in testing that PCA plot is updated if run on catched geo_so object --->
 </div>
