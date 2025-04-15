@@ -171,9 +171,7 @@ Once we do this, RStudio will restart and the Files pane (lower right) should pu
 We have included the data to be used in the workshop in the `inputs/` folder. However, the project will need to include folders for our analysis and our analysis scripts. Let's create that directory structure with the `dir.create()` function. We will start by putting the following commands into the Console pane directly.
 
 ```{r, dir_create}
-##### Day 1 - Getting Started with Seurat
-
-# Create project directories ----------------------------------------------
+# Create project directories
 dir.create('scripts', showWarnings = FALSE, recursive = TRUE)
 dir.create('results/figures', showWarnings = FALSE, recursive = TRUE)
 dir.create('results/tables', showWarnings = FALSE, recursive = TRUE)
@@ -198,9 +196,12 @@ As we proceed through the workshop, we should save this file (by clicking the Fl
 For completeness, insert the `dir.create` commands at the top of our new script.
 
 ```{r, dir_create2, eval = FALSE}
-##### Day 1 - Getting Started with Seurat
+# =========================================================================
+# Getting Started with Seurat
+# =========================================================================
 
-# Create project directories ----------------------------------------------
+# -------------------------------------------------------------------------
+# Create project directories
 dir.create('scripts', showWarnings = FALSE, recursive = TRUE)
 dir.create('results/figures', showWarnings = FALSE, recursive = TRUE)
 dir.create('results/tables', showWarnings = FALSE, recursive = TRUE)
@@ -212,7 +213,8 @@ dir.create('results/rdata', showWarnings = FALSE, recursive = TRUE)
 We begin our analysis script by loading the libraries we expect to use. It's generally good practice to include all `library()` calls at the top of a script for visibility.
 
 ```{r, load_libraries, warning = FALSE, message = FALSE}
-# Load libraries  ----------------------------------------------
+# -------------------------------------------------------------------------
+# Load libraries
 library(Seurat)
 library(BPCells)
 library(tidyverse)
@@ -241,13 +243,13 @@ Note, these files are filtered matrices, AGC will touch on filtered and unfilter
 The `Read10X()` function will read in the triples organized within sample folders:
 
 ```{r read10x}
-# ==========================================================================
+# -------------------------------------------------------------------------
 # To load data from 10X Cell Ranger
 
-# Collect the input directories ---------------------------------------
-# Each sample dir contains barcodes.tsv.gz, features.tsv.gz, matrix.mtx.gz.
-# Naming the sample_dirs vector makes Seurat name the
-# samples in the corresponding manner, which is nice for us.
+# Collect the input directories
+#   Each sample dir contains barcodes.tsv.gz, features.tsv.gz, matrix.mtx.gz.
+#   Naming the sample_dirs vector makes Seurat name the
+#     samples in the corresponding manner, which is nice for us.
 sample_dirs = list(
   HODay0replicate1  = "inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate1", 
   HODay0replicate2  = "inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate2",
@@ -262,9 +264,8 @@ sample_dirs = list(
   HODay21replicate3 = "inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate3",
   HODay21replicate4 = "inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate4")
 
-
-# Create the expression matrix from sample dirs ----------------------- 
-# Read10X needs a *vector* instead of a *list*, so we use *unlist* to convert
+# Create the expression matrix from sample dirs
+#   Read10X needs a *vector* instead of a *list*, so we use *unlist* to convert
 geo_mat = Read10X(data.dir = unlist(sample_dirs))
 ```
 
@@ -273,14 +274,16 @@ geo_mat = Read10X(data.dir = unlist(sample_dirs))
 We could create a Seurat object with `CreateSeuratObject(counts = geo_mat)`, but we will first output `geo_mat` using the BPCells package to save memory:
 
 ```{r write_bpcells}
-# Build BPCells input dir -----------------------------------
+# -------------------------------------------------------------------------
+# Build BPCells input dir
 # To use BPCells (to save some memory), you can transform 
 # the expression matrix data structure above into BPCells files.
 # BPCells uses these files for processing, but you typically never look at 
 # their contents directly
-write_matrix_dir(mat = geo_mat, dir = '~/ISC_R/bpcells')
+write_matrix_dir(mat = geo_mat, dir = '~/ISC_R/bpcells', overwrite = TRUE)
 
-# Cleanup ------------------------------------------------------------------
+# -------------------------------------------------------------------------
+# Cleanup
 # Since we'll now be reading in from BPCells files, we will remove geo_mat
 # from the environment and then prompt RStudio to run a "garbage collection"
 # to free up unused memory
@@ -293,7 +296,8 @@ gc()
 Let's read the BPCells files in, and note that the `geo_mat` object takes up less memory than when we created it with `Read10X()`:
 
 ```{r read_bpcells}
-# Create expression matrix and Seurat object from BPCells files ---------
+# -------------------------------------------------------------------------
+# Create expression matrix and Seurat object from BPCells files
 geo_mat = open_matrix_dir(dir = '~/ISC_R/bpcells')
 ```
 
@@ -302,7 +306,8 @@ geo_mat = open_matrix_dir(dir = '~/ISC_R/bpcells')
 The expression matrix is the precursor to creating the `Seurat` object upon which all our analysis will be done. To create the `Seurat` object:
 
 ```{r, create_seurat}
-# Create seurat object  ----------------------------------------------
+# -------------------------------------------------------------------------
+# Create seurat object
 geo_so = CreateSeuratObject(counts = geo_mat, min.cells = 1, min.features = 50)
 geo_so
 ```
@@ -402,7 +407,8 @@ Note the RNA assay contains a `count` layer consisting of a raw count matrix whe
 The only slot of the `Seurat` object that we'll typically access or modify by hand--that is, without a function from the `Seurat` package--is the `meta.data` object. In R, slots are accessed with the `@` symbol, as in:
 
 ```{r, preview_metadata}
-# Examine Seurat object ----------------------------------------------
+# -------------------------------------------------------------------------
+# Examine Seurat object
 head(geo_so@meta.data)
 ```
 
@@ -419,7 +425,8 @@ if(!file.exists('results/rdata/geo_so_unfiltered.rds')) {
 ```
 
 ```{r, save_rds, eval = FALSE}
-# Save the Seurat object ----------------------------------------------
+# -------------------------------------------------------------------------
+# Save the Seurat object
 saveRDS(geo_so, file = 'results/rdata/geo_so_unfiltered.rds')
 ```
 
@@ -430,7 +437,15 @@ Now that the state of our analysis is saved on disk, we'll demonstrate how to po
 3. Re-load the `geo_so` object with:
 
 ```{r, load_rds, eval = FALSE}
-# Load the Seurat object ----------------------------------------------
+# -------------------------------------------------------------------------
+# Load libraries
+library(Seurat)
+library(BPCells)
+library(tidyverse)
+options(future.globals.maxSize = 1e9)
+
+# -------------------------------------------------------------------------
+# Load the Seurat object
 geo_so = readRDS('results/rdata/geo_so_unfiltered.rds')
 ```
 <br/>

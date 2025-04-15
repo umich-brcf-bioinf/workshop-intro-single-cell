@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-04-01" />
+<meta name="date" content="2025-04-14" />
 
 <title>Marker identification and visualization</title>
 
@@ -415,7 +415,7 @@ div.tocify {
 <h1 class="title toc-ignore">Marker identification and
 visualization</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-04-01</h4>
+<h4 class="date">2025-04-14</h4>
 
 </div>
 
@@ -570,10 +570,15 @@ href="https://satijalab.org/seurat/reference/findallmarkers">function</a>
 to generate comparisons between each cluster and all other cells,
 regardless of the experimental group. Note - the statistical test to
 perform can be specified in <code>FindAllMarkers()</code>, but the
-default is a Wilcoxon test.</p>
-<pre class="r"><code>##### Day 3 - Marker identification and visualization 
+default is a Wilcoxon test.
+<!--- `PrepSCTFindMarkers` uses BPCell data on disk so requires that the integrated data loaded from the .rds file were generated with the updated directory structure (e.g. prepared_data/bpcells) ---></p>
+<pre class="r"><code># =========================================================================
+# Marker identification and visualization
+# =========================================================================
 
-# Find empirical markers  -------------------------------------------------
+# -------------------------------------------------------------------------
+# Find empirical markers
+
 # Prep for cluster comparisons
 geo_so = SetIdent(geo_so, value = &#39;integrated.sct.rpca.clusters&#39;)
 geo_so = PrepSCTFindMarkers(geo_so)
@@ -626,7 +631,8 @@ href="https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker
 positive markers (since a positive fold-change would mean that gene is
 more highly expressed in the cluster compared to all other cells),
 before looking at our results</p>
-<pre class="r"><code># Identify marker genes for each cluster ----------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Identify marker genes for each cluster
 # Create table of top 5 markers per cluster (using default ranking)
 top_5 = geo_markers %&gt;% filter(p_val_adj &lt; 0.01) %&gt;% group_by(cluster) %&gt;% slice_head(n = 5)
 
@@ -646,8 +652,12 @@ head(top_5, n = 10)</code></pre>
  8     0       3.78 0.924 0.166         0 1       Thbs2   
  9     0       4.98 0.812 0.07          0 1       Col11a1 
 10     0       2.90 0.921 0.18          0 1       Lox     </code></pre>
-<pre class="r"><code># Optional - Create table of top 5 markers per cluster (ranked by logFC) -------
-top_5_by_log2FC = geo_markers %&gt;% group_by(cluster) %&gt;% arrange(p_val_adj, desc(avg_log2FC)) %&gt;% slice_head(n = 5)
+<pre class="r"><code># -------------------------------------------------------------------------
+# Optional - Create table of top 5 markers per cluster (ranked by logFC)
+top_5_by_log2FC = geo_markers %&gt;% 
+  group_by(cluster) %&gt;% 
+  arrange(p_val_adj, desc(avg_log2FC)) %&gt;% 
+  slice_head(n = 5)
 
 # Look at results after ranking
 # Note difference in pct.1 column between tables
@@ -705,13 +715,15 @@ a heatmap or a related plot called a dotplot are commonly used.</p>
 <p>We’ll use the <code>DotPlot()</code> <a
 href="https://satijalab.org/seurat/reference/dotplot">function</a> with
 the SCT values to visualize the top 5 marker genes per cluster:</p>
-<pre class="r"><code># Visualize top marker genes as dot plot ----------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Visualize top marker genes as dot plot
 top_5_sct_dot_plot = DotPlot(geo_so, features = unique(top_5$gene)) + 
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
     labs(title = &#39;Top 5 Cluster Genes by FDR and avg_log2FC&#39;) + coord_flip()
 top_5_sct_dot_plot</code></pre>
 <p><img src="images/curriculum/06-MarkerVisualization/06-top_5_dot_plot_sct-1.png" width="768" style="display: block; margin: auto;" /></p>
-<pre class="r"><code># Save dot plot of top marker genes ---------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Save dot plot of top marker genes
 ggsave(filename = &#39;results/figures/markers_top_5_sct_dot_plot.png&#39;, 
        plot = top_5_sct_dot_plot, 
        width = 8, height = 18, units = &#39;in&#39;) </code></pre>
@@ -725,19 +737,25 @@ href="https://ouyanglab.com/singlecell/clust.html#visualising-marker-genes">sour
 </summary>
 <p>In addition to plotting the SCT values, the raw or normalized RNA
 values can be plotted as well:</p>
-<pre class="r"><code># Add RNA values to dot plot  ---------------------------------------------
-top_5_rna_dot_plot = DotPlot(geo_so, features = unique(top_5_by_log2FC$gene), assay = &#39;RNA&#39;) + 
+<pre class="r"><code># -------------------------------------------------------------------------
+# Add RNA values to dot plot
+top_5_rna_dot_plot = 
+  DotPlot(geo_so, features = unique(top_5_by_log2FC$gene), assay = &#39;RNA&#39;) + 
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = 0.5)) +
-    labs(title = &#39;Top 5 Cluster Genes by FDR and avg_log2FC&#39;) + coord_flip()
+    labs(title = &#39;Top 5 Cluster Genes by FDR and avg_log2FC&#39;) + 
+    coord_flip()
 
-ggsave(filename = &#39;results/figures/markers_top_5_rna_dot_plot.png&#39;, plot = top_5_rna_dot_plot, width = 8, height = 18, units = &#39;in&#39;) </code></pre>
+ggsave(filename = &#39;results/figures/markers_top_5_rna_dot_plot.png&#39;,
+       plot = top_5_rna_dot_plot,
+       width = 8, height = 18, units = &#39;in&#39;) </code></pre>
 </details>
 <p><br> <br></p>
 <p>Before proceeding with cluster annotations, we’ll also check the
 percentage of mitochondrial genes to determine if there are any clusters
 (or sub populations) that might correspond to interesting cell death
 patterns (or might indicate further filtering is needed):</p>
-<pre class="r"><code># Check mitochondrial gene expression -------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Check mitochondrial gene expression
 percent_mito_plot = FeaturePlot(geo_so, features=&#39;percent.mt&#39;)
 
 # save to file
@@ -753,7 +771,8 @@ question, we’d want to consider investigating this pattern further by
 splitting up the plots by day and/or waiting until after running initial
 differential expression analysis to determine if these cell populations
 are interesting biology or not.</p>
-<pre class="r"><code># Remove the plot variables from the environment to avoid excessive memory usage
+<pre class="r"><code># -------------------------------------------------------------------------
+# Remove the plot variables from the environment to avoid excessive memory usage
 plots = c(&quot;top_5_sct_dot_plot&quot;, 
           &quot;top_5_rna_dot_plot&quot;, 
           &quot;percent_mito_plot&quot;)
@@ -761,16 +780,17 @@ plots = c(&quot;top_5_sct_dot_plot&quot;,
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
-Ncells   9333001  498.5   17621174  941.1   17621174   941.1
-Vcells 536213226 4091.0 1134452860 8655.2 1418066075 10819.0</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells   6685749  357.1   12034307  642.8  12034307  642.8
+Vcells 334760990 2554.1  924373640 7052.5 924286471 7051.8</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">
 <h1>Save our progress</h1>
 <p>Finally, we’ll create an output file for our updated Seurat object
 and for the cluster marker results:</p>
-<pre class="r"><code># Save Seurat object and gene marker data ---------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Save Seurat object and gene marker data
 saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_integrated_with_markers.rds&#39;)
 saveRDS(geo_markers, file = &#39;results/rdata/geo_markers.rds&#39;)</code></pre>
 <p><br/> <br/></p>

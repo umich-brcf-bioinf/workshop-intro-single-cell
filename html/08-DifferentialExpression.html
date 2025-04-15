@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-03-28" />
+<meta name="date" content="2025-04-14" />
 
 <title>Differential Expression Analysis</title>
 
-<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -416,7 +416,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Differential Expression Analysis</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-03-28</h4>
+<h4 class="date">2025-04-14</h4>
 
 </div>
 
@@ -529,12 +529,15 @@ to ensure our cells are labeled to reflect both the cluster and
 condition identities before running our comparison using
 <code>FindMarker()</code> and summarizing the results:</p>
 <!-- add UMAP with facets by groups to show what's being compared? -->
-<pre class="r"><code>##### Day 3  - Differential Expression Analysis
+<pre class="r"><code># =========================================================================
+# Differential Expression Analysis
+# =========================================================================
 
-# Make a day-celltype contrast --------------------------------------------
+# -------------------------------------------------------------------------
+# Make a day-celltype contrast
 
 # set up combined label of day + celltype &amp; assign as identities
-geo_so$day.celltype = paste(geo_so$day, geo_so$cell_type, sep = &#39;_&#39;)
+geo_so$day.celltype = paste(geo_so$time, geo_so$cell_type, sep = &#39;_&#39;)
 # check labels
 unique(geo_so$day.celltype)</code></pre>
 <div
@@ -555,12 +558,7 @@ Day0_Myofibroblast
 </tr>
 <tr>
 <td style="text-align:left;">
-Day0_Fibroblast
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Day0_Endothelial
+Day0_Hematopoietic Stem Cell
 </td>
 </tr>
 <tr>
@@ -575,17 +573,17 @@ Day0_Monocyte
 </tr>
 <tr>
 <td style="text-align:left;">
-Day0_Keratinocyte
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Day0_B-cell
+Day0_B cell
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
 Day0_Platelet
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day0_Smooth muscle cell
 </td>
 </tr>
 <tr>
@@ -600,17 +598,17 @@ Day0_Pericyte
 </tr>
 <tr>
 <td style="text-align:left;">
-Day0_Muscle Satellite Cell
+Day0_Fibroblast
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Day0_Muscle Cell
+Day0_Unknown
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Day0_Regulatory T Cell
+Day0_T Cell
 </td>
 </tr>
 <tr>
@@ -620,7 +618,12 @@ Day0_Infl. Macrophage
 </tr>
 <tr>
 <td style="text-align:left;">
-Day7_Endothelial
+Day7_Hematopoietic Stem Cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day7_Dendritic Cell
 </td>
 </tr>
 <tr>
@@ -630,7 +633,7 @@ Day7_Monocyte
 </tr>
 <tr>
 <td style="text-align:left;">
-Day7_Fibroblast
+Day7_Pericyte
 </td>
 </tr>
 <tr>
@@ -645,22 +648,12 @@ Day7_Platelet
 </tr>
 <tr>
 <td style="text-align:left;">
-Day7_Dendritic Cell
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
 Day7_Infl. Macrophage
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Day7_Pericyte
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Day7_Keratinocyte
+Day7_Smooth muscle cell
 </td>
 </tr>
 <tr>
@@ -670,37 +663,27 @@ Day7_Stem Cell
 </tr>
 <tr>
 <td style="text-align:left;">
-Day7_Muscle Satellite Cell
+Day7_Fibroblast
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Day7_B-cell
+Day7_B cell
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Day7_Regulatory T Cell
+Day7_T Cell
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Day7_Muscle Cell
+Day7_Unknown
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Day21_Keratinocyte
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Day21_Monocyte
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Day21_Fibroblast
+Day21_Smooth muscle cell
 </td>
 </tr>
 <tr>
@@ -710,17 +693,27 @@ Day21_Dendritic Cell
 </tr>
 <tr>
 <td style="text-align:left;">
+Day21_Monocyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day21_Myofibroblast
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
 Day21_Pericyte
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Day21_Endothelial
+Day21_Hematopoietic Stem Cell
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Day21_Muscle Satellite Cell
+Day21_Fibroblast
 </td>
 </tr>
 <tr>
@@ -730,12 +723,7 @@ Day21_Platelet
 </tr>
 <tr>
 <td style="text-align:left;">
-Day21_Regulatory T Cell
-</td>
-</tr>
-<tr>
-<td style="text-align:left;">
-Day21_Myofibroblast
+Day21_T Cell
 </td>
 </tr>
 <tr>
@@ -750,18 +738,19 @@ Day21_Infl. Macrophage
 </tr>
 <tr>
 <td style="text-align:left;">
-Day21_Muscle Cell
+Day21_Unknown
 </td>
 </tr>
 <tr>
 <td style="text-align:left;">
-Day21_B-cell
+Day21_B cell
 </td>
 </tr>
 </tbody>
 </table>
 </div>
-<pre class="r"><code># Consider pericyte cluster D21 v D7 --------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Consider pericyte cluster D21 v D7
 
 # Reset cell identities to the combined condition + cluster label
 Idents(geo_so) = &#39;day.celltype&#39;
@@ -774,13 +763,14 @@ de_cell_pericyte_D21_vs_D7 = FindMarkers(
 
 head(de_cell_pericyte_D21_vs_D7)</code></pre>
 <pre><code>                p_val avg_log2FC pct.1 pct.2     p_val_adj
-Prelp    0.000000e+00  2.7679827 0.733 0.196  0.000000e+00
-Fmod    1.787884e-302  2.3360379 0.893 0.484 3.659441e-298
-Gm10076 4.480774e-301 -1.1937582 0.826 0.966 9.171249e-297
-Tpt1    4.725577e-292  0.7972516 0.998 0.983 9.672311e-288
-Cilp2   6.423561e-282  5.8555746 0.397 0.013 1.314775e-277
-Wfdc1   2.177398e-262  6.5542085 0.350 0.005 4.456698e-258</code></pre>
-<pre class="r"><code># Add gene symmbols names and save ----------------------------------------
+Fmod     0.000000e+00  2.3143072 0.934 0.518  0.000000e+00
+Prelp   1.541258e-301  2.6531170 0.760 0.217 3.154647e-297
+Gm10076 1.873982e-301 -1.2351650 0.818 0.964 3.835667e-297
+Cilp2   1.170085e-283  5.8112649 0.418 0.014 2.394930e-279
+Tpt1    9.251339e-282  0.7933017 0.998 0.981 1.893564e-277
+Wfdc1   3.601155e-265  6.2241539 0.372 0.006 7.370845e-261</code></pre>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Add gene symbols names and save
 
 # Add rownames as a column for output
 de_cell_pericyte_D21_vs_D7$gene = rownames(de_cell_pericyte_D21_vs_D7)
@@ -794,7 +784,7 @@ table(de_cell_pericyte_D21_vs_D7$p_val_adj &lt; 0.05 &amp;
         abs(de_cell_pericyte_D21_vs_D7$avg_log2FC) &gt; 1.5)</code></pre>
 <pre><code>
 FALSE  TRUE 
- 9318   550 </code></pre>
+ 9178   535 </code></pre>
 <p>In the first 3 lines of the above code block we can see the changes
 to the schematic:</p>
 <div class="float">
@@ -809,7 +799,8 @@ quite stringent as the default log2FC threshold for the function is
 in RNA levels, which is quite permissive.</p>
 <p>If there is enough time - we can also compare between cells from the
 D7 and D0 conditions.</p>
-<pre class="r"><code># Compare pericyte cluster D7 v D0 ----------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Compare pericyte cluster D7 v D0
 de_cell_pericyte_D7_vs_D0 = FindMarkers(
     object = geo_so,
     slot = &#39;data&#39;, test = &#39;wilcox&#39;,
@@ -817,13 +808,14 @@ de_cell_pericyte_D7_vs_D0 = FindMarkers(
 
 head(de_cell_pericyte_D7_vs_D0)</code></pre>
 <pre><code>                 p_val avg_log2FC pct.1 pct.2     p_val_adj
-Chad      0.000000e+00 -10.206432 0.002 0.507  0.000000e+00
-Cilp2    1.800725e-304  -7.974229 0.013 0.754 3.685725e-300
-Ptx4     2.058938e-281  -7.379806 0.005 0.551 4.214234e-277
-Chodl    2.915716e-275  -7.299056 0.006 0.565 5.967887e-271
-Myoc     6.985601e-156  -9.602538 0.002 0.275 1.429813e-151
-Crispld1 1.677776e-138  -7.096563 0.010 0.420 3.434072e-134</code></pre>
-<pre class="r"><code># Add rownames for D7 v D0 results ----------------------------------------
+Chad     6.710617e-304 -10.136834 0.002 0.522 1.373529e-299
+Cilp2    1.019148e-282  -7.834071 0.014 0.754 2.085992e-278
+Ptx4     1.193446e-261  -7.268218 0.005 0.551 2.442744e-257
+Chodl    6.033985e-243  -7.172540 0.006 0.536 1.235036e-238
+Myoc     1.921030e-188  -9.424580 0.002 0.348 3.931963e-184
+Crispld1 8.254509e-153  -7.185990 0.010 0.449 1.689533e-148</code></pre>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Add rownames for D7 v D0 results
 de_cell_pericyte_D7_vs_D0$gene = rownames(de_cell_pericyte_D7_vs_D0)
 
 # summarize results
@@ -831,7 +823,7 @@ table(de_cell_pericyte_D7_vs_D0$p_val_adj &lt; 0.05 &amp;
         abs(de_cell_pericyte_D7_vs_D0$avg_log2FC) &gt; 1.5)</code></pre>
 <pre><code>
 FALSE  TRUE 
-10966  1134 </code></pre>
+10814  1104 </code></pre>
 <p>This same approach can be extended to run pairwise comparisons
 between conditions for each annotated cluster of interest.</p>
 <!-- add code to loop through all clusters and generate comparisons -->
@@ -857,13 +849,19 @@ replicate labels), before labeling the cells to reflect the cluster and
 condition. Then we will run our comparison using
 <code>FindMarker()</code> but specifying DESeq2 as our method before
 summarizing the results:</p>
-<pre class="r"><code># Create pseudobulk object -------------------------------------------------
-pseudo_catch_so = AggregateExpression(geo_so, assays = &#39;RNA&#39;, return.seurat = TRUE, group.by = c(&#39;cell_type&#39;, &#39;day&#39;, &#39;replicate&#39;))
+<pre class="r"><code># -------------------------------------------------------------------------
+# Create pseudobulk object
+pseudo_catch_so = 
+  AggregateExpression(geo_so, 
+                      assays = &#39;RNA&#39;,
+                      return.seurat = TRUE,
+                      group.by = c(&#39;cell_type&#39;, &#39;time&#39;, &#39;replicate&#39;))
 
 # Set up labels to use for comparisons &amp; assign as cell identities
-pseudo_catch_so$day.celltype = paste(pseudo_catch_so$day, pseudo_catch_so$cell_type, sep = &#39;_&#39;)
+pseudo_catch_so$day.celltype = paste(pseudo_catch_so$time, pseudo_catch_so$cell_type, sep = &#39;_&#39;)
 Idents(pseudo_catch_so) = &#39;day.celltype&#39;</code></pre>
-<pre class="r"><code># Run pseudobulk comparison between Day 21 and Day 0, using DESeq2 ----------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Run pseudobulk comparison between Day 21 and Day 0, using DESeq2
 de_pseudo_pericyte_D21_vs_D7 = FindMarkers(
     object = pseudo_catch_so, 
     ident.1 = &#39;Day21_Pericyte&#39;, ident.2 = &#39;Day7_Pericyte&#39;, 
@@ -871,14 +869,15 @@ de_pseudo_pericyte_D21_vs_D7 = FindMarkers(
 
 # Take a look at the table
 head(de_pseudo_pericyte_D21_vs_D7)</code></pre>
-<pre><code>               p_val avg_log2FC pct.1 pct.2     p_val_adj
-Cilp2  1.818261e-247   4.939624     1     1 4.816392e-243
-Wfdc1  7.925517e-157   5.035321     1     1 2.099390e-152
-Cd55   2.295313e-145   1.954541     1     1 6.080055e-141
-Ltbp4  6.844766e-116   1.445782     1     1 1.813110e-111
-Prss23 5.654215e-105   1.047428     1     1 1.497745e-100
-Lbp     3.574709e-96   1.684910     1     1  9.469048e-92</code></pre>
-<pre class="r"><code># Add genes and review pseudobulk results ----------------------------------
+<pre><code>                p_val avg_log2FC pct.1 pct.2     p_val_adj
+Cilp2   3.861291e-232   2.906378     1     1 1.022817e-227
+Ltbp4   5.631946e-118   1.712277     1     1 1.491846e-113
+Cd55     1.853515e-95   1.290895     1     1  4.909776e-91
+Prss23   2.598750e-87   1.644203     1     1  6.883828e-83
+Nav3     3.019557e-87  -1.594133     1     1  7.998504e-83
+Gm42418  7.456053e-82   2.249675     1     1  1.975034e-77</code></pre>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Add genes and review pseudobulk results
 
 # Add rownames as a column for output
 de_pseudo_pericyte_D21_vs_D7$gene = rownames(de_pseudo_pericyte_D21_vs_D7)
@@ -892,16 +891,20 @@ table(de_pseudo_pericyte_D21_vs_D7$p_val_adj &lt; 0.05 &amp;
         abs(de_pseudo_pericyte_D21_vs_D7$avg_log2FC) &gt; 1.5)</code></pre>
 <pre><code>
 FALSE  TRUE 
-22810   932 </code></pre>
+23553    55 </code></pre>
 <p>Since we’re working with pseudobulk data, unlike in the marker
 identification section, there is no percentage of cells expressing to
 need to represent so we can summarize our DE results with a volcano
 plot:</p>
-<pre class="r"><code># Make a volcano plot of pseudobulk diffex results ------------------------
-pseudo_pericyte_D21_vs_D7_volcano = ggplot(de_pseudo_pericyte_D21_vs_D7, aes(x = avg_log2FC, y = -log10(p_val))) + geom_point()
+<pre class="r"><code># -------------------------------------------------------------------------
+# Make a volcano plot of pseudobulk diffex results
+pseudo_pericyte_D21_vs_D7_volcano = 
+  ggplot(de_pseudo_pericyte_D21_vs_D7, aes(x = avg_log2FC, y = -log10(p_val))) + 
+  geom_point()
 
 ggsave(filename = &#39;results/figures/volcano_de_pseudo_pericyte_D21_vs_D0.png&#39;, 
-       plot = pseudo_pericyte_D21_vs_D7_volcano, width = 7, height = 7, units = &#39;in&#39;)
+       plot = pseudo_pericyte_D21_vs_D7_volcano,
+       width = 7, height = 7, units = &#39;in&#39;)
 
 pseudo_pericyte_D21_vs_D7_volcano</code></pre>
 <p><img src="images/curriculum/08-DifferentialExpression/08-de_pseudobulk_volcano-1.png" width="816" style="display: block; margin: auto;" />
@@ -916,8 +919,9 @@ Add code to generate pseudobulk results for each cluster for all Day 7 vs Day 21
 expressed genes back onto our UMAP plots to highlight the localization
 and possible function, again using the <code>FeaturePlot</code>
 function.</p>
-<pre class="r"><code># UMAP feature plot of Cd55 gene ------------------------------------------
-FeaturePlot(geo_so, features = &quot;Cd55&quot;, split.by = &quot;day&quot;)</code></pre>
+<pre class="r"><code># -------------------------------------------------------------------------
+# UMAP feature plot of Cd55 gene
+FeaturePlot(geo_so, features = &quot;Cd55&quot;, split.by = &quot;time&quot;)</code></pre>
 <p><img src="images/curriculum/08-DifferentialExpression/08-show_DE_featurePlot-1.png" width="816" style="display: block; margin: auto;" />
 So we found Cd55 based on differential expression comparison in the
 Pericyte population between Day 7 and Day 21 but in looking at the
@@ -944,16 +948,18 @@ pathway enrichment, and GSEA with mSigDB.</p>
 </div>
 <div id="save-our-progress" class="section level1">
 <h1>Save our progress</h1>
-<pre class="r"><code># Discard all ggplot objects currently in environment ---------------------
-# Ok since we saved the plots as we went along
+<pre class="r"><code># -------------------------------------------------------------------------
+# Discard all ggplot objects currently in environment
+# (Ok since we saved the plots as we went along.)
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
-Ncells  10273784  548.7   17064398  911.4   17064398  911.4
-Vcells 546851736 4172.2 1260050879 9613.5 1260046147 9613.4</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells   8940799  477.5   16558614  884.4  12034430  642.8
+Vcells 345977060 2639.6  565152749 4311.8 470881952 3592.6</code></pre>
 <p>We’ll save the scCATCH object. The Seurat object has not been changed
 in this module.</p>
-<pre class="r"><code># Save Seurat object ------------------------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
+# Save Seurat object
 saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_integrated_final.rds&#39;)</code></pre>
 <hr />
 </div>

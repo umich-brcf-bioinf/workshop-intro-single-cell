@@ -116,12 +116,15 @@ First we'll run cell-level comparisons for our data for the pericyte cluster, st
 <!-- add UMAP with facets by groups to show what's being compared? -->
 
 ```{r, de_make_contrast, eval = FALSE}
-##### Day 3  - Differential Expression Analysis
+# =========================================================================
+# Differential Expression Analysis
+# =========================================================================
 
-# Make a day-celltype contrast --------------------------------------------
+# -------------------------------------------------------------------------
+# Make a day-celltype contrast
 
 # set up combined label of day + celltype & assign as identities
-geo_so$day.celltype = paste(geo_so$day, geo_so$cell_type, sep = '_')
+geo_so$day.celltype = paste(geo_so$time, geo_so$cell_type, sep = '_')
 # check labels
 unique(geo_so$day.celltype)
 
@@ -132,7 +135,7 @@ unique(geo_so$day.celltype)
 # Make a day-celltype contrast --------------------------------------------
 
 # set up combined label of day + celltype & assign as identities
-geo_so$day.celltype = paste(geo_so$day, geo_so$cell_type, sep = '_')
+geo_so$day.celltype = paste(geo_so$time, geo_so$cell_type, sep = '_')
 # check labels
 unique(geo_so$day.celltype) %>%
   kable("html") %>%
@@ -142,7 +145,8 @@ unique(geo_so$day.celltype) %>%
 ```
 
 ```{r, de_pericyte_d21vd7, message = FALSE, warning = FALSE}
-# Consider pericyte cluster D21 v D7 --------------------------------------
+# -------------------------------------------------------------------------
+# Consider pericyte cluster D21 v D7
 
 # Reset cell identities to the combined condition + cluster label
 Idents(geo_so) = 'day.celltype'
@@ -158,7 +162,8 @@ head(de_cell_pericyte_D21_vs_D7)
 ```
 
 ```{r, de_add_genes, message = FALSE, warning = FALSE}
-# Add gene symmbols names and save ----------------------------------------
+# -------------------------------------------------------------------------
+# Add gene symbols names and save
 
 # Add rownames as a column for output
 de_cell_pericyte_D21_vs_D7$gene = rownames(de_cell_pericyte_D21_vs_D7)
@@ -182,7 +187,8 @@ Note - the `avg_log2FC` threshold of 1.5 we use here are quite stringent as the 
 If there is enough time - we can also compare between cells from the D7 and D0 conditions.
 
 ```{r, de_wilcox2, message = FALSE, warning = FALSE}
-# Compare pericyte cluster D7 v D0 ----------------------------------------
+# -------------------------------------------------------------------------
+# Compare pericyte cluster D7 v D0
 de_cell_pericyte_D7_vs_D0 = FindMarkers(
     object = geo_so,
     slot = 'data', test = 'wilcox',
@@ -193,7 +199,8 @@ head(de_cell_pericyte_D7_vs_D0)
 ```
 
 ``` {r, de_wilcox2_b, message = FALSE, warning = FALSE}
-# Add rownames for D7 v D0 results ----------------------------------------
+# -------------------------------------------------------------------------
+# Add rownames for D7 v D0 results
 de_cell_pericyte_D7_vs_D0$gene = rownames(de_cell_pericyte_D7_vs_D0)
 
 # summarize results
@@ -218,16 +225,22 @@ With advances in the technology as well as decreased sequencing costs allowing f
 We'll run psuedobulk comparisons for our data for the monocyte cluster, starting with the D21 vs D0 conditions. We'll need to generate the aggregated counts first (ensuring that we are grouping cells by replicate labels), before labeling the cells to reflect the cluster and condition. Then we will run our comparison using `FindMarker()` but specifying DESeq2 as our method before summarizing the results:
 
 ```{r, de_pseudobulk_a, message = FALSE, warning = FALSE}
-# Create pseudobulk object -------------------------------------------------
-pseudo_catch_so = AggregateExpression(geo_so, assays = 'RNA', return.seurat = TRUE, group.by = c('cell_type', 'day', 'replicate'))
+# -------------------------------------------------------------------------
+# Create pseudobulk object
+pseudo_catch_so = 
+  AggregateExpression(geo_so, 
+                      assays = 'RNA',
+                      return.seurat = TRUE,
+                      group.by = c('cell_type', 'time', 'replicate'))
 
 # Set up labels to use for comparisons & assign as cell identities
-pseudo_catch_so$day.celltype = paste(pseudo_catch_so$day, pseudo_catch_so$cell_type, sep = '_')
+pseudo_catch_so$day.celltype = paste(pseudo_catch_so$time, pseudo_catch_so$cell_type, sep = '_')
 Idents(pseudo_catch_so) = 'day.celltype'
 ```
 
 ```{r, de_pseudobulk_b, message = FALSE, warning = FALSE}
-# Run pseudobulk comparison between Day 21 and Day 0, using DESeq2 ----------
+# -------------------------------------------------------------------------
+# Run pseudobulk comparison between Day 21 and Day 0, using DESeq2
 de_pseudo_pericyte_D21_vs_D7 = FindMarkers(
     object = pseudo_catch_so, 
     ident.1 = 'Day21_Pericyte', ident.2 = 'Day7_Pericyte', 
@@ -240,7 +253,8 @@ head(de_pseudo_pericyte_D21_vs_D7)
 
 
 ```{r, de_pseudobulk_c, message = FALSE, warning = FALSE}
-# Add genes and review pseudobulk results ----------------------------------
+# -------------------------------------------------------------------------
+# Add genes and review pseudobulk results
 
 # Add rownames as a column for output
 de_pseudo_pericyte_D21_vs_D7$gene = rownames(de_pseudo_pericyte_D21_vs_D7)
@@ -259,11 +273,15 @@ table(de_pseudo_pericyte_D21_vs_D7$p_val_adj < 0.05 &
 Since we're working with pseudobulk data, unlike in the marker identification section, there is no percentage of cells expressing to need to represent so we can summarize our DE results with a volcano plot:
 
 ```{r, de_pseudobulk_volcano, warning = FALSE, message = FALSE}
-# Make a volcano plot of pseudobulk diffex results ------------------------
-pseudo_pericyte_D21_vs_D7_volcano = ggplot(de_pseudo_pericyte_D21_vs_D7, aes(x = avg_log2FC, y = -log10(p_val))) + geom_point()
+# -------------------------------------------------------------------------
+# Make a volcano plot of pseudobulk diffex results
+pseudo_pericyte_D21_vs_D7_volcano = 
+  ggplot(de_pseudo_pericyte_D21_vs_D7, aes(x = avg_log2FC, y = -log10(p_val))) + 
+  geom_point()
 
 ggsave(filename = 'results/figures/volcano_de_pseudo_pericyte_D21_vs_D0.png', 
-       plot = pseudo_pericyte_D21_vs_D7_volcano, width = 7, height = 7, units = 'in')
+       plot = pseudo_pericyte_D21_vs_D7_volcano,
+       width = 7, height = 7, units = 'in')
 
 pseudo_pericyte_D21_vs_D7_volcano
 
@@ -279,8 +297,9 @@ Add code to generate pseudobulk results for each cluster for all Day 7 vs Day 21
 We can also overlay the expression of interesting differentially expressed genes back onto our UMAP plots to highlight the localization and possible function, again using the `FeaturePlot` function. 
 
 ```{r, show_DE_featurePlot, warning = FALSE, message = FALSE, fig.height = 4}
-# UMAP feature plot of Cd55 gene ------------------------------------------
-FeaturePlot(geo_so, features = "Cd55", split.by = "day")
+# -------------------------------------------------------------------------
+# UMAP feature plot of Cd55 gene
+FeaturePlot(geo_so, features = "Cd55", split.by = "time")
 ```
 So we found Cd55 based on differential expression comparison in the Pericyte population between Day 7 and Day 21 but in looking at the Feature plot of expression, we also see high expression in a subset of cells on Day 0. This interesting, since according to [Shin et al (2019)](https://onlinelibrary.wiley.com/doi/full/10.1002/jbmr.3861), CD55 regulates bone mass in mice.
 
@@ -294,8 +313,9 @@ While looking at individual genes can reveal interesting patterns like in the ca
 # Save our progress
 
 ```{r}
-# Discard all ggplot objects currently in environment ---------------------
-# Ok since we saved the plots as we went along
+# -------------------------------------------------------------------------
+# Discard all ggplot objects currently in environment
+# (Ok since we saved the plots as we went along.)
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()
 ```
@@ -309,7 +329,8 @@ if(!file.exists('results/rdata/geo_so_sct_integrated_with_final.rds')) {
 ```
 
 ```{r, save_rds, eval=FALSE}
-# Save Seurat object ------------------------------------------------------
+# -------------------------------------------------------------------------
+# Save Seurat object
 saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated_final.rds')
 ```
 

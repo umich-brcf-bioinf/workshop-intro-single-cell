@@ -50,12 +50,14 @@ We can extend our analysis by performing some parameter iteration to determine h
 <!--Add specific goals for section-->
 
 ```{r, eval = FALSE}
-
-### Bonus content -----------------------------
+# =========================================================================
+# Independent Exercise
+# =========================================================================
 
 ## BEFORE CLOSING WINDOW - POWER DOWN AND RESTART R SESSION !!!!
 
-#### Load library and data ------
+# Load library and data
+
 # After restarting our R session, load the required libraries
 library(Seurat)
 library(BPCells)
