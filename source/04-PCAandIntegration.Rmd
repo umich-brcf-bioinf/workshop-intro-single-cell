@@ -176,7 +176,7 @@ For sparse, high-dimensional, _biological_ data, we expect many genes to have co
 
 > #### More context using PCA for single-cell data {.unlisted .unnumbered}
 >
-> To read more on PCA, please refer to the [HBC - Theory of PCA content](https://hbctraining.github.io/scRNA-seq_online/lessons/05_theory_of_PCA.html), from which this section is adapted and the original source material for that content, specifically [Josh Starmer's StatQuest video](https://www.youtube.com/watch?v=_UVHneBUBW0).
+> To read more on PCA, please refer to the [HBC - Theory of PCA content](https://hbctraining.github.io/Intro-to-scRNAseq/lessons/05_theory_of_PCA.html), from which this section is adapted and the original source material for that content, specifically [Josh Starmer's StatQuest video](https://www.youtube.com/watch?v=_UVHneBUBW0).
 >
 > For additional detail on , the OSCA chapter on [Principal components analysis](https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html) includes a more descriptive overview.
 
@@ -254,7 +254,8 @@ When we look at the selected PCs, we can see that PC10 has quite a bit of blocky
 # -------------------------------------------------------------------------
 # Visualize gene loadings for PC1 and PC2
 VizDimLoadings(geo_so, dims = 1:2, reduction = 'unintegrated.sct.pca')
-ggsave(filename = 'results/figures/qc_pca_loadings.png', width = 12, height = 6, units = 'in')
+ggsave(filename = 'results/figures/qc_pca_loadings.png',
+       width = 12, height = 6, units = 'in')
 ```
 </details>
 <br>
@@ -275,7 +276,8 @@ So how do we determine how many PCs to use before classifying cells into cluster
 # -------------------------------------------------------------------------
 # Visualize how many PCs to include using an elbow plot
 ElbowPlot(geo_so, ndims = 50, reduction = 'unintegrated.sct.pca')
-ggsave(filename = 'results/figures/qc_sct_elbow_plot.png', width = 8, height = 8, units = 'in')
+ggsave(filename = 'results/figures/qc_sct_elbow_plot.png',
+       width = 8, height = 8, units = 'in')
 ```
 
 In this plot, we could arbitrarily choose a number along the x-axis that looks like a sharp change in the variance from one PC to the next, that is, an elbow. Of course, while that's often the recommendation in tutorials, the choice of where the point of the "elbow" is, is not always obvious, and this plot is no different.

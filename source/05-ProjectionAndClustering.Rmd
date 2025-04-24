@@ -267,8 +267,7 @@ We can also look at the same UMAP labeled by `day` to visually inspect if the UM
 
 ```{r, umap_by_clusters, fig.show='hold', fig.height = 6, fig.width=6}
 # -------------------------------------------------------------------------
-# Visualize UMAP cluster 1
-# cluster ID labels
+# Visualize UMAP clusters: ID labels
 post_integration_umap_plot_clusters = 
   DimPlot(geo_so, 
           group.by = 'seurat_clusters',
@@ -284,8 +283,7 @@ ggsave(filename = 'results/figures/umap_integrated_sct_clusters.png',
 
 ```{r, umap_by_splitclusters, fig.show='hold', fig.height = 4}
 # -------------------------------------------------------------------------
-# Visualize UMAP cluster 2
-# clusters with labels, split by condition
+# Visualize UMAP clusters: clusters with labels, split by condition
 post_integration_umap_plot_split_clusters = 
   DimPlot(geo_so,
           group.by = 'seurat_clusters',
@@ -302,8 +300,8 @@ ggsave(filename = 'results/figures/umap_integrated_sct_split_clusters.png',
 
 ```{r, umap_by_dayclusters, fig.show='hold', fig.height = 6, fig.width=7}
 # -------------------------------------------------------------------------
-# Visualize UMAP cluster 3
-# UMAP with day labels (note - we added this column to the meta-data yesterday)
+# Visualize UMAP clusters: day labels
+# (note - we added this column to the meta-data yesterday)
 post_integration_umap_plot_day = 
   DimPlot(geo_so,
           group.by = 'time',
@@ -427,10 +425,14 @@ The plots above were generated with:
 # -------------------------------------------------------------------------
 # Show PCA of unintegrated data
 pre_integration_umap_plot_orig.ident = DimPlot(geo_so, group.by = 'orig.ident', label = FALSE, reduction = 'umap.unintegrated.sct.pca')
-ggsave(filename = 'results/figures/umap_unintegrated_sct_orig.ident.png', plot = pre_integration_umap_plot_orig.ident, width = 8, height = 6, units = 'in')
+ggsave(filename = 'results/figures/umap_unintegrated_sct_orig.ident.png',
+       plot = pre_integration_umap_plot_orig.ident,
+       width = 8, height = 6, units = 'in')
 
 pre_integration_umap_plot_day = DimPlot(geo_so, group.by = 'time', label = FALSE, reduction = 'umap.unintegrated.sct.pca')
-ggsave(filename = 'results/figures/umap_unintegrated_sct_day.png', plot = pre_integration_umap_plot_day, width = 8, height = 6, units = 'in')
+ggsave(filename = 'results/figures/umap_unintegrated_sct_day.png',
+       plot = pre_integration_umap_plot_day,
+       width = 8, height = 6, units = 'in')
 
 ```
 
@@ -544,6 +546,11 @@ In this section we:
 Next steps: Marker genes
 
 ----
+
+### Additional links and references:
+- https://pair-code.github.io/understanding-umap/
+- https://duhaime.s3.amazonaws.com/apps/umap-zoo/index.html
+
 
 These materials have been adapted and extended from materials listed above. These are open access materials distributed under the terms of the [Creative Commons Attribution license (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.
 
