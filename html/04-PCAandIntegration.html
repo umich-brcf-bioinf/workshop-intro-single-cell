@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-04-14" />
+<meta name="date" content="2025-04-24" />
 
 <title>PCA and Integration</title>
 
@@ -414,7 +414,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">PCA and Integration</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-04-14</h4>
+<h4 class="date">2025-04-24</h4>
 
 </div>
 
@@ -630,7 +630,7 @@ on Dimensionality reduction</a> that has useful context.
 class="unlisted unnumbered">More context using PCA for single-cell
 data</h4>
 <p>To read more on PCA, please refer to the <a
-href="https://hbctraining.github.io/scRNA-seq_online/lessons/05_theory_of_PCA.html">HBC
+href="https://hbctraining.github.io/Intro-to-scRNAseq/lessons/05_theory_of_PCA.html">HBC
 - Theory of PCA content</a>, from which this section is adapted and the
 original source material for that content, specifically <a
 href="https://www.youtube.com/watch?v=_UVHneBUBW0">Josh Starmer’s
@@ -723,8 +723,8 @@ DimHeatmap for PC1-18
 png(filename = &#39;results/figures/qc_pca_heatmap.png&#39;, width = 12, height = 40, units = &#39;in&#39;, res = 300)
   DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;)
 dev.off()</code></pre>
-<pre><code>png 
-  2 </code></pre>
+<pre><code>RStudioGD 
+        2 </code></pre>
 <p>As we scroll down in this plot, we see less and less structure in our
 plots and more zero scores (in black) indicating that less variation is
 being represented by larger PCs overall. However, these patterns can be
@@ -758,7 +758,8 @@ href="https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-line
 <pre class="r"><code># -------------------------------------------------------------------------
 # Visualize gene loadings for PC1 and PC2
 VizDimLoadings(geo_so, dims = 1:2, reduction = &#39;unintegrated.sct.pca&#39;)
-ggsave(filename = &#39;results/figures/qc_pca_loadings.png&#39;, width = 12, height = 6, units = &#39;in&#39;)</code></pre>
+ggsave(filename = &#39;results/figures/qc_pca_loadings.png&#39;,
+       width = 12, height = 6, units = &#39;in&#39;)</code></pre>
 <img src="images/curriculum/04-PCAandIntegration/04-pca_loading_plot-1.png" width="816" style="display: block; margin: auto;" />
 </details>
 <p><br> </br></p>
@@ -786,7 +787,8 @@ the percent variance explained by successive PCs. We’ll use the
 <pre class="r"><code># -------------------------------------------------------------------------
 # Visualize how many PCs to include using an elbow plot
 ElbowPlot(geo_so, ndims = 50, reduction = &#39;unintegrated.sct.pca&#39;)
-ggsave(filename = &#39;results/figures/qc_sct_elbow_plot.png&#39;, width = 8, height = 8, units = &#39;in&#39;)</code></pre>
+ggsave(filename = &#39;results/figures/qc_sct_elbow_plot.png&#39;,
+       width = 8, height = 8, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/04-PCAandIntegration/04-elbow_plot-1.png" width="80%" style="display: block; margin: auto;" /></p>
 <p>In this plot, we could arbitrarily choose a number along the x-axis
 that looks like a sharp change in the variance from one PC to the next,
