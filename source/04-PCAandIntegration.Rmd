@@ -262,7 +262,7 @@ ggsave(filename = 'results/figures/qc_pca_loadings.png', width = 12, height = 6,
 
 > #### How does Seurat use PCA scores? {.unlisted .unnumbered}
 > 
-> Per the [Ho Lab's materials](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction) - "To overcome the extensive technical noise in any single feature for scRNA-seq data, Seurat clusters cells based on their PCA scores, with each PC essentially representing a ‘metafeature’ that combines information across a correlated feature set. The top principal components therefore represent a robust compression of the dataset." 
+> Per the [Ho Lab's materials](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction) - "To overcome the extensive technical noise in any single feature for scRNA-seq data, Seurat clusters cells based on their PCA scores, with each PC essentially representing a 'metafeature' that combines information across a correlated feature set. The top principal components therefore represent a robust compression of the dataset." 
 <!-- Note, may want to edit/remove above section -->
 
 
