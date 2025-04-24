@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-04-14" />
+<meta name="date" content="2025-04-24" />
 
 <title>Clustering and Projection</title>
 
@@ -416,7 +416,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Clustering and Projection</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-04-14</h4>
+<h4 class="date">2025-04-24</h4>
 
 </div>
 
@@ -1000,8 +1000,7 @@ clusters that’s not necessarily a problem.</p>
 visually inspect if the UMAP structure corresponds to the
 <code>day</code>.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
-# Visualize UMAP cluster 1
-# cluster ID labels
+# Visualize UMAP clusters: ID labels
 post_integration_umap_plot_clusters = 
   DimPlot(geo_so, 
           group.by = &#39;seurat_clusters&#39;,
@@ -1015,8 +1014,7 @@ ggsave(filename = &#39;results/figures/umap_integrated_sct_clusters.png&#39;,
        width = 6, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_clusters-1.png" width="576" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># -------------------------------------------------------------------------
-# Visualize UMAP cluster 2
-# clusters with labels, split by condition
+# Visualize UMAP clusters: clusters with labels, split by condition
 post_integration_umap_plot_split_clusters = 
   DimPlot(geo_so,
           group.by = &#39;seurat_clusters&#39;,
@@ -1031,8 +1029,8 @@ ggsave(filename = &#39;results/figures/umap_integrated_sct_split_clusters.png&#3
        width = 14, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/05-ProjectionAndClustering/05-umap_by_splitclusters-1.png" width="816" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># -------------------------------------------------------------------------
-# Visualize UMAP cluster 3
-# UMAP with day labels (note - we added this column to the meta-data yesterday)
+# Visualize UMAP clusters: day labels
+# (note - we added this column to the meta-data yesterday)
 post_integration_umap_plot_day = 
   DimPlot(geo_so,
           group.by = &#39;time&#39;,
@@ -2256,10 +2254,14 @@ geo_so = RunUMAP(geo_so, dims = 1:pcs, reduction = &#39;unintegrated.sct.pca&#39
 <pre class="r"><code># -------------------------------------------------------------------------
 # Show PCA of unintegrated data
 pre_integration_umap_plot_orig.ident = DimPlot(geo_so, group.by = &#39;orig.ident&#39;, label = FALSE, reduction = &#39;umap.unintegrated.sct.pca&#39;)
-ggsave(filename = &#39;results/figures/umap_unintegrated_sct_orig.ident.png&#39;, plot = pre_integration_umap_plot_orig.ident, width = 8, height = 6, units = &#39;in&#39;)
+ggsave(filename = &#39;results/figures/umap_unintegrated_sct_orig.ident.png&#39;,
+       plot = pre_integration_umap_plot_orig.ident,
+       width = 8, height = 6, units = &#39;in&#39;)
 
 pre_integration_umap_plot_day = DimPlot(geo_so, group.by = &#39;time&#39;, label = FALSE, reduction = &#39;umap.unintegrated.sct.pca&#39;)
-ggsave(filename = &#39;results/figures/umap_unintegrated_sct_day.png&#39;, plot = pre_integration_umap_plot_day, width = 8, height = 6, units = &#39;in&#39;)</code></pre>
+ggsave(filename = &#39;results/figures/umap_unintegrated_sct_day.png&#39;,
+       plot = pre_integration_umap_plot_day,
+       width = 8, height = 6, units = &#39;in&#39;)</code></pre>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Remove the plot variables from the environment to avoid excessive memory usage
 rm(pre_integration_umap_plot_orig.ident) 
@@ -2324,9 +2326,9 @@ plots = c(&quot;pre_integration_umap_plot_day&quot;,
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   6634891  354.4   12039181  643.0  12039181  643.0
-Vcells 382803122 2920.6  641817227 4896.7 433121027 3304.5</code></pre>
+<pre><code>             used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells    6947183  371.1   11548435   616.8   11548435   616.8
+Vcells 1106124414 8439.1 1753349162 13377.0 1688273683 12880.6</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">
@@ -2366,6 +2368,14 @@ dimensional reduction and visualization</li>
 </ul>
 <p>Next steps: Marker genes</p>
 <hr />
+<div id="additional-links-and-references" class="section level3">
+<h3>Additional links and references:</h3>
+<ul>
+<li><a href="https://pair-code.github.io/understanding-umap/"
+class="uri">https://pair-code.github.io/understanding-umap/</a></li>
+<li><a href="https://duhaime.s3.amazonaws.com/apps/umap-zoo/index.html"
+class="uri">https://duhaime.s3.amazonaws.com/apps/umap-zoo/index.html</a></li>
+</ul>
 <p>These materials have been adapted and extended from materials listed
 above. These are open access materials distributed under the terms of
 the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
@@ -2392,6 +2402,7 @@ lesson</a></th>
 <tbody>
 </tbody>
 </table>
+</div>
 </div>
 
 

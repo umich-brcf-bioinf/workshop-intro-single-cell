@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-04-14" />
+<meta name="date" content="2025-04-24" />
 
 <title>Secondary Quality Control and Filtering</title>
 
@@ -417,7 +417,7 @@ div.tocify {
 <h1 class="title toc-ignore">Secondary Quality Control and
 Filtering</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-04-14</h4>
+<h4 class="date">2025-04-24</h4>
 
 </div>
 
@@ -1143,7 +1143,8 @@ VlnPlot(geo_so, features = &#39;nFeature_RNA&#39;, assay = &#39;RNA&#39;, layer 
   geom_hline(yintercept = 400) + 
   geom_hline(yintercept = 300) + 
   geom_hline(yintercept = 200)
-ggsave(filename = &#39;results/figures/qc_nFeature_violin.png&#39;, width = 12, height = 6, units = &#39;in&#39;)</code></pre>
+ggsave(filename = &#39;results/figures/qc_nFeature_violin.png&#39;,
+       width = 12, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/02-QCandFiltering/02-feature_plot-1.png" width="816" style="display: block; margin: auto;" /></p>
 <p>We observe that samples behave similarly within a day, but have
 different distributions across days. We also note that many cells appear
@@ -1157,7 +1158,8 @@ UMIs detected.</p>
 # Review count violin plots
 VlnPlot(geo_so, features = &#39;nCount_RNA&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + 
   NoLegend()
-ggsave(filename = &#39;results/figures/qc_nCount_violin.png&#39;, width = 12, height = 6, units = &#39;in&#39;)</code></pre>
+ggsave(filename = &#39;results/figures/qc_nCount_violin.png&#39;,
+       width = 12, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/02-QCandFiltering/02-count_plot-1.png" width="816" style="display: block; margin: auto;" /></p>
 <p>We observe a similar within-and-across day behavior among the
 samples. Overall it appears that the Day 0 samples have fewer UMIs
@@ -1201,7 +1203,8 @@ VlnPlot(geo_so, features = &#39;percent.mt&#39;, assay = &#39;RNA&#39;, layer = 
   geom_hline(yintercept = 20) + 
   geom_hline(yintercept = 15) + 
   geom_hline(yintercept = 10)
-ggsave(filename = &#39;results/figures/qc_mito_violin.png&#39;, width = 12, height = 6, units = &#39;in&#39;)</code></pre>
+ggsave(filename = &#39;results/figures/qc_mito_violin.png&#39;,
+       width = 12, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/02-QCandFiltering/02-mito_plot-1.png" width="816" style="display: block; margin: auto;" /></p>
 <p>We observe the majority of cells seem to have &lt; 25% mitochondrial
 reads, but there are many cells with &gt; 25% that we may want to
