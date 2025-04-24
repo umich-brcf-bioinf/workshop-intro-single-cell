@@ -300,7 +300,8 @@ VlnPlot(geo_so, features = 'nFeature_RNA', assay = 'RNA', layer = 'counts') +
   geom_hline(yintercept = 400) + 
   geom_hline(yintercept = 300) + 
   geom_hline(yintercept = 200)
-ggsave(filename = 'results/figures/qc_nFeature_violin.png', width = 12, height = 6, units = 'in')
+ggsave(filename = 'results/figures/qc_nFeature_violin.png',
+       width = 12, height = 6, units = 'in')
 ```
 
 We observe that samples behave similarly within a day, but have different distributions across days. We also note that many cells appear to have a low number of genes detected (< 500).
@@ -314,7 +315,8 @@ Now let's look at `nCount_RNA` plot, the total number of UMIs detected.
 # Review count violin plots
 VlnPlot(geo_so, features = 'nCount_RNA', assay = 'RNA', layer = 'counts') + 
   NoLegend()
-ggsave(filename = 'results/figures/qc_nCount_violin.png', width = 12, height = 6, units = 'in')
+ggsave(filename = 'results/figures/qc_nCount_violin.png',
+       width = 12, height = 6, units = 'in')
 ```
 
 We observe a similar within-and-across day behavior among the samples. Overall it appears that the Day 0 samples have fewer UMIs detected per cell than Day 7 and Day 21. Also of note is the outlier cell in HO.Day0.replicate1, with around 100K UMIs detected. This cell might be a doublet.
@@ -348,7 +350,8 @@ VlnPlot(geo_so, features = 'percent.mt', assay = 'RNA', layer = 'counts') +
   geom_hline(yintercept = 20) + 
   geom_hline(yintercept = 15) + 
   geom_hline(yintercept = 10)
-ggsave(filename = 'results/figures/qc_mito_violin.png', width = 12, height = 6, units = 'in')
+ggsave(filename = 'results/figures/qc_mito_violin.png',
+       width = 12, height = 6, units = 'in')
 ```
 
 We observe the majority of cells seem to have < 25% mitochondrial reads, but there are many cells with > 25% that we may want to remove.
