@@ -35,6 +35,7 @@ render_site('source/index.md');
 render_site('source/workshop_intro.Rmd');
 render_site('source/instructor_cheatsheet.Rmd');
 render_site('source/analysis_scripts.Rmd');
+render_site('source/SeuratOnGreatLakes.Rmd');
 
 ## add content pages
 render_site('source/00A-OrientingOnScRNASeq.Rmd');

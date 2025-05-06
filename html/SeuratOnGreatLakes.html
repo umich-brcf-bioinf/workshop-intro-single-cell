@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+
+<html lang="en" xml:lang="en">
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core Workshop Team" />
+
+<meta name="date" content="2025-05-06" />
+
+<title>Running Seurat on UMich Great Lakes HPC</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<!--
+Favicon dervied from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<link rel="manifest" href="site.webmanifest">
+<link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+    </li>
+    <li>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+    </li>
+    <li>
+      <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
+    </li>
+    <li>
+      <a href="03-Normalization.html">Normalization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
+    </li>
+    <li>
+      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="06-MarkerVisualization.html">Marker identification and visualization</a>
+    </li>
+    <li>
+      <a href="07-CellTypeAnnos.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="08-DifferentialExpression.html">Differential expression analysis</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Running Seurat on UMich Great Lakes
+HPC</h1>
+<h4 class="author">UM Bioinformatics Core Workshop Team</h4>
+<h4 class="date">2025-05-06</h4>
+
+</div>
+
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+</style>
+<script>
+  addClassKlippyTo("pre.r, pre.markdown, pre.bash");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<p><br/> <br/></p>
+<p>It’s possible to run Seurat and several complementary libraries using
+University of Michigan’s <strong>Great Lakes</strong> High Performance
+Cluster (HPC). This is a nice approach because:</p>
+<ul>
+<li>Sometimes scRNA-Seq analysis requires a LOT of memory (RAM). It’s
+easy to ask for more memory on Great Lakes and Great Lakes nodes have
+more memory available than a typical laptop/workstation.</li>
+<li>From Cell Ranger to RStudio to Seurat, much of the software is
+pre-installed. Installing bioinformatics software is typically nuanced
+and often unpleasantly complex - so having it ready is a <em>big
+win</em>.</li>
+</ul>
+<p>That said, using Great Lakes is different than using your
+laptop/workstation. A few key ideas:</p>
+<ul>
+<li>Great Lakes is provided by <a
+href="https://its.umich.edu/advanced-research-computing"
+target="_blank">UM Advanced Research Computing</a>. It is only available
+to folks affiliated with UM.</li>
+<li>Great Lakes uses <strong>Open OnDemand</strong> to reserve a part of
+the cluster to run your analysis in RStudio.<br />
+</li>
+<li>Great Lakes is a requires some setup.</li>
+<li>Great Lakes is a recharge service, BUT it is heavily subsidized and
+extremely affordable for most researchers. (Many researchers who are
+doing a low to moderate amount of data analysis may not have to pay
+anything.)</li>
+</ul>
+<hr />
+<div id="you-will-need" class="section level2">
+<h2>You will need</h2>
+<ol style="list-style-type: decimal">
+<li><p>You need a a UM core-imaged workstation and a web
+browser.</p></li>
+<li><p>You need to be on UM campus or connected to the UM VPN or
+Michigan Medicine VPN using Cisco Secure Client. (This will require Duo
+2-factor authentication.)</p></li>
+<li><p>You need a user account on GreatLakes. The first time, you need
+to request this from ARC; it can take 1-2 days to get set up:</p>
+<ul>
+<li>see <a
+href="https://its.umich.edu/advanced-research-computing/high-performance-computing/great-lakes/getting-started"
+target="_blank">Getting Started with the Great Lakes Cluster</a> to get
+setup.</li>
+<li>also, to save money, request the <a
+href="https://its.umich.edu/advanced-research-computing/research-computing-package"
+target="_blank">UM Research Compute Package (UMRCP)</a> to offset costs
+with subsidy from UM.</li>
+</ul></li>
+<li><p>You will need enough storage space. How much depends on the
+experimental design and what analyses you want to do. Using the workshop
+inputs as a guide:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Data</th>
+<th>Storage required (Gb)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Total raw FASTQ file size</td>
+<td>546</td>
+</tr>
+<tr class="even">
+<td>Full Cell Ranger outputs</td>
+<td>8</td>
+</tr>
+<tr class="odd">
+<td>Minimal inputs to run workshop analyses</td>
+<td>3</td>
+</tr>
+<tr class="even">
+<td>Minimal space to store outputs</td>
+<td>6</td>
+</tr>
+</tbody>
+</table>
+<p>If you focus on the minimal inputs and space to execute the workshop
+analyses, 10Gb is a good working number. Each user is allocated 80Gb of
+storage in their home dir. As a new user, you can execute this tutorial
+from your home dir. As you experiments and analyses grow, you can check
+your available space from the command line (<code>homw-quota</code>) and
+request more storage from ARC as necessary.</p></li>
+<li><p>You will need data. Below, we’ll show you how to download the
+input data used in the workshop, but you can adapt that to use your own
+data.</p></li>
+</ol>
+<hr />
+</div>
+<div id="launch-the-rstudio-session" class="section level2">
+<h2>Launch the RStudio Session</h2>
+<p>Once you’ve got everything you need from above, you’re going to
+launch a RStudio session that runs on Great Lakes and is accessed
+through your browser.</p>
+<ol style="list-style-type: decimal">
+<li><p>If off-campus, connect to the VPN using Cisco Secure
+Client.</p></li>
+<li><p>In your browser, go to Great Lakes Open On Demand:<br />
+<a href="https://greatlakes.arc-ts.umich.edu"
+target="_blank">greatlakes.arc-ts.umich.edu</a> and login with your
+uniqname and password.</p></li>
+<li><p>In the menu at the top of the screen, click <strong>Interactive
+Apps</strong> and select <strong>RStudio</strong>. <img
+src="images/seuratOnGreatLakes/ood-interactive-apps.png" /></p></li>
+<li><p>The previous step will display a <em>launch configuration
+page</em> with several fields, e.g. <img
+src="images/seuratOnGreatLakes/ood-launch-config.png" /> …</p>
+<p>Enter values below in the corresponding fields:</p>
+<table>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>R Version</td>
+<td><strong>Rtidyverse/4.4.0</strong></td>
+</tr>
+<tr class="even">
+<td>RStudio version</td>
+<td><strong>RStudio/2024.04.1</strong></td>
+</tr>
+<tr class="odd">
+<td>Slurm account</td>
+<td><em>(This is in the email from ARC)</em></td>
+</tr>
+<tr class="even">
+<td>Partition</td>
+<td><strong>standard</strong></td>
+</tr>
+<tr class="odd">
+<td>Number of hours</td>
+<td><strong>4</strong> <br/> <em>(Enough to get started, adjust if you
+need more time)</em></td>
+</tr>
+<tr class="even">
+<td>Number of cores</td>
+<td><strong>4</strong></td>
+</tr>
+<tr class="odd">
+<td>Memory (GB)</td>
+<td><strong>16</strong> <br/> <em>(Enough to get started, ok to boost to
+24 or 32 if you ever run out)</em></td>
+</tr>
+<tr class="even">
+<td>Module commands</td>
+<td><strong>load Bioinformatics r-seurat/5.1.0-R-4.4.1-c3m7yfq BPCells
+presto scCATCH RglmGamPoi RDESeq2</strong></td>
+</tr>
+</tbody>
+</table></li>
+<li><p>After you’ve entered values above, at the bottom of this page
+click <strong>Launch</strong>. (Conveniently, the values you entered
+above will now be your default for launching an RStudio session.) The
+screen will update to show Great Lakes is preparing your session. <img
+src="images/seuratOnGreatLakes/ood-queue-rstudio.png"
+style="width:50.0%" /></p></li>
+<li><p>When the session is ready (usually a few seconds later), the
+screen will update: <img
+src="images/seuratOnGreatLakes/ood-launch-rstudio.png"
+style="width:50.0%" /></p>
+<ul>
+<li>Drag the Compression slider all the way to the right</li>
+<li>Drag Image Quality slider all the way to the right</li>
+<li>Click <strong>Launch RStudio</strong></li>
+</ul></li>
+<li><p>This will open a new browser tab that contains your RStudio
+session: <img
+src="images/seuratOnGreatLakes/rstudio-startup.png" /></p></li>
+<li><p>You may see a prompt asking permission to use the clipboard.
+Click <strong>Allow</strong>. <img
+src="images/seuratOnGreatLakes/clipboard-permission.png"
+style="width:25.0%" /></p></li>
+</ol>
+<hr />
+</div>
+<div id="using-open-ondemand-rstudio" class="section level2">
+<h2>Using Open OnDemand RStudio</h2>
+<div id="exiting" class="section level3">
+<h3>Exiting</h3>
+<ul>
+<li>The RStudio session will last for 4 hours (or however long you
+specified in launch config above).</li>
+<li>If you close the browser window, you can click <strong>Launch
+RStudio</strong> again from the <a
+href="https://greatlakes.arc-ts.umich.edu/pun/sys/dashboard/batch_connect/sessions"
+target="_blank">Open OnDemand session page</a></li>
+<li>You can end the session several ways. <em>Make sure your scripts and
+data are saved because these actions do not prompt to save or confirm;
+and once the session is closed it is gone for good.</em>
+<ul>
+<li>In RStudio menu at the top, click File | Quit</li>
+<li>In RStudio, click Session | Quit Session</li>
+<li>In RStudio Close the Rstudio window (top right X) <img
+src="images/seuratOnGreatLakes/rstudio-close.png"
+style="width:25.0%" /></li>
+<li>In <a
+href="https://greatlakes.arc-ts.umich.edu/pun/sys/dashboard/batch_connect/sessions"
+target="_blank">Open OnDemand session page</a>, click
+<strong>Delete</strong>. <img
+src="images/seuratOnGreatLakes/ood-delete.png"
+style="width:50.0%" /></li>
+</ul></li>
+</ul>
+<hr />
+</div>
+<div id="keyboards-shortcuts-and-copy-paste" class="section level3">
+<h3>Keyboards shortcuts and copy-paste</h3>
+<ul>
+<li>In the Rstudio window, you can Zoom in and out using <em>control
++</em> and <em>control -</em>.</li>
+<li>Running RStudio in the browser inside the Greatlakes HPC complicates
+copying and pasting from your computer to/from the remote session.
+<ul>
+<li>Copy-paste functionality doesn’t always work perfectly. Sometimes
+you may need to copy twice to get the content into the buffer. So check
+your work.</li>
+<li>Within the RStudio window you can right-click to get a copy or paste
+context menu.</li>
+<li>Keyboard shortcuts are <em>control C</em> and <em>control V</em>.
+This is familliar to PC users <em>but will take some getting used to for
+Mac-users</em>.</li>
+<li>Copy and paste <em>mostly work</em> using Chrome or Edge. Other
+browsers (e.g.  Safari) require extra steps:
+<ul>
+<li>Open the control panel (left side) <img
+src="images/seuratOnGreatLakes/novnc-controls.png"
+style="width:25.0%" /></li>
+<li>Select the clipboard icon. <img
+src="images/seuratOnGreatLakes/novnc-controlpanel.png"
+style="width:25.0%" /></li>
+<li>Copy text into the clipboard area; within that area, use the native
+keyboard shortcuts, i.e. control-C on PC or command-C on Mac). Close the
+control panel. <img
+src="images/seuratOnGreatLakes/novnc-clipboard.png" /></li>
+<li>Right-click (or <em>control V</em>) to paste the contents into the
+console. <img src="images/seuratOnGreatLakes/novnc-paste.png"
+style="width:50.0%" /></li>
+</ul></li>
+</ul></li>
+<li>If the copy-paste pattern is too flaky or clumsy for your tastes,
+you can upgrade your experience by switching from using Open OnDemand in
+the browser to a <a
+href="https://www.realvnc.com/en/connect/download/viewer/"
+target="_blank">VNC viewer</a>. (Macs have a built in VNC viewer, but
+that viewer doesn’t support copy/paste with a Unix system.) Details on
+how to set this up are outside the scope of this guide, but reach out
+and we can help.</li>
+</ul>
+<hr />
+</div>
+<div id="open-a-browser" class="section level3">
+<h3>Open a browser</h3>
+<ul>
+<li>FYI, you can launch the Firefox browser by clicking on Applications
+(top left) | Web Browser. This will open another application tab (along
+the top). <img src="images/seuratOnGreatLakes/ood-browser.png"
+style="width:50.0%" /></li>
+<li>If you want to do any substantial copy/paste, we recommend you use
+this browser window because it’s more reliable to copy/paste within the
+session than from your local computer.</li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="to-re-run-the-workshop-analyses" class="section level2">
+<h2>To re-run the workshop analyses</h2>
+<ol style="list-style-type: decimal">
+<li><p>The Seurat inputs (cellranger triples and dbcells files) used in
+the workshop can be installed locally. In the RStudio window, click on
+the <strong>Terminal</strong> tab. The tab will be blank with a prompt
+that looks something like this:
+<code>[YOUR_UNIQNAME@glXXXX ~]$</code></p></li>
+<li><p>Paste the following block into the Terminal prompt: and hit
+<em>Enter/Return</em>. This will take a minute or two to download and
+unpack the inputs.</p>
+<pre><code># download Seurat inputs --------------------------------------------------
+mkdir -p intro_scrnaseq_workshop/ISC_R
+cd intro_scrnaseq_workshop/ISC_R
+
+# Use curl to download a ~2 Gb tarball
+# We&#39;ll use evironment variables to avoid extremely long command lines
+source_url=&quot;https://umich-brcf-bioinf-workshop-intro-single-cell.s3.us-east-1.amazonaws.com&quot;
+source_file=&quot;workshop_isc_inputs-20250416.tgz&quot;
+curl -o workshop_isc_inputs.tgz ${source_url}/${source_file}
+
+# tar unpacks the tarball into directories
+tar xzvf workshop_isc_inputs.tgz
+
+# Since we have unpacked the tarball, we can remove it
+rm workshop_isc_inputs.tgz
+
+ls inputs
+</code></pre>
+<p>The last line should show two directories:</p>
+<pre><code>10x_cellranger_filtered_triples
+prepared_data</code></pre></li>
+<li><p>Now you can review the workshop <a href="analysis_scripts.html"
+target="_blank">analysis scripts</a> and execute them on these input
+data.</p></li>
+</ol>
+<hr />
+</div>
+<div id="transfering-your-files" class="section level2">
+<h2>Transfering your files</h2>
+<p>To analyze your own files, you will need to transfer them to
+Greatlakes. ARC provides the Globus tool for moving files. A detailed
+explanation of how to use Globus is outside the scope of this guide but
+we recommend these links:</p>
+<ul>
+<li><a href="https://documentation.its.umich.edu/node/5019"
+target="_blank">ARC Globus page</a></li>
+<li><a
+href="https://www.mivideo.it.umich.edu/media/t/1_uk9nmxsw/181860561?st=2980"
+target="_blank">ARC Video on using Globus</a></li>
+<li><a
+href="https://umich-brcf-bioinf.github.io/workshop-reproducible-computing/main/html/Module_transferring_data_globus.html"
+target="_blank">Globus tutorial from Reproducible Computing
+workshop</a></li>
+</ul>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
