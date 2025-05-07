@@ -50,7 +50,8 @@ a nice approach because:
   available than a typical laptop/workstation.
 - From Cell Ranger to RStudio to Seurat, much of the software is pre-installed.
   Installing bioinformatics software is typically nuanced and often 
-  unpleasantly complex - so having it ready is a _big win_.
+  unpleasantly complex - so having it ready is a _big win_. (Thanks to the ARC 
+  team for getting all this installed!)
 
 That said, using Great Lakes is different than using your laptop/workstation.
 A few key ideas:
@@ -58,21 +59,21 @@ A few key ideas:
 -  Great Lakes is provided by [UM Advanced Research Computing](https://its.umich.edu/advanced-research-computing){target="_blank"}. It is only available to folks affiliated with UM.
 - Great Lakes uses **Open OnDemand** to reserve a part of the cluster to run 
   your analysis in RStudio.  
--  Great Lakes is a requires some setup.
+-  Great Lakes requires some setup.
 -  Great Lakes is a recharge service, BUT it is heavily subsidized and extremely 
    affordable for most researchers. (Many researchers who are doing a low to 
    moderate amount of data analysis may not have to pay anything.)
 
 ---
 
-## You will need
+## What you need
 
-1. You need a a UM core-imaged workstation and a web browser.
+1. You need a UM core-imaged workstation and a web browser.
 
 2. You need to be on UM campus or connected to the UM VPN or Michigan Medicine 
    VPN using Cisco Secure Client. (This will require Duo 2-factor authentication.)
 
-3. You need a user account on GreatLakes. The first time, you need to request 
+3. You need a user account on Great Lakes. The first time, you need to request 
    this from ARC; it can take 1-2 days to get set up:
    - see [Getting Started with the Great Lakes Cluster](https://its.umich.edu/advanced-research-computing/high-performance-computing/great-lakes/getting-started){target="_blank"} to get setup.
    - also, to save money, request the [UM Research Compute Package (UMRCP)](https://its.umich.edu/advanced-research-computing/research-computing-package){target="_blank"} to offset costs with subsidy from UM.
@@ -89,7 +90,7 @@ A few key ideas:
     If you focus on the minimal inputs and space to execute the workshop analyses, 
     10Gb is a good working number. Each user is allocated 80Gb of storage in their 
     home dir. As a new user, you can execute this tutorial from your home dir. As 
-    you experiments and analyses grow, you can check your available space from the 
+    your experiments and analyses grow, you can check your available space from the 
     command line (`homw-quota`) and request more storage from ARC as necessary. 
 
 
@@ -98,10 +99,11 @@ A few key ideas:
 
 ---
 
-## Launch the RStudio Session
+## Using Open OnDemand
 
-Once you've got everything you need from above, you're going to launch a 
-RStudio session that runs on Great Lakes and is accessed through your browser.
+Open OnDemand (OOD) connects you to the Great Lakes cluster through your web browser.
+Once you've got everything you need from above, you're going to use OOD to 
+launch a RStudio session.
 
 1. If off-campus, connect to the VPN using Cisco Secure Client.
 
@@ -113,7 +115,7 @@ RStudio session that runs on Great Lakes and is accessed through your browser.
    **RStudio**. ![](images/seuratOnGreatLakes/ood-interactive-apps.png)
 
 4. The previous step will display a _launch configuration page_ with several fields, e.g.
-       ![](images/seuratOnGreatLakes/ood-launch-config.png)
+       ![partial screen shot](images/seuratOnGreatLakes/ood-launch-config.png)
     ...
   
     Enter values below in the corresponding fields:
@@ -129,7 +131,7 @@ RStudio session that runs on Great Lakes and is accessed through your browser.
     | Memory (GB) | **16** <br/> _(Enough to get started, ok to boost to 24 or 32 if you ever run out)_ |
     | Module commands | **load Bioinformatics r-seurat/5.1.0-R-4.4.1-c3m7yfq BPCells presto  scCATCH RglmGamPoi RDESeq2** |
 
-5. After you've entered values above, at the bottom of this page click **Launch**. 
+5. After you've entered the values above, at the bottom of this page click **Launch**. 
    (Conveniently, the values you entered above will now be your default for 
    launching an RStudio session.) The screen will update to show Great Lakes is 
    preparing your session. 
@@ -149,9 +151,10 @@ RStudio session that runs on Great Lakes and is accessed through your browser.
 
 ---
 
-## Using Open OnDemand RStudio
+## Using RStudio
 
 ### Exiting
+
 - The RStudio session will last for 4 hours (or however long you specified in 
   launch config above).
 - If you close the browser window, you can click **Launch RStudio** again from
@@ -159,25 +162,25 @@ RStudio session that runs on Great Lakes and is accessed through your browser.
 - You can end the session several ways. _Make sure your scripts and data are saved because these actions do not prompt to save or confirm; and once the session is closed it is gone for good._
   - In RStudio menu at the top, click File | Quit
   - In RStudio, click Session | Quit Session
-  - In RStudio Close the Rstudio window (top right X)
+  - In RStudio, close the RStudio window (top right X)
   ![](images/seuratOnGreatLakes/rstudio-close.png){width=25%}
   - In [Open OnDemand session page](https://greatlakes.arc-ts.umich.edu/pun/sys/dashboard/batch_connect/sessions){target="_blank"}, click **Delete**.
   ![](images/seuratOnGreatLakes/ood-delete.png){width=50%}
 
 ---  
   
-### Keyboards shortcuts and copy-paste
+### Shortcuts / copy-paste
 
 - In the Rstudio window, you can Zoom in and out using _control +_ and _control -_. 
-- Running RStudio in the browser inside the Greatlakes HPC complicates copying 
+- Running RStudio in the browser inside the Great Lakes HPC complicates copying 
   and pasting from your computer to/from the remote session.
   - Copy-paste functionality doesn't always work perfectly. Sometimes you may 
     need to copy twice to get the content into the buffer. So check your work.
   - Within the RStudio window you can right-click to get a copy or paste context menu.
   - Keyboard shortcuts are _control C_ and _control V_. This is familliar to PC 
     users *but will take some getting used to for Mac-users*.
-  - Copy and paste _mostly work_ using Chrome or Edge. Other browsers (e.g. 
-    Safari) require extra steps:
+  - Copy and paste _mostly_ work as expected using Chrome or Edge browsers. 
+    Other browsers (e.g. Safari) require extra steps:
     - Open the control panel (left side) 
     ![](images/seuratOnGreatLakes/novnc-controls.png){width=25%}
     - Select the clipboard icon.
@@ -209,7 +212,7 @@ RStudio session that runs on Great Lakes and is accessed through your browser.
 
 ---
 
-## To re-run the workshop analyses
+## Download workshop inputs
 
 1. The Seurat inputs (cellranger triples and dbcells files) used in the 
     workshop can be installed locally. In the RStudio window, click on the 
@@ -252,13 +255,39 @@ RStudio session that runs on Great Lakes and is accessed through your browser.
 
 ---
 
-## Transfering your files
+## Transferring files
 
-To analyze your own files, you will need to transfer them to Greatlakes. ARC 
-provides the Globus tool for moving files. A detailed explanation of how to use 
-Globus is outside the scope of this guide but we recommend these links:
+### Open OnDemand
 
-- [ARC Globus page](https://documentation.its.umich.edu/node/5019){target="_blank"}
-- [ARC Video on using Globus](https://www.mivideo.it.umich.edu/media/t/1_uk9nmxsw/181860561?st=2980){target="_blank"}
-- [Globus tutorial from Reproducible Computing workshop](https://umich-brcf-bioinf.github.io/workshop-reproducible-computing/main/html/Module_transferring_data_globus.html){target="_blank"}
+Open OnDemand (OOD) lets you browse your files and move small files 
+(e.g. scripts or plots) between your workstation and Great Lakes.
+
+1. _In your workstation's  browser_, open the [OOD Dashboard](https://greatlakes.arc-ts.umich.edu/){target="_blank"}. 
+   Along the top menu, click on **Files**. (Note that if you shrink the screen very small, the menu items will be hidden in a "hamburger".)
+   In the dropdown menu, click **Home Directory**.
+   
+   ![](images/seuratOnGreatLakes/ood-files.png)
+2.  OOD will display the contents of your home directory. You can click on a 
+    directory to see its contents.
+   ![](images/seuratOnGreatLakes/ood-files-browse.png)
+3. To view a plot graphic, you can click on the hamburger and then select **View**.
+   This will open the plot in a new browser tab.
+![](images/seuratOnGreatLakes/ood-files-view.png)
+4. You can download one or more files by selecting their checkboxes and clicking the **Download** button. (Note: if you select a directory and click **Download** OOD will download the contents as a single zipped file.)
+![](images/seuratOnGreatLakes/ood-files-download.png)
+
+### Globus
+
+To analyze your own files, you will need to transfer them to Great Lakes using 
+**Globus**. 
+
+- Globus is a fast, secure, and fault tolerant way to move files of any size.
+- Globus is much better than OOD for transferring larger files like FASTQ files,
+  Cell Ranger outputs, or saved Seurat data objects.
+- Details on how to set up and use Globus are outside the scope of this guide, 
+  but we recommend these links:
+  
+  - [ARC Globus page](https://documentation.its.umich.edu/node/5019){target="_blank"}
+  - [ARC Video on using Globus](https://www.mivideo.it.umich.edu/media/t/1_uk9nmxsw/181860561?st=2980){target="_blank"}
+  - [Globus tutorial from Reproducible Computing workshop](https://umich-brcf-bioinf.github.io/workshop-reproducible-computing/main/html/Module_transferring_data_globus.html){target="_blank"}
 
