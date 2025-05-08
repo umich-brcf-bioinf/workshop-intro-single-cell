@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-05-07" />
+<meta name="date" content="2025-05-08" />
 
 <title>Running Seurat on UMich Great Lakes HPC</title>
 
@@ -415,7 +415,7 @@ div.tocify {
 <h1 class="title toc-ignore">Running Seurat on UMich Great Lakes
 HPC</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-05-07</h4>
+<h4 class="date">2025-05-08</h4>
 
 </div>
 
@@ -465,6 +465,22 @@ doing a low to moderate amount of data analysis may not have to pay
 anything.)</li>
 </ul>
 <hr />
+<div id="how-to-get-help" class="section level2">
+<h2>How to get help</h2>
+<ul>
+<li><p>If you have problems/questions, please don’t hesitate to email us
+at: <a
+href="mailto:bioinformatics-workshops@umich.edu">bioinformatics-workshops@umich.edu</a></p></li>
+<li><p>When emailing it will speed things along if you could
+include:</p>
+<ul>
+<li>Whether you are using Windows or Mac (and optionally which version
+of the OS you are using).</li>
+<li>The specific text of any error messages, if applicable.</li>
+</ul></li>
+</ul>
+<hr />
+</div>
 <div id="what-you-need" class="section level2">
 <h2>What you need</h2>
 <ol style="list-style-type: decimal">
@@ -690,8 +706,8 @@ the browser to a <a
 href="https://www.realvnc.com/en/connect/download/viewer/"
 target="_blank">VNC viewer</a>. (Macs have a built in VNC viewer, but
 that viewer doesn’t support copy/paste with a Unix system.) Details on
-how to set this up are outside the scope of this guide, but reach out
-and we can help.</li>
+how to set this up are outside the scope of this guide, but <a
+href="#how-to-get-help">reach out</a> and we can help.</li>
 </ul>
 <hr />
 </div>
@@ -741,9 +757,9 @@ ls inputs
 <p>The last line should show two directories:</p>
 <pre><code>10x_cellranger_filtered_triples
 prepared_data</code></pre></li>
-<li><p>Now you can review the workshop <a href="analysis_scripts.html"
-target="_blank">analysis scripts</a> and execute them on these input
-data.</p></li>
+<li><p>Now you can review the <a href="01-GettingStarted.html"
+target="_blank">workshop lessons</a> and execute the Seurat analyses on
+these input data.</p></li>
 </ol>
 <hr />
 </div>
@@ -776,7 +792,7 @@ src="images/seuratOnGreatLakes/ood-files-download.png" /></p></li>
 </div>
 <div id="globus" class="section level3">
 <h3>Globus</h3>
-<p>To analyze your own files, you will need to transfer them to Great
+<p>To analyze your own files, we recommend transferring them to Great
 Lakes using <strong>Globus</strong>.</p>
 <ul>
 <li><p>Globus is a fast, secure, and fault tolerant way to move files of
@@ -797,6 +813,36 @@ target="_blank">Globus tutorial from Reproducible Computing
 workshop</a></li>
 </ul></li>
 </ul>
+</div>
+<div id="command-line-tools" class="section level3">
+<h3>Command line tools</h3>
+<p>For larger files/directories, we strongly recommend you use Globus.
+That said, if you are more comfortable with command line tools, you can
+transfer files using the <strong>secure copy</strong> command <a
+href="https://man7.org/linux/man-pages/man1/scp.1.html"
+target="_blank">scp</a>. <code>scp</code> is a lot like <code>cp</code>
+but it allows you to copy across the network.</p>
+<p>To transfer from your workstation to Great Lakes:</p>
+<ol style="list-style-type: decimal">
+<li>From you workstation terminal or command window, <code>cd</code>
+into the directory that contains your data.</li>
+<li>Adjust the <code>scp</code> command below to match the correct
+source directory and uniqname and hit <em>Enter/Return</em> to
+execute.</li>
+</ol>
+<pre><code># Copy the SOURCE_DIR dir contents from your workstation to Great Lakes home dir
+# -r copies recursively 
+# -p preserves the file modification times
+scp -pr SOURCE_DIR YOUR_UNIQNAME@greatlakes-xfer.arc-ts.umich.edu:</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li>When prompted, enter your uniqname and password.</li>
+</ol>
+<p>And you can transfer files from Great Lakes to your workstation. From
+you workstation terminal or command window, Adjust the <code>scp</code>
+command below to match the correct source file and uniqname and hit
+<em>Enter/Return</em> to execute.</p>
+<pre><code># Copy the SOURCE_FILE from Great Lakes to your current workstation dir
+scp YOUR_UNIQNAME@greatlakes-xfer.arc-ts.umich.edu:PATH/TO/SOURCE_FILE . </code></pre>
 </div>
 </div>
 

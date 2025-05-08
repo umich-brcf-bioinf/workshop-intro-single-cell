@@ -66,6 +66,19 @@ A few key ideas:
 
 ---
 
+## How to get help
+
+-   If you have problems/questions, please don't hesitate to email us
+    at:
+    [bioinformatics-workshops@umich.edu](mailto:bioinformatics-workshops@umich.edu)
+
+-   When emailing it will speed things along if you could include:
+    -   Whether you are using Windows or Mac (and optionally which
+        version of the OS you are using).
+    -   The specific text of any error messages, if applicable.
+
+---
+
 ## What you need
 
 1. You need a UM core-imaged workstation and a web browser.
@@ -197,7 +210,7 @@ launch a RStudio session.
   to a [VNC viewer](https://www.realvnc.com/en/connect/download/viewer/){target="_blank"}. 
   (Macs have a built in VNC viewer, but that viewer doesn't support copy/paste 
   with a Unix system.) Details on how to set this up are outside the scope
-  of this guide, but reach out and we can help.
+  of this guide, but [reach out](#how-to-get-help) and we can help.
 
 ---
 
@@ -250,8 +263,8 @@ launch a RStudio session.
     prepared_data
     ```
 
-3. Now you can review the workshop [analysis scripts](analysis_scripts.html){target="_blank"}
-   and execute them on these input data. 
+3. Now you can review the [workshop lessons](01-GettingStarted.html){target="_blank"}
+   and execute the Seurat analyses on these input data. 
 
 ---
 
@@ -278,7 +291,7 @@ Open OnDemand (OOD) lets you browse your files and move small files
 
 ### Globus
 
-To analyze your own files, you will need to transfer them to Great Lakes using 
+To analyze your own files, we recommend transferring them to Great Lakes using 
 **Globus**. 
 
 - Globus is a fast, secure, and fault tolerant way to move files of any size.
@@ -290,4 +303,39 @@ To analyze your own files, you will need to transfer them to Great Lakes using
   - [ARC Globus page](https://documentation.its.umich.edu/node/5019){target="_blank"}
   - [ARC Video on using Globus](https://www.mivideo.it.umich.edu/media/t/1_uk9nmxsw/181860561?st=2980){target="_blank"}
   - [Globus tutorial from Reproducible Computing workshop](https://umich-brcf-bioinf.github.io/workshop-reproducible-computing/main/html/Module_transferring_data_globus.html){target="_blank"}
+
+### Command line tools
+
+For larger files/directories, we strongly recommend you use Globus. That said, 
+if you are more comfortable with command line tools, you can transfer files 
+using the **secure copy** command [scp](https://man7.org/linux/man-pages/man1/scp.1.html){target="_blank"}. 
+`scp` is a lot like `cp` but it allows you to copy across the network.
+
+To transfer from your workstation to Great Lakes:
+
+1. From you workstation terminal or command window, `cd` into the directory that 
+   contains your data. 
+2. Adjust the `scp` command below to match the correct source directory and 
+   uniqname and hit _Enter/Return_ to execute.
+
+  ```
+  # Copy the SOURCE_DIR dir contents from your workstation to Great Lakes home dir
+  # -r copies recursively 
+  # -p preserves the file modification times
+  scp -pr SOURCE_DIR YOUR_UNIQNAME@greatlakes-xfer.arc-ts.umich.edu:
+  ```
+3. When prompted, enter your uniqname and password.
+
+
+And you can transfer files from Great Lakes to your workstation. From you 
+workstation terminal or command window, Adjust the `scp` command below to match 
+the correct source file and uniqname and hit _Enter/Return_ to execute.
+
+  ```
+  # Copy the SOURCE_FILE from Great Lakes to your current workstation dir
+  scp YOUR_UNIQNAME@greatlakes-xfer.arc-ts.umich.edu:PATH/TO/SOURCE_FILE . 
+  ```
+
+
+
 
