@@ -41,9 +41,22 @@ source("../bin/set_values.R")
 <br/>
 <br/>
 
-It's possible to run Seurat and several complementary libraries using 
-University of Michigan's **Great Lakes** High Performance Cluster (HPC). This is
-a nice approach because:
+## Objectives
+You can run Seurat and several related R libraries using 
+University of Michigan's **Great Lakes** High Performance Cluster (HPC). By the 
+end of this guide you will be able to:
+
+- Use **Great Lakes** and **Open OnDemand** to start a RStudio session with 
+  pre-installed Seurat libraries.
+- Copy/paste content from your workstation to RStudio and back.
+- Open a new browser window within an Open OnDemand session.
+- Transfer files between Great Lakes and your workstation
+
+---
+
+## Background
+You can run Seurat locally on your workstation. However, running Seurat on Great 
+Lakes is a nice approach because:
 
 - Sometimes scRNA-Seq analysis requires a LOT of memory (RAM). It's easy to ask 
   for more memory on Great Lakes and Great Lakes nodes have more memory 
@@ -75,7 +88,9 @@ A few key ideas:
 -   When emailing it will speed things along if you could include:
     -   Whether you are using Windows or Mac (and optionally which
         version of the OS you are using).
-    -   The specific text of any error messages, if applicable.
+    - What browser you are using.
+    - Whether you are on campus or using the VPN.
+    - The specific text of any error messages, if applicable.
 
 ---
 
@@ -92,6 +107,7 @@ A few key ideas:
    - also, to save money, request the [UM Research Compute Package (UMRCP)](https://its.umich.edu/advanced-research-computing/research-computing-package){target="_blank"} to offset costs with subsidy from UM.
 
 4. You will need enough storage space. How much depends on the experimental design and what analyses you want to do. Using    the workshop inputs as a guide:
+
 
     | Data | Storage required (Gb) |
     |------|-----------------------|
@@ -270,24 +286,36 @@ launch a RStudio session.
 
 ## Transferring files
 
-### Open OnDemand
+- Below are details on several ways to move files to or from Great Lakes.
+
+  1. For small transfers, you can use [Open OnDemand file browser](#open-ondemand-file-browser).
+  2. For large transfers, we recommend [Globus](#globus)
+  3. You can also use [command line tools](#command-line-tools)  
+
+- Note that to transfer a file to/from Great Lakes, you will need to be on the 
+  campus network or on the VPN.
+
+### Open OnDemand file browser
 
 Open OnDemand (OOD) lets you browse your files and move small files 
-(e.g. scripts or plots) between your workstation and Great Lakes.
+(e.g. scripts or plots) between your workstation and Great Lakes using your web 
+browser.
 
-1. _In your workstation's  browser_, open the [OOD Dashboard](https://greatlakes.arc-ts.umich.edu/){target="_blank"}. 
-   Along the top menu, click on **Files**. (Note that if you shrink the screen very small, the menu items will be hidden in a "hamburger".)
-   In the dropdown menu, click **Home Directory**.
+1.1 _In your workstation's  browser_, open the [OOD Dashboard](https://greatlakes.arc-ts.umich.edu/){target="_blank"}. 
+    Along the top menu, click on **Files**. (Note that if you shrink the screen very small, the menu items will be hidden in a "hamburger".)
+    In the dropdown menu, click **Home Directory**.
    
-   ![](images/seuratOnGreatLakes/ood-files.png)
-2.  OOD will display the contents of your home directory. You can click on a 
+  ![](images/seuratOnGreatLakes/ood-files.png)
+1.2 OOD will display the contents of your home directory. You can click on a 
     directory to see its contents.
-   ![](images/seuratOnGreatLakes/ood-files-browse.png)
-3. To view a plot graphic, you can click on the hamburger and then select **View**.
-   This will open the plot in a new browser tab.
-![](images/seuratOnGreatLakes/ood-files-view.png)
-4. You can download one or more files by selecting their checkboxes and clicking the **Download** button. (Note: if you select a directory and click **Download** OOD will download the contents as a single zipped file.)
-![](images/seuratOnGreatLakes/ood-files-download.png)
+    ![](images/seuratOnGreatLakes/ood-files-browse.png)
+1.3 To view a plot graphic, you can click on the hamburger and then select **View**.
+    This will open the plot in a new browser tab.
+    ![](images/seuratOnGreatLakes/ood-files-view.png)
+1.4 You can download one or more files by selecting their checkboxes and 
+    clicking the **Download** button. (Note: if you select a directory and click
+    **Download**, OOD will download the contents as a single zipped file.)
+    ![](images/seuratOnGreatLakes/ood-files-download.png)
 
 ### Globus
 
@@ -309,14 +337,14 @@ To analyze your own files, we recommend transferring them to Great Lakes using
 For larger files/directories, we strongly recommend you use Globus. That said, 
 if you are more comfortable with command line tools, you can transfer files 
 using the **secure copy** command [scp](https://man7.org/linux/man-pages/man1/scp.1.html){target="_blank"}. 
-`scp` is a lot like `cp` but it allows you to copy across the network.
+`scp` is a lot like `cp` but it allows you to copy files across a network.
 
 To transfer from your workstation to Great Lakes:
 
-1. From you workstation terminal or command window, `cd` into the directory that 
-   contains your data. 
-2. Adjust the `scp` command below to match the correct source directory and 
-   uniqname and hit _Enter/Return_ to execute.
+3.1 From you workstation terminal or command window, `cd` into the directory that 
+    contains your data. 
+3.2 Adjust the `scp` command below to match the correct source directory and 
+    uniqname and hit _Enter/Return_ to execute.
 
   ```
   # Copy the SOURCE_DIR dir contents from your workstation to Great Lakes home dir
@@ -324,18 +352,54 @@ To transfer from your workstation to Great Lakes:
   # -p preserves the file modification times
   scp -pr SOURCE_DIR YOUR_UNIQNAME@greatlakes-xfer.arc-ts.umich.edu:
   ```
-3. When prompted, enter your uniqname and password.
+
+3.3 The first time you run this command, you may see a prompt like the following; type **yes** and hit _Enter/Return_ to continue.
+
+    The authenticity of host '...' can't be established.
+    ECDSA key fingerprint is SHA256:....
+    Are you sure you want to continue connecting (yes/no/[fingerprint])? yes
+
+  The command will print a warning (e.g. _Warning: Permanently added ‘SERVER_ADDRESS’ to the list of known hosts_). 
+  This is fine.
+
+3.4 When prompted, type your UM password followed by Enter/Return.
+
+  - **Note that the server will not echo any characters when you are typing your password;*** this is ok.
+  - Note that the password is case sensitive. 
 
 
-And you can transfer files from Great Lakes to your workstation. From you 
-workstation terminal or command window, Adjust the `scp` command below to match 
-the correct source file and uniqname and hit _Enter/Return_ to execute.
+3.5 You can also transfer files from Great Lakes to your workstation. From your 
+    workstation terminal or command window, adjust the `scp` command 
+    below to match the correct source file and uniqname and hit _Enter/Return_ 
+    to execute.
 
   ```
   # Copy the SOURCE_FILE from Great Lakes to your current workstation dir
   scp YOUR_UNIQNAME@greatlakes-xfer.arc-ts.umich.edu:PATH/TO/SOURCE_FILE . 
   ```
 
+3.6 When prompted, type your UM password followed by Enter/Return.
+
+  - **Note that the server will not echo any characters when you are typing your password;*** this is ok.
+  - Note that the password is case sensitive. 
+
+---
+
+## Summary
+
+- You can run Seurat on RStudio using University of Michigan's **Great Lakes** High Performance Cluster (HPC).
+- Running RStudio on Great Lakes is a bit different than running it on your 
+  workstation. Using Great Lakes requires some set up.
+- Running on Great Lakes is a nice option because the libraries and software are
+  pre-installed and you can run RStudio with as much memory as you need.  
+- **Open OnDemand** (OOD) connects you to the Great Lakes cluster through your 
+  web browser.
+- Depending on your workstation and browser, copy/paste on RStudio can require 
+  different keyboard shortcuts or different steps. 
+- OOD, Globus, and command line tools are several ways to transfer files between 
+  Great Lakes and your workstation
+
+---
 
 
 
