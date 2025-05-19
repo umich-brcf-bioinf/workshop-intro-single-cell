@@ -1,0 +1,1386 @@
+<!DOCTYPE html>
+
+<html lang="en" xml:lang="en">
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core Workshop Team" />
+
+<meta name="date" content="2025-04-24" />
+
+<title>Cell Type Annotation</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<!--
+Favicon dervied from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<link rel="manifest" href="site.webmanifest">
+<link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+    </li>
+    <li>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+    </li>
+    <li>
+      <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
+    </li>
+    <li>
+      <a href="03-Normalization.html">Normalization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
+    </li>
+    <li>
+      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="06-MarkerVisualization.html">Marker identification and visualization</a>
+    </li>
+    <li>
+      <a href="07-CellTypeAnnos.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="08-DifferentialExpression.html">Differential expression analysis</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Cell Type Annotation</h1>
+<h4 class="author">UM Bioinformatics Core Workshop Team</h4>
+<h4 class="date">2025-04-24</h4>
+
+</div>
+
+
+<style type="text/css">
+body {
+   font-size: 18px;
+}
+
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+
+table.fig, th.fig, td.fig {
+  border: 1px solid lightgray;
+  border-collapse: collapse;
+  padding: 12px;
+}
+
+.prepared_content {
+  border-radius: 10px;
+  padding: 5px 5px 5px 95px;
+  background: #FFF8DC left 10px top 10px / 65px no-repeat;
+}
+
+.cooking_show {
+  background-image: url("images/curriculum/cooking_show-1.png");
+}
+</style>
+<script>
+  addClassKlippyTo("pre.r, pre.markdown, pre.bash");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<div id="workflow-overview" class="section level1 unlisted unnumbered">
+<h1 class="unlisted unnumbered">Workflow Overview</h1>
+<p><br/> <img src="images/wayfinder/07-CellTypeAnnos-Wayfinder.png" />
+<br/> <br/></p>
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<br/>
+<table class='fig'>
+<tr>
+<td class="fig">
+<img src="images/graphical_abstracts/07-CellTypeAnnos-Abstract.png" />
+</td>
+</tr>
+<tr>
+<tr class="fig">
+<td class="fig">
+Starting with clustered data, we can summarize and compare gene
+expression for known gene markers within each cluster, irrespective of
+sample or condition, to help label clusters with the appropriate
+cell-type or subtype.
+</td>
+</tr>
+</table>
+<p><br/></p>
+<p>A frequent bottleneck in single-cell analysis is annotating the
+algorithmicly generated clusters, as it requires bridging the gap
+between the data and prior knowledge (<a
+href="https://bioconductor.org/books/3.15/OSCA.basic/cell-type-annotation.html">source</a>).
+While generating markers for each cluster it important, it may or may
+not be sufficient to assign cell-type or sub-type labels without
+bringing in additional sources. <br/></p>
+<div id="objectives" class="section level2">
+<h2>Objectives</h2>
+<ul>
+<li>Understand the complexities of cell-type annotation<br />
+</li>
+<li>Use <code>scCATCH</code> cell-type predictions to annotate our
+clusters</li>
+</ul>
+<p><br/> Like the previous sections, the steps to assign cell-types to
+clusters might require some iteration, can be very dataset dependent,
+and often is more challenging for less characterized tissues. <br/></p>
+<hr />
+</div>
+</div>
+<div id="cell-type-predictions" class="section level1">
+<h1>Cell type predictions</h1>
+<p>Automated tools have the advantage of being able to compare between
+the expression patterns in our dataset and large numbers of reference
+datasets or databases at a scale that is not feasible to do
+manually.</p>
+<p>As described <a
+href="https://ouyanglab.com/singlecell/clust.html#annotating-clusters">in
+more detail by the Ouyang Lab</a> and summarized in the figure below,
+there are many computational tools that aim to assign cell type labels
+for single-cell data. These methods generally fall into three
+categories:</p>
+<ol style="list-style-type: decimal">
+<li>Marker based approaches that use gene sets drawn from the
+literature, including previous single-cell studies,</li>
+<li>Correlation based approaches that estimate the similarity between
+the cells or clusters in the input data and some reference data</li>
+<li>Machine learning approaches that include training on a single-cell
+reference atlas.</li>
+</ol>
+<div class="float">
+<img
+src="images/curriculum/07-CellTypeAnnotation/Ouyang_clust-celltype.png"
+alt="Image: Diagram of types of cell annotation approaches (from Oyang materials)." />
+<div class="figcaption">Image: Diagram of types of cell annotation
+approaches (from Oyang materials).</div>
+</div>
+<p>However, across any of these approaches the quality of the reference
+data (and reliability of the authors labels) and relevancy to your
+specific tissue/experiment (and the resolution of your biological
+question) is crucial. Additionally, it’s important to consider that rare
+or novel cell populations may not be present or well-characterized in
+available references and that even after filtering, some clusters might
+correspond to stressed or dying cells and not a particular cell-type or
+subtype. Therefore, any prediction should be reviewed and considered in
+the context both marker gene expression for the dataset and knowledge of
+the biological system and broader literature.</p>
+<p>Some tools and references are available solely or primarily for human
+tissues (and not mouse or rat), particular for tissues other than PBMCs
+and the brain. For human data, if a relevant reference is available for
+your experiment, we would recommend trying <a
+href="https://azimuth.hubmapconsortium.org/">Azimuth (created by authors
+of Seurat)</a>. <a
+href="https://www.10xgenomics.com/analysis-guides/automated-cell-type-annotation-from-r-to-loupe-using-louper">10x
+has a tutorial</a> that includes example of using Azimuth, including a
+feature of the tool that allows for first pass of cell-type assignment
+of more common cell-types followed by identifying rarer populations that
+may not be identified in the first pass.</p>
+<details>
+<summary>
+<em>Additional automated annotation resources</em>
+</summary>
+Automated cell-type annotation is an active area of research and
+development and many other tools and resources are available, including
+<a
+href="https://bioconductor.org/books/3.15/OSCA.basic/cell-type-annotation.html">OSCA’s
+demonstration of the SingleR method</a>, a <a
+href="https://pubmed.ncbi.nlm.nih.gov/34031612/">Tutorial by Clarke et
+al. for cell-type annotations</a>, and an <a
+href="https://www.sc-best-practices.org/cellular_structure/annotation.html#automated-annotation">entire
+chapter of the SC best practices book</a>.
+</details>
+<p><br></p>
+</div>
+<div id="using-sccatch" class="section level1">
+<h1>Using scCATCH</h1>
+<p>A tool we often use for both mouse and human data cell-type
+predictions is called <a
+href="https://github.com/ZJUFanLab/scCATCH/wiki">scCATCH</a> which, per
+the author’s description in <a
+href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7031312/">Shao et al
+(2020)</a>, annotates cell-types using a “tissue-specific cellular
+taxonomy reference database (CellMatch) and [an] evidence-based scoring
+(ES) protocol”. The CellMatch reference is compiled from CellMarker (<a
+href="https://www.cell.com/servlet/linkout?suffix=e_1_5_1_2_33_2&amp;dbid=8&amp;doi=10.1016/j.isci.2020.100882&amp;key=30289549&amp;cf=">Zhang
+et al., 2019b</a>), MCA (<a
+href="https://www.cell.com/servlet/linkout?suffix=e_1_5_1_2_10_2&amp;dbid=8&amp;doi=10.1016/j.isci.2020.100882&amp;key=29775597&amp;cf=">Han
+et al., 2018</a>), CancerSEA (<a
+href="https://www.cell.com/servlet/linkout?suffix=e_1_5_1_2_29_2&amp;dbid=8&amp;doi=10.1016/j.isci.2020.100882&amp;key=30329142&amp;cf=">Yuan
+et al., 2019</a>), and the <a
+href="https://www.abcam.com/primary-antibodies/human-cd-antigen-guide">CD
+Marker Handbook</a> and PMIDs for relevant literature are reported in
+the prediction results.</p>
+<!-- consider adding [scType](https://cran.r-project.org/web/packages/scCATCH/vignettes/tutorial.html) as an alternative -->
+<div class="float">
+<img
+src="images/curriculum/07-CellTypeAnnotation/scCATCH-paper-VizAbstract.jpeg"
+alt="Image: scCATCH summary from Shao et al (2020)." />
+<div class="figcaption">Image: scCATCH summary from Shao et al
+(2020).</div>
+</div>
+<p>First, we need to load the scCATCH library. Then, we’ll double check
+that we are using the expected resolution cluster results (this is
+particularly important if we generated multiple resolutions in our
+clustering steps), before creating a new object from our
+<code>counts</code> data with <code>createscCATCH()</code> and adding
+our marker genes to the scCATCCH object.</p>
+<p>To increase the speed and accuracy of our predictions, we’ll create
+query of relevant tissues (which requires some prior knowledge of the
+experiment and using the <a
+href="https://github.com/ZJUFanLab/scCATCH/wiki">scCATCH wiki</a> to
+select tissues from the species) before we run the tool:</p>
+<pre class="r"><code># =========================================================================
+# Cell Type Annotation
+# =========================================================================
+
+# -------------------------------------------------------------------------
+# Load scCATCH
+library(scCATCH)
+
+# check that cell identities are set to expected resolution 
+all(Idents(geo_so) == geo_so$integrated.sct.rpca.clusters)</code></pre>
+<pre><code>[1] TRUE</code></pre>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Annotate clusters using scCATCH
+
+# create scCATCH object, using count data
+geo_catch = createscCATCH(data = geo_so@assays$SCT@counts, cluster = as.character(Idents(geo_so)))
+
+# add marker genes to use for predictions
+geo_catch@markergene = geo_markers
+
+# specify tissues/cell-types from the scCATCH reference
+tissues_of_interest = c(&#39;Blood&#39;, &#39;Peripheral Blood&#39;, &#39;Muscle&#39;, &#39;Skeletal muscle&#39;, &#39;Epidermis&#39;, &#39;Skin&#39;)
+species_tissue_mask = cellmatch$species == &#39;Mouse&#39; &amp; cellmatch$tissue %in% tissues_of_interest
+geo_catch@marker = cellmatch[species_tissue_mask, ]
+
+# run scCATCH to generate predictions
+geo_catch = findcelltype(geo_catch)
+
+# look at the predictions
+sc_pred_tbl = geo_catch@celltype %&gt;% 
+  select(cluster, cell_type, celltype_score) %&gt;%
+  rename(cell_type_prediction = cell_type)
+sc_pred_tbl</code></pre>
+<pre><code>   cluster                      cell_type_prediction   celltype_score
+1        0                   Hematopoietic Stem Cell             0.87
+2        1                                  Pericyte             0.75
+3        2                                Macrophage             0.82
+4        3                            Dendritic Cell             0.86
+5        4                                  Monocyte             0.82
+6        5                   Hematopoietic Stem Cell             0.92
+7        6                    Muscle Progenitor Cell             0.71
+8        7                   Hematopoietic Stem Cell             0.87
+9        8                    Muscle Progenitor Cell             0.75
+10       9                     Muscle Satellite Cell             0.93
+11      10                   Hematopoietic Stem Cell              0.9
+12      11                            Dendritic Cell             0.85
+13      12                         Regulatory T Cell              0.9
+14      13                            Dendritic Cell             0.85
+15      14 Dendritic Cell, Monocyte, Progenitor Cell 0.71, 0.71, 0.71
+16      15                               CD8+ T Cell             0.88
+17      16                                 Stem Cell             0.84
+18      17                               Muscle Cell             0.69</code></pre>
+<p>When we look at our results we can see the cell type score, which
+gives us an idea of the confidence of that prediction. Not shown here
+but the full <code>celltype</code> table also includes marker genes and
+PMIDs for relevant literature for each prediction.</p>
+<p>In our experience, these kinds of results often help guide cluster
+annotation but scores can vary and the predictions may need to be
+revised based on researcher’s knowledge of the biological system. As
+these cell-types correspond to the cell-types and subtypes we’d expect
+to be present in these data and most of the prediction scores are quite
+high, we can reasonably use these results to help annotate our clusters
+with some minor adjustments.</p>
+<p>To revise the cluster annotation from those predicted by scCATCH, it
+can be helpful to output a table that can be edited in excel or a text
+editor.</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Write scCATCH predictions to file
+write_csv(sc_pred_tbl, file = &#39;results/tables/scCATCH_cluster_predictions.csv&#39;)</code></pre>
+<div id="using-known-cell-type-markers" class="section level2">
+<h2>Using known cell-type markers</h2>
+<p>To confirm and refine the scCATCH predictions, we’ll spot check some
+known markers for immune populations. Then we’ll look look at some other
+key marker genes from some other relevant resources like <a
+href="https://www.nature.com/articles/s41467-021-27563-3">Chen et al
+(2021)</a>, <a
+href="https://www.nature.com/articles/s41586-021-03549-5">Buechler et al
+(2021)</a> <a
+href="https://pmc.ncbi.nlm.nih.gov/articles/PMC10296409/#sec3-biomolecules-13-00945">Roman
+(2023)</a>, <a
+href="https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-022-04817-5/figures/2">Li
+et al (2022)</a> and <a
+href="https://ashpublications.org/blood/article/128/8/e20/35749/A-single-cell-resolution-map-of-mouse">Nestorowa
+et al (2016)</a> to see if other modifications should be made to the
+scCATCH predictions:</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Create lists of immune cells and associated gene markers
+immune_markers = list()
+immune_markers[[&#39;Inflam. Macrophage&#39;]] = c(&#39;Cd14&#39;, &#39;Cxcl2&#39;) # Cd14 a- monocyte/macrophage cells
+immune_markers[[&#39;Platelet&#39;]] = c(&#39;Pf4&#39;)
+immune_markers[[&#39;Mast cells&#39;]] = c(&#39;Gata2&#39;, &#39;Kit&#39;)
+immune_markers[[&#39;NK cells&#39;]] = c(&#39;Nkg7&#39;, &#39;Klrd1&#39;)
+immune_markers[[&#39;B-cell&#39;]] = c( &#39;Ly6d&#39;, &#39;Cd19&#39;, &#39;Cd79b&#39;, &#39;Ms4a1&#39;)
+immune_markers[[&#39;T-cell&#39;]] = c( &#39;Cd3d&#39;,&#39;Cd3e&#39;,&#39;Cd3g&#39;) # also Thy1</code></pre>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Plot other immune to assist with cluster identification
+immune_markers_plot = DotPlot(geo_so, features = immune_markers, assay = &#39;SCT&#39;)  +
+  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))</code></pre>
+<pre><code>Warning: The `facets` argument of `facet_grid()` is deprecated as of ggplot2 2.2.0.
+ℹ Please use the `rows` argument instead.
+ℹ The deprecated feature was likely used in the Seurat package.
+  Please report the issue at &lt;https://github.com/satijalab/seurat/issues&gt;.
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+<pre class="r"><code>immune_markers_plot
+
+# save to file
+ggsave(filename = &#39;results/figures/immune_markers_sct_dot_plot.png&#39;, 
+       plot = immune_markers_plot, width = 10, height = 5, units = &#39;in&#39;)</code></pre>
+<p><img src="images/curriculum/07-CellTypeAnnotation/07-imm_marker_gene_check-1.png" width="816" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Create lists of other cells and associated gene markers
+other_markers = list()
+other_markers[[&#39;Pericyte&#39;]] = c(&#39;Acan&#39;,&#39;Sox9&#39;)
+other_markers[[&#39;SMC&#39;]] = c(&#39;Acta2&#39;, &#39;Myh11&#39;) # SMC = mesenchymal smooth-muscle cell/mesenchymal lineage
+other_markers[[&#39;Keratinocytes&#39;]] = c(&#39;Thy1&#39;, &#39;Dlk1&#39;) # fibro progenitors aso=Thy1
+other_markers[[&#39;Myofibroblasts&#39;]] = c(&#39;Tmem100&#39;, &#39;Cd34&#39;, &#39;Ly6c1&#39;) # hematopoetic stem/activated fibroblast=Cd34
+other_markers[[&#39;Fibroblast&#39;]] = c(&#39;Dpt&#39;, &#39;Fn1&#39;, &#39;Col3a1&#39;)  # activated fib = Fn1
+other_markers[[&#39;Endothelial&#39;]] = c(&#39;Pecam1&#39;, &#39;Cd38&#39;) # from wound healing; Pecam1 also exp in endothelial
+other_markers[[&#39;HSC&#39;]] = c(&#39;Ltb&#39;, &#39;Cd74&#39;) # less well defined/conflicting definitions
+other_markers[[&#39;Erythroid&#39;]] = c(&#39;Hba-a1&#39;)</code></pre>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Plot known cell-type markers
+other_markers_dot_plot = DotPlot(geo_so, features = other_markers, assay = &#39;SCT&#39;) +
+  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
+other_markers_dot_plot
+
+# save to file
+ggsave(filename = &#39;results/figures/other_markers_sct_dot_plot.png&#39;, 
+       plot = other_markers_dot_plot, width = 12, height = 5, units = &#39;in&#39;)</code></pre>
+<p><img src="images/curriculum/07-CellTypeAnnotation/07-marker_gene_check-1.png" width="816" style="display: block; margin: auto;" />
+In the first plot, B-cell and T-cell markers seem to line up with the
+predictions and are limited to single clusters. However, macrophage and
+dendrocyte markers match to multiple clusters including some annotated
+with different cell types, so we can consider modifying those cluster
+labels.</p>
+<p>From the other marker genes, the patterns are less clear so we may
+want to test other clustering parameters and discuss the results with a
+researcher familiar with the expected cell types. However, we can notice
+some patterns that we can use to refine our cluster annotations.</p>
+<div id="utilizing-genes-of-interest-from-the-original-paper"
+class="section level4">
+<h4>Utilizing genes of interest from the original paper</h4>
+<details>
+<summary>
+<em>Plotting the expression of genes of interest from Sorkin, Huber et
+al</em>
+</summary>
+<p>Often we have prior information about what cell types are expected in
+our samples and key marker genes for those populations. This can be an
+important part of evaluating our clusters, since if genes that are known
+markers for a specific cell type are found in too many or too few
+clusters as that can suggest that re-clustering is needed or that some
+of the clusters should be manually combined before annotating. We can
+create lists of markers used in figures from the <a
+href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7002453/">original
+paper</a> before using the same <code>DotPlot()</code> function to
+visualize the expression level and frequency of these genes in our
+current clusters:</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Visualize manually selected marker genes
+
+# Create lists of genes from paper
+fig1g_markers = c(&#39;Cxcl1&#39;, &#39;Cxcl2&#39;, &#39;Ccl2&#39;, &#39;Ccl3&#39;, &#39;Ccl4&#39;, &#39;Il1b&#39;, &#39;Il6b&#39;, &#39;Tnf&#39;, &#39;Tgfb1&#39;, &#39;Tgfb2&#39;, &#39;Tgfb3&#39;, &#39;Cxcl5&#39;)
+fig1h_markers = c(&#39;Cxcr2&#39;, &#39;Csf1r&#39;, &#39;Csf3r&#39;, &#39;Tgfbr1&#39;, &#39;Tgfbr3&#39;, &#39;Il1r1&#39;, &#39;Il6ra&#39;, &#39;Lifr&#39;, &#39;Tgfbr2&#39;)
+
+# create DotPlots for genes from paper
+fig1g_sct_dot_plot = DotPlot(geo_so, features = fig1g_markers, assay = &#39;SCT&#39;)</code></pre>
+<pre><code>Warning: The following requested variables were not found: Il6b</code></pre>
+<pre class="r"><code>fig1h_sct_dot_plot = DotPlot(geo_so, features = fig1h_markers, assay = &#39;SCT&#39;)
+
+# save plots to file
+ggsave(filename = &#39;results/figures/markers_fig1g_sct_dot_plot.png&#39;, 
+       plot = fig1g_sct_dot_plot, width = 8, height = 6, units = &#39;in&#39;)
+ggsave(filename = &#39;results/figures/markers_fig1h_sct_dot_plot.png&#39;, 
+       plot = fig1h_sct_dot_plot, width = 8, height = 6, units = &#39;in&#39;)
+
+fig1g_sct_dot_plot
+fig1h_sct_dot_plot</code></pre>
+<p><img src="images/curriculum/07-CellTypeAnnotation/07-known_dot_plots_sct-1.png" width="816" style="display: block; margin: auto;" /><img src="images/curriculum/07-CellTypeAnnotation/07-known_dot_plots_sct-2.png" width="816" style="display: block; margin: auto;" />
+For known marker genes, it’s important to note that since scRNA-seq is
+only measuring transcriptional signals that markers at the protein level
+(e.g used for approaches like FACS) may be less effective. An
+alternative or complement to using marker genes could be methods like
+using gene set enrichment (GSEA) <a
+href="https://bioconductor.org/books/3.15/OSCA.basic/cell-type-annotation.html#computing-gene-set-activities">as
+demonstrated in the OSCA book</a> to aid in annotations. However, the
+book <a
+href="https://www.sc-best-practices.org/cellular_structure/annotation.html">“Best
+practices for single-cell analysis across modalities” by Heumos, Schaar,
+Lance, et al. </a> points out that “it is often useful to work together
+with experts … [like a] biologist who has more extensive knowledge of
+the tissue, the biology, the expected cell types and markers etc.”. In
+our experience, we find that experience and knowledge of the researchers
+we work with is invaluable.</p>
+</details>
+<p><br></p>
+<details>
+<summary>
+<em>Using raw RNA values for genes of interest from Sorkin, Huber et
+al</em>
+</summary>
+<p>We can also generate the same plots, but using the unintegrated data
+by specifying the <code>RNA</code> assay:</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Visualize manually selected marker genes (from unintegrated data)
+rna_dot_plot = DotPlot(geo_so, features = fig1g_markers, assay = &#39;RNA&#39;)
+fig1h_rna_dot_plot = DotPlot(geo_so, features = fig1h_markers, assay = &#39;RNA&#39;)
+
+ggsave(filename = &#39;results/figures/markers_fig1g_rna_dot_plot.png&#39;,
+       plot = fig1g_rna_dot_plot,
+       width = 8, height = 6, units = &#39;in&#39;)
+ggsave(filename = &#39;results/figures/markers_fig1h_rna_dot_plot.png&#39;,
+       plot = fig1h_rna_dot_plot,
+       width = 8, height = 6, units = &#39;in&#39;)</code></pre>
+</details>
+<p><br></p>
+</div>
+</div>
+</div>
+<div id="annotate-clusters" class="section level1">
+<h1>Annotate clusters</h1>
+<p>Next, we’ll use a revised version of the cell type predictions from a
+file that we prepared and add those labels to our Seurat object to
+replace our clusters’ numerical identities. Note: we will create a new
+metadata object where we join cell types. However, this will destroy the
+row names - which will cause a problem in Seurat - so we have to add
+them back.
+<!--- modify to have a hidden block that runs after to keep this large block intact --></p>
+<div class="prepared_content cooking_show">
+<p><strong>Load a pre-prepared file:</strong></p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Load the revised annotations from prepared file
+celltype_annos = read_csv(&#39;inputs/prepared_data/revised_cluster_annotations.csv&#39;) %&gt;%
+  mutate(cluster=factor(cluster))
+head(celltype_annos)</code></pre>
+</div>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Merge cell types in but as a new table to slide into @meta.data
+copy_metadata = geo_so@meta.data
+new_metadata = copy_metadata %&gt;% 
+  left_join(celltype_annos, by = c(&#39;integrated.sct.rpca.clusters&#39; = &#39;cluster&#39;))
+#  We are implicitly relying on the same row order!
+rownames(new_metadata) = rownames(geo_so@meta.data)
+
+# Replace the meta.data
+geo_so@meta.data = new_metadata 
+
+head(geo_so@meta.data)</code></pre>
+<div
+style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:100%; overflow-x: scroll; width:1000px; ">
+<table class="table table-condensed" style="font-size: 12px; font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+orig.ident
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+nCount_RNA
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+nFeature_RNA
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+condition
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+time
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+replicate
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+percent.mt
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+nCount_SCT
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+nFeature_SCT
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+integrated.sct.rpca.clusters
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+seurat_clusters
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+cell_type_prediction
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+celltype_score
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+cell_type
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACCTGAGAGAACAG-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+10234
+</td>
+<td style="text-align:right;">
+3226
+</td>
+<td style="text-align:left;">
+HO
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+<td style="text-align:right;">
+1.240962
+</td>
+<td style="text-align:right;">
+6062
+</td>
+<td style="text-align:right;">
+2867
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+Hematopoietic Stem Cell
+</td>
+<td style="text-align:left;">
+0.87
+</td>
+<td style="text-align:left;">
+Myofibroblast
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACCTGGTCATGCAT-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+3158
+</td>
+<td style="text-align:right;">
+1499
+</td>
+<td style="text-align:left;">
+HO
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+<td style="text-align:right;">
+7.536416
+</td>
+<td style="text-align:right;">
+4607
+</td>
+<td style="text-align:right;">
+1509
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+Hematopoietic Stem Cell
+</td>
+<td style="text-align:left;">
+0.87
+</td>
+<td style="text-align:left;">
+Myofibroblast
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACCTGTCAGAGCTT-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+13464
+</td>
+<td style="text-align:right;">
+4102
+</td>
+<td style="text-align:left;">
+HO
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+<td style="text-align:right;">
+3.112002
+</td>
+<td style="text-align:right;">
+5314
+</td>
+<td style="text-align:right;">
+2370
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+Hematopoietic Stem Cell
+</td>
+<td style="text-align:left;">
+0.87
+</td>
+<td style="text-align:left;">
+Myofibroblast
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACGGGAGAGACTTA-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+577
+</td>
+<td style="text-align:right;">
+346
+</td>
+<td style="text-align:left;">
+HO
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+<td style="text-align:right;">
+1.559792
+</td>
+<td style="text-align:right;">
+3877
+</td>
+<td style="text-align:right;">
+1031
+</td>
+<td style="text-align:left;">
+11
+</td>
+<td style="text-align:left;">
+9
+</td>
+<td style="text-align:left;">
+Dendritic Cell
+</td>
+<td style="text-align:left;">
+0.85
+</td>
+<td style="text-align:left;">
+Hematopoietic Stem Cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACGGGAGGCCCGTT-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+1189
+</td>
+<td style="text-align:right;">
+629
+</td>
+<td style="text-align:left;">
+HO
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+<td style="text-align:right;">
+3.700589
+</td>
+<td style="text-align:right;">
+4166
+</td>
+<td style="text-align:right;">
+915
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+Hematopoietic Stem Cell
+</td>
+<td style="text-align:left;">
+0.87
+</td>
+<td style="text-align:left;">
+Myofibroblast
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACGGGCAACTGGCC-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+7726
+</td>
+<td style="text-align:right;">
+2602
+</td>
+<td style="text-align:left;">
+HO
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+<td style="text-align:right;">
+2.938131
+</td>
+<td style="text-align:right;">
+5865
+</td>
+<td style="text-align:right;">
+2588
+</td>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+Hematopoietic Stem Cell
+</td>
+<td style="text-align:left;">
+0.87
+</td>
+<td style="text-align:left;">
+Myofibroblast
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Checkpoint</strong> : Has the metadata for your
+<code>geo_so</code> object been updated?</p>
+<p>We have now added a “cell_type” column to the <code>meta.data</code>
+table:</p>
+<div class="float">
+<img src="images/seurat_schematic/Slide12.png"
+alt="Image: Schematic after adding cell_type column." />
+<div class="figcaption">Image: Schematic after adding cell_type
+column.</div>
+</div>
+<div id="visualise-annotated-clusters" class="section level2">
+<h2>Visualise annotated clusters</h2>
+<p>Lastly, we can generate a revised UMAP plot with our descriptive
+cluster labels by using our updated Seurat object and providing the new
+<code>cell_type</code> label for the <code>group.by</code> argument:</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Make a labeled UMAP plot of clusters
+catch_umap_plot = 
+  DimPlot(geo_so, group.by = &#39;cell_type&#39;, label = TRUE, reduction = &#39;umap.integrated.sct.rpca&#39;)
+catch_umap_plot
+
+ggsave(filename = &#39;results/figures/umap_integrated_catch.png&#39;, 
+       plot = catch_umap_plot,
+       width = 10, height = 8, units = &#39;in&#39;)
+
+catch_umap_condition_plot = 
+  DimPlot(geo_so,
+          group.by = &#39;cell_type&#39;,
+          split.by = &#39;time&#39;,
+          label = TRUE,
+          reduction = &#39;umap.integrated.sct.rpca&#39;)
+
+ggsave(filename = &#39;results/figures/umap_integrated_catch_byCondition.png&#39;, 
+       plot = catch_umap_condition_plot,
+       width = 10, height = 8, units = &#39;in&#39;)
+
+catch_umap_condition_plot</code></pre>
+<p><img src="images/curriculum/07-CellTypeAnnotation/07-catch_umap_plot-1.png" width="960" style="display: block; margin: auto;" /><img src="images/curriculum/07-CellTypeAnnotation/07-catch_umap_plot-2.png" width="960" style="display: block; margin: auto;" /></p>
+<!-- to add - number of cells per cluster and condition/replicate after annotation --->
+</div>
+</div>
+<div id="save-our-progress" class="section level1">
+<h1>Save our progress</h1>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Discard all ggplot objects currently in environment
+# (Ok since we saved the plots as we went along)
+rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
+gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells   7091302  378.8   11548435   616.8   11548435   616.8
+Vcells 697716121 5323.2 1753349162 13377.0 1688273683 12880.6</code></pre>
+<p>We’ll save the scCATCH object. The Seurat object has not been changed
+in this module.</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Save Seurat object and annotations
+saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_integrated_with_catch.rds&#39;)
+saveRDS(geo_catch, file = &#39;results/rdata/geo_catch.rds&#39;)</code></pre>
+<p><br/> <br/></p>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<br/>
+<table class='fig'>
+<tr>
+<td class="fig">
+<img src="images/graphical_abstracts/07-CellTypeAnnos-Abstract.png" />
+</td>
+</tr>
+<tr>
+<tr class="fig">
+<td class="fig">
+Starting with clustered data, we can summarize and compare gene
+expression for known gene markers within each cluster, irrespective of
+sample or condition, to help label clusters with the appropriate
+cell-type or subtype.
+</td>
+</tr>
+</table>
+<p><br/></p>
+<p>In this section we:</p>
+<ul>
+<li>Used <code>scCATCH</code> to generate predicted cell-type
+annotations for our initial clusters<br />
+</li>
+<li>Plotted the expression per cluster of known markers to confirm and
+refine the predictions<br />
+</li>
+<li>Finalized cell type labels for our clusters</li>
+</ul>
+<p>Next steps: Differential Expression</p>
+<hr />
+<p>These materials have been adapted and extended from materials listed
+above. These are open access materials distributed under the terms of
+the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
+Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
+use, distribution, and reproduction in any medium, provided the original
+author and source are credited.</p>
+<br/> <br/>
+<hr/>
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="06-MarkerVisualization.html">Previous
+lesson</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="08-DifferentialExpression.html">Next
+lesson</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

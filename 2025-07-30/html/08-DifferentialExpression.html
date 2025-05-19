@@ -1,0 +1,1135 @@
+<!DOCTYPE html>
+
+<html lang="en" xml:lang="en">
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core Workshop Team" />
+
+<meta name="date" content="2025-04-24" />
+
+<title>Differential Expression Analysis</title>
+
+<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<!--
+Favicon dervied from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<link rel="manifest" href="site.webmanifest">
+<link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+    </li>
+    <li>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+    </li>
+    <li>
+      <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
+    </li>
+    <li>
+      <a href="03-Normalization.html">Normalization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
+    </li>
+    <li>
+      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="06-MarkerVisualization.html">Marker identification and visualization</a>
+    </li>
+    <li>
+      <a href="07-CellTypeAnnos.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="08-DifferentialExpression.html">Differential expression analysis</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Differential Expression Analysis</h1>
+<h4 class="author">UM Bioinformatics Core Workshop Team</h4>
+<h4 class="date">2025-04-24</h4>
+
+</div>
+
+
+<style type="text/css">
+body {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+
+table.fig, th.fig, td.fig {
+  border: 1px solid lightgray;
+  border-collapse: collapse;
+  padding: 12px;
+}
+</style>
+<script>
+  addClassKlippyTo("pre.r, pre.markdown, pre.bash");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<div id="workflow-overview" class="section level1 unlisted unnumbered">
+<h1 class="unlisted unnumbered">Workflow Overview</h1>
+<p><br/> <img
+src="images/wayfinder/08-DifferentialExpression-Wayfinder.png" /> <br/>
+<br/></p>
+</div>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<br/>
+<table class='fig'>
+<tr>
+<td class="fig">
+<img
+src="images/graphical_abstracts/08-DifferentialExpression-Abstract.png" />
+</td>
+</tr>
+<tr>
+<tr class="fig">
+<td class="fig">
+Starting with labeled clustered data, for each labeled cluster, we can
+compare between case and control within that cluster to identify genes
+that are impacted by the experimental perturbation(s) for that cell-type
+or subtype.
+</td>
+</tr>
+</table>
+<p><br/></p>
+<p>After identifying what cell-types are likely present in our data, we
+can finally consider experimental conditions and use differential
+expression comparisons to address the biological question at hand for an
+experiment. <br/></p>
+<div id="objectives" class="section level2">
+<h2>Objectives</h2>
+<!--Add specific goals for section-->
+<ul>
+<li>Run “standard” differential expression comparisons with cells as
+replicates</li>
+<li>Run “pseudobulk” differential expression comparisons with samples as
+replicates</li>
+</ul>
+<p>We already introduced DE comparisons in the <a
+href="06-MarkerVisualization.html">marker identification section of this
+workshop</a>, but here we will show how to run comparisons between
+experimental conditions for each annotated cluster.</p>
+<p>As a reminder, our data includes cells isolated from issue from day 0
+(prior to injury) as controls, and days 7 and 21 post-injury as
+experimental conditions.</p>
+<p><img src="images/curriculum/experimental_design.jpg" /></p>
+<p><br/></p>
+<hr />
+</div>
+</div>
+<div id="differential-expression" class="section level1">
+<h1>Differential Expression</h1>
+<p>For single-cell data there are generally two types approaches for
+running differential expression - either a cell-level or sample-level
+approach.</p>
+<p>For cell-level comparisons, simpler statistical methods like a t-test
+or the Wilcoxon rank-sum test or single-cell specific methods that
+models cells individually like <a
+href="https://doi.org/10.1186/s13059-015-0844-5">MAST</a> can be
+used.</p>
+<p>As mentioned earlier, many of the tools developed for bulk RNA-seq
+have been shown to have good performance for single-cell data, such as
+EdgeR or DESeq2, particularly when the count data is aggregated into
+sample-level “pseudobulk” values for each cluster <a
+href="https://www.sc-best-practices.org/conditions/differential_gene_expression.html">source</a>.</p>
+<p>As discussed in the <a
+href="https://www.sc-best-practices.org/conditions/differential_gene_expression.html">single-cell
+best practices book</a> and in the <a
+href="https://ouyanglab.com/singlecell/clust.html#sec:diffexpr">Ouyang
+Lab’s marker gene identification materials</a>, there are active
+benchmarking efforts and threshold considerations for single-cell
+data.</p>
+<!-- add more in depth model comparisons options later?
+## Model options
+
+Wilcoxon (default), DESeq2, MAST, etc.
+-->
+<div id="standard-comparisons" class="section level2">
+<h2>Standard comparisons</h2>
+<p>First we’ll run cell-level comparisons for our data for the pericyte
+cluster, starting with cells from the D21 vs D7 conditions. We’ll need
+to ensure our cells are labeled to reflect both the cluster and
+condition identities before running our comparison using
+<code>FindMarker()</code> and summarizing the results:</p>
+<!-- add UMAP with facets by groups to show what's being compared? -->
+<pre class="r"><code># =========================================================================
+# Differential Expression Analysis
+# =========================================================================
+
+# -------------------------------------------------------------------------
+# Make a day-celltype contrast
+
+# set up combined label of day + celltype &amp; assign as identities
+geo_so$day.celltype = paste(geo_so$time, geo_so$cell_type, sep = &#39;_&#39;)
+# check labels
+unique(geo_so$day.celltype)</code></pre>
+<div
+style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
+<table class="table" style="font-size: 14px; font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+x
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+Day0_Myofibroblast
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day0_Hematopoietic Stem Cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day0_Dendritic Cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day0_Monocyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day0_B cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day0_Platelet
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day0_Smooth muscle cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day0_Stem Cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day0_Pericyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day0_Fibroblast
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day0_Unknown
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day0_T Cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day0_Infl. Macrophage
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day7_Hematopoietic Stem Cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day7_Dendritic Cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day7_Monocyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day7_Pericyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day7_Myofibroblast
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day7_Platelet
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day7_Infl. Macrophage
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day7_Smooth muscle cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day7_Stem Cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day7_Fibroblast
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day7_B cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day7_T Cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day7_Unknown
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day21_Smooth muscle cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day21_Dendritic Cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day21_Monocyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day21_Myofibroblast
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day21_Pericyte
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day21_Hematopoietic Stem Cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day21_Fibroblast
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day21_Platelet
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day21_T Cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day21_Stem Cell
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day21_Infl. Macrophage
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day21_Unknown
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+Day21_B cell
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Consider pericyte cluster D21 v D7
+
+# Reset cell identities to the combined condition + cluster label
+Idents(geo_so) = &#39;day.celltype&#39;
+
+# run comparison for D21 vs D7, using wilcoxon test
+de_cell_pericyte_D21_vs_D7 = FindMarkers(
+    object = geo_so,
+    slot = &#39;data&#39;, test = &#39;wilcox&#39;,
+    ident.1 = &#39;Day21_Pericyte&#39;, ident.2 = &#39;Day7_Pericyte&#39;)
+
+head(de_cell_pericyte_D21_vs_D7)</code></pre>
+<pre><code>                p_val avg_log2FC pct.1 pct.2     p_val_adj
+Fmod     0.000000e+00  2.3143072 0.934 0.518  0.000000e+00
+Prelp   1.541258e-301  2.6531170 0.760 0.217 3.154647e-297
+Gm10076 1.873982e-301 -1.2351650 0.818 0.964 3.835667e-297
+Cilp2   1.170085e-283  5.8112649 0.418 0.014 2.394930e-279
+Tpt1    9.251339e-282  0.7933017 0.998 0.981 1.893564e-277
+Wfdc1   3.601155e-265  6.2241539 0.372 0.006 7.370845e-261</code></pre>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Add gene symbols names and save
+
+# Add rownames as a column for output
+de_cell_pericyte_D21_vs_D7$gene = rownames(de_cell_pericyte_D21_vs_D7)
+
+# save
+write_csv(de_cell_pericyte_D21_vs_D7, 
+          file = &#39;results/tables/de_standard_pericyte_D21_vs_D7.csv&#39;)
+
+# summarize diffex results
+table(de_cell_pericyte_D21_vs_D7$p_val_adj &lt; 0.05 &amp; 
+        abs(de_cell_pericyte_D21_vs_D7$avg_log2FC) &gt; 1.5)</code></pre>
+<pre><code>
+FALSE  TRUE 
+ 9178   535 </code></pre>
+<p>In the first 3 lines of the above code block we can see the changes
+to the schematic:</p>
+<div class="float">
+<img src="images/seurat_schematic/Slide13.png"
+alt="Image: Schematic after setting the Idents()." />
+<div class="figcaption">Image: Schematic after setting the
+Idents().</div>
+</div>
+<p>Note - the <code>avg_log2FC</code> threshold of 1.5 we use here are
+quite stringent as the default log2FC threshold for the function is
+0.25. However the default threshold corresponds to only a 19% difference
+in RNA levels, which is quite permissive.</p>
+<p>If there is enough time - we can also compare between cells from the
+D7 and D0 conditions.</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Compare pericyte cluster D7 v D0
+de_cell_pericyte_D7_vs_D0 = FindMarkers(
+    object = geo_so,
+    slot = &#39;data&#39;, test = &#39;wilcox&#39;,
+    ident.1 = &#39;Day7_Pericyte&#39;, ident.2 = &#39;Day0_Pericyte&#39;)
+
+head(de_cell_pericyte_D7_vs_D0)</code></pre>
+<pre><code>                 p_val avg_log2FC pct.1 pct.2     p_val_adj
+Chad     6.710617e-304 -10.136834 0.002 0.522 1.373529e-299
+Cilp2    1.019148e-282  -7.834071 0.014 0.754 2.085992e-278
+Ptx4     1.193446e-261  -7.268218 0.005 0.551 2.442744e-257
+Chodl    6.033985e-243  -7.172540 0.006 0.536 1.235036e-238
+Myoc     1.921030e-188  -9.424580 0.002 0.348 3.931963e-184
+Crispld1 8.254509e-153  -7.185990 0.010 0.449 1.689533e-148</code></pre>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Add rownames for D7 v D0 results
+de_cell_pericyte_D7_vs_D0$gene = rownames(de_cell_pericyte_D7_vs_D0)
+
+# summarize results
+table(de_cell_pericyte_D7_vs_D0$p_val_adj &lt; 0.05 &amp; 
+        abs(de_cell_pericyte_D7_vs_D0$avg_log2FC) &gt; 1.5)</code></pre>
+<pre><code>
+FALSE  TRUE 
+10814  1104 </code></pre>
+<p>This same approach can be extended to run pairwise comparisons
+between conditions for each annotated cluster of interest.</p>
+<!-- add code to loop through all clusters and generate comparisons -->
+</div>
+<div id="pseudobulk-comparisons" class="section level2">
+<h2>Pseudobulk comparisons</h2>
+<!-- [10x analysis guide for differential expression with biological replicates](https://www.10xgenomics.com/analysis-guides/differential-gene-expression-analysis-in-scrna-seq-data-between-conditions-with-biological-replicates) -->
+<!-- [Ouyang](https://ouyanglab.com/singlecell/clust.html#sec:diffexpr) For (ii), single-cell studies are now more complex, often including samples from multiple donors. It is possible that there are more cells being profiled from a specific donor than others and this can skew the DE results. For example, consider a study where there are three diseased samples (D1,D2,D3) and three healthy samples (H1,H2,H3_ and there are a lot more cells from sample D1. In this scenario, a gene that is specifically expressed in D1 may be identified as differentially expressed when comparing diseased and healthy single-cells. In fact, Squair et al. have shown that ignoring biological replicates can often result in false discoveries in single-cell DE (Squair et al. 2021). To circumvent this, Squair et al. suggested the use of pseudo-bulk profiles where the single-cell profiles from each individual is being collected and then subjected to bulk RNA-seq based DE methods. Another possible approach is to downsample the number of single cells such that each individual have roughly a similar number of cells. -->
+<p>With advances in the technology as well as decreased sequencing costs
+allowing for larger scale single-cell experiments (that include
+replicates), along with a study by <a
+href="https://www.nature.com/articles/s41467-021-25960-2">Squair et al
+(2021)</a> that highlighted the possibility of inflated false discovery
+rates for the cell-level approaches since cells isolated from the same
+sample are unlikely to be statistically independent <a
+href="https://www.sc-best-practices.org/conditions/differential_gene_expression.html">source</a>
+the use of sample-level or “psuedobulk” can be advantageous.</p>
+<!-- add UMAP with facets by sample to show what's being compared? -->
+<p>We’ll run psuedobulk comparisons for our data for the monocyte
+cluster, starting with the D21 vs D0 conditions. We’ll need to generate
+the aggregated counts first (ensuring that we are grouping cells by
+replicate labels), before labeling the cells to reflect the cluster and
+condition. Then we will run our comparison using
+<code>FindMarker()</code> but specifying DESeq2 as our method before
+summarizing the results:</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Create pseudobulk object
+pseudo_catch_so = 
+  AggregateExpression(geo_so, 
+                      assays = &#39;RNA&#39;,
+                      return.seurat = TRUE,
+                      group.by = c(&#39;cell_type&#39;, &#39;time&#39;, &#39;replicate&#39;))
+
+# Set up labels to use for comparisons &amp; assign as cell identities
+pseudo_catch_so$day.celltype = paste(pseudo_catch_so$time, pseudo_catch_so$cell_type, sep = &#39;_&#39;)
+Idents(pseudo_catch_so) = &#39;day.celltype&#39;</code></pre>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Run pseudobulk comparison between Day 21 and Day 0, using DESeq2
+de_pseudo_pericyte_D21_vs_D7 = FindMarkers(
+    object = pseudo_catch_so, 
+    ident.1 = &#39;Day21_Pericyte&#39;, ident.2 = &#39;Day7_Pericyte&#39;, 
+    test.use = &#39;DESeq2&#39;)
+
+# Take a look at the table
+head(de_pseudo_pericyte_D21_vs_D7)</code></pre>
+<pre><code>                p_val avg_log2FC pct.1 pct.2     p_val_adj
+Cilp2   3.861291e-232   2.906378     1     1 1.022817e-227
+Ltbp4   5.631946e-118   1.712277     1     1 1.491846e-113
+Cd55     1.853515e-95   1.290895     1     1  4.909776e-91
+Prss23   2.598750e-87   1.644203     1     1  6.883828e-83
+Nav3     3.019557e-87  -1.594133     1     1  7.998504e-83
+Gm42418  7.456053e-82   2.249675     1     1  1.975034e-77</code></pre>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Add genes and review pseudobulk results
+
+# Add rownames as a column for output
+de_pseudo_pericyte_D21_vs_D7$gene = rownames(de_pseudo_pericyte_D21_vs_D7)
+
+# save results
+write_csv(de_pseudo_pericyte_D21_vs_D7,
+          file = &#39;results/tables/de_pseudo_pericyte_D21_vs_D7.csv&#39;)
+
+# look at results, using the same thresholds
+table(de_pseudo_pericyte_D21_vs_D7$p_val_adj &lt; 0.05 &amp; 
+        abs(de_pseudo_pericyte_D21_vs_D7$avg_log2FC) &gt; 1.5)</code></pre>
+<pre><code>
+FALSE  TRUE 
+23553    55 </code></pre>
+<p>Since we’re working with pseudobulk data, unlike in the marker
+identification section, there is no percentage of cells expressing to
+need to represent so we can summarize our DE results with a volcano
+plot:</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Make a volcano plot of pseudobulk diffex results
+pseudo_pericyte_D21_vs_D7_volcano = 
+  ggplot(de_pseudo_pericyte_D21_vs_D7, aes(x = avg_log2FC, y = -log10(p_val))) + 
+  geom_point()
+
+ggsave(filename = &#39;results/figures/volcano_de_pseudo_pericyte_D21_vs_D0.png&#39;, 
+       plot = pseudo_pericyte_D21_vs_D7_volcano,
+       width = 7, height = 7, units = &#39;in&#39;)
+
+pseudo_pericyte_D21_vs_D7_volcano</code></pre>
+<p><img src="images/curriculum/08-DifferentialExpression/08-de_pseudobulk_volcano-1.png" width="816" style="display: block; margin: auto;" />
+<!--- 
+### Iterating over all clusters
+
+Add code to generate pseudobulk results for each cluster for all Day 7 vs Day 21 comparisons
+---></p>
+<div id="further-examining-de-results" class="section level3">
+<h3>Further examining DE results</h3>
+<p>We can also overlay the expression of interesting differentially
+expressed genes back onto our UMAP plots to highlight the localization
+and possible function, again using the <code>FeaturePlot</code>
+function.</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# UMAP feature plot of Cd55 gene
+FeaturePlot(geo_so, features = &quot;Cd55&quot;, split.by = &quot;time&quot;)</code></pre>
+<p><img src="images/curriculum/08-DifferentialExpression/08-show_DE_featurePlot-1.png" width="816" style="display: block; margin: auto;" />
+So we found Cd55 based on differential expression comparison in the
+Pericyte population between Day 7 and Day 21 but in looking at the
+Feature plot of expression, we also see high expression in a subset of
+cells on Day 0. This interesting, since according to <a
+href="https://onlinelibrary.wiley.com/doi/full/10.1002/jbmr.3861">Shin
+et al (2019)</a>, CD55 regulates bone mass in mice.</p>
+<p>It also looks like there is a high percentage of expression in some
+of the other precursor populations on the top right of our plots, which
+is interesting and might suggest an interesting subpopulation that we
+might try to identify, particularly given the role of this gene and our
+interest in determining why abberant bone can form after injury.</p>
+</div>
+</div>
+<div id="next-steps" class="section level2">
+<h2>Next steps</h2>
+<p>While looking at individual genes can reveal interesting patterns
+like in the case of Cd55, it’s not a very efficient process. So after
+running ‘standard’ and/or psuedobulk differential expression
+comparisons, we can use the same types of tools used downstream of bulk
+RNA-seq to interpret these results, such as GO term enrichment, KEGG
+pathway enrichment, and GSEA with mSigDB.</p>
+</div>
+</div>
+<div id="save-our-progress" class="section level1">
+<h1>Save our progress</h1>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Discard all ggplot objects currently in environment
+# (Ok since we saved the plots as we went along.)
+rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
+gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells   9492324  507.0   18791374  1003.6   18791374  1003.6
+Vcells 709196418 5410.8 1753349162 13377.0 1688273683 12880.6</code></pre>
+<p>We’ll save the scCATCH object. The Seurat object has not been changed
+in this module.</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Save Seurat object
+saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_integrated_final.rds&#39;)</code></pre>
+<hr />
+</div>
+<div id="downstream-approaches" class="section level1">
+<h1>Downstream approaches</h1>
+<p>Beyond differential expression within clusters and , there are many
+other possible avenues of exploration and analysis for scRNA-seq data.
+Including, but not limited to:</p>
+<ul>
+<li><p>Integration with other modalities (e.g. ATAC-seq, VDJ,
+etc.)</p></li>
+<li><p>Subclustering clusters of interest, see <a
+href="https://hbctraining.github.io/scRNA-seq_online/lessons/seurat_subclustering.html">HBC’s
+summary on subclustering</a>, <a
+href="https://satijalab.org/seurat/reference/findsubcluster">Seurat’s
+findSubcCluster documentation</a> and <a
+href="https://github.com/satijalab/seurat/issues/1883">this related
+issue thread</a></p></li>
+<li><p>Trajectory or Pseudotime analysis, see<a
+href="https://ouyanglab.com/singlecell/dimrd.html">Ouyang Lab’s
+trajectory analysis</a> or <a
+href="https://broadinstitute.github.io/2020_scWorkshop/trajectory-analysis.html">Broad
+Institute’s materials on trajectory analysis</a>, among other
+resources</p></li>
+<li><p>Cell - Cell communication network inference, see <a
+href="https://www.nature.com/articles/s41587-023-01782-z">review by Wilk
+et al (2023)</a></p></li>
+<li><p>Velocity analysis (note: not compatible with the flex probe based
+kits), see <a
+href="https://www.sc-best-practices.org/trajectories/rna_velocity.html">the
+chapter from the single-cells best practices book</a> for detailed
+theory/modeling or the <a
+href="https://pklab.med.harvard.edu/velocyto/notebooks/R/SCG71.nb.html">10x
+data vignette for velocyto</a> for a practical example in R</p></li>
+</ul>
+<p>We would recommend looking for studies in similar tissues or
+experimental questions and see what kind of approaches and tools were
+used to answer questions related to your biological question</p>
+<p><br/> <br/></p>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<br/>
+<table class='fig'>
+<tr>
+<td class="fig">
+<img
+src="images/graphical_abstracts/08-DifferentialExpression-Abstract.png" />
+</td>
+</tr>
+<tr>
+<tr class="fig">
+<td class="fig">
+Starting with labeled clustered data, for each labeled cluster, we can
+compare between case and control within that cluster to identify genes
+that are impacted by the experimental perturbation(s) for that cell-type
+or subtype.
+</td>
+</tr>
+</table>
+<p><br/></p>
+<p>Reviewing these results should allow us to identify genes of interest
+that are impacted by injury and in the context of the cell-types in
+which they are differentially expressed, formalize some hypotheses for
+what cell-types or biological processes might be contributing to
+aberrant bone formation.</p>
+<hr />
+<p>These materials have been adapted and extended from materials listed
+above. These are open access materials distributed under the terms of
+the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
+Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
+use, distribution, and reproduction in any medium, provided the original
+author and source are credited.</p>
+<br/> <br/>
+<hr/>
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="07-CellTypeAnnos.html">Previous
+lesson</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="workshop_wrap_up.html">Workshop Wrap
+Up</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
