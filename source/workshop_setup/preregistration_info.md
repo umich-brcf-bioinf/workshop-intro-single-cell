@@ -1,5 +1,5 @@
 ---
-title: "Bioinformatics Spring Workshop Series"
+title: "Bioinformatics Workshop Series"
 output:
         html_document:
             includes:
