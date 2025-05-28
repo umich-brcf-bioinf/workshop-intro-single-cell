@@ -1,5 +1,5 @@
 ---
-title: "Bioinformatics Spring Workshop Series"
+title: "Bioinformatics Workshop Series"
 output:
         html_document:
             includes:
@@ -18,14 +18,14 @@ body{ /* Normal  */
   }
 </style>
 
-### Intro to R & RStudio (April 2-3, 9am-12pm ET)
+### Intro to R & RStudio (July 16-17, 9am-12pm ET)
 
-### Intro to Single Cell Analysis (April 16-18, 9am-1pm ET)
+### Intro to Single Cell Analysis (July 30 - August 1, 9am-1pm ET)
 
 <hr/>
 
-- **Intro to Single Cell Analysis** costs $390/seat. **Intro to R & RStudio** is 
-  free to those enrolled in **Intro to Single Cell Analysis**.
+- **Intro to Single Cell Analysis** costs $435/seat. 
+- **Intro to R & RStudio** is $290/seat -or- **free** to those enrolling in **Intro to Single Cell Analysis**.
 - **Intro to R & RStudio** assumes no previous coding/programming experience.
 - **Intro to Single Cell Analysis** assumes:
   1. A basic knowledge of genetics and  

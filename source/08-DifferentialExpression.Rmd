@@ -151,7 +151,7 @@ unique(geo_so$day.celltype) %>%
 # Reset cell identities to the combined condition + cluster label
 Idents(geo_so) = 'day.celltype'
 
-# run comparison for D21 vs D0, using wilcoxon test
+# run comparison for D21 vs D7, using wilcoxon test
 de_cell_pericyte_D21_vs_D7 = FindMarkers(
     object = geo_so,
     slot = 'data', test = 'wilcox',
