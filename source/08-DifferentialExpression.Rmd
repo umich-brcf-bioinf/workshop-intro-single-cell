@@ -307,7 +307,7 @@ It also looks like there is a high percentage of expression in some of the other
 
 ## Next steps 
 
-While looking at individual genes can reveal interesting patterns like in the case of Cd55, it's not a very efficient process. So after running 'standard' and/or psuedobulk differential expression comparisons, we can use the same types of tools used downstream of bulk RNA-seq to interpret these results, such as GO term enrichment, KEGG pathway enrichment, and GSEA with mSigDB. 
+While looking at individual genes can reveal interesting patterns like in the case of Cd55, it's not a very efficient process. So after running 'standard' and/or psuedobulk differential expression comparisons, we can use the same types of tools used downstream of bulk RNA-seq to interpret these results, which we'll touch on in the next section. 
 
 
 # Save our progress
@@ -356,5 +356,5 @@ These materials have been adapted and extended from materials listed above. Thes
 <br/>
 <br/>
 <hr/>
-| [Previous lesson](07-CellTypeAnnos.html) | [Top of this lesson](#top) | [Workshop Wrap Up](workshop_wrap_up.html) |
+| [Previous lesson](07-CellTypeAnnos.html) | [Top of this lesson](#top) | [Analysis Wrap Up](08A-AnalysisWrapUp.html) |
 | :--- | :----: | ---: |
