@@ -337,6 +337,10 @@ devtools::session_info()
 
   - A variation on the workshop workflow that considers different clustering parameters and their downstream effects.
 
+<!--- Move resource list to analysis wrap up to make it easier to find?--->
+
+## Additional resources
+
 <details>
 <summary>*University of Michigan Resources*</summary>
 - [UM CoderSpaces "office hours"](https://datascience.isr.umich.edu/events/coderspaces/){target="_blank"} and UM CoderSpaces Slack workspace. _(See "Useful Resources" section of the CoderSpaces page for instructions on how to join the CoderSpaces Slack workspace.)_
