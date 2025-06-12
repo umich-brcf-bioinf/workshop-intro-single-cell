@@ -55,51 +55,69 @@ knitr_fig_path("08A-DifferentialExpression/08A-")
 # Introduction
 
 <br/>
-Now that we've successfully analyzed single-cell RNA-seq data, including:     
+We've successfully analyzed single-cell RNA-seq data, including:     
+
 * Secondary filtering to identify healthy, single-cells for downstream analysis.    
-* Normalization to separate biological effects from technical effects.
-* Integration to 
+* Normalization to separate biological effects from technical effects.      
+* Integration to remove batch effects between individual or groups of samples.  
+* Clustering with marker identification and annotation to identify what cell-types are present.      
+* Differential expression comparisons to identify genes that are impacted by the experimental groups/condition within a given cell-type.      
+
+Now, we can highlight some of the key decision points in the analysis process and discuss some of the downstream approaches that we aren't able to cover in this workshop.
+
 <br/>
 
-## Objectives
+---
 
-<!--Add specific goals for section-->
-- Summarize key decision points in workflow
-- 
+# Key decision points in analysis and related parameters
 
+<!--- TO EDIT ---> 
+
+As we discussed in the workshop, single-cell analysis can be very iterative with the impact of choices made earlier in the analysis not being apparent until later steps and often only being able to evaluate how well those choices reflect the biological context and/or the granularity of our biological question. 
+
+Here's a reiteration of some of the key decision points that might need to be revisited, the corresponding parameters, and how we might identify a need to test alternatives:
+
+<!-- List for now but expect would be better as a table -->
+* Secondary QC filtering: the relevant parameters are min and max feature counts per cell, min and max total UMIs/counts per cell, max % mito genes per cell; you may need to filter more strictly if you see clusters that have markers that correspond more to stress or debris than an expected cell-type or "blobby" clusters that seem to be driven more by a QC metric (like total UMIs) than biological relevant cell-types; conversely, you may need to filter less if you are missing an expected cell type that might have a different average number of genes expressed or total counts (like blood cells or T-cells) or higher % mito genes     
+
+* Normalization: the relevant step is `SCTransform` with the corresponding parameters. However, there are other normalization option with their corresponding alternative commands (like logtranform) and also options within `SCTransform` or alternative normalizations to add correction for possible technical factors like cell-cycle status or % mito genes or total UMIs; you may need to add corrections for additional technical factors if the clusters seem to correspond more to those technical factors than biologically relevant cell-types; conversely if you started with some corrections and find that there is a low total % variance explained when looking at the PCs and poor clustering, that suggests that there was an overcorrection in the normalization step and some of the biological variation that would be expected to drive biological differences between cell-types across all conditions was removed.         
+
+* Integration: we chose to use `RPCA` for our integration but CCA or Harmony are among other common choices; CCA might be more appropriate if RPCA is not sufficient to correct observed batch effects and all samples/conditions are expected to share the same cell-types; Harmony might be appropriate to correct for batch while preserving unique cell populations, especially if neither RPCA or CCA work well.      
+
+<!--- Is there a benchmarking paper for integration methods that's worth linking here?--->
+
+* Cell type annotation: we choose scCATCH to help annotate our clusters with cell-types but there are other sources and tools available that might be worth trying like CellMatch_2.0 or Azimuth, especially if more specific example data and annotations are available for your tissue (e.g. brain or blood/immune) from those alternative sources or if the predictions from scCATCH don't seem relevant to your tissue and/or experimental question.
+
+* Differential expression: we used MAST for our cells as replicates DE comparisons and DESeq2 for our pseudobulk/samples as replicates comparisons but additional parameters (like more complex models with covariates) or other tools like EdgeR can also be used; we also choose a general cutoff to call DE genes but it might make sense to relax that cutoff for some clusters if there are not enough DE genes or conversely make those cutoffs more stringent if there are too many DE genes to use for downstream steps like functional enrichments. 
+
+<!--- Does that cover the main decision points? -->
+
+* Subclustering: this is something we didn't discuss in detail but might be worth considering after initial clustering and annotation if you want to know what general cell-types present but are more interested in comparing the proportions or gene expression between subtypes of a more general cell population (e.g. it's helpful to know how many B-cell, T-cells, etc are generally in your PBMC samples but you are most interested if the proportion of different effector T-cells are impacted by the treatment and if so, what genes are differentially expressed within that subpopulation)
 
 ---
 
 # Downstream approaches
 
-Beyond differential expression within clusters and , there are many other possible avenues of exploration and analysis for scRNA-seq data. Including, but not limited to:
+Beyond differential expression within clusters, either with each cell as a replicate or using a pseudobulk approach, there are many other possible avenues of exploration and analysis for scRNA-seq data. This includes but is not limited to:
 
 - Integration with other modalities (e.g. ATAC-seq, VDJ, etc.)
 
-- Subclustering clusters of interest, see [HBC's summary on subclustering](https://hbctraining.github.io/scRNA-seq_online/lessons/seurat_subclustering.html), [Seurat's findSubcCluster documentation](https://satijalab.org/seurat/reference/findsubcluster) and [this related issue thread](https://github.com/satijalab/seurat/issues/1883)  
+- Subclustering clusters of interest - see [HBC's summary on subclustering](https://hbctraining.github.io/scRNA-seq_online/lessons/seurat_subclustering.html), [Seurat's findSubcCluster documentation](https://satijalab.org/seurat/reference/findsubcluster) and [this related issue thread](https://github.com/satijalab/seurat/issues/1883)  
 
-- Trajectory or Pseudotime analysis, see[Ouyang Lab's trajectory analysis](https://ouyanglab.com/singlecell/dimrd.html) or [Broad Institute's materials on trajectory analysis](https://broadinstitute.github.io/2020_scWorkshop/trajectory-analysis.html), among other resources    
+- Trajectory or Pseudotime analysis - see [the Ouyang Lab's trajectory analysis](https://ouyanglab.com/singlecell/dimrd.html) or [Broad Institute's materials on trajectory analysis](https://broadinstitute.github.io/2020_scWorkshop/trajectory-analysis.html)
 
 - Cell - Cell communication network inference, see [review by Wilk et al (2023)](https://www.nature.com/articles/s41587-023-01782-z)
 
 - Velocity analysis (note: not compatible with the flex probe based kits), see [the chapter from the single-cells best practices book](https://www.sc-best-practices.org/trajectories/rna_velocity.html) for detailed theory/modeling or the [10x data vignette for velocyto](https://pklab.med.harvard.edu/velocyto/notebooks/R/SCG71.nb.html) for a practical example in R
 
-We would recommend looking for studies in similar tissues or experimental questions and see what kind of approaches and tools were used to answer questions related to your biological question
+We would recommend looking for studies in similar tissues or experimental questions and see what kind of approaches and tools were used to answer questions related to your biological question.
 
 <br/>
 <br/>
 
-# Summary
+# Further resources
 
-<br/>
-<table class='fig'><tr><td class='fig'>
-![](images/graphical_abstracts/08-DifferentialExpression-Abstract.png)
-</td></tr><tr><tr class='fig'><td class='fig'>Starting with labeled clustered data, for each labeled cluster, we can compare between case and control within that cluster to identify genes that are impacted by the experimental perturbation(s) for that cell-type or subtype.
-</td></tr>
-</table>
-<br/>
-
-Reviewing these results should allow us to identify genes of interest that are impacted by injury and in the context of the cell-types in which they are differentially expressed, formalize some hypotheses for what cell-types or biological processes might be contributing to aberrant bone formation. 
+<!--- Okay to skip a summary section here? --->
 
 ----
 
@@ -108,5 +126,5 @@ These materials have been adapted and extended from materials listed above. Thes
 <br/>
 <br/>
 <hr/>
-| [Previous lesson](07-CellTypeAnnos.html) | [Top of this lesson](#top) | [Workshop Wrap Up](workshop_wrap_up.html) |
+| [Previous lesson](08-CellTypeAnnos.html) | [Top of this lesson](#top) | [Workshop Wrap Up](workshop_wrap_up.html) |
 | :--- | :----: | ---: |
