@@ -148,7 +148,6 @@ To increase the speed and accuracy of our predictions, we'll create query of rel
 # Cell Type Annotation
 # =========================================================================
 
-# -------------------------------------------------------------------------
 # Load scCATCH
 library(scCATCH)
 
