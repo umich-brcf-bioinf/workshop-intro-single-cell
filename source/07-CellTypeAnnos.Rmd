@@ -306,10 +306,11 @@ ggsave(filename = 'results/figures/markers_fig1h_rna_dot_plot.png',
 <br>
 
 
-# Annotate clusters
+# Refine annotations and label clusters
 
-Next, we'll use a revised version of the cell type predictions from a file that we prepared and add those labels to our Seurat object to replace our clusters' numerical identities. Note: we will create a new metadata object where we join cell types. However, this will destroy the row names - which will cause a problem in Seurat - so we have to add them back. <!--- modify to have a hidden block that runs after to keep this large block intact -->
+Next, we'll use a revised version of the cell type predictions from a file that we prepared after refining the scCATCH prediction and add those labels to our Seurat object to replace our clusters' numerical identities. 
 
+Note: we will create a new metadata object where we join cell types. However, this will destroy the row names - which will cause a problem in Seurat - so we have to add them back. <!--- modify to have a hidden block that runs after to keep this large block intact -->
 
 
 ::: {.prepared_content .cooking_show data-latex="{cooking_show}"}
@@ -366,12 +367,9 @@ head(geo_so@meta.data) %>%
   scroll_box(height='100%', width='1000px')
 ```
 
-
+<br/>
 **Checkpoint** : Has the metadata for your `geo_so` object been updated?
-
-We have now added a "cell_type" column to the `meta.data` table:
-
-![Image: Schematic after adding cell_type column.](images/seurat_schematic/Slide12.png)
+<br/>
 
 ## Visualise annotated clusters
 
@@ -403,6 +401,50 @@ catch_umap_condition_plot
 
 ```
 
+It can also be helpful to remember what our original UMAP looked like and compare it to our annotated version.
+
+```{r, compare_umap_plots, fig.width = 10, fig.height = 8, fig.show='hold', echo = FALSE, warning = FALSE, message = FALSE}
+org_umap_plot = 
+  DimPlot(geo_so, group.by = 'seurat_clusters', label = TRUE, reduction = 'umap.integrated.sct.rpca')
+
+org_umap_plot + catch_umap_plot
+```
+
+
+<details>
+<summary>**Why didn't we just use the original scCATCH labels? (with code)**</summary>
+<!-- Update to add the scCATCH labels as they were and generate labeled UMAP -->
+
+
+The plots above were generated with:
+```{r, eval=FALSE}
+# -------------------------------------------------------------------------
+
+geo_so 
+```
+
+```{r, eval=FALSE}
+# -------------------------------------------------------------------------
+
+pre_integration_umap_plot_day = DimPlot(geo_so, group.by = 'time', label = FALSE, reduction = 'umap.unintegrated.sct.pca')
+ggsave(filename = 'results/figures/umap_unintegrated_sct_day.png',
+       plot = pre_integration_umap_plot_day,
+       width = 8, height = 6, units = 'in')
+
+```
+
+```{r, eval=FALSE}
+# -------------------------------------------------------------------------
+# Remove the plot variables from the environment to manage memory
+rm(pre_integration_umap_plot_orig.ident) 
+rm(pre_integration_umap_plot_day)
+gc()
+```
+</details>
+<br>
+<br>
+
+<br/>
 <!-- to add - number of cells per cluster and condition/replicate after annotation --->
 
 # Save our progress
