@@ -57,11 +57,15 @@ knitr_fig_path("08A-DifferentialExpression/08A-")
 <br/>
 We've successfully analyzed single-cell RNA-seq data, including:     
 
+<!--- revise into table format to list steps and related parameters/tools used -->
+
 * Secondary filtering to identify healthy, single-cells for downstream analysis.    
 * Normalization to separate biological effects from technical effects.      
 * Integration to remove batch effects between individual or groups of samples.  
 * Clustering with marker identification and annotation to identify what cell-types are present.      
 * Differential expression comparisons to identify genes that are impacted by the experimental groups/condition within a given cell-type.      
+
+<!--- then show descriptive methods (moved form wrap-up section) -->
 
 Now, we can highlight some of the key decision points in the analysis process and discuss some of the downstream approaches that we aren't able to cover in this workshop.
 
@@ -78,11 +82,15 @@ As we discussed in the workshop, single-cell analysis can be very iterative with
 Here's a reiteration of some of the key decision points that might need to be revisited, the corresponding parameters, and how we might identify a need to test alternatives:
 
 <!-- List for now but expect would be better as a table e.g.| Step :: What we did :: Alternative(s) |-->
+<!-- -->
+
 * Secondary QC filtering: the relevant parameters are min and max feature counts per cell, min and max total UMIs/counts per cell, max % mito genes per cell; you may need to filter more strictly if you see clusters that have markers that correspond more to stress or debris than an expected cell-type or "blobby" clusters that seem to be driven more by a QC metric (like total UMIs) than biological relevant cell-types; conversely, you may need to filter less if you are missing an expected cell type that might have a different average number of genes expressed or total counts (like blood cells or T-cells) or higher % mito genes     
 
 * Normalization: the relevant step is `SCTransform` with the corresponding parameters. However, there are other normalization option with their corresponding alternative commands (like logtranforms) and also parameters within `SCTransform` or alternative normalizations to add correction for possible technical factors like cell-cycle status or % mito genes or total UMIs; you may need to add corrections for additional technical factors if the clusters seem to correspond more to those technical factors than biologically relevant cell-types; conversely if you started with some corrections and find that there is a low total % variance explained when looking at the PCs and poor clustering, that suggests that there was an overcorrection in the normalization step and some of the biological variation that would be expected to drive biological differences between cell-types across all conditions was removed.         
 
 * Integration: we chose to use `RPCA` for our integration but CCA or Harmony are among other common choices; CCA might be more appropriate if RPCA is not sufficient to correct observed batch effects and all samples/conditions are expected to share the same cell-types; Harmony might be appropriate to correct for batch while preserving unique cell populations, especially if neither RPCA or CCA work well.      
+
+* Clustering: 
 
 <!--- Is there a benchmarking paper for integration methods that's worth linking here?--->
 
