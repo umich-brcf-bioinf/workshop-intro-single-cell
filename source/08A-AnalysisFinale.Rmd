@@ -52,38 +52,27 @@ knitr_fig_path("08A-DifferentialExpression/08A-")
 <br/>
 <br/>
 
-# Introduction
+# Key decision points in analysis and methodology
 
 <br/>
-We've successfully analyzed single-cell RNA-seq data, including:     
+We've successfully analyzed our single-cell RNA-seq data, running the follow steps:     
 
 <!--- revise into table format to list steps and related parameters/tools used -->
 
-* Secondary filtering to identify healthy, single-cells for downstream analysis.    
-* Normalization to separate biological effects from technical effects.      
-* Integration to remove batch effects between individual or groups of samples.  
-* Clustering with marker identification and annotation to identify what cell-types are present.      
-* Differential expression comparisons to identify genes that are impacted by the experimental groups/condition within a given cell-type.      
-Organizing the analysis steps and what tools and parameters were used can also be helpful for creating a more descriptive methods summary that would be included in a paper.
+| Step | Goal | Parameters/tools used in workshop |
+| :--- | :--- | :--- |
+| Secondary QC filtering | Identify healthy, single-cells for downstream analysis | min and max `nFeature_RNA` (genes per cell), min and max `nCount_RNA` (total counts per cell), max `percent.mt` (% mitochondrial genes per cell) |
+| Normalization | Separate biological effects from technical effects | `SCTransform` with default parameters |
+| Integration | Remove batch effects between individual or groups of samples | `IntegrateLayers` function, using `RPCAIntegration` as the method |
+| Clustering | Group populations of cells with similar expression programs that correspond to cell-types and/or sub-types of interest | `FindNeighbors` and `FindClusters` using default Louvain algorithm with 10 PCs and 0.4 resolution |
+| Annotation | Identify cell-types present in data | `scCATCH` to generate predicted cell-types and expression plots of marker genes manually pulled from the literature to finalize the annotations |     
+| Differential expression comparisons | Identify genes that are impacted by the experimental groups/condition within a given cell-type | `FindMarkers` with `wilcox` as the statistical test used for the standard comparisons and `DESeq` used for the psuedobulk comparisons |
+
+Organizing the tools and parameters used in our analysis can also be helpful for creating a more descriptive methods summary, like what would be included in a paper.
 
 <!--- then show descriptive methods (moved form wrap-up section) -->
 
 ## Example descriptive methods
-<details>
-<summary>**Single cell RNA sequencing using 10× genomics**</summary>
-
-The example dataset used in the workshop was inspired by this Sorkin et al. and 
-the experimental methods below were excerpted directly from that paper:
-
-- Sorkin, Michael et al. **“Regulation of heterotopic ossification by monocytes in a mouse model of aberrant wound healing.”**
-      Nature communications vol. 11,1 722. 5 Feb. 2020.<br/>
-      <a class="external" href="https://pubmed.ncbi.nlm.nih.gov/32024825/" target="_blank">https://pubmed.ncbi.nlm.nih.gov/32024825/</a>
-
-Tissues harvested from the extremity injury site were digested for 45 min in 0.3% Type 1 Collagenase and 0.4% Dispase II (Gibco) in Roswell Park Memorial Institute (RPMI) medium at 37 °C under constant agitation at 120 rpm. Digestions were subsequently quenched with 10% FBS RPMI and filtered through 40μm sterile strainers. Cells were then washed in PBS with 0.04% BSA, counted and resuspended at a concentration of ~1000 cells/μl. Cell viability was assessed with Trypan blue exclusion on a Countess II (Thermo Fisher Scientific) automated counter and only samples with >85% viability were processed for further sequencing.
-
-University of Michigan Biomedical Research Core Facilities Advanced Genomics 
-Core generated single-cell 3' libraries on the 10× Genomics Chromium Controller following the manufacturers protocol for the v2 reagent kit (10× Genomics, Pleasanton, CA, USA). Cell suspensions were loaded onto a Chromium Single-Cell A chip along with reverse transcription (RT) master mix and single cell 3' gel beads, aiming for 2000–6000 cells per channel. In this experiment, 8700 cells were encapsulated into emulsion droplets at a concentration of 700–1200 cells/ul which targets 5000 single cells with an expected multiplet rate of 3.9%. Following generation of single-cell gel bead-in-emulsions (GEMs), reverse transcription was performed and the resulting Post GEM-RT product was cleaned up using DynaBeads MyOne Silane beads (Thermo Fisher Scientific, Waltham, MA, USA). The cDNA was amplified, SPRIselect (Beckman Coulter, Brea, CA, USA) cleaned and quantified then enzymatically fragmented and size selected using SPRIselect beads to optimize the cDNA amplicon size prior to library construction. An additional round of double-sided SPRI bead cleanup is performed after end repair and A-tailing. Another single-sided cleanup is done after adapter ligation. Indexes were added during PCR amplification and a final double-sided SPRI cleanup was performed. Libraries were quantified by Kapa qPCR for Illumina Adapters (Roche) and size was determined by Agilent tapestation D1000 tapes. Read 1 primer sequence are added to the molecules during GEM incubation. P5, P7 and sample index and read 2 primer sequence are added during library construction via end repair, A-tailing, adaptor ligation and PCR. Libraries were generated with unique sample indices (SI) for each sample. Libraries were sequenced on a HiSeq 4000, (Illumina, San Diego, CA, USA) using a HiSeq 4000 PE Cluster Kit (PN PE-410-1001) with HiSeq 4000 SBS Kit (100 cycles, PN FC-410-1002) reagents, loaded at 200 pM following Illumina's denaturing and dilution recommendations. The run configuration was 26 × 8 × 98 cycles for Read 1, Index and Read 2, respectively.
-</details>
 
 <details>
 <summary>**Data analysis**</summary> 
@@ -112,7 +101,25 @@ To identify differentially expressed (DE) genes within the total population, Cas
 </details>
 </br>
 
-While this level of detail is usually most useful for troubleshooting, the `sessionInfo` function produces a list of the relevant versions of R and all the libraries that were loaded in the analysis. It's helpful to preserve this information for your records and to include the output when asking for help, particularly in public forums.<br/>
+The example dataset used in the workshop was inspired by Sorkin et al. so it can also be helpful to consider the methods section from the original [paper](https://pubmed.ncbi.nlm.nih.gov/32024825/). 
+
+<details>
+<summary>**Sorkin et al. Methods**</summary>
+
+the experimental methods below were excerpted directly from:
+
+- Sorkin, Michael et al. **“Regulation of heterotopic ossification by monocytes in a mouse model of aberrant wound healing.”**
+      Nature communications vol. 11,1 722. 5 Feb. 2020.<br/>
+      <a class="external" href="https://pubmed.ncbi.nlm.nih.gov/32024825/" target="_blank">https://pubmed.ncbi.nlm.nih.gov/32024825/</a>
+
+Tissues harvested from the extremity injury site were digested for 45 min in 0.3% Type 1 Collagenase and 0.4% Dispase II (Gibco) in Roswell Park Memorial Institute (RPMI) medium at 37 °C under constant agitation at 120 rpm. Digestions were subsequently quenched with 10% FBS RPMI and filtered through 40μm sterile strainers. Cells were then washed in PBS with 0.04% BSA, counted and resuspended at a concentration of ~1000 cells/μl. Cell viability was assessed with Trypan blue exclusion on a Countess II (Thermo Fisher Scientific) automated counter and only samples with >85% viability were processed for further sequencing.
+
+University of Michigan Biomedical Research Core Facilities Advanced Genomics 
+Core generated single-cell 3' libraries on the 10× Genomics Chromium Controller following the manufacturers protocol for the v2 reagent kit (10× Genomics, Pleasanton, CA, USA). Cell suspensions were loaded onto a Chromium Single-Cell A chip along with reverse transcription (RT) master mix and single cell 3' gel beads, aiming for 2000–6000 cells per channel. In this experiment, 8700 cells were encapsulated into emulsion droplets at a concentration of 700–1200 cells/ul which targets 5000 single cells with an expected multiplet rate of 3.9%. Following generation of single-cell gel bead-in-emulsions (GEMs), reverse transcription was performed and the resulting Post GEM-RT product was cleaned up using DynaBeads MyOne Silane beads (Thermo Fisher Scientific, Waltham, MA, USA). The cDNA was amplified, SPRIselect (Beckman Coulter, Brea, CA, USA) cleaned and quantified then enzymatically fragmented and size selected using SPRIselect beads to optimize the cDNA amplicon size prior to library construction. An additional round of double-sided SPRI bead cleanup is performed after end repair and A-tailing. Another single-sided cleanup is done after adapter ligation. Indexes were added during PCR amplification and a final double-sided SPRI cleanup was performed. Libraries were quantified by Kapa qPCR for Illumina Adapters (Roche) and size was determined by Agilent tapestation D1000 tapes. Read 1 primer sequence are added to the molecules during GEM incubation. P5, P7 and sample index and read 2 primer sequence are added during library construction via end repair, A-tailing, adaptor ligation and PCR. Libraries were generated with unique sample indices (SI) for each sample. Libraries were sequenced on a HiSeq 4000, (Illumina, San Diego, CA, USA) using a HiSeq 4000 PE Cluster Kit (PN PE-410-1001) with HiSeq 4000 SBS Kit (100 cycles, PN FC-410-1002) reagents, loaded at 200 pM following Illumina's denaturing and dilution recommendations. The run configuration was 26 × 8 × 98 cycles for Read 1, Index and Read 2, respectively.
+</details>
+
+
+Additionally, the `sessionInfo` function produces a list of the relevant versions of R and all the libraries that were loaded in the analysis. While this level of detail is usually most useful for troubleshooting, it's helpful to preserve this information for your records and to include the output when asking for help, particularly in public forums.<br/>
 
 <details>
 <summary>**Session Info**</summary>
@@ -298,24 +305,26 @@ Now, we can highlight some of the key decision points in the analysis process an
 
 <!--- TO EDIT ---> 
 
-As we discussed in the workshop, single-cell analysis can be very iterative with the impact of choices made earlier in the analysis not being apparent right away and often can only evaluate how well those choices reflect the biological context and/or the granularity of our biological question until late in the analysis (ask me how I know). 
+As we discussed in the workshop, single-cell analysis can be very iterative with the impact of choices made earlier in the analysis might not being apparent until later in the analysis and often we can only evaluate how well those choices reflect the biological context and/or the granularity of our biological question until the end of the analysis (ask me how I know). 
 
-Here's a reiteration of some of the key decision points that might need to be revisited, the corresponding parameters, and how we might identify a need to test alternatives:
+To help with future troubleshooting - here's a reiteration the key analysis steps, what we might see that would indicate a need to go back to and revise the choices made at that step, and some non-exhaustive alternative approaches or tools:
 
 <!-- List for now but expect would be better as a table e.g.| Step :: What we did :: Alternative(s) |-->
-<!-- -->
 
-* Secondary QC filtering: the relevant parameters are min and max feature counts per cell, min and max total UMIs/counts per cell, max % mito genes per cell; you may need to filter more strictly if you see clusters that have markers that correspond more to stress or debris than an expected cell-type or "blobby" clusters that seem to be driven more by a QC metric (like total UMIs) than biological relevant cell-types; conversely, you may need to filter less if you are missing an expected cell type that might have a different average number of genes expressed or total counts (like blood cells or T-cells) or higher % mito genes     
+| Step | Issue | Potential alternative(s) |
+| :--- | :--- | :--- |
 
-* Normalization: the relevant step is `SCTransform` with the corresponding parameters. However, there are other normalization option with their corresponding alternative commands (like logtranforms) and also parameters within `SCTransform` or alternative normalizations to add correction for possible technical factors like cell-cycle status or % mito genes or total UMIs; you may need to add corrections for additional technical factors if the clusters seem to correspond more to those technical factors than biologically relevant cell-types; conversely if you started with some corrections and find that there is a low total % variance explained when looking at the PCs and poor clustering, that suggests that there was an overcorrection in the normalization step and some of the biological variation that would be expected to drive biological differences between cell-types across all conditions was removed.         
+* Secondary QC filtering: you may need to filter more strictly if you see clusters that have markers that correspond more to stress or debris than an expected cell-type or "blobby" clusters that seem to be driven more by a QC metric (like total UMIs) than biological relevant cell-types; conversely, you may need to filter less if you are missing an expected cell type that might have a different average number of genes expressed or total counts (like blood cells or T-cells) or higher % mito genes     
+
+* Normalization: you may need to add corrections for additional technical factors if the clusters seem to correspond more to those technical factors than biologically relevant cell-types; conversely if you started with some corrections and find that there is a low total % variance explained when looking at the PCs and poor clustering, that suggests that there was an overcorrection in the normalization step and some of the biological variation that would be expected to drive biological differences between cell-types across all conditions was removed.         
 
 * Integration: we chose to use `RPCA` for our integration but CCA or Harmony are among other common choices; CCA might be more appropriate if RPCA is not sufficient to correct observed batch effects and all samples/conditions are expected to share the same cell-types; Harmony might be appropriate to correct for batch while preserving unique cell populations, especially if neither RPCA or CCA work well.      
 
-* Clustering: 
+* Clustering: PCA and resolution parameter choices; Lieden as alternative
 
 <!--- Is there a benchmarking paper for integration methods that's worth linking here?--->
 
-* Cell type annotation: we choose scCATCH to help annotate our clusters with cell-types but there are other sources and tools available that might be worth trying like CellMatch_2.0 or Azimuth or Label transfer, especially if more specific example data and annotations are available for your tissue (e.g. brain or blood/immune) from those alternative sources or if the predictions from scCATCH don't seem relevant to your tissue and/or experimental question.
+* Cell type annotation: there are other sources and tools available that might be worth trying like CellMatch_2.0 or Azimuth or Label transfer, especially if more specific example data and annotations are available for your tissue (e.g. brain or blood/immune) from those alternative sources or if the predictions from scCATCH don't seem relevant to your tissue and/or experimental question.
 
 * Differential expression: we used MAST for our cells as replicates DE comparisons and DESeq2 for our pseudobulk/samples as replicates comparisons but additional parameters (like more complex models with covariates) or other tools like EdgeR can also be used; we also choose a general cutoff to call DE genes but it might make sense to relax that cutoff for some clusters if there are not enough DE genes or conversely make those cutoffs more stringent if there are too many DE genes to use for downstream steps like functional enrichments. 
 
