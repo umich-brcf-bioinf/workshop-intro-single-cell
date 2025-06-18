@@ -193,9 +193,9 @@ To revise the cluster annotation from those predicted by scCATCH, it can be help
 write_csv(sc_pred_tbl, file = 'results/tables/scCATCH_cluster_predictions.csv')
 ```
 
-## Using known cell-type markers
+# Using known cell-type markers
 
-To confirm and refine the scCATCH predictions, we'll spot check some known markers for immune populations. Then we'll look look at some other key marker genes from some other relevant resources like [Chen et al (2021)](https://www.nature.com/articles/s41467-021-27563-3), [Buechler et al (2021)](https://www.nature.com/articles/s41586-021-03549-5) [Roman (2023)](https://pmc.ncbi.nlm.nih.gov/articles/PMC10296409/#sec3-biomolecules-13-00945 ),  [Li et al (2022)](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-022-04817-5/figures/2) and [Nestorowa et al (2016)](https://ashpublications.org/blood/article/128/8/e20/35749/A-single-cell-resolution-map-of-mouse) to see if other modifications should be made to the scCATCH predictions:
+To confirm and/or refine the scCATCH predictions, we'll spot check some known markers for immune populations. Then we'll look look at some other key marker genes from some other relevant resources like [Chen et al (2021)](https://www.nature.com/articles/s41467-021-27563-3), [Buechler et al (2021)](https://www.nature.com/articles/s41586-021-03549-5) [Roman (2023)](https://pmc.ncbi.nlm.nih.gov/articles/PMC10296409/#sec3-biomolecules-13-00945 ),  [Li et al (2022)](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-022-04817-5/figures/2) and [Nestorowa et al (2016)](https://ashpublications.org/blood/article/128/8/e20/35749/A-single-cell-resolution-map-of-mouse) to see if other modifications should be made to the scCATCH predictions:
 ```{r, imm_marker_genes, fig.show='hold'}
 # -------------------------------------------------------------------------
 # Create lists of immune cells and associated gene markers
@@ -252,7 +252,7 @@ In the first plot, B-cell and T-cell markers seem to line up with the prediction
 
 From the other marker genes, the patterns are less clear so we may want to test other clustering parameters and discuss the results with a researcher familiar with the expected cell types. However, we can notice some patterns that we can use to refine our cluster annotations. 
 
-#### Utilizing genes of interest from the original paper 
+## Utilizing genes of interest from the original paper 
 
 <details>
     <summary>*Plotting the expression of genes of interest from Sorkin, Huber et al*</summary>
@@ -310,8 +310,7 @@ ggsave(filename = 'results/figures/markers_fig1h_rna_dot_plot.png',
 
 Next, we'll use a revised version of the cell type predictions from a file that we prepared after refining the scCATCH prediction and add those labels to our Seurat object to replace our clusters' numerical identities. 
 
-Note: we will create a new metadata object where we join cell types. However, this will destroy the row names - which will cause a problem in Seurat - so we have to add them back. <!--- modify to have a hidden block that runs after to keep this large block intact -->
-
+Note: we will create a new metadata object where we join cell types. However this will destroy the row names, which will cause a problem in Seurat so we have to add them back.
 
 ::: {.prepared_content .cooking_show data-latex="{cooking_show}"}
 **Load a pre-prepared file:**
