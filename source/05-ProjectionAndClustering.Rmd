@@ -180,8 +180,7 @@ head(geo_so@meta.data) %>%
 
 
 ```{r, cluster_leiden_hidden, eval = FALSE, warning = FALSE, message = FALSE, echo=FALSE}
-# Instructor notes on how Leiden clustering would work --------------------
-
+# Instructor notes on how Leiden clustering would work (hidden) --------------------
 # Setup python dependencies (leidenalg is implemented in python)
 library(reticulate)
 options(reticulate.conda_binary = "/efs/workshop/conda/base/condabin/conda")
@@ -301,7 +300,6 @@ ggsave(filename = 'results/figures/umap_integrated_sct_split_clusters.png',
 ```{r, umap_by_dayclusters, fig.show='hold', fig.height = 6, fig.width=7}
 # -------------------------------------------------------------------------
 # Visualize UMAP clusters: day labels
-# (note - we added this column to the meta-data yesterday)
 post_integration_umap_plot_day = 
   DimPlot(geo_so,
           group.by = 'time',
@@ -318,7 +316,7 @@ ggsave(filename = 'results/figures/umap_integrated_sct_day.png',
 Similar to the PCA plots, the `day` labeled UMAP can tell us if technical sources of variation might be driving or stratifying the clusters, which would suggest that the normalization and integration steps should be revisted before proceeding.
 
 Another approach is to evaluate the number of cells per cluster using the `table()` function, split by `day` or split by `orig.ident` to see if the individual samples are driving any of the UMAP structure:
-
+<!-- add step to write out tables to file? or only do that once clusters are labeled?-->
 ```{r, table_by_day, eval = FALSE, message=FALSE}
 # -------------------------------------------------------------------------
 # Make tables of cell counts
@@ -328,7 +326,6 @@ clusters_counts_condition <- geo_so@meta.data %>%
   pivot_wider(names_from = integrated.sct.rpca.clusters, values_from = counts, names_sort=TRUE) %>%
   bind_rows(summarise_all(., ~if(is.numeric(.)) sum(.) else "TOTAL"))
 clusters_counts_condition 
-
 
 # cells per cluster per sample
 clusters_counts_sample <- geo_so@meta.data %>% 
@@ -341,7 +338,7 @@ clusters_counts_sample
 ```
 
 ```{r, table_by_day_hidden, echo = FALSE}
-# Make tables of cell counts ----------------------------------------------
+# Make tables of cell counts (hidden) ----------------
 # cells per cluster, split by condition
 clusters_counts_condition <- geo_so@meta.data %>% 
   select(time, integrated.sct.rpca.clusters) %>%
@@ -379,17 +376,34 @@ clusters_counts_sample %>%
 <br/>
 
 <!-- consider adding later 
-Add DimPlot for % mitochondria to see if high % are across dataset or limited to one/few clusters (related to what Olivia talked about during Day 1)
-
 # Other approaches for visualizing scRNA-sq data
 e.g. code for tSNE visualization 
 -->
+## Check mitochondrial signal
+
+Before proceeding, we can also check the percentage of mitochondrial genes to determine if there are interesting cell death patterns or indicate further filtering is needed):
+```{r, check_mito_UMAP, echo=TRUE, eval= TRUE}
+# -------------------------------------------------------------------------
+# Check mitochondrial gene expression
+percent_mito_plot = FeaturePlot(geo_so, features='percent.mt')
+
+# save to file
+ggsave(filename = 'results/figures/percent_umap_mito_plot.png', 
+       plot = percent_mito_plot, 
+       width = 6, height = 6, units = 'in')
+
+percent_mito_plot
+```
+
+
+We see that a higher % seem to be somewhat concentrated in a few places, but if cell death might be of interest for the research question, we'd want to consider investigating this pattern further by splitting up the plots by day and/or waiting until after running initial differential expression analysis to determine if these cell populations are interesting biology or not.
+
 
 # Comparing to unintegrated data
 
 If we had proceeded with our filtered data and only normalized our data without doing any integration, including through the dimensionality reduction and clustering steps and then labeled the cells with their sample of origin, then we would see the following for our data:
 
-<!--Add updated example of UMAP / sample labels for unintegrated data - need to check with Raymond regarding how best to do this in place --> 
+<!--Add updated example of UMAP / sample labels for unintegrated data -check with Raymond regarding how best to do this in place --> 
 
 ```{r, run_umap_unintegrated, echo = FALSE, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE, fig.height = 4}
 # -------------------------------------------------------------------------
@@ -438,7 +452,7 @@ ggsave(filename = 'results/figures/umap_unintegrated_sct_day.png',
 
 ```{r, eval=FALSE}
 # -------------------------------------------------------------------------
-# Remove the plot variables from the environment to avoid excessive memory usage
+# Remove the plot variables from the environment to manage memory
 rm(pre_integration_umap_plot_orig.ident) 
 rm(pre_integration_umap_plot_day)
 gc()
@@ -486,25 +500,16 @@ head(geo_so@meta.data)
 
 ### Remove plot variables once they are saved
 
-ggplots are terrific for visualizing data and we use them liberally in our
-analysis and the workshop. Interestingly, ggplots save a reference to the source
-dataset - in our case a rather large Seurat object. That's ok in most cases, BUT
-if you save your RStudio environment (or RStudio temporarily suspends your
-session), RStudio will save a **separate copy** of the Seurat object for each
-ggplot object; RStudio's simplistic approach avoids a lot of complexity, but can
-drastically increase your load time and memory usage.
-
-Since (a) we have the script to recreate the plots and (b) we explicitly saved 
-them as graphic objects - we can simply remove them from memory.
+Before proceeding, we'll remove the ggplot objects from our environment to avoid using execessive memory.
 
 ```{r, umap_by_clusters_clear}
 # -------------------------------------------------------------------------
-# Remove plot variables from the environment to avoid excessive memory usage
-
+# Remove plot variables from the environment to manage memory usage
 plots = c("pre_integration_umap_plot_day", 
           "post_integration_umap_plot_clusters", 
           "post_integration_umap_plot_split_clusters", 
-          "post_integration_umap_plot_day")
+          "post_integration_umap_plot_day",
+          "percent_mito_plot")
 
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
