@@ -143,13 +143,10 @@ Then, when we look at the meta data we should see that cluster labels have been 
 # Clustering and Projection
 # =========================================================================
 
-# -------------------------------------------------------------------------
-# Cluster PCAs
-
-# Create KNN graph with `FindNeighbors()`
+# Create KNN graph for PCs with `FindNeighbors()`
 geo_so = FindNeighbors(geo_so, dims = 1:pcs, reduction = 'integrated.sct.rpca')
 
-# generate clusters
+# Then generate clusters
 geo_so = FindClusters(geo_so,
                       resolution = 0.4,
                       cluster.name = 'integrated.sct.rpca.clusters')

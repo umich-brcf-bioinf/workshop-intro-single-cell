@@ -195,7 +195,6 @@ Since PCA is sensitive to scale, we will use the SCT normalized assay ([referenc
 # PCA and Integration
 # =========================================================================
 
-# -------------------------------------------------------------------------
 # Build a PCA and add it to the Seurat object
 geo_so = RunPCA(geo_so, reduction.name = 'unintegrated.sct.pca')
 geo_so
