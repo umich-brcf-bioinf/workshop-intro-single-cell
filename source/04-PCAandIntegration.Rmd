@@ -214,6 +214,8 @@ heatmap_1 <- DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, fast = FALSE, 
 heatmap_1 + 
   labs(title="PC1: top 30 genes x top 500 cells") + 
   theme(plot.title = element_text(hjust = 0.5, face = "bold")) 
+
+
 ```
 
 In the plot of just the first PC, we see the rows are labeled with gene names and PC scores plotted with positive values in yellow, negative values in purple, and zero in black [by default](https://davetang.org/muse/2017/08/01/getting-started-seurat/), with each column representing a cell. Note that by using `fast=FALSE` our output is a `ggplot` object, which allows for customization like adding a more informative, formatted title. 
