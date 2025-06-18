@@ -243,31 +243,13 @@ ggsave(filename = 'results/figures/markers_top_5_rna_dot_plot.png',
 <br>
 <br>
 
-Before proceeding with cluster annotations, we'll also check the percentage of mitochondrial genes to determine if there are any clusters (or sub populations) that might correspond to interesting cell death patterns (or might indicate further filtering is needed):
-```{r, echo=TRUE, eval= TRUE}
-# -------------------------------------------------------------------------
-# Check mitochondrial gene expression
-percent_mito_plot = FeaturePlot(geo_so, features='percent.mt')
-
-# save to file
-ggsave(filename = 'results/figures/percent_umap_mito_plot.png', 
-       plot = percent_mito_plot, 
-       width = 6, height = 6, units = 'in')
-
-percent_mito_plot
-
-```
-
-
-We see that a higher % seem to be somewhat concentrated in a few places, but if cell death might be of interest for the research question, we'd want to consider investigating this pattern further by splitting up the plots by day and/or waiting until after running initial differential expression analysis to determine if these cell populations are interesting biology or not.
 
 
 ```{r}
 # -------------------------------------------------------------------------
 # Remove the plot variables from the environment to avoid excessive memory usage
 plots = c("top_5_sct_dot_plot", 
-          "top_5_rna_dot_plot", 
-          "percent_mito_plot")
+          "top_5_rna_dot_plot")
 
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
