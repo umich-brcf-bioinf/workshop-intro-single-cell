@@ -1,5 +1,5 @@
 ---
-title: "Analysis Wrap-up and Next Steps"
+title: "Analysis summary and next steps"
 author: "UM Bioinformatics Core Workshop Team"
 date: "`r Sys.Date()`"
 lang: "en"
