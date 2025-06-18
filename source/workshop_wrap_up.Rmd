@@ -112,12 +112,14 @@ connect to enable single-cell gene expression analysis from RNA-Seq data.
     # Since we have unpacked the tarball, we can remove it
     rm workshop_isc_inputs.tgz
     ```
+<br/>
 
 ### [An independent exercise](09-IndependentExercise.html)
 <!-- when to introduce independent exercise if we don't get to breaking it into more modular pieces? -->
 
   - A variation on the workshop workflow that considers different clustering parameters and their downstream effects.
-
+  
+<br/>
 
 
 ## University of Michigan Resources

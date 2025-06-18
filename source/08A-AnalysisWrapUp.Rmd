@@ -64,10 +64,11 @@ We've successfully analyzed single-cell RNA-seq data, including:
 * Integration to remove batch effects between individual or groups of samples.  
 * Clustering with marker identification and annotation to identify what cell-types are present.      
 * Differential expression comparisons to identify genes that are impacted by the experimental groups/condition within a given cell-type.      
+Organizing the analysis steps and what tools and parameters were used can also be helpful for creating a more descriptive methods summary that would be included in a paper.
 
 <!--- then show descriptive methods (moved form wrap-up section) -->
 
-## Example methods
+## Example descriptive methods
 <details>
 <summary>**Single cell RNA sequencing using 10× genomics**</summary>
 
@@ -109,14 +110,17 @@ To identify differentially expressed (DE) genes within the total population, Cas
 6. Shao et al (2020), scCATCH:Automatic Annotation on Cell Types of Clusters from Single-Cell RNA Sequencing Data, iScience, Volume 23, Issue 3. doi: 10.1016/j.isci.2020.100882.
 7. Love MI, Huber W, Anders S (2014). “Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2.” Genome Biology, 15, 550. doi:10.1186/s13059-014-0550-8.
 </details>
+</br>
+
+While this level of detail is usually most useful for troubleshooting, the `sessionInfo` function produces a list of the relevant versions of R and all the libraries that were loaded in the analysis. It's helpful to preserve this information for your records and to include the output when asking for help, particularly in public forums.<br/>
 
 <details>
 <summary>**Session Info**</summary>
-*`Session info` lists the relevant versions of R and all the libraries that were 
-loaded in the analysis. This info is generally not included in main body of 
+*This info is generally not included in main body of 
 a paper, but serious reproducibility street-cred if it shows up in supplemental.<br/>
 Hear me now, believe me later.*
 
+<!-- consider converting to executed code instead of static --> 
 ```
 devtools::session_info()
 ─ Session info ────────────────────────────────────────────────────────────────
