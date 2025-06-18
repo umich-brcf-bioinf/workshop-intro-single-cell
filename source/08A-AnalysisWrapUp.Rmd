@@ -73,26 +73,30 @@ Now, we can highlight some of the key decision points in the analysis process an
 
 <!--- TO EDIT ---> 
 
-As we discussed in the workshop, single-cell analysis can be very iterative with the impact of choices made earlier in the analysis not being apparent until later steps and often only being able to evaluate how well those choices reflect the biological context and/or the granularity of our biological question. 
+As we discussed in the workshop, single-cell analysis can be very iterative with the impact of choices made earlier in the analysis not being apparent right away and often can only evaluate how well those choices reflect the biological context and/or the granularity of our biological question until late in the analysis (ask me how I know). 
 
 Here's a reiteration of some of the key decision points that might need to be revisited, the corresponding parameters, and how we might identify a need to test alternatives:
 
-<!-- List for now but expect would be better as a table -->
+<!-- List for now but expect would be better as a table e.g.| Step :: What we did :: Alternative(s) |-->
 * Secondary QC filtering: the relevant parameters are min and max feature counts per cell, min and max total UMIs/counts per cell, max % mito genes per cell; you may need to filter more strictly if you see clusters that have markers that correspond more to stress or debris than an expected cell-type or "blobby" clusters that seem to be driven more by a QC metric (like total UMIs) than biological relevant cell-types; conversely, you may need to filter less if you are missing an expected cell type that might have a different average number of genes expressed or total counts (like blood cells or T-cells) or higher % mito genes     
 
-* Normalization: the relevant step is `SCTransform` with the corresponding parameters. However, there are other normalization option with their corresponding alternative commands (like logtranform) and also options within `SCTransform` or alternative normalizations to add correction for possible technical factors like cell-cycle status or % mito genes or total UMIs; you may need to add corrections for additional technical factors if the clusters seem to correspond more to those technical factors than biologically relevant cell-types; conversely if you started with some corrections and find that there is a low total % variance explained when looking at the PCs and poor clustering, that suggests that there was an overcorrection in the normalization step and some of the biological variation that would be expected to drive biological differences between cell-types across all conditions was removed.         
+* Normalization: the relevant step is `SCTransform` with the corresponding parameters. However, there are other normalization option with their corresponding alternative commands (like logtranforms) and also parameters within `SCTransform` or alternative normalizations to add correction for possible technical factors like cell-cycle status or % mito genes or total UMIs; you may need to add corrections for additional technical factors if the clusters seem to correspond more to those technical factors than biologically relevant cell-types; conversely if you started with some corrections and find that there is a low total % variance explained when looking at the PCs and poor clustering, that suggests that there was an overcorrection in the normalization step and some of the biological variation that would be expected to drive biological differences between cell-types across all conditions was removed.         
 
 * Integration: we chose to use `RPCA` for our integration but CCA or Harmony are among other common choices; CCA might be more appropriate if RPCA is not sufficient to correct observed batch effects and all samples/conditions are expected to share the same cell-types; Harmony might be appropriate to correct for batch while preserving unique cell populations, especially if neither RPCA or CCA work well.      
 
 <!--- Is there a benchmarking paper for integration methods that's worth linking here?--->
 
-* Cell type annotation: we choose scCATCH to help annotate our clusters with cell-types but there are other sources and tools available that might be worth trying like CellMatch_2.0 or Azimuth, especially if more specific example data and annotations are available for your tissue (e.g. brain or blood/immune) from those alternative sources or if the predictions from scCATCH don't seem relevant to your tissue and/or experimental question.
+* Cell type annotation: we choose scCATCH to help annotate our clusters with cell-types but there are other sources and tools available that might be worth trying like CellMatch_2.0 or Azimuth or Label transfer, especially if more specific example data and annotations are available for your tissue (e.g. brain or blood/immune) from those alternative sources or if the predictions from scCATCH don't seem relevant to your tissue and/or experimental question.
 
 * Differential expression: we used MAST for our cells as replicates DE comparisons and DESeq2 for our pseudobulk/samples as replicates comparisons but additional parameters (like more complex models with covariates) or other tools like EdgeR can also be used; we also choose a general cutoff to call DE genes but it might make sense to relax that cutoff for some clusters if there are not enough DE genes or conversely make those cutoffs more stringent if there are too many DE genes to use for downstream steps like functional enrichments. 
 
 <!--- Does that cover the main decision points? -->
 
 * Subclustering: this is something we didn't discuss in detail but might be worth considering after initial clustering and annotation if you want to know what general cell-types present but are more interested in comparing the proportions or gene expression between subtypes of a more general cell population (e.g. it's helpful to know how many B-cell, T-cells, etc are generally in your PBMC samples but you are most interested if the proportion of different effector T-cells are impacted by the treatment and if so, what genes are differentially expressed within that subpopulation)
+
+
+<!-- consider adding a getting help section that includes a session info example -->
+
 
 ---
 
