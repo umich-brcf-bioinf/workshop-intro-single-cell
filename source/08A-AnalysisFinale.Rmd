@@ -341,7 +341,8 @@ To help with future troubleshooting - here's a reiteration the key analysis step
 
 <!--- Does that cover the main decision points? -->
 
-------
+------------------------------------------------------------------------
+
 
 # Resources for continued learning
 

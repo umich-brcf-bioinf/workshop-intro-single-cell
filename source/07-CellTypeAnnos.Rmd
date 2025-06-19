@@ -390,7 +390,7 @@ ggsave(filename = 'results/figures/umap_integrated_annotated.png',
        width = 8, height = 6, units = 'in')
 ```
 
-```{r, annos_umap_plot, fig.width = 10, fig.height = 4, fig.show='hold'}
+```{r, annos_umap_plot_day, fig.width = 10, fig.height = 4, fig.show='hold'}
 # -------------------------------------------------------------------------
 # Repeat, splitting by day
 annos_umap_condition_plot = 
