@@ -89,7 +89,7 @@ if(!exists('geo_so')) {
 
   options(future.globals.maxSize = 1e9)
 
-  geo_so = readRDS('results/rdata/geo_so_sct_integrated_with_catch.rds')
+  geo_so = readRDS('results/rdata/geo_so_sct_integrated_with_annos.rds')
 }
 ```
 
