@@ -343,7 +343,7 @@ It returns the same recommended PCs as the original function, but also:
 - returns a named list of detailed results
 
 
-```{r, estimate_optimal_pcs_fn}
+```{r, estimate_alt_pcs_fn}
 # -------------------------------------------------------------------------
 # Define a function to estimate optimal PCs for clustering
 check_pcs_advanced = function(so, reduction, print_plot=TRUE, verbose=TRUE) {
@@ -413,19 +413,21 @@ check_pcs_advanced = function(so, reduction, print_plot=TRUE, verbose=TRUE) {
 
 ```
 
-```{r, apply_estimate_optimal_pcs}
+```{r, apply_estimate_alt_pcs}
 # -------------------------------------------------------------------------
 # Apply function to our data
 alt_pcs = check_pcs_advanced(geo_so, 'unintegrated.sct.pca')
 ```
 
-```{r, set_pcs}
+```{r, save_alt_pcs}
 # -------------------------------------------------------------------------
 # Save plot of PCs
 ggsave(filename = 'results/figures/optimal_pcs.png',
-       plot=optimal_pcs$plot,
+       plot=alt_pcs$plot,
        width = 8, height = 8, units = 'in')
 
+rm(alt_pcs)
+gc()
 ```
 
 
@@ -445,7 +447,7 @@ few popular approaches:
 <br/>
 
 <!-- move this section to projection and clustering once ready to incorporate examples of alternative PCA choices-->
-```{r, revised_optimal_pcs}
+```{r, revised_select_pcs}
 # -------------------------------------------------------------------------
 # Based on the heatmaps (and some behind the scenes testing), we'll modify the number of PCs
 pcs = 10
@@ -465,7 +467,7 @@ In addition to selecting a reduced number of PCs to represent our data, we can a
 # first label by sample
 DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'orig.ident') 
 
-# then label by day
+# then label by day, which looks more useful
 DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'time')
 
 # save plot labeled by day
@@ -545,7 +547,6 @@ We can also confirm that our integration method has helped to correct the `Day` 
 DimPlot(geo_so, reduction = 'integrated.sct.rpca', group.by = 'time')
 ggsave(filename = 'results/figures/qc_pca_plot_integrated_sct_day.png', 
        width = 7, height = 6, units = 'in')
-
 ```
 
 <!--- confirmed in testing that PCA plot is updated if run on catched geo_so object --->
@@ -566,7 +567,6 @@ them as graphic objects - we can simply remove them from memory.
 ```{r, umap_by_clusters_clear}
 # -------------------------------------------------------------------------
 # Remove plot variables from the environment to avoid excessive memory usage
-
 plots = c("heatmap_1")
 
 # Only remove plots that actually exist in the environment

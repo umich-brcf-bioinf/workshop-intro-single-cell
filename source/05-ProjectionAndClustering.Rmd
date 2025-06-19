@@ -378,22 +378,21 @@ e.g. code for tSNE visualization
 -->
 ## Check mitochondrial signal
 
-Before proceeding, we can also check the percentage of mitochondrial genes to determine if there are interesting cell death patterns or indicate further filtering is needed):
+Before proceeding, we can also check the percentage of mitochondrial genes to determine if there might be interesting cell death patterns or indicate that further filtering is needed:
 ```{r, check_mito_UMAP, echo=TRUE, eval= TRUE}
 # -------------------------------------------------------------------------
 # Check mitochondrial gene expression
 percent_mito_plot = FeaturePlot(geo_so, features='percent.mt')
+percent_mito_plot
 
 # save to file
 ggsave(filename = 'results/figures/percent_umap_mito_plot.png', 
        plot = percent_mito_plot, 
        width = 6, height = 6, units = 'in')
-
-percent_mito_plot
 ```
 
 
-We see that a higher % seem to be somewhat concentrated in a few places, but if cell death might be of interest for the research question, we'd want to consider investigating this pattern further by splitting up the plots by day and/or waiting until after running initial differential expression analysis to determine if these cell populations are interesting biology or not.
+We see that a higher percentages seem to be somewhat concentrated in a few places, but if cell death might be of interest for the research question, we'd want to consider investigating this pattern further by splitting up the plots by day and/or waiting until after running initial differential expression analysis to determine if these cell populations are interesting biology or not.
 
 
 # Comparing to unintegrated data
@@ -536,7 +535,7 @@ saveRDS(geo_so, file = 'results/rdata/geo_so_sct_clustered.rds')
 <br/>
 <table class='fig'><tr><td class='fig'>
 ![](images/graphical_abstracts/05-ProjectionAndClustering-Abstract.png)
-</td></tr><tr><td class='fig'>Starting with reduced dimensionality data [PCs x cells] for all samples - cells are organized into networks and then split up to into clusters with similar expression programs, regardless of experimental condition.</td></tr>
+</td></tr><tr><td class='fig'>Starting with reduced dimensionality data [PCs x cells] for all samples - cells were organized into networks and then split up to into clusters with similar expression programs, regardless of experimental condition.</td></tr>
 </table>
 <br/>
 
