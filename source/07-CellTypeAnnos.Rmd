@@ -374,77 +374,74 @@ head(geo_so@meta.data) %>%
 
 Lastly, we can generate a revised UMAP plot with our descriptive cluster labels by using our updated Seurat object and providing the new `cell_type` label for the `group.by` argument:
 
-```{r, catch_umap_plot, fig.width = 10, fig.height = 8, fig.show='hold'}
+```{r, annos_umap_plot, fig.width = 10, fig.height = 8, fig.show='hold'}
 # -------------------------------------------------------------------------
 # Make a labeled UMAP plot of clusters
-catch_umap_plot = 
+annos_umap_plot = 
   DimPlot(geo_so, group.by = 'cell_type', label = TRUE, reduction = 'umap.integrated.sct.rpca')
-catch_umap_plot
+annos_umap_plot
 
-ggsave(filename = 'results/figures/umap_integrated_catch.png', 
-       plot = catch_umap_plot,
-       width = 10, height = 8, units = 'in')
+ggsave(filename = 'results/figures/umap_integrated_annotated.png', 
+       plot =  annos_umap_plot,
+       width = 8, height = 6, units = 'in')
+```
 
-catch_umap_condition_plot = 
+```{r, annos_umap_plot, fig.width = 10, fig.height = 4, fig.show='hold'}
+# -------------------------------------------------------------------------
+# Repeat, splitting by day
+annos_umap_condition_plot = 
   DimPlot(geo_so,
           group.by = 'cell_type',
           split.by = 'time',
-          label = TRUE,
+          label = FALSE,
           reduction = 'umap.integrated.sct.rpca')
+annos_umap_condition_plot
 
-ggsave(filename = 'results/figures/umap_integrated_catch_byCondition.png', 
-       plot = catch_umap_condition_plot,
-       width = 10, height = 8, units = 'in')
-
-catch_umap_condition_plot
+ggsave(filename = 'results/figures/umap_integrated_annotated_byCondition.png', 
+       plot = annos_umap_condition_plot,
+       width = 14, height = 5, units = 'in')
 
 ```
 
-It can also be helpful to remember what our original UMAP looked like and compare it to our annotated version.
+It can also be helpful to compare our annotated UMAP to the original clustering results:
 
-```{r, compare_umap_plots, fig.width = 10, fig.height = 8, fig.show='hold', echo = FALSE, warning = FALSE, message = FALSE}
+```{r, compare_umap_plots, fig.width = 12, fig.height = 5, fig.show='hold', echo = FALSE, warning = FALSE, message = FALSE}
 org_umap_plot = 
   DimPlot(geo_so, group.by = 'seurat_clusters', label = TRUE, reduction = 'umap.integrated.sct.rpca')
 
-org_umap_plot + catch_umap_plot
+org_umap_plot + annos_umap_plot
 ```
-
+<br/>
+<!-- Add comment on what to observe from the comparison?? -->
 
 <details>
 <summary>**Why didn't we just use the original scCATCH labels? (with code)**</summary>
 <!-- Update to add the scCATCH labels as they were and generate labeled UMAP -->
 
-
-The plots above were generated with:
-```{r, eval=FALSE}
+Predictive tools can be useful but the labels produced may not match the level of specificity that's relevant to *your* biological question or use the same labels for clusters that don't seems to share similar expression programs 
+```{r, catch_umap_plots, fig.width = 12, fig.height = 4.5, fig.show='hold', echo = FALSE, warning = FALSE, message = FALSE}
 # -------------------------------------------------------------------------
+# optional code to create UMAP with initial scCATCH labels
+catch_umap_plot = 
+  DimPlot(geo_so, group.by = 'cell_type_prediction', label = TRUE, reduction = 'umap.integrated.sct.rpca')
 
-geo_so 
-```
-
-```{r, eval=FALSE}
-# -------------------------------------------------------------------------
-
-pre_integration_umap_plot_day = DimPlot(geo_so, group.by = 'time', label = FALSE, reduction = 'umap.unintegrated.sct.pca')
-ggsave(filename = 'results/figures/umap_unintegrated_sct_day.png',
-       plot = pre_integration_umap_plot_day,
+ggsave(filename = 'results/figures/umap_integrated_scCatch-only.png',
+       plot = catch_umap_plot,
        width = 8, height = 6, units = 'in')
 
-```
+# show scCATCH labels compared to original clustering results
+org_umap_plot + catch_umap_plot
 
-```{r, eval=FALSE}
 # -------------------------------------------------------------------------
 # Remove the plot variables from the environment to manage memory
-rm(pre_integration_umap_plot_orig.ident) 
-rm(pre_integration_umap_plot_day)
+rm(catch_umap_plot) 
 gc()
 ```
 </details>
 <br>
-<br>
-
 <br/>
-<!-- to add - number of cells per cluster and condition/replicate after annotation --->
+
+<!-- to add - number of cells per cluster and condition/replicate after annotation ?--->
 
 # Save our progress
 
