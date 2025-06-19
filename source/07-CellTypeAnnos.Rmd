@@ -311,7 +311,7 @@ ggsave(filename = 'results/figures/markers_fig1h_rna_dot_plot.png',
 Next, we'll use a revised version of the cell type predictions from a file that we prepared after refining the scCATCH prediction and add those labels to our Seurat object to replace our clusters' numerical identities. How is a table like this created?
 
 <br/>
-<!-- ![](images/curriculum/07-CellTypeAnnotation/)  add diagram of annotation process -->
+![](images/curriculum/07-CellTypeAnnotation/RefinedCellTypeAnnos.png)
 <br/>
 
 Note: To add our annotations, we will create a new metadata object to join in the cell type labels. However this will destroy the row names, which will cause a problem in Seurat so we have to add them back.
