@@ -123,7 +123,7 @@ Additionally, the `sessionInfo` function produces a list of the relevant version
 *This info is generally not included in main body of a paper, but serious reproducibility street-cred if it shows up in supplemental.*<br/> Hear me now, believe me later.
 
 <!-- consider converting to executed code instead of static -->
-
+<!-- consider creating a detailed getting help section that includes a session info example -->
 ```         
 devtools::session_info()
 ─ Session info ────────────────────────────────────────────────────────────────
@@ -297,39 +297,6 @@ Now, we can highlight some of the key decision points in the analysis process an
 
 ------------------------------------------------------------------------
 
-# Troubleshooting and alternative approaches
-
-As we discussed in the workshop, single-cell analysis can be very iterative with the impact of choices made earlier in the analysis might not being apparent until later in the analysis and often we can only evaluate how well those choices reflect the biological context and/or the granularity of our biological question until the end of the analysis (ask me how I know).
-
-To help with future troubleshooting - here's a reiteration the key analysis steps, what we might see that would indicate a need to go back to and revise the choices made at that step, and some non-exhaustive alternative approaches or tools:
-
-<!-- List for now but expect would be better as a table e.g.| Step :: What we did :: Alternative(s) |-->
-
-| Step | Issue & potential alternative(s) |
-|:-----------------------------------|:-----------------------------------|
-| Secondary QC filtering | If you see **poor clustering (one big blob) or clusters that seem be driven by quality metrics** like total counts or correspond to stress/debris instead of biological relevant cell-types, **re-filtering with more stringent thresholds might help** |
-| Secondary QC filtering | If you are **missing expected cell type(s) after clustering** that might have a different average number of genes expressed or total counts (like blood cells or T-cells) or with a higher expected % mitochondrial genes, then **re-filtering with more relaxed thresholds** could help to recover those cells and allow them to be included in the downstream analysis |
-| Normalization | If **clusters correspond more to technical factors** than biologically relevant cell-types, then **covariates for those technical factors** may need to added to the normalization model or a different normalization approach might be needed |
-| Normalization | If there is a **low total % variance explained** when looking at the PCs and covariates for one or more technical factor was included in the normalization step, that suggests that there was an overcorrection and some of the biological variation that would be expected to drive biological differences between cell-types across all conditions was removed. Checking the PCA plots to see if any of the known technical covariates might be skewing the data and limiting the model to only those that show evidence of |
-
--   Integration: we chose to use `RPCA` for our integration but CCA or Harmony are among other common choices; CCA might be more appropriate if RPCA is not sufficient to correct observed batch effects and all samples/conditions are expected to share the same cell-types; Harmony might be appropriate to correct for batch while preserving unique cell populations, especially if neither RPCA or CCA work well.
-
--   Clustering: PCA and resolution parameter choices; Lieden as alternative
-
-<!--- Is there a benchmarking paper for integration methods that's worth linking here?--->
-
--   Cell type annotation: there are other sources and tools available that might be worth trying like CellMatch_2.0 or Azimuth or Label transfer, especially if more specific example data and annotations are available for your tissue (e.g. brain or blood/immune) from those alternative sources or if the predictions from scCATCH don't seem relevant to your tissue and/or experimental question.
-
--   Differential expression: we used MAST for our cells as replicates DE comparisons and DESeq2 for our pseudobulk/samples as replicates comparisons but additional parameters (like more complex models with covariates) or other tools like EdgeR can also be used; we also choose a general cutoff to call DE genes but it might make sense to relax that cutoff for some clusters if there are not enough DE genes or conversely make those cutoffs more stringent if there are too many DE genes to use for downstream steps like functional enrichments.
-
-<!--- Does that cover the main decision points? -->
-
--   Subclustering: this is something we didn't discuss in detail but might be worth considering after initial clustering and annotation if you want to know what general cell-types present but are more interested in comparing the proportions or gene expression between subtypes of a more general cell population (e.g. it's helpful to know how many B-cell, T-cells, etc are generally in your PBMC samples but you are most interested if the proportion of different effector T-cells are impacted by the treatment and if so, what genes are differentially expressed within that subpopulation)
-
-<!-- consider adding a getting help section that includes a session info example -->
-
-------------------------------------------------------------------------
-
 # Downstream approaches
 
 Beyond differential expression within clusters, either with each cell as a replicate or using a pseudobulk approach, there are many other possible avenues of exploration and analysis for scRNA-seq data. This includes but is not limited to:
@@ -346,7 +313,35 @@ Beyond differential expression within clusters, either with each cell as a repli
 
 We would recommend looking for studies in similar tissues or with similar experimental questions to see what kind of approaches and tools were used to help guide your own analysis plans.
 
-<br/> <br/>
+<br/> 
+<br/>
+
+------------------------------------------------------------------------
+
+# Troubleshooting and alternative approaches
+
+As we discussed in the workshop, single-cell analysis can be very iterative with the impact of choices made earlier in the analysis might not being apparent until later in the analysis and often we can only evaluate how well those choices reflect the biological context and/or the granularity of our biological question until the end of the analysis (ask me how I know).
+
+To help with future troubleshooting - here's a reiteration the key analysis steps, what we might see that would indicate a need to go back to and revise the choices made at that step, and some non-exhaustive alternative approaches or tools:
+
+<!-- List for now but expect would be better as a table e.g.| Step :: What we did :: Alternative(s) |-->
+
+| Step | Issue & potential alternative(s) |
+|:-----------------------------------|:-----------------------------------|
+| Secondary QC filtering | If you see **poor clustering (one big blob) or clusters that seem be driven by quality metrics** like total counts or correspond to stress/debris instead of biological relevant cell-types, **re-filtering with more stringent thresholds might help** |
+| Secondary QC filtering | If you are **missing expected cell type(s) after clustering** that might have a different average number of genes expressed or total counts (like blood cells or T-cells) or with a higher expected % mitochondrial genes, then **re-filtering with more relaxed thresholds** could help to recover those cells and allow them to be included in the downstream analysis |
+| Normalization | If **clusters correspond more to technical factors** than biologically relevant cell-types, then **covariates for those technical factors** may need to added to the normalization model or a different normalization approach might be needed |
+| Normalization | If there is a **low total % variance explained** when looking at the PCs and covariates for one or more technical factor was included in the normalization step, that suggests that there was an overcorrection and some of the biological variation that would be expected to drive biological differences between cell-types across all conditions was removed. Checking the PCA plots to see if any of the known technical covariates might be skewing the data and limiting the model to only those that show evidence of |
+| Integration | We chose to use `RPCA` for our integration but there are other integration options. If **`RPCA` is not sufficient to correct observed batch effects** and all samples/conditions are expected to share the same cell-types, a **`CCA` might be worth trying**. If **neither `RPCA` or `CCA` work well**, another option might be **Harmony, which uses a different approach and parameters** to correct for batch while preserving unique cell populations. <!--- Is there a benchmarking paper for integration methods that's worth linking here?---> |
+| Clustering | <!-- add PCA and resolution parameter choices--> | <!--Lieden as alternative --> |
+| Cell type annotation | While we used `scCATCH` if more specific example data and annotations are available for your tissue (e.g. brain or blood/immune) or if the predictions from `scCATCH` don't seem relevant to your tissue and/or experimental question, there are other sources and tools available that might be worth trying like `CellMatch_2.0` or `Azimuth` or a label transfer using a similar dataset. |
+| Differential expression | While we used Wilcoxin and DESeq2 for our differential expression testing, other tools like MAST or EdgeR can also be used and/or more complex models with covariates could be used. |
+| Differential expression | We also choose a general cutoff to call DE genes but if there are not enough DE genes, it might make sense to relax that cutoff for some clusters. Conversely, if there are too many DE genes to use for downstream steps like functional enrichments it might be necessary to make the cutoffs more stringent for those specific comparisons. | 
+| Subclustering | While we weren't able to cover this approach, if you want to know what general cell-types present but are more interested in comparing the proportions or gene expression between subtypes of a more general cell population (e.g. it's helpful to know how many B-cell, T-cells, etc are generally in your PBMC samples but you are most interested if the proportion of different effector T-cells are impacted by the treatment and if so, what genes are differentially expressed within that subpopulation), it might be worth considering running subclustering after initial clustering and annotation. |
+
+<!--- Does that cover the main decision points? -->
+
+------
 
 # Resources for continued learning
 
