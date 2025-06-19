@@ -215,7 +215,9 @@ heatmap_1 +
   labs(title="PC1: top 30 genes x top 500 cells") + 
   theme(plot.title = element_text(hjust = 0.5, face = "bold")) 
 
-
+# save to file
+ggsave(filename = 'results/figures/qc_pca_heatmap-pc1.png',
+       width = 6, height = 4.5, units = 'in')
 ```
 
 In the plot of just the first PC, we see the rows are labeled with gene names and PC scores plotted with positive values in yellow, negative values in purple, and zero in black [by default](https://davetang.org/muse/2017/08/01/getting-started-seurat/), with each column representing a cell. Note that by using `fast=FALSE` our output is a `ggplot` object, which allows for customization like adding a more informative, formatted title. 
@@ -223,22 +225,26 @@ In the plot of just the first PC, we see the rows are labeled with gene names an
 What about the other PCs that have been calculated for these data? We can look at additional dimensions using the same `DimHeatmap()` function. However, we'll use the default plotting where `fast=TRUE` so base plotting will be used instead of `ggplot`.
 
 ```{r, pca_heatmap_18, message = FALSE, fig.cap='DimHeatmap for PC1-18'}
-# Plot cell by gene heatmaps for larger set of dimensions -----------------------
-# look at first 18 PCs
+#  -------------------------------------------------------
+# plot cell by gene heatmaps for larger set of dimensions
 DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, combine = FALSE, reduction = 'unintegrated.sct.pca')
 
-# note - need to use png() to write to file because this isn't a ggplot
-png(filename = 'results/figures/qc_pca_heatmap.png', width = 12, height = 40, units = 'in', res = 300)
+# need to use png() to write to file because this isn't a ggplot
+png(filename = 'results/figures/qc_pca_heatmap-pc1-18.png', width = 12, height = 30, units = 'in', res = 300)
   DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca')
 dev.off()
 ```
 
-As we scroll down in this plot, we see less and less structure in our plots and more zero scores (in black) indicating that less variation is being represented by larger PCs overall. However, these patterns can be hard to see so we can also select a few PCs to take a closer look at, again using the default `fast=TRUE` option and getting a base plot.
+As we scroll down in this plot, we see less and less structure in our plots and more zero scores (in black) indicating that less variation is being represented by larger PCs overall. However, these patterns can be hard to see so we can also select a few PCs to take a closer look at, again using the default `fast=TRUE` option to generate a base plot.
 
 ```{r, pca_heatmap_zoom, message = FALSE,  out.width='75%', fig.cap='DimHeatmap for select PCs'}
-# Plot cell by gene heatmaps for a subset of dimensions -----------------------
-# zoom in on a few selected dims (CG suggestion)
-DimHeatmap(geo_so, dims=c(1,5,10,20, 30,50), cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca', nfeatures=20)
+# ------------------------------------------------------------
+# Plot cell by gene heatmaps for a subset of dimensions 
+DimHeatmap(geo_so, dims=c(1,5,10,20,30,50), cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca', nfeatures=20)
+
+png(filename = 'results/figures/qc_pca_heatmap-select.png', width = 12, height = 10, units = 'in', res = 300)
+  DimHeatmap(geo_so, dims=c(1,5,10,20,30,50), cells=500, balanced=TRUE, reduction = 'unintegrated.sct.pca', nfeatures=20)
+dev.off()
 ```
 
 When we look at the selected PCs, we can see that PC10 has quite a bit of blocky structure that is separating about half the cells for a subset of genes. For the later PCs, we are seeing less 'blocks' suggesting that the variation explained by these later components might not correspond to the larger cell-type differences that we want to capture for the purposes of clustering.
