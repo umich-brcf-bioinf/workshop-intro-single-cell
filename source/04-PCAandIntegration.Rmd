@@ -195,7 +195,6 @@ Since PCA is sensitive to scale, we will use the SCT normalized assay ([referenc
 # PCA and Integration
 # =========================================================================
 
-# -------------------------------------------------------------------------
 # Build a PCA and add it to the Seurat object
 geo_so = RunPCA(geo_so, reduction.name = 'unintegrated.sct.pca')
 geo_so
@@ -215,6 +214,8 @@ heatmap_1 <- DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, fast = FALSE, 
 heatmap_1 + 
   labs(title="PC1: top 30 genes x top 500 cells") + 
   theme(plot.title = element_text(hjust = 0.5, face = "bold")) 
+
+
 ```
 
 In the plot of just the first PC, we see the rows are labeled with gene names and PC scores plotted with positive values in yellow, negative values in purple, and zero in black [by default](https://davetang.org/muse/2017/08/01/getting-started-seurat/), with each column representing a cell. Note that by using `fast=FALSE` our output is a `ggplot` object, which allows for customization like adding a more informative, formatted title. 
@@ -299,14 +300,14 @@ Related - how important is that decision to the downstream impact (e.g. how much
 Instead of choosing based on the elbow plot by sight alone, we can try to 
 quantify our choice algorithmically. Here we create a function to return a 
 recommended PC based on two possible metrics ( (A) cumulative variation or (B) 
-above a minimum step size). We can apply that function to our data to get a good
-starting point for number of PCs to include.
+above a minimum step size). We can apply a version of this function that was borrowed from [HBC]( https://hbctraining.github.io/scRNA-seq/lessons/elbow_plot_metric.html) to our data to select a good
+starting point for number of PCs to include for clustering later on.
+<!--- revised function name per discussion with Raymond --->
 
-
-```{r, optimal_pcs}
+```{r, check_pcs}
 # -------------------------------------------------------------------------
-# Estimate optimal PCs for clustering with a function
-optimal_pcs = function(so, reduction) {
+# Estimate the number of PCs to use for clustering with a function
+check_pcs = function(so, reduction) {
     # quantitative check for number of PCs to include
     pct = so@reductions[[reduction]]@stdev / sum(so@reductions[[reduction]]@stdev) * 100
     cum = cumsum(pct)
@@ -318,16 +319,9 @@ optimal_pcs = function(so, reduction) {
 }
 
 # Apply function to our data
-pcs = optimal_pcs(geo_so, 'unintegrated.sct.pca')
+pcs = check_pcs(geo_so, 'unintegrated.sct.pca')
 pcs
 ```
-
-```{r, revised_optimal_pcs}
-# -------------------------------------------------------------------------
-# Based on the heatmap (and some behind the scenes testing), we'll modify the number of PCs
-pcs = 10
-```
-
 
 Again, this number is likely a starting point and may need to be revised depending on the outcome of the downstream steps. 
 
@@ -346,7 +340,7 @@ It returns the same recommended PCs as the original function, but also:
 ```{r, estimate_optimal_pcs_fn}
 # -------------------------------------------------------------------------
 # Define a function to estimate optimal PCs for clustering
-optimal_pcs_advanced = function(so, reduction, print_plot=TRUE, verbose=TRUE) {
+check_pcs_advanced = function(so, reduction, print_plot=TRUE, verbose=TRUE) {
   # quantitative check for number of PCs to include
   threshold_var_cum_min = 90
   threshold_var_pct_max = 5
@@ -416,7 +410,7 @@ optimal_pcs_advanced = function(so, reduction, print_plot=TRUE, verbose=TRUE) {
 ```{r, apply_estimate_optimal_pcs}
 # -------------------------------------------------------------------------
 # Apply function to our data
-optimal_pcs = optimal_pcs_advanced(geo_so, 'unintegrated.sct.pca')
+alt_pcs = check_pcs_advanced(geo_so, 'unintegrated.sct.pca')
 ```
 
 ```{r, set_pcs}
@@ -444,6 +438,13 @@ few popular approaches:
 </details>
 <br/>
 
+<!-- move this section to projection and clustering once ready to incorporate examples of alternative PCA choices-->
+```{r, revised_optimal_pcs}
+# -------------------------------------------------------------------------
+# Based on the heatmaps (and some behind the scenes testing), we'll modify the number of PCs
+pcs = 10
+```
+
 ### Visualizing our PC results
 
 In addition to selecting a reduced number of PCs to represent our data, we can also visualize , similarly to how we often look at samples for bulk RNA-seq using the `DimPlot()` function, with each cell plotted along the selected PCs and colored by a selected meta-data column:
@@ -461,7 +462,7 @@ DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'orig.ident')
 # then label by day
 DimPlot(geo_so, reduction = 'unintegrated.sct.pca', group.by = 'time')
 
-# save 
+# save plot labeled by day
 ggsave(filename = 'results/figures/qc_pca_plot_unintegrated_sct_day.png',
        width = 7, height = 6, units = 'in')
 
@@ -542,6 +543,31 @@ ggsave(filename = 'results/figures/qc_pca_plot_integrated_sct_day.png',
 ```
 
 <!--- confirmed in testing that PCA plot is updated if run on catched geo_so object --->
+
+### Remove plot variables once they are saved
+
+Plots are terrific for visualizing data and we use them liberally in our
+analysis and the workshop. Interestingly, ggplots save a reference to the source
+dataset - in our case a rather large Seurat object. That's ok in most cases, BUT
+if you save your RStudio environment (or RStudio temporarily suspends your
+session), RStudio will save a **separate copy** of the Seurat object for each
+ggplot object; RStudio's simplistic approach avoids a lot of complexity, but can
+drastically increase your load time and memory usage.
+
+Since (a) we have the script to recreate the plots and (b) we explicitly saved 
+them as graphic objects - we can simply remove them from memory.
+
+```{r, umap_by_clusters_clear}
+# -------------------------------------------------------------------------
+# Remove plot variables from the environment to avoid excessive memory usage
+
+plots = c("heatmap_1")
+
+# Only remove plots that actually exist in the environment
+rm(list=Filter(exists, plots))
+gc()
+```
+
 
 # Save our progress
 
