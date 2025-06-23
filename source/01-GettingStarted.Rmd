@@ -55,6 +55,10 @@ source("../bin/chunk-options.R")
 knitr_fig_path("01-GettingStarted/01-")
 ```
 
+```{r, include = FALSE}
+source("../bin/set_values.R")
+```
+
 <br/>
 ![](images/wayfinder/01-GettingStart-Wayfinder.png)
 <br/>
@@ -84,25 +88,35 @@ One of the goals of this workshop is to work through an example from start to en
 
 # Orienting on RStudio
 
+To get started, let's log in to the workshop server by going here: [`r workshop_vars$rstudio_server_url`](`r workshop_vars$rstudio_server_url`){target="blank"}
+
+The login page for the server looks like:
+
+<img src="images/01_rstudio_login_screen.png" alt="rstudio login screen" style="width: 1000px;"/>
+
+Enter your user credentials and click <kbd>Sign In</kbd>. The RStudio interface should load and look like:
+
+<img src="images/02_rstudio_session_default.png" alt="rstudio default session" style="width:1000px;"/>
+
+**Checkpoint**
+
 RStudio is an integrated development environment where you can write, execute, and see the results of your code. The interface is arranged in different panes:
 
-- The Console pane along the left where you can enter commands and execute them.
-- The Environment pane in the upper right shows any variables you have created, along with their values.
+- The **Console pane** along the left where you can enter commands and execute them.
+- The **Environment pane** in the upper right shows any variables you have created, along with their values.
 - The pane in the lower right has a few functions:
-    - The Files tab let's you navigate the file system.
-    - The Plots tab displays any plots from code run in the Console.
-    - The Help tab displays the documentation of functions.
+    - The **Files tab** let's you navigate the file system.
+    - The **Plots tab** displays any plots from code run in the Console.
+    - The **Help tab** displays the documentation of functions.
 
 ## Commands in the Console
 
-We can input commands directly into the Console and press <KBD>Enter</KBD> to execute them. Try it with:
+Commands can be run in the Console directly. Press <KBD>Enter</KBD> to execute them:
 
 ~~~
 > 2+2
 [1] 4
 ~~~
-
-If we enter commands directly into the Console and execute them, **there is no record** that persists after we close RStudio.
 
 <img src="images/03_rstudio_console_execution.png" alt="rstudio console execution" style="width:1000px;"/>
 
@@ -110,28 +124,39 @@ If we enter commands directly into the Console and execute them, **there is no r
 
 ## Commands in the Script
 
-To keep that record, we will enter our commands in a script. When first opening RStudio, there is no pane to write code to save as a file. But by clicking on the icon in the upper-right-most of the interface (a blank piece of paper with a + sign), and selecting <KBD>R Script</KBD> a new pane opens. This last pane is the Source (or Script) pane, and it is here that we'll keep a running record of the commands we learn in this workshop.
+Commands can also be run in a script. Some beenefits to using a script rather than relying on the Console pane:
+
+- Scripts are files that can be shared.
+- Scripts record the steps taken to analyze the data.
+- Scripts can be re-run, allowing for reproducibility.
+
+When first opening RStudio, a script file is not automatically opened. We'll create our script file by clicking on the icon in the upper-left of the interface (a blank piece of paper with a + sign), and selecting <KBD>R Script</KBD>.
 
 <img src="images/04_rstudio_create_script.png" alt="rstudio create script" style="width:1000px;"/>
 
-Which will swing open the Script pane:
+ The new pane that opens is the **Source pane**:
 
 <img src="images/05_rstudio_script_pane.png" alt="rstudio script pane" style="width:1000px;"/>
 
-In the Script pane, enter:
+You can think of this as a simple text editor. In the Script pane, enter:
 
 ~~~
 3+2
 ~~~
 
-Notice that if we press <KBD>Enter</KBD> in the Source pane, we get a new line. **The code does note execute.** In order to execute the code we press <KBD>Ctrl + Enter</KBD> **on the line of code we want to execute**. We then see that code executed, along with its result in in the Console pane.
+Notice that if we press <KBD>Enter</KBD> in the Source pane, we get a new line instead of running the code. In order to execute the code, we press <KBD>Ctrl + Enter</KBD> either on the single line we want to run, or on a highlighted block of code. We then see that code executed, along with its result in in the Console pane.
 
 <img src="images/06_rstudio_script_execution.png" alt="rstudio script execution" style="width:1000px;"/>
 
-> ## Note: Script Pane and Console Pane {.unlisted .unnumbered}
->
-> The code written in the Script Pane is just text until it is executed with <KBD>Control + Enter</KBD>. The Console Pane is the record of the code that has been executed.
-<br>
+## Summary: Console vs Script
+
+Here are some of the key differences between the Console and Script panes in RStudio:
+
+| Console          | Script            |
+|:-----------------|:------------------|
+| Ephemeral code        | Preserved code         |
+| Run with <KBD>Enter</KBD> | Run with <KBD>Ctrl + Enter</KBD> |                  |
+| Hard to share    | Easy to share     |
 
 ## Configuring RStudio
 
@@ -141,72 +166,67 @@ We can enable soft-wrapping of code by selecting <KBD>Code</KBD> and then <KBD>S
 
 <img src="images/07_rstudio_soft_wrap.png" alt="rstudio code execution" style="width:1000px;"/>
 
-# Workshop Flow
+# Workshop flow
 
-The code we execute together is available in three forms:
+To accomodate learning styles and to keep us moving along, we'll provide code in three different ways, and you can get that code into RStudio in corresponding ways:
 
-1. By viewing the instructor's Zoom screen share,
-2. By code pasted into Slack, and
-3. By code blocks on these web pages.
-
-As a learner you are welcome to get the same code into your Script Pane by:
-
-1. Typing the code from the Zoom screen share into your Script Pane,
-2. Copying the code from Slack and pasting into your Script Pane, or
-3. Copying the code from the code blocks on these web pages and pasting into your Script Pane.
+| Source of Code   | Execution of Code |
+|:-----------------|:------------------|
+| Zoom screen share            | Type the code yourself.                            |
+| Slack            | Copy and paste code into RStudio.                  |
+| Website          | Use code block copy button and paste into RStudio. |
 
 **Questions?**
 
+# Setting up
 
-## Creating a project
+Before we begin, the folder structure of a working directory / project organizes all the relevant files. Typically we make directories for the following types of files:
 
-We will create an RStudio Project to keep our files and code organized. See the [Projects](https://r4ds.hadley.nz/workflow-scripts.html#projects) section of [R for Data Science](https://r4ds.hadley.nz/) for a more in-depth description of what a project is and how it's helpful.
+- Raw data, called `data`, `input`, etc,
+- Results, often `results` or `output` with subfolders for `tables`, `figures`, and `rdata`, and
+- Scripts, often `scripts`.
 
-To create a Project for this workshop, click <kbd>File</kbd> then <kbd>New Project...</kbd>. In the New Project Wizard window that opens, select <kbd>Existing Directory</kbd>, then <kbd>Browse...</kbd>. In the Choose Directory window, select the `ISC_R` folder by clicking it once, and then click the <kbd>Choose</kbd> button. Finally, click <kbd>Create Project</kbd>.
+We've already provided the raw data in the `data/` folder, but you'd otherwise want to move the starting, unaltered, data into this folder.
 
-Once we do this, RStudio will restart and the Files pane (lower right) should put us in the `~/ISC_R` folder where there is an `inputs/` folder and an `ISC_R.Rproj` file.
+## Creating directory stucture
 
-## Directory structure
+Before we start creating directories, let's make sure we're in the right location. To print the current working directory:
 
-We have included the data to be used in the workshop in the `inputs/` folder. However, the project will need to include folders for our analysis and our analysis scripts. Let's create that directory structure with the `dir.create()` function. We will start by putting the following commands into the Console pane directly.
-
-```{r, dir_create}
-# Create project directories
-dir.create('scripts', showWarnings = FALSE, recursive = TRUE)
-dir.create('results/figures', showWarnings = FALSE, recursive = TRUE)
-dir.create('results/tables', showWarnings = FALSE, recursive = TRUE)
-dir.create('results/rdata', showWarnings = FALSE, recursive = TRUE)
-```
-
-In the Files pane we should see the new `results/` and `scripts/` folders. 
-
-## Analysis script
-
-The two most important artifacts of our analysis are the data from Cell Ranger, and the script to analyze the data. There will be outputs in `results/`, and these will be important, but if the contents of `results/` are ever lost, the script will be able to re-generate them if we've captured all our steps as code, which we aim to do.
-
-To create the analysis script, click <kbd>File</kbd>, hover over <kbd>New File</kbd>, and click on <kbd>R Script</kbd>. A new pane in the upper left slides into view and is the Untitled script file. Save this file, and name it, by clicking <kbd>File</kbd> then <kbd>Save</kbd>. Double click the `scripts/` folder, and in the File name: text box type "analysis.R". Then click <kbd>Save</kbd>.
-
-As we proceed through the workshop, we should save this file (by clicking the Floppy disk, clicking <kbd>File</kbd> then <kbd>Save</kbd>, or by typing <kbd>Control + S</kbd>).
-
-> **Good scripting practices**
-> 
-> In any analysis script, we recommend using comments (lines preceded by a "#") to provide additional information about code that may not be self-evident. This is to the benefit of others that may look at the code, but also to your future-self.
-<br>
-
-For completeness, insert the `dir.create` commands at the top of our new script.
-
-```{r, dir_create2, eval = FALSE}
+```{r getwd}
 # =========================================================================
 # Getting Started with Seurat
 # =========================================================================
 
 # -------------------------------------------------------------------------
-# Create project directories
-dir.create('scripts', showWarnings = FALSE, recursive = TRUE)
-dir.create('results/figures', showWarnings = FALSE, recursive = TRUE)
-dir.create('results/tables', showWarnings = FALSE, recursive = TRUE)
-dir.create('results/rdata', showWarnings = FALSE, recursive = TRUE)
+# Get current working directory
+getwd()
 ```
+
+This means that any references to files loaded or files saved **is with respect to this location**. This can simplify our code a bit by allowing us to use relative paths rather than full paths. Let's set our working directory to the IRR folder in our respective home directories.
+
+```{r setwd, eval = FALSE}
+# -------------------------------------------------------------------------
+# Set current working directory
+setwd('~/ISC_R')
+```
+
+Now that we're sure of our working directory, let's create some folders for our analysis scripts and results thereof.
+
+```{r create_structure}
+# -------------------------------------------------------------------------
+# Create directory structure
+
+dir.create('scripts', recursive = TRUE, showWarnings = FALSE)
+dir.create('results/figures', recursive = TRUE, showWarnings = FALSE)
+dir.create('results/tables', recursive = TRUE, showWarnings = FALSE)
+dir.create('results/rdata', recursive = TRUE, showWarnings = FALSE)
+```
+
+## Saving scripts
+
+Let's save our currently open script in the `scripts/` folder as `IRR_day1.R` by clicking <KBD>File</KBD> and then <KBD>Save</KBD>.
+
+**Checkpoint**
 
 # Loading libraries
 
@@ -314,7 +334,7 @@ geo_so
 
 We have specified some parameters to remove genes and cells which do not contain very much information. Specifically a gene is removed if it is expressed in 1 or fewer cells, and a cell is removed if it contains reads for 50 or fewer genes. In the context of this workshop, this helps us minimize memory usage.
 
-## molecule_info.h5 as an alternative input to Seurat
+## molecule_info.h5 as an alternative input to Seurat {.unlisted .unnumbered}
 <details>
 <summary>*H5 (aka HDF5) is an alternative file format*</summary>
 
