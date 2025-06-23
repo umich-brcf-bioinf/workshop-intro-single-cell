@@ -119,11 +119,12 @@ As described [in more detail by the Ouyang Lab](https://ouyanglab.com/singlecell
 2. Correlation based approaches that estimate the similarity between the cells or clusters in the input data and some reference data
 3. Machine learning approaches that include training on a single-cell reference atlas. 
 
-![Image: Diagram of types of cell annotation approaches (from Oyang materials).](./images/curriculum/07-CellTypeAnnotation/Ouyang_clust-celltype.png)   
+![Image: Diagram of types of cell annotation approaches (from Oyang materials).](./images/curriculum/07-CellTypeAnnotation/Ouyang_clust-celltype.png){height=60%}     
+<br/>
 
 However, across any of these approaches the quality of the reference data (and reliability of the authors labels) and relevancy to your specific tissue/experiment (and the resolution of your biological question) is crucial. Additionally, it's important to consider that rare or novel cell populations may not be present or well-characterized in available references and that even after filtering, some clusters might correspond to stressed or dying cells and not a particular cell-type or subtype. Therefore, any prediction should be reviewed and considered in the context both marker gene expression for the dataset and knowledge of the biological system and broader literature. 
 
-Some tools and references are available solely or primarily for human tissues (and not mouse or rat), particular for tissues other than PBMCs and the brain. For human data, if a relevant reference is available for your experiment, we would recommend trying [Azimuth (created by authors of Seurat)](https://azimuth.hubmapconsortium.org/). [10x has a tutorial](https://www.10xgenomics.com/analysis-guides/automated-cell-type-annotation-from-r-to-loupe-using-louper) that includes example of using Azimuth, including a feature of the tool that allows for first pass of cell-type assignment of more common cell-types followed by identifying rarer populations that may not be identified in the first pass. 
+Some tools and references are available solely or primarily for human tissues (and not mouse or rat), particular for tissues other than PBMCs and the brain. For human data, if a relevant reference is available for your experiment, we would recommend trying [Azimuth (created by authors of Seurat)](https://azimuth.hubmapconsortium.org/). [10x has a tutorial](https://www.10xgenomics.com/analysis-guides/automated-cell-type-annotation-from-r-to-loupe-using-louper) that includes example of using Azimuth, including a feature of the tool that allows for first pass of cell-type assignment of more common cell-types followed by identifying rarer populations. 
 
 <details>
     <summary>*Additional automated annotation resources*</summary>
@@ -137,7 +138,8 @@ A tool we often use for both mouse and human data cell-type predictions is calle
 
 <!-- consider adding [scType](https://cran.r-project.org/web/packages/scCATCH/vignettes/tutorial.html) as an alternative -->
 
-![Image: scCATCH summary from Shao et al (2020).](./images/curriculum/07-CellTypeAnnotation/scCATCH-paper-VizAbstract.jpeg) 
+![Image: scCATCH summary from Shao et al (2020).](./images/curriculum/07-CellTypeAnnotation/scCATCH-paper-VizAbstract.jpeg){height=75%}   
+<br/>
 
 First, we need to load the scCATCH library. Then, we'll double check that we are using the expected resolution cluster results (this is particularly important if we generated multiple resolutions in our clustering steps), before creating a new object from our `counts` data with `createscCATCH()` and adding our marker genes to the scCATCCH object.
 

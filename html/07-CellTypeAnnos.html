@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-06-19" />
+<meta name="date" content="2025-06-23" />
 
 <title>Cell Type Annotation</title>
 
@@ -416,7 +416,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Cell Type Annotation</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-06-19</h4>
+<h4 class="date">2025-06-23</h4>
 
 </div>
 
@@ -522,6 +522,7 @@ reference atlas.</li>
 <div class="float">
 <img
 src="images/curriculum/07-CellTypeAnnotation/Ouyang_clust-celltype.png"
+style="height:60.0%"
 alt="Image: Diagram of types of cell annotation approaches (from Oyang materials)." />
 <div class="figcaption">Image: Diagram of types of cell annotation
 approaches (from Oyang materials).</div>
@@ -700,8 +701,14 @@ immune_markers[[&#39;T-cell&#39;]] = c( &#39;Cd3d&#39;,&#39;Cd3e&#39;,&#39;Cd3g&
 <pre class="r"><code># -------------------------------------------------------------------------
 # Plot other immune to assist with cluster identification
 immune_markers_plot = DotPlot(geo_so, features = immune_markers, assay = &#39;SCT&#39;)  +
-  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
-immune_markers_plot
+  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))</code></pre>
+<pre><code>Warning: The `facets` argument of `facet_grid()` is deprecated as of ggplot2 2.2.0.
+ℹ Please use the `rows` argument instead.
+ℹ The deprecated feature was likely used in the Seurat package.
+  Please report the issue at &lt;https://github.com/satijalab/seurat/issues&gt;.
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+<pre class="r"><code>immune_markers_plot
 
 # save to file
 ggsave(filename = &#39;results/figures/immune_markers_sct_dot_plot.png&#39;, 
@@ -764,8 +771,9 @@ fig1g_markers = c(&#39;Cxcl1&#39;, &#39;Cxcl2&#39;, &#39;Ccl2&#39;, &#39;Ccl3&#3
 fig1h_markers = c(&#39;Cxcr2&#39;, &#39;Csf1r&#39;, &#39;Csf3r&#39;, &#39;Tgfbr1&#39;, &#39;Tgfbr3&#39;, &#39;Il1r1&#39;, &#39;Il6ra&#39;, &#39;Lifr&#39;, &#39;Tgfbr2&#39;)
 
 # create DotPlots for genes from paper
-fig1g_sct_dot_plot = DotPlot(geo_so, features = fig1g_markers, assay = &#39;SCT&#39;)
-fig1h_sct_dot_plot = DotPlot(geo_so, features = fig1h_markers, assay = &#39;SCT&#39;)
+fig1g_sct_dot_plot = DotPlot(geo_so, features = fig1g_markers, assay = &#39;SCT&#39;)</code></pre>
+<pre><code>Warning: The following requested variables were not found: Il6b</code></pre>
+<pre class="r"><code>fig1h_sct_dot_plot = DotPlot(geo_so, features = fig1h_markers, assay = &#39;SCT&#39;)
 
 # save plots to file
 ggsave(filename = &#39;results/figures/markers_fig1g_sct_dot_plot.png&#39;, 
@@ -1229,9 +1237,9 @@ code)</strong>
 the level of specificity that’s relevant to <em>your</em> biological
 question or use the same labels for clusters that don’t seems to share
 similar expression programs</p>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
-Ncells   9845902  525.9   16457942  879.0   16457942   879.0
-Vcells 345269301 2634.2 1042879492 7956.6 1628720028 12426.2</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells   7077066  378.0   12502211  667.7  12502211  667.7
+Vcells 340097603 2594.8  876572846 6687.8 841451716 6419.8</code></pre>
 <img src="images/curriculum/07-CellTypeAnnotation/07-catch_umap_plots-1.png" width="1152" style="display: block; margin: auto;" />
 </details>
 <p><br> <br/></p>
@@ -1245,9 +1253,9 @@ Vcells 345269301 2634.2 1042879492 7956.6 1628720028 12426.2</code></pre>
 # (Ok since we saved the plots as we went along)
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
-Ncells   9766358  521.6   16457942  879.0   16457942   879.0
-Vcells 341688364 2606.9 1042879492 7956.6 1628720028 12426.2</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells   6997570  373.8   12502211  667.7  12502211  667.7
+Vcells 336516743 2567.5  876572846 6687.8 841451716 6419.8</code></pre>
 <p>We’ll save the scCATCH object and our updated Seurat object with cell
 type annotations.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
