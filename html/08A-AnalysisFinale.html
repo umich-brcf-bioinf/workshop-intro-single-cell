@@ -453,15 +453,15 @@ running the follow steps:</p>
 <!--- revise into table format to list steps and related parameters/tools used -->
 <table>
 <colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
+<col width="26%" />
+<col width="36%" />
+<col width="36%" />
 </colgroup>
 <thead>
 <tr class="header">
 <th align="left">Step</th>
 <th align="left">Goal</th>
-<th align="left">Parameters/tools used in workshop</th>
+<th align="left">Parameters/tools used in workshop      </th>
 </tr>
 </thead>
 <tbody>
@@ -469,9 +469,8 @@ running the follow steps:</p>
 <td align="left">Secondary QC filtering</td>
 <td align="left">Identify healthy, single-cells for downstream
 analysis</td>
-<td align="left">min and max <code>nFeature_RNA</code> (genes per cell),
-min and max <code>nCount_RNA</code> (total counts per cell), max
-<code>percent.mt</code> (% mitochondrial genes per cell)</td>
+<td align="left"><code>nFeature_RNA &lt; 300</code> (genes per cell),
+max <code>percent.mt</code> (% mitochondrial genes per cell)</td>
 </tr>
 <tr class="even">
 <td align="left">Normalization</td>
@@ -514,8 +513,9 @@ the statistical test used for the standard comparisons and
 helpful for creating a more descriptive methods summary, like what would
 be included in a paper.</p>
 <!--- then show descriptive methods (moved form wrap-up section) -->
-<div id="example-descriptive-methods" class="section level2">
-<h2>Example descriptive methods</h2>
+</div>
+<div id="example-publication-style-methods" class="section level1">
+<h1>Example publication style methods</h1>
 <details>
 <summary>
 <strong>Data analysis</strong>
@@ -583,6 +583,8 @@ class="uri">doi:10.1186/s13059-014-0550-8</a>.</li>
 </ol>
 </details>
 <p></br></p>
+<div id="methods-from-original-paper" class="section level2">
+<h2>Methods from original paper</h2>
 <p>The example dataset used in the workshop was inspired by Sorkin et
 al. so it can also be helpful to consider the methods section from the
 original <a
@@ -641,19 +643,20 @@ FC-410-1002) reagents, loaded at 200 pM following Illumina’s denaturing
 and dilution recommendations. The run configuration was 26 × 8 × 98
 cycles for Read 1, Index and Read 2, respectively.</p>
 </details>
+<p><br/></p>
 <p>Additionally, the <code>sessionInfo</code> function produces a list
 of the relevant versions of R and all the libraries that were loaded in
 the analysis. While this level of detail is usually most useful for
 troubleshooting, it’s helpful to preserve this information for your
 records and to include the output when asking for help, particularly in
-public forums.<br/></p>
+public forums.</p>
 <details>
 <summary>
 <strong>Session Info</strong>
 </summary>
-<p><em>This info is generally not included in main body of a paper, but
-serious reproducibility street-cred if it shows up in
-supplemental.</em><br/> Hear me now, believe me later.</p>
+<p>This info is generally not included in main body of a paper, but
+serious reproducibility street-cred if it shows up in supplemental.<br/>
+<em>Hear me now, believe me later.</em></p>
 <!-- consider converting to executed code instead of static -->
 <!-- consider creating a detailed getting help section that includes a session info example -->
 <pre><code>devtools::session_info()
@@ -819,18 +822,17 @@ supplemental.</em><br/> Hear me now, believe me later.</p>
  zlibbioc           1.50.0     2024-04-30 [2] Bioconductor 3.19 (R 4.4.1)
  zoo                1.8-12     2023-04-13 [2] CRAN (R 4.4.1)</code></pre>
 </details>
-<p>Now, we can highlight some of the key decision points in the analysis
-process and discuss some of the downstream approaches that we aren’t
-able to cover in this workshop. <br/></p>
+<p><br/></p>
 <hr />
 </div>
 </div>
 <div id="downstream-approaches" class="section level1">
 <h1>Downstream approaches</h1>
-<p>Beyond differential expression within clusters, either with each cell
-as a replicate or using a pseudobulk approach, there are many other
-possible avenues of exploration and analysis for scRNA-seq data. This
-includes but is not limited to:</p>
+<p>Although outside the scope of the workshop, there are many other
+possible avenues of exploration and analysis for scRNA-seq data beyond
+differential expression within clusters, either with each cell as a
+replicate or using a pseudobulk approach. This includes but is not
+limited to:</p>
 <ul>
 <li><p>Integration with other modalities (e.g. ATAC-seq, VDJ,
 etc.)</p></li>
@@ -894,8 +896,9 @@ alternative approaches or tools:</p>
 <td align="left">If you see <strong>poor clustering (one big blob) or
 clusters that seem be driven by quality metrics</strong> like total
 counts or correspond to stress/debris instead of biological relevant
-cell-types, <strong>re-filtering with more stringent thresholds might
-help</strong></td>
+cell-types, then <strong>re-filtering with more stringent
+thresholds</strong> might help, including adding a threshold for
+<code>nCount_RNA</code> (total counts per cell)</td>
 </tr>
 <tr class="even">
 <td align="left">Secondary QC filtering</td>
@@ -940,11 +943,11 @@ preserving unique cell populations.
 </tr>
 <tr class="even">
 <td align="left">Clustering</td>
-<td align="left"><!-- add PCA and resolution parameter choices--></td>
+<td align="left"><!--Lieden as alternative --></td>
 </tr>
 <tr class="odd">
 <td align="left">Cell type annotation</td>
-<td align="left">While we used <code>scCATCH</code> if more specific
+<td align="left">While we used <code>scCATCH</code>, if more specific
 example data and annotations are available for your tissue (e.g. brain
 or blood/immune) or if the predictions from <code>scCATCH</code> don’t
 seem relevant to your tissue and/or experimental question, there are
@@ -954,29 +957,36 @@ using a similar dataset.</td>
 </tr>
 <tr class="even">
 <td align="left">Differential expression</td>
-<td align="left">While we used Wilcoxin and DESeq2 for our differential
-expression testing, other tools like MAST or EdgeR can also be used
-and/or more complex models with covariates could be used.</td>
+<td align="left">While we used <code>Wilcoxin</code> and
+<code>DESeq2</code> for our differential expression testing, other tools
+like <code>MAST</code> or <code>EdgeR</code> can also be used and/or
+more complex models with covariates could be used.</td>
 </tr>
 <tr class="odd">
 <td align="left">Differential expression</td>
-<td align="left">We also choose a general cutoff to call DE genes but if
-there are not enough DE genes, it might make sense to relax that cutoff
-for some clusters. Conversely, if there are too many DE genes to use for
-downstream steps like functional enrichments it might be necessary to
-make the cutoffs more stringent for those specific comparisons.</td>
+<td align="left">We choose a general cutoff
+(<code>p_val_adj &lt; 0.05</code> &amp;
+<code>abs(avg_log2FC) &gt; 1.5</code>)) to call DE genes but if
+<strong>there are not enough DE genes</strong>, then it might make sense
+to <strong>relax those cutoff for some clusters</strong>.</td>
 </tr>
 <tr class="even">
+<td align="left">Differential expression</td>
+<td align="left">Conversely if there are <strong>too many DE genes to
+use for downstream steps</strong> like functional enrichments, then it
+might be necessary to <strong>make the cutoffs more stringent</strong>
+for those specific comparisons.</td>
+</tr>
+<tr class="odd">
 <td align="left">Subclustering</td>
-<td align="left">While we weren’t able to cover this approach, if you
-want to know what general cell-types present but are more interested in
-comparing the proportions or gene expression between subtypes of a more
-general cell population (e.g. it’s helpful to know how many B-cell,
+<td align="left">While we weren’t able to cover this topic, if you
+wanted to know what general cell-types present but are more interested
+in comparing the proportions or gene expression between subtypes of a
+more general cell population (e.g. it’s helpful to know how many B-cell,
 T-cells, etc are generally in your PBMC samples but you are most
-interested if the proportion of different effector T-cells are impacted
-by the treatment and if so, what genes are differentially expressed
-within that subpopulation), it might be worth considering running
-subclustering after initial clustering and annotation.</td>
+interested in of subtypes of effector T-cells), it might be worth
+considering running subclustering after initial clustering and
+annotation.</td>
 </tr>
 </tbody>
 </table>
