@@ -323,8 +323,8 @@ To help with future troubleshooting - here's a reiteration the key analysis step
 
 <!-- List for now but expect would be better as a table e.g.| Step :: What we did :: Alternative(s) |-->
 
-| Step | Issue & potential alternative(s) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
-|:-----------------------------------|:-----------------------------------|
+| Step | Issue & potential alternative(s) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+|:---------------------|:-----------------------------------------------------|
 | Secondary QC filtering | If you see **poor clustering (one big blob) or clusters that seem be driven by quality metrics** like total counts or correspond to stress/debris instead of biological relevant cell-types, **re-filtering with more stringent thresholds might help** |
 | Secondary QC filtering | If you are **missing expected cell type(s) after clustering** that might have a different average number of genes expressed or total counts (like blood cells or T-cells) or with a higher expected % mitochondrial genes, then **re-filtering with more relaxed thresholds** could help to recover those cells and allow them to be included in the downstream analysis |
 | Normalization | If **clusters correspond more to technical factors** than biologically relevant cell-types, then **covariates for those technical factors** may need to added to the normalization model or a different normalization approach might be needed |
@@ -339,9 +339,10 @@ To help with future troubleshooting - here's a reiteration the key analysis step
 <!--- Does that cover the main decision points? -->
 
 ------------------------------------------------------------------------
-<br/>
 
-# Resources for continued learning
+<br/>   
+
+# Resources for continued learning.    
 
 -   Learning bioinformatic analyses is more like a process than a task. Resources to consider:
     -   A CZI NDCN curated list of resources for [self-guided learning](https://ndcn.github.io/self-guided-learning/){target="_blank"}
