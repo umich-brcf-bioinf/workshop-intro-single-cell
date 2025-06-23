@@ -668,7 +668,7 @@ geo_so</code></pre>
 Active assay: SCT (20561 features, 3000 variable features)
  3 layers present: counts, data, scale.data
  1 other assay present: RNA
- 1 dimensional reduction calculated: unintegrated.sct.pca</code></pre>
+ 2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca</code></pre>
 <p>After running the command in the console, we should see that
 <code>geo_so</code> has a new reduction added to that slot in the Seurat
 object as shown in the schematic:</p>
@@ -695,12 +695,6 @@ heatmap_1 +
 # save to file
 ggsave(filename = &#39;results/figures/qc_pca_heatmap-pc1.png&#39;,
        width = 6, height = 4.5, units = &#39;in&#39;)</code></pre>
-<pre><code>Warning: The `slot` argument of `FetchData()` is deprecated as of SeuratObject 5.0.0.
-ℹ Please use the `layer` argument instead.
-ℹ The deprecated feature was likely used in the Seurat package.
-  Please report the issue at &lt;https://github.com/satijalab/seurat/issues&gt;.
-This warning is displayed once every 8 hours.
-Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
 <div class="figure" style="text-align: center">
 <img src="images/curriculum/04-PCAandIntegration/04-pca_heatmap_one_hidden-1.png" alt="DimHeatmap for PC1 alone" width="50%" />
 <p class="caption">
@@ -962,8 +956,8 @@ ggsave(filename = &#39;results/figures/optimal_pcs.png&#39;,
 rm(alt_pcs)
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   6731754  359.6   12502211  667.7  12502211  667.7
-Vcells 371533461 2834.6  661086230 5043.7 654316524 4992.1</code></pre>
+Ncells   6762606  361.2   12502211  667.7  12502211  667.7
+Vcells 373483938 2849.5  876572846 6687.8 761677796 5811.2</code></pre>
 <p>Again, this number is likely a starting point and may need to be
 revised depending on the outcome of the downstream steps.</p>
 <p>While outside the scope of this workshop, there are community efforts
@@ -1136,8 +1130,8 @@ plots = c(&quot;heatmap_1&quot;)
 rm(list=Filter(exists, plots))
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   6737989  359.9   12502211  667.7  12502211  667.7
-Vcells 373481834 2849.5  876572846 6687.8 758200333 5784.7</code></pre>
+Ncells   6760541  361.1   12502211  667.7  12502211  667.7
+Vcells 373529569 2849.9  876572846 6687.8 762020796 5813.8</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">

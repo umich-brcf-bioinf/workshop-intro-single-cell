@@ -220,7 +220,7 @@ ggsave(filename = 'results/figures/qc_pca_heatmap-pc1.png',
        width = 6, height = 4.5, units = 'in')
 ```
 
-```{r, pca_heatmap_one_hidden, message = FALSE, echo = FALSE, out.width='50%', fig.cap='DimHeatmap for PC1 alone'}
+```{r, pca_heatmap_one_hidden, message = FALSE, warning=FALSE, echo = FALSE, out.width='50%', fig.cap='DimHeatmap for PC1 alone'}
 # -------------------------------------------------------------------------
 # look at first PC alone first
 heatmap_1 <- DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, fast = FALSE, reduction = 'unintegrated.sct.pca') # works but doesn't include PC numbers
