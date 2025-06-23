@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-06-19" />
+<meta name="date" content="2025-06-23" />
 
 <title>PCA and Integration</title>
 
@@ -414,7 +414,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">PCA and Integration</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-06-19</h4>
+<h4 class="date">2025-06-23</h4>
 
 </div>
 
@@ -683,22 +683,30 @@ alt="Image: Schematic after RunPCA()." />
 patterns in the data. Here we will specify that the first 24 PCs be
 included in the figure and that 500 cells are randomly subsetted for the
 plot. <em>Note - you may need to increase your plot window size to
-resolve errors regarding figure margins.</em></p>
+resolve errors regarding figure margins.</em>
+<!-- revise to be hidden executed block plus shown non-executed block to ensure displayed code is a single block instead of being split up --></p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # look at first PC alone first
-heatmap_1 &lt;- DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, fast = FALSE, reduction = &#39;unintegrated.sct.pca&#39;) # works but doesn&#39;t include PC numbers
+heatmap_1 &lt;- DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, fast = FALSE, reduction = &#39;unintegrated.sct.pca&#39;) # doesn&#39;t include which PC(s) are included in plot
 heatmap_1 + 
   labs(title=&quot;PC1: top 30 genes x top 500 cells&quot;) + 
-  theme(plot.title = element_text(hjust = 0.5, face = &quot;bold&quot;)) </code></pre>
+  theme(plot.title = element_text(hjust = 0.5, face = &quot;bold&quot;)) 
+
+# save to file
+ggsave(filename = &#39;results/figures/qc_pca_heatmap-pc1.png&#39;,
+       width = 6, height = 4.5, units = &#39;in&#39;)</code></pre>
+<pre><code>Warning: The `slot` argument of `FetchData()` is deprecated as of SeuratObject 5.0.0.
+ℹ Please use the `layer` argument instead.
+ℹ The deprecated feature was likely used in the Seurat package.
+  Please report the issue at &lt;https://github.com/satijalab/seurat/issues&gt;.
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
 <div class="figure" style="text-align: center">
-<img src="images/curriculum/04-PCAandIntegration/04-pca_heatmap_one-1.png" alt="DimHeatmap for PC1 alone" width="50%" />
+<img src="images/curriculum/04-PCAandIntegration/04-pca_heatmap_one_hidden-1.png" alt="DimHeatmap for PC1 alone" width="50%" />
 <p class="caption">
 DimHeatmap for PC1 alone
 </p>
 </div>
-<pre class="r"><code># save to file
-ggsave(filename = &#39;results/figures/qc_pca_heatmap-pc1.png&#39;,
-       width = 6, height = 4.5, units = &#39;in&#39;)</code></pre>
 <p>In the plot of just the first PC, we see the rows are labeled with
 gene names and PC scores plotted with positive values in yellow,
 negative values in purple, and zero in black <a
@@ -711,20 +719,22 @@ title.</p>
 can look at additional dimensions using the same
 <code>DimHeatmap()</code> function. However, we’ll use the default
 plotting where <code>fast=TRUE</code> so base plotting will be used
-instead of <code>ggplot</code>.</p>
+instead of <code>ggplot</code>.
+<!-- revise to be hidden executed block plus shown non-executed block to ensure displayed code is a single block instead of being split up --></p>
 <pre class="r"><code>#  -------------------------------------------------------
 # plot cell by gene heatmaps for larger set of dimensions
-DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, combine = FALSE, reduction = &#39;unintegrated.sct.pca&#39;)</code></pre>
-<div class="figure" style="text-align: center">
-<img src="images/curriculum/04-PCAandIntegration/04-pca_heatmap_18-1.png" alt="DimHeatmap for PC1-18" width="816" />
-<p class="caption">
-DimHeatmap for PC1-18
-</p>
-</div>
-<pre class="r"><code># need to use png() to write to file because this isn&#39;t a ggplot
+DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, combine = FALSE, reduction = &#39;unintegrated.sct.pca&#39;)
+
+# need to use png() to write to file because this isn&#39;t a ggplot
 png(filename = &#39;results/figures/qc_pca_heatmap-pc1-18.png&#39;, width = 12, height = 30, units = &#39;in&#39;, res = 300)
   DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;)
 dev.off()</code></pre>
+<div class="figure" style="text-align: center">
+<img src="images/curriculum/04-PCAandIntegration/04-pca_heatmap_18_hidden-1.png" alt="DimHeatmap for PC1 alone" width="50%" />
+<p class="caption">
+DimHeatmap for PC1 alone
+</p>
+</div>
 <pre><code>png 
   2 </code></pre>
 <p>As we scroll down in this plot, we see less and less structure in our
@@ -732,19 +742,21 @@ plots and more zero scores (in black) indicating that less variation is
 being represented by larger PCs overall. However, these patterns can be
 hard to see so we can also select a few PCs to take a closer look at,
 again using the default <code>fast=TRUE</code> option to generate a base
-plot.</p>
+plot.
+<!-- revise to be hidden executed block plus shown non-executed block to ensure displayed code is a single block instead of being split up --></p>
 <pre class="r"><code># ------------------------------------------------------------
 # Plot cell by gene heatmaps for a subset of dimensions 
-DimHeatmap(geo_so, dims=c(1,5,10,20,30,50), cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;, nfeatures=20)</code></pre>
+DimHeatmap(geo_so, dims=c(1,5,10,20,30,50), cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;, nfeatures=20)
+
+png(filename = &#39;results/figures/qc_pca_heatmap-select.png&#39;, width = 12, height = 10, units = &#39;in&#39;, res = 300)
+  DimHeatmap(geo_so, dims=c(1,5,10,20,30,50), cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;, nfeatures=20)
+dev.off()</code></pre>
 <div class="figure" style="text-align: center">
-<img src="images/curriculum/04-PCAandIntegration/04-pca_heatmap_zoom-1.png" alt="DimHeatmap for select PCs" width="75%" />
+<img src="images/curriculum/04-PCAandIntegration/04-pca_heatmap_zoom_hidden-1.png" alt="DimHeatmap for select PCs" width="75%" />
 <p class="caption">
 DimHeatmap for select PCs
 </p>
 </div>
-<pre class="r"><code>png(filename = &#39;results/figures/qc_pca_heatmap-select.png&#39;, width = 12, height = 10, units = &#39;in&#39;, res = 300)
-  DimHeatmap(geo_so, dims=c(1,5,10,20,30,50), cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;, nfeatures=20)
-dev.off()</code></pre>
 <pre><code>png 
   2 </code></pre>
 <p>When we look at the selected PCs, we can see that PC10 has quite a
@@ -949,9 +961,9 @@ ggsave(filename = &#39;results/figures/optimal_pcs.png&#39;,
 
 rm(alt_pcs)
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
-Ncells   9683568  517.2   16457942  879.0   16457942   879.0
-Vcells 454575171 3468.2 1303599364 9945.7 1628720028 12426.2</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells   6731754  359.6   12502211  667.7  12502211  667.7
+Vcells 371533461 2834.6  661086230 5043.7 654316524 4992.1</code></pre>
 <p>Again, this number is likely a starting point and may need to be
 revised depending on the outcome of the downstream steps.</p>
 <p>While outside the scope of this workshop, there are community efforts
@@ -1123,9 +1135,9 @@ plots = c(&quot;heatmap_1&quot;)
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
-Ncells   9710576  518.7   16457942  879.0   16457942   879.0
-Vcells 456443530 3482.4 1303599364 9945.7 1628720028 12426.2</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells   6737989  359.9   12502211  667.7  12502211  667.7
+Vcells 373481834 2849.5  876572846 6687.8 758200333 5784.7</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">
