@@ -292,7 +292,6 @@ devtools::session_info()
 </details>
 
 Now, we can highlight some of the key decision points in the analysis process and discuss some of the downstream approaches that we aren't able to cover in this workshop.
-
 <br/>
 
 ------------------------------------------------------------------------
@@ -312,9 +311,7 @@ Beyond differential expression within clusters, either with each cell as a repli
 -   Velocity analysis (note: not compatible with the flex probe based kits), see [the chapter from the single-cells best practices book](https://www.sc-best-practices.org/trajectories/rna_velocity.html) for detailed theory/modeling or the [10x data vignette for velocyto](https://pklab.med.harvard.edu/velocyto/notebooks/R/SCG71.nb.html) for a practical example in R
 
 We would recommend looking for studies in similar tissues or with similar experimental questions to see what kind of approaches and tools were used to help guide your own analysis plans.
-
 <br/> 
-<br/>
 
 ------------------------------------------------------------------------
 
@@ -326,7 +323,7 @@ To help with future troubleshooting - here's a reiteration the key analysis step
 
 <!-- List for now but expect would be better as a table e.g.| Step :: What we did :: Alternative(s) |-->
 
-| Step | Issue & potential alternative(s) |
+| Step | Issue & potential alternative(s) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
 |:-----------------------------------|:-----------------------------------|
 | Secondary QC filtering | If you see **poor clustering (one big blob) or clusters that seem be driven by quality metrics** like total counts or correspond to stress/debris instead of biological relevant cell-types, **re-filtering with more stringent thresholds might help** |
 | Secondary QC filtering | If you are **missing expected cell type(s) after clustering** that might have a different average number of genes expressed or total counts (like blood cells or T-cells) or with a higher expected % mitochondrial genes, then **re-filtering with more relaxed thresholds** could help to recover those cells and allow them to be included in the downstream analysis |
@@ -342,7 +339,7 @@ To help with future troubleshooting - here's a reiteration the key analysis step
 <!--- Does that cover the main decision points? -->
 
 ------------------------------------------------------------------------
-
+<br/>
 
 # Resources for continued learning
 
