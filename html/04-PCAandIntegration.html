@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-04-24" />
+<meta name="date" content="2025-06-23" />
 
 <title>PCA and Integration</title>
 
-<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -414,7 +414,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">PCA and Integration</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-04-24</h4>
+<h4 class="date">2025-06-23</h4>
 
 </div>
 
@@ -660,16 +660,15 @@ with those PCs.</p>
 # PCA and Integration
 # =========================================================================
 
-# -------------------------------------------------------------------------
 # Build a PCA and add it to the Seurat object
 geo_so = RunPCA(geo_so, reduction.name = &#39;unintegrated.sct.pca&#39;)
 geo_so</code></pre>
 <pre><code>An object of class Seurat 
-46957 features across 31559 samples within 2 assays 
-Active assay: SCT (20468 features, 3000 variable features)
+47050 features across 31559 samples within 2 assays 
+Active assay: SCT (20561 features, 3000 variable features)
  3 layers present: counts, data, scale.data
  1 other assay present: RNA
- 1 dimensional reduction calculated: unintegrated.sct.pca</code></pre>
+ 2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca</code></pre>
 <p>After running the command in the console, we should see that
 <code>geo_so</code> has a new reduction added to that slot in the Seurat
 object as shown in the schematic:</p>
@@ -684,15 +683,20 @@ alt="Image: Schematic after RunPCA()." />
 patterns in the data. Here we will specify that the first 24 PCs be
 included in the figure and that 500 cells are randomly subsetted for the
 plot. <em>Note - you may need to increase your plot window size to
-resolve errors regarding figure margins.</em></p>
+resolve errors regarding figure margins.</em>
+<!-- revise to be hidden executed block plus shown non-executed block to ensure displayed code is a single block instead of being split up --></p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # look at first PC alone first
-heatmap_1 &lt;- DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, fast = FALSE, reduction = &#39;unintegrated.sct.pca&#39;) # works but doesn&#39;t include PC numbers
+heatmap_1 &lt;- DimHeatmap(geo_so, dims=1, cells=500, balanced=TRUE, fast = FALSE, reduction = &#39;unintegrated.sct.pca&#39;) # doesn&#39;t include which PC(s) are included in plot
 heatmap_1 + 
   labs(title=&quot;PC1: top 30 genes x top 500 cells&quot;) + 
-  theme(plot.title = element_text(hjust = 0.5, face = &quot;bold&quot;)) </code></pre>
+  theme(plot.title = element_text(hjust = 0.5, face = &quot;bold&quot;)) 
+
+# save to file
+ggsave(filename = &#39;results/figures/qc_pca_heatmap-pc1.png&#39;,
+       width = 6, height = 4.5, units = &#39;in&#39;)</code></pre>
 <div class="figure" style="text-align: center">
-<img src="images/curriculum/04-PCAandIntegration/04-pca_heatmap_one-1.png" alt="DimHeatmap for PC1 alone" width="50%" />
+<img src="images/curriculum/04-PCAandIntegration/04-pca_heatmap_one_hidden-1.png" alt="DimHeatmap for PC1 alone" width="50%" />
 <p class="caption">
 DimHeatmap for PC1 alone
 </p>
@@ -709,37 +713,46 @@ title.</p>
 can look at additional dimensions using the same
 <code>DimHeatmap()</code> function. However, we’ll use the default
 plotting where <code>fast=TRUE</code> so base plotting will be used
-instead of <code>ggplot</code>.</p>
-<pre class="r"><code># Plot cell by gene heatmaps for larger set of dimensions -----------------------
-# look at first 18 PCs
-DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, combine = FALSE, reduction = &#39;unintegrated.sct.pca&#39;)</code></pre>
-<div class="figure" style="text-align: center">
-<img src="images/curriculum/04-PCAandIntegration/04-pca_heatmap_18-1.png" alt="DimHeatmap for PC1-18" width="816" />
-<p class="caption">
-DimHeatmap for PC1-18
-</p>
-</div>
-<pre class="r"><code># note - need to use png() to write to file because this isn&#39;t a ggplot
-png(filename = &#39;results/figures/qc_pca_heatmap.png&#39;, width = 12, height = 40, units = &#39;in&#39;, res = 300)
+instead of <code>ggplot</code>.
+<!-- revise to be hidden executed block plus shown non-executed block to ensure displayed code is a single block instead of being split up --></p>
+<pre class="r"><code>#  -------------------------------------------------------
+# plot cell by gene heatmaps for larger set of dimensions
+DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, combine = FALSE, reduction = &#39;unintegrated.sct.pca&#39;)
+
+# need to use png() to write to file because this isn&#39;t a ggplot
+png(filename = &#39;results/figures/qc_pca_heatmap-pc1-18.png&#39;, width = 12, height = 30, units = &#39;in&#39;, res = 300)
   DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;)
 dev.off()</code></pre>
-<pre><code>RStudioGD 
-        2 </code></pre>
+<div class="figure" style="text-align: center">
+<img src="images/curriculum/04-PCAandIntegration/04-pca_heatmap_18_hidden-1.png" alt="DimHeatmap for PC1 alone" width="50%" />
+<p class="caption">
+DimHeatmap for PC1 alone
+</p>
+</div>
+<pre><code>png 
+  2 </code></pre>
 <p>As we scroll down in this plot, we see less and less structure in our
 plots and more zero scores (in black) indicating that less variation is
 being represented by larger PCs overall. However, these patterns can be
 hard to see so we can also select a few PCs to take a closer look at,
-again using the default <code>fast=TRUE</code> option and getting a base
-plot.</p>
-<pre class="r"><code># Plot cell by gene heatmaps for a subset of dimensions -----------------------
-# zoom in on a few selected dims (CG suggestion)
-DimHeatmap(geo_so, dims=c(1,5,10,20, 30,50), cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;, nfeatures=20)</code></pre>
+again using the default <code>fast=TRUE</code> option to generate a base
+plot.
+<!-- revise to be hidden executed block plus shown non-executed block to ensure displayed code is a single block instead of being split up --></p>
+<pre class="r"><code># ------------------------------------------------------------
+# Plot cell by gene heatmaps for a subset of dimensions 
+DimHeatmap(geo_so, dims=c(1,5,10,20,30,50), cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;, nfeatures=20)
+
+png(filename = &#39;results/figures/qc_pca_heatmap-select.png&#39;, width = 12, height = 10, units = &#39;in&#39;, res = 300)
+  DimHeatmap(geo_so, dims=c(1,5,10,20,30,50), cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;, nfeatures=20)
+dev.off()</code></pre>
 <div class="figure" style="text-align: center">
-<img src="images/curriculum/04-PCAandIntegration/04-pca_heatmap_zoom-1.png" alt="DimHeatmap for select PCs" width="75%" />
+<img src="images/curriculum/04-PCAandIntegration/04-pca_heatmap_zoom_hidden-1.png" alt="DimHeatmap for select PCs" width="75%" />
 <p class="caption">
 DimHeatmap for select PCs
 </p>
 </div>
+<pre><code>png 
+  2 </code></pre>
 <p>When we look at the selected PCs, we can see that PC10 has quite a
 bit of blocky structure that is separating about half the cells for a
 subset of genes. For the later PCs, we are seeing less ‘blocks’
@@ -822,12 +835,15 @@ Related - how important is that decision to the downstream impact (e.g. how much
 <p>Instead of choosing based on the elbow plot by sight alone, we can
 try to quantify our choice algorithmically. Here we create a function to
 return a recommended PC based on two possible metrics ( (A) cumulative
-variation or (B) above a minimum step size). We can apply that function
-to our data to get a good starting point for number of PCs to
-include.</p>
+variation or (B) above a minimum step size). We can apply a version of
+this function that was borrowed from <a
+href="https://hbctraining.github.io/scRNA-seq/lessons/elbow_plot_metric.html">HBC</a>
+to our data to select a good starting point for number of PCs to include
+for clustering later on.
+<!--- revised function name per discussion with Raymond ---></p>
 <pre class="r"><code># -------------------------------------------------------------------------
-# Estimate optimal PCs for clustering with a function
-optimal_pcs = function(so, reduction) {
+# Estimate the number of PCs to use for clustering with a function
+check_pcs = function(so, reduction) {
     # quantitative check for number of PCs to include
     pct = so@reductions[[reduction]]@stdev / sum(so@reductions[[reduction]]@stdev) * 100
     cum = cumsum(pct)
@@ -839,12 +855,9 @@ optimal_pcs = function(so, reduction) {
 }
 
 # Apply function to our data
-pcs = optimal_pcs(geo_so, &#39;unintegrated.sct.pca&#39;)
+pcs = check_pcs(geo_so, &#39;unintegrated.sct.pca&#39;)
 pcs</code></pre>
-<pre><code>[1] 16</code></pre>
-<pre class="r"><code># -------------------------------------------------------------------------
-# Based on the heatmap (and some behind the scenes testing), we&#39;ll modify the number of PCs
-pcs = 10</code></pre>
+<pre><code>[1] 17</code></pre>
 <p>Again, this number is likely a starting point and may need to be
 revised depending on the outcome of the downstream steps.</p>
 <summary>
@@ -862,7 +875,7 @@ original function, but also:</p>
 </ul>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Define a function to estimate optimal PCs for clustering
-optimal_pcs_advanced = function(so, reduction, print_plot=TRUE, verbose=TRUE) {
+check_pcs_advanced = function(so, reduction, print_plot=TRUE, verbose=TRUE) {
   # quantitative check for number of PCs to include
   threshold_var_cum_min = 90
   threshold_var_pct_max = 5
@@ -928,17 +941,23 @@ optimal_pcs_advanced = function(so, reduction, print_plot=TRUE, verbose=TRUE) {
 }</code></pre>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Apply function to our data
-optimal_pcs = optimal_pcs_advanced(geo_so, &#39;unintegrated.sct.pca&#39;)</code></pre>
+alt_pcs = check_pcs_advanced(geo_so, &#39;unintegrated.sct.pca&#39;)</code></pre>
+<p><img src="images/curriculum/04-PCAandIntegration/04-apply_estimate_alt_pcs-1.png" width="816" style="display: block; margin: auto;" /></p>
 <pre><code>Reduction unintegrated.sct.pca: 50 PCs (total var = 100)
-    PC 42 (total var = 90.98) : Smallest PC that explains at least 90% total variance
-    PC 16 (total var = 53.21) : Largest PC with incremental variance step at least 0.1%
-    Recommended num of PCs: 16</code></pre>
-<p><img src="images/curriculum/04-PCAandIntegration/04-apply_estimate_optimal_pcs-1.png" width="816" style="display: block; margin: auto;" /></p>
+    PC 42 (total var = 90.93) : Smallest PC that explains at least 90% total variance
+    PC 17 (total var = 55.04) : Largest PC with incremental variance step at least 0.1%
+    Recommended num of PCs: 17</code></pre>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Save plot of PCs
 ggsave(filename = &#39;results/figures/optimal_pcs.png&#39;,
-       plot=optimal_pcs$plot,
-       width = 8, height = 8, units = &#39;in&#39;)</code></pre>
+       plot=alt_pcs$plot,
+       width = 8, height = 8, units = &#39;in&#39;)
+
+rm(alt_pcs)
+gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells   6762606  361.2   12502211  667.7  12502211  667.7
+Vcells 373483938 2849.5  876572846 6687.8 761677796 5811.2</code></pre>
 <p>Again, this number is likely a starting point and may need to be
 revised depending on the outcome of the downstream steps.</p>
 <p>While outside the scope of this workshop, there are community efforts
@@ -958,6 +977,10 @@ clustering trees</a></li>
 <hr/>
 </details>
 <p><br/></p>
+<!-- move this section to projection and clustering once ready to incorporate examples of alternative PCA choices-->
+<pre class="r"><code># -------------------------------------------------------------------------
+# Based on the heatmaps (and some behind the scenes testing), we&#39;ll modify the number of PCs
+pcs = 10</code></pre>
 </div>
 <div id="visualizing-our-pc-results" class="section level3">
 <h3>Visualizing our PC results</h3>
@@ -972,10 +995,10 @@ column:</p>
 # first label by sample
 DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;orig.ident&#39;) 
 
-# then label by day
+# then label by day, which looks more useful
 DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;time&#39;)
 
-# save 
+# save plot labeled by day
 ggsave(filename = &#39;results/figures/qc_pca_plot_unintegrated_sct_day.png&#39;,
        width = 7, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/04-PCAandIntegration/04-pca_loading_plots-1.png" width="816" style="display: block; margin: auto;" /><img src="images/curriculum/04-PCAandIntegration/04-pca_loading_plots-2.png" width="816" style="display: block; margin: auto;" /></p>
@@ -1062,8 +1085,8 @@ the <code>Seurat</code> object:</p>
 # Observe that we now have a new reduction, `integrated.sct.rpca`
 geo_so </code></pre>
 <pre><code>An object of class Seurat 
-46957 features across 31559 samples within 2 assays 
-Active assay: SCT (20468 features, 3000 variable features)
+47050 features across 31559 samples within 2 assays 
+Active assay: SCT (20561 features, 3000 variable features)
  3 layers present: counts, data, scale.data
  1 other assay present: RNA
  2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca</code></pre>
@@ -1085,6 +1108,31 @@ ggsave(filename = &#39;results/figures/qc_pca_plot_integrated_sct_day.png&#39;,
        width = 7, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/04-PCAandIntegration/04-check_integration-1.png" width="816" style="display: block; margin: auto;" /></p>
 <!--- confirmed in testing that PCA plot is updated if run on catched geo_so object --->
+<div id="remove-plot-variables-once-they-are-saved"
+class="section level3">
+<h3>Remove plot variables once they are saved</h3>
+<p>Plots are terrific for visualizing data and we use them liberally in
+our analysis and the workshop. Interestingly, ggplots save a reference
+to the source dataset - in our case a rather large Seurat object. That’s
+ok in most cases, BUT if you save your RStudio environment (or RStudio
+temporarily suspends your session), RStudio will save a <strong>separate
+copy</strong> of the Seurat object for each ggplot object; RStudio’s
+simplistic approach avoids a lot of complexity, but can drastically
+increase your load time and memory usage.</p>
+<p>Since (a) we have the script to recreate the plots and (b) we
+explicitly saved them as graphic objects - we can simply remove them
+from memory.</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Remove plot variables from the environment to avoid excessive memory usage
+plots = c(&quot;heatmap_1&quot;)
+
+# Only remove plots that actually exist in the environment
+rm(list=Filter(exists, plots))
+gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells   6760541  361.1   12502211  667.7  12502211  667.7
+Vcells 373529569 2849.9  876572846 6687.8 762020796 5813.8</code></pre>
+</div>
 </div>
 <div id="save-our-progress" class="section level1">
 <h1>Save our progress</h1>

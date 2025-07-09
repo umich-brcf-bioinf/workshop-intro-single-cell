@@ -1,5 +1,5 @@
 ---
-title: "Independent Exercise"
+title: "Independent Exercises"
 author: "UM Bioinformatics Core Workshop Team"
 date: "`r Sys.Date()`"
 lang: "en"
@@ -41,50 +41,76 @@ knitr_fig_path("XX")
 <br/>
 ![](images/wayfinder/09-IndependentExercise-Wayfinder.png){title="Wayfinder: Independent Exercise"}
 <br/>
+<!-- Revise wayfinder image if Day 1 exercises are included -->
 
-# Introduction
 
-We can extend our analysis by performing some parameter iteration to determine how that impacts our clustering (and might impact our later results).
+Build on the content and analysis steps covered in the workshop sessions by working through these independent exercises. **Note - if you work on the exercises make sure to restart R session to clear out environment before closing the window (like we have at the end of each session) to avoid lags when logging in the next day**
+<br/>
 
-<!-- regular html comment --> 
-<!--Add specific goals for section-->
 
-```{r, eval = FALSE}
+# Day 1 Exercises
+
+```{r, Day1_startup, eval = FALSE}
 # =========================================================================
-# Independent Exercise
+# Independent Exercise - Day 1 Startup
 # =========================================================================
 
-## BEFORE CLOSING WINDOW - POWER DOWN AND RESTART R SESSION !!!!
-
-# Load library and data
-
-# After restarting our R session, load the required libraries
+# After restarting our R session, load the required libraries & input data
 library(Seurat)
 library(BPCells)
 library(tidyverse)
 
-# Then load in integrated data from instructor
-geo2_so = readRDS('/home/workshop/rcavalca/ISC_R/results/rdata/geo_so_sct_integrated.rds')
+# TO ADD - loading corresponding R object for Day 1 exercises
 
-#### Clustering - testing alternative PCs ------------
-# look at elbow plot to check PCs and alternatives to the 13 selected for initial analysis
+## NOTE - BEFORE STOPPING WORK ON THE EXERCISES REMEMBER TO POWER DOWN AND RESTART R SESSION !!!!
+```
+
+<br/>
+
+# Day 2 Exercises
+
+```{r, Day2_startup, eval = FALSE}
+# =========================================================================
+# Independent Exercise - Day 2 Startup
+# =========================================================================
+
+# After restarting our R session, load the required libraries & input data
+library(Seurat)
+library(BPCells)
+library(tidyverse)
+
+# Use provided copy of integrated data
+geo2_so = readRDS('inputs/prepared_data/rdata/geo_so_sct_integrated.rds')
+
+## NOTE - BEFORE STOPPING WORK ON THE EXERCISES REMEMBER TO POWER DOWN AND RESTART R SESSION !!!!
+```
+
+## Day 2 Exercise 1 - Clustering with reduced number of PCs
+
+<!--- expect to shift clustering testing to same code that Chris used to generate examples of alt clustering --->
+
+```{r, Day2_clustering1, eval = FALSE}
+## -----------------------------------------
+## Round 1: try with fewer PCs included
+
+# look at elbow plot to check PCs and alternatives to the number selected today
 ElbowPlot(geo2_so, ndims = 50, reduction = 'unintegrated.sct.pca')
 
-# Round 1: try with reduced number of PCs
-pcs = 8
+# select smaller value to try (we used 6)
+pcs = 6
 
 # generate nearest neighbor (graph), using selected number of PCs
 geo2_so = FindNeighbors(geo2_so, dims = 1:pcs, reduction = 'integrated.sct.rpca')
 
 # Round 2: adjust resolution after testing PCs (remember this only impacts the how the boundaries of the neighbors are drawn, not the underlying NN graph/structure)
 # start with one resolution, but can see impact of changing this parameter by changing which commands are commented out/run
-res = 0.4 
+res = 0.2
+# res = 0.4
 # res = 1.0
-# res = 0.2
 
 # generate clusters, using `pcs` and `res` to make a custom cluster name that will be added to the metadata
 geo2_so = FindClusters(geo2_so, resolution = res, 
-                       cluster.name = paste0('int.sct.rpca.clusters_',pcs,'PC.',res,'res'))
+                       cluster.name = paste0('int.sct.rpca.clusters_fewer'))
 
 # look at meta.data to see cluster labels
 head(geo2_so@meta.data)
@@ -93,14 +119,14 @@ head(geo2_so@meta.data)
 # Note - only want to include the `pcs` in the reduction name since `res` changes the cluster divisions but not reduction run at this step
 geo2_so = RunUMAP(geo2_so, dims = 1:pcs, 
                   reduction = 'integrated.sct.rpca', 
-                  reduction.name = paste0('umap.integrated.sct.rpca_',pcs,'PC'))
+                  reduction.name = paste0('umap.integrated.sct.rpca_fewer'))
 # check object ot see if named reduction was added
 geo2_so
 
 # plot clustering results
 post_integration_umap_clusters_testing = 
   DimPlot(geo2_so, group.by = 'seurat_clusters', label = TRUE, 
-          reduction = paste0('umap.integrated.sct.rpca_',pcs,'PC')) + NoLegend()
+          reduction = paste0('umap.integrated.sct.rpca_fewer')) + NoLegend()
 post_integration_umap_clusters_testing # look at plot
 
 # output to file, including the number of PCs and resolution used to generate results
@@ -114,141 +140,138 @@ ggsave(filename = paste0('results/figures/umap_int_sct_clusters_',
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()
 
-## Optional - Save a copy of the Seurat object in its current state
-# saveRDS(geo2_so, file = paste0('results/rdata/geo_so_sct_integrated_',pcs,'PC.',res,'res','.rds'))
+## Save a copy of the Seurat object in its current state
+saveRDS(geo2_so, file = paste0('results/rdata/geo_so_sct_integrated_alt.rds'))
 
-## Next, generate markers to see how that changes 
-# prep for cluster comparisons
-geo2_so = SetIdent(geo2_so, value = paste0('int.sct.rpca.clusters_',pcs,'PC.',res,'res'))
-geo2_so = PrepSCTFindMarkers(geo2_so, assay = "SCT")
-# NOTE - this step will take some time to run - if your R session crashes, it means the server ran out of memory; wait a litle and then re-start your session and either load the intermediate Robject just saved to file or start at the top of the script and re-run
+```
 
-# Run comparisons for each cluster to generate markers, limiting to positive FCs
-geo2_markers = FindAllMarkers(geo2_so, only.pos = TRUE)
+#### Check-in Questions - UMAP with fewer PCs
+How does the UMAP plot look when fewer PCs are used? How is the plot impacted if different resolution parameters are used?
 
-# Create table of top 5 markers per cluster (using default ranking)
-top_5 = geo2_markers %>% filter(p_val_adj < 0.01) %>% group_by(cluster) %>% slice_head(n = 5)
-head(top_5, n = 10) # look at results
 
-# Write top markers to file, labeling file with PC and resolution parameters used
-write_csv(top_5, file = paste0('results/tables/top5_marker_genes_,',pcs,'PC.',res,'res','.csv'))
+### Clean up session 
 
-## Next - run cell type predictions for current clustering results using scCATCH
-library(scCATCH) # load library
-
-# create scCATCH object, using count data
-geo2_catch = createscCATCH(data = geo2_so@assays$SCT@counts, cluster = as.character(Idents(geo2_so)))
-
-# add marker genes to use for predictions
-catch_markers = geo2_markers %>% rename('logfc' = 'avg_log2FC')
-geo2_catch@markergene = geo2_markers
-
-# specify tissues/cell-types from the scCATCH reference
-geo2_catch@marker = cellmatch[cellmatch$species == 'Mouse' & cellmatch$tissue %in% c('Blood', 'Peripheral Blood', 'Muscle', 'Skeletal muscle', 'Epidermis', 'Skin'), ]
-
-# run scCATCH to generate predictions
-geo2_catch = findcelltype(geo2_catch)
-
-# look at the predictions
-geo2_catch@celltype %>% select(cluster, cell_type, celltype_score)
-
-## Use predictions to label clusters 
-# Extract the cell types only to merge into the meta.data
-catch_celltypes = geo2_catch@celltype %>% select(cluster, cell_type)
-colnames(catch_celltypes)[2] = paste0('cell_type.',pcs,'PC.',res,'res') # adjust column names to make unique
-
-## Optional further extension - generate plots for known markers and then customize cluster labels as demostrated in main content here: https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/2025-02-12/html/07-CellTypeAnnos.html#Using_known_cell-type_markers
-
-# Merge cell types in but as a new table to slide into @meta.data
-new_metadata = geo2_so@meta.data %>% 
-  left_join(catch_celltypes, 
-            by = c('seurat_clusters' = 'cluster')) # using `seurat_clusters`, which will store the most recently generated cluster labels for each cell
-head(new_metadata)
-rownames(new_metadata) = rownames(geo2_so@meta.data) #  We are implicitly relying on the same row order!
-
-# Replace the meta.data
-geo2_so@meta.data = new_metadata 
-head(geo2_so@meta.data)
-
-# Create UMAP plot with new cluster labels
-catch_umap_plot = DimPlot(geo2_so, group.by = paste0('cell_type.',pcs,'PC.',res,'res'), 
-                          label = TRUE, reduction = paste0('umap.integrated.sct.rpca_',pcs,'PC'))
-catch_umap_plot
-#### Question - If you are using the scCATCH predictions as labels, notice which clusters have the "Hematopoietic Stem Cell" label. If you look at the top markers for the original numbered clusters (or try to plot the known markers in the notes), are there alternative labels that you think would be more appropriate for those clusters?
-
-# Save the plot to file
-# output to file, including the number of PCs and resolution used to generate results
-ggsave(filename = paste0('results/figures/umap_int_catch-labeled_', 
-                         pcs,'PC.',res,'res','.png'),
-       plot = catch_umap_plot, 
-       width = 8, height = 6, units = 'in')
-
+```{r, cleanup_day1, eval=FALSE}
+## -------------------
 ## Clean up session 
+
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 rm(catch_celltypes, catch_markers, geo2_catch, geo2_markers, new_metadata, top_5); 
 gc()
 
-## Save copy of geo2_seo in current state
-saveRDS(geo2_so, file = paste0('results/rdata/geo_so_sct_integrated_',pcs,'PC.',res,'res','.rds'))
+## Save copy of geo2_seo in current state to use for future exercises
+saveRDS(geo2_so, file = paste0('results/rdata/geo_so_sct_integrated_alt.rds'))
+```
+<br/>
 
-#########
+**If stopping here - make sure to clear environement and restart R session!!!**
+<br/>
 
-## Clustering - testing with more PCs ------------
-# Round 2 - choose a larger number of PCs
-pcs = 18 # can try a different number
+## Day 2 Exercise 2 - Clustering with increased number of PCs
 
-# Set resolution (may need to test other values)
-res = 0.4 
-# res = 1.0
-# res = 0.2
+```{r, Day2_clustering2, eval = FALSE}
+## -----------------------------------------
+## Round 2 - choose a larger number of PCs
 
-# Run code (copied from above) - outputs will use pcs=20 and res parameters set above
+pcs = 20 # can use this provided value or select a different value
+res = 0.8 # Set resolution (may need to test other values)
+
+# Run code (copied from above) - outputs will use pcs and res parameters set above
 # Reductions and metadata labels for clusters will be added to the existing geo2_so, with the set pcs and res values. Objects with the same name will be overwritten if code is adjusted and re-run
 
 # generate nearest neighbor (graph) & clusters, with custom naming for metasata
 geo2_so = FindNeighbors(geo2_so, dims = 1:pcs, reduction = 'integrated.sct.rpca')
 geo2_so = FindClusters(geo2_so, resolution = res, 
-                       cluster.name = paste0('int.sct.rpca.clusters_',pcs,'PC.',res,'res'))
+                       cluster.name = paste0('int.sct.rpca.clusters_more'))
 head(geo2_so@meta.data)
 
 # Prep for UMAP plots by creating reduction (using the reduction name we assigned in the last step)
 geo2_so = RunUMAP(geo2_so, dims = 1:pcs, 
                   reduction = 'integrated.sct.rpca', 
-                  reduction.name = paste0('umap.integrated.sct.rpca_',pcs,'PC'))
+                  reduction.name = paste0('umap.integrated.sct.rpca_more'))
 geo2_so
+```
+<br/>
+
+#### Extension Challenge
+Using the code from above, how would you generate a new ggplot named `post_integration_umap_clusters_testing` that uses the larger number of PCs and the clusters defined with the resolution you defined in the previous code block?
+
+```{r, eval = FALSE}
 
 # plot clustering results for new parameters
-post_integration_umap_clusters_testing = 
-  DimPlot(geo2_so, group.by = 'seurat_clusters', label = TRUE, 
-          reduction = paste0('umap.integrated.sct.rpca_',pcs,'PC')) + NoLegend()
-post_integration_umap_clusters_testing # look at plot
+post_integration_umap_clusters_testing = {add your own code here}
 
-ggsave(filename = paste0('results/figures/umap_int_sct_clusters_', 
-                         pcs,'PC.',res,'res','.png'),
-       plot = post_integration_umap_clusters_testing, 
-       width = 8, height = 6, units = 'in')
-
-## Remove ggplots and clean up environemnt 
+## Remove ggplots and clean up environment 
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()
 
-## Optional - Save a copy of the Seurat object in its current state
-# saveRDS(geo2_so, file = paste0('results/rdata/geo_so_sct_integrated_',pcs,'PC.',res,'res','.rds'))
+## Save a copy of the Seurat object in its current state to use for future exercises
+saveRDS(geo2_so, file = paste0('results/rdata/geo_so_sct_integrated_alt.Rmd'))
+```
+<br/>
 
-## Generate cluster markers to see how that changes with new parameters
-geo2_so = SetIdent(geo2_so, value = paste0('int.sct.rpca.clusters_',pcs,'PC.',res,'res'))
+#### Check-in question - UMAP with more PCs
+How does the UMAP plot look when more PCs are used? Was a higher or lower resolution needed to better align the cluster divisions to the structure observed in the UMAP plot compared to the resolution used in the workshop session?
+
+<br/>
+
+# Day 3 Exercises
+
+```{r, Day3_startup, eval = FALSE}
+# =========================================================================
+# Independent Exercise - Day 3 Startup
+# =========================================================================
+
+# After restarting our R session, load the required libraries
+library(Seurat)
+library(BPCells)
+library(tidyverse)
+
+## NOTE - BEFORE STOPPING WORK ON THE EXERCISES REMEMBER TO POWER DOWN AND RESTART R SESSION !!!!
+```
+
+<br/>
+
+
+## Day 3 Exercise 1 - examine impact of more or fewer PCs on marker genes and cell type predictions
+
+Now that we've covered how to generate emperical marker genes and use a prediction tool to identify possible cell-type labels, let's start by extending the exercise from yesterday to check what our results would look like if we had proceed with fewer or more PCs.
+
+```{r, eval=FALSE}
+# Load in seurat object with your alternative clustering results from yesterday's exercises
+geo2_so = readRDS('results/rdata/geo_so_sct_integrated_alt.Rmd')
+
+# If you didn't generate your own, load the provided copy which uses XX and XX parameters
+## TO ADD - copy of seurat object with "fewer" and "more" PC results added
+
+# Check loaded object and what identities are set
+geo_so
+Idents(geo2_so)
+
+## Note - in the example code, we use the results from "fewer" but can swap to "more" instead
+geo2_so = SetIdent(geo2_so, value = paste0('int.sct.rpca.clusters_fewer'))
+```
+
+```{r, eval=FALSE}
+## Generate cluster markers to see how that changes with new parameters 
 geo2_so = PrepSCTFindMarkers(geo2_so, assay = "SCT") # NOTE - this step will take some time to run
 geo2_markers = FindAllMarkers(geo2_so, only.pos = TRUE)
 
 # Create table of top 5 markers per cluster (using default ranking)
 top_5 = geo2_markers %>% filter(p_val_adj < 0.01) %>% group_by(cluster) %>% slice_head(n = 5)
 head(top_5, n = 10) # look at results
-write_csv(top_5, file = paste0('results/tables/top5_marker_genes_,',pcs,'PC.',res,'res','.csv'))
+write_csv(top_5, file = paste0('results/tables/top5_marker_genes_fewer.csv'))
+```
+<br/>
 
-#### Question: After you generate markers, how do the results differ from the `pcs` = 10 results?
+#### Check-in Question - clustering impact on marker genes
+After you generate markers for the "fewer" `pcs` option, how do the results differ from the markers found for `pcs=10` in the workshop session? What do you think would happen if you tried this with the "more" results?
 
+<br/>
 
-## Next - run scCATCH predictions for current clustering results
+```{r, eval=FALSE}
+## ----------------------------------------------------
+## Next - run scCATCH predictions for alternative clustering results
 geo2_catch = createscCATCH(data = geo2_so@assays$SCT@counts, cluster = as.character(Idents(geo2_so)))
 catch_markers = geo2_markers %>% rename('logfc' = 'avg_log2FC')
 geo2_catch@markergene = geo2_markers
@@ -257,8 +280,12 @@ geo2_catch = findcelltype(geo2_catch)
 
 # Check predictions
 geo2_catch@celltype %>% select(cluster, cell_type, celltype_score)
+```
 
-## Use predictions to label clusters- with optional extension of customizing cluster labels
+```{r, eval=FALSE}
+## ------------------------------------------------------
+## Use predictions to label clusters and UMAP plot
+
 catch_celltypes = geo2_catch@celltype %>% select(cluster, cell_type)
 colnames(catch_celltypes)[2] = paste0('cell_type.',pcs,'PC.',res,'res')
 new_metadata = geo2_so@meta.data %>% 
@@ -286,15 +313,17 @@ rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot)))));
 rm(catch_celltypes, catch_markers, geo2_catch, geo2_markers, new_metadata, top_5); 
 gc()
 
-## Save copy of geo2_seo with 
-saveRDS(geo2_so, file = paste0('results/rdata/geo_so_sct_integrated_',pcs,'PC.',res,'res','.rds'))
+## (Optional) - Save copy of geo2_so
+saveRDS(geo2_so, file = paste0('results/rdata/geo_so_sct_integrated_alt.rds'))
 
 ## BEFORE PROCEEDING TO THE NEXT SECTION or closing window - POWER DOWN AND RESTART R SESSION
 
-####################
+```
+<br/>
 
-## Further extension - how might you generate DE comparisons between D21 and D7 for all annotated clusters?
+## Day 3 Challenge - Run additional DE comparisons using session results
 
+```{r, eval=FALSE}
 ## BEFORE PROCEEDING, MAKE SURE SESSION HAS BEEN restarted and environment is clear
 
 # After restarting our R session, load the required libraries
@@ -307,6 +336,13 @@ geo_so = readRDS('/home/workshop/damki/ISC_R/results/rdata/geo_so_sct_integrated
 
 # check what identities are set for the loaded Seurat object
 Idents(geo_so) # expect to see Day + Cluster labels; if different identities are set, how would you change them?
+## add code to change identities if needed
+```
+
+Once the cluster identities are set to the combined Day + Cluster labels, generate additional DE comparisons using the provided "psuedocode" which are comments that outline what steps are expected/needed to guide adding code to complete those outlined steps.
+```{r, eval = FALSE}
+## ---------------------------------------------------
+## Further extension - how might you generate DE comparisons between D21 and D7 for all annotated clusters?
 
 # check the unique cluster labels - how many clusters are present?
 unique(geo_so$cell_type)
@@ -327,9 +363,6 @@ rm(list = ls())
 gc()
 
 ## BEFORE CLOSING WINDOW - POWER DOWN AND RESTART R SESSION !!!!
-
-
-
 
 ```
 

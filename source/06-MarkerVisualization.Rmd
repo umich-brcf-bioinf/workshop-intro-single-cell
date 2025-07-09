@@ -130,7 +130,7 @@ geo_so = PrepSCTFindMarkers(geo_so)
 geo_markers = FindAllMarkers(geo_so, only.pos = TRUE, min.pct = 0.05)
 
 # Write out full cluster marker results to file
-write_csv(geo_markers, file = 'results/tables/marker_genes_0.4res.csv')
+write_csv(geo_markers, file = 'results/tables/marker_genes_PC10-0.4res.csv')
 
 # Take a look at the first few rows of the result
 head(geo_markers)
@@ -147,7 +147,7 @@ After running `SetIdent()`, cells in our Seurat object are identified by the num
 
 <details>
     <summary>*Seurat v5 improvements*</summary>
-    For marker generation, Seurat v5 uses the [presto package](https://www.biorxiv.org/content/10.1101/653253v1) to reduce the time required to run DE comparisons, particularly for large datasets. For users who are not using presto, Seurat recommends increasing the min.pct and logfc.threshold parameterscto increase the speed of DE testing ([source](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#finding-differentially-expressed-features-cluster-biomarkers)).
+    For marker generation, Seurat v5 uses the [presto package](https://www.biorxiv.org/content/10.1101/653253v1) to reduce the time required to run DE comparisons, particularly for large datasets. For users who are not using presto, Seurat recommends increasing the min.pct and logfc.threshold parameters to increase the speed of DE testing ([source](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#finding-differentially-expressed-features-cluster-biomarkers)).
 </details>
 <br>
 

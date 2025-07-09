@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-04-24" />
+<meta name="date" content="2025-06-23" />
 
 <title>Cell Type Annotation</title>
 
-<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -416,7 +416,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Cell Type Annotation</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-04-24</h4>
+<h4 class="date">2025-06-23</h4>
 
 </div>
 
@@ -519,13 +519,11 @@ the cells or clusters in the input data and some reference data</li>
 <li>Machine learning approaches that include training on a single-cell
 reference atlas.</li>
 </ol>
-<div class="float">
-<img
+<p><img
 src="images/curriculum/07-CellTypeAnnotation/Ouyang_clust-celltype.png"
-alt="Image: Diagram of types of cell annotation approaches (from Oyang materials)." />
-<div class="figcaption">Image: Diagram of types of cell annotation
-approaches (from Oyang materials).</div>
-</div>
+style="height:50.0%"
+alt="Image: Diagram of types of cell annotation approaches (from Oyang materials)." /><br />
+<br/></p>
 <p>However, across any of these approaches the quality of the reference
 data (and reliability of the authors labels) and relevancy to your
 specific tissue/experiment (and the resolution of your biological
@@ -545,8 +543,7 @@ of Seurat)</a>. <a
 href="https://www.10xgenomics.com/analysis-guides/automated-cell-type-annotation-from-r-to-loupe-using-louper">10x
 has a tutorial</a> that includes example of using Azimuth, including a
 feature of the tool that allows for first pass of cell-type assignment
-of more common cell-types followed by identifying rarer populations that
-may not be identified in the first pass.</p>
+of more common cell-types followed by identifying rarer populations.</p>
 <details>
 <summary>
 <em>Additional automated annotation resources</em>
@@ -583,13 +580,11 @@ href="https://www.abcam.com/primary-antibodies/human-cd-antigen-guide">CD
 Marker Handbook</a> and PMIDs for relevant literature are reported in
 the prediction results.</p>
 <!-- consider adding [scType](https://cran.r-project.org/web/packages/scCATCH/vignettes/tutorial.html) as an alternative -->
-<div class="float">
-<img
+<p><img
 src="images/curriculum/07-CellTypeAnnotation/scCATCH-paper-VizAbstract.jpeg"
-alt="Image: scCATCH summary from Shao et al (2020)." />
-<div class="figcaption">Image: scCATCH summary from Shao et al
-(2020).</div>
-</div>
+style="height:60.0%"
+alt="Image: scCATCH summary from Shao et al (2020)." /><br />
+<br/></p>
 <p>First, we need to load the scCATCH library. Then, we’ll double check
 that we are using the expected resolution cluster results (this is
 particularly important if we generated multiple resolutions in our
@@ -605,7 +600,6 @@ select tissues from the species) before we run the tool:</p>
 # Cell Type Annotation
 # =========================================================================
 
-# -------------------------------------------------------------------------
 # Load scCATCH
 library(scCATCH)
 
@@ -634,25 +628,27 @@ sc_pred_tbl = geo_catch@celltype %&gt;%
   select(cluster, cell_type, celltype_score) %&gt;%
   rename(cell_type_prediction = cell_type)
 sc_pred_tbl</code></pre>
-<pre><code>   cluster                      cell_type_prediction   celltype_score
-1        0                   Hematopoietic Stem Cell             0.87
-2        1                                  Pericyte             0.75
-3        2                                Macrophage             0.82
-4        3                            Dendritic Cell             0.86
-5        4                                  Monocyte             0.82
-6        5                   Hematopoietic Stem Cell             0.92
-7        6                    Muscle Progenitor Cell             0.71
-8        7                   Hematopoietic Stem Cell             0.87
-9        8                    Muscle Progenitor Cell             0.75
-10       9                     Muscle Satellite Cell             0.93
-11      10                   Hematopoietic Stem Cell              0.9
-12      11                            Dendritic Cell             0.85
-13      12                         Regulatory T Cell              0.9
-14      13                            Dendritic Cell             0.85
-15      14 Dendritic Cell, Monocyte, Progenitor Cell 0.71, 0.71, 0.71
-16      15                               CD8+ T Cell             0.88
-17      16                                 Stem Cell             0.84
-18      17                               Muscle Cell             0.69</code></pre>
+<pre><code>   cluster    cell_type_prediction celltype_score
+1        0                Pericyte           0.75
+2        1               Stem Cell           0.83
+3        2              Macrophage           0.82
+4        3          Dendritic Cell           0.86
+5        4 Hematopoietic Stem Cell           0.92
+6        5 Hematopoietic Stem Cell           0.87
+7        6                Monocyte           0.82
+8        7  Muscle Progenitor Cell           0.71
+9        8  Muscle Progenitor Cell           0.71
+10       9                Monocyte           0.82
+11      10 Hematopoietic Stem Cell           0.86
+12      11 Hematopoietic Stem Cell           0.90
+13      12       Regulatory T Cell           0.90
+14      13          Dendritic Cell           0.85
+15      14               Stem Cell           0.73
+16      15             CD8+ T Cell           0.88
+17      16               Stem Cell           0.84
+18      17   Muscle Satellite Cell           0.94
+19      18 Hematopoietic Stem Cell           0.87
+20      19             Muscle Cell           0.69</code></pre>
 <p>When we look at our results we can see the cell type score, which
 gives us an idea of the confidence of that prediction. Not shown here
 but the full <code>celltype</code> table also includes marker genes and
@@ -670,11 +666,12 @@ editor.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Write scCATCH predictions to file
 write_csv(sc_pred_tbl, file = &#39;results/tables/scCATCH_cluster_predictions.csv&#39;)</code></pre>
-<div id="using-known-cell-type-markers" class="section level2">
-<h2>Using known cell-type markers</h2>
-<p>To confirm and refine the scCATCH predictions, we’ll spot check some
-known markers for immune populations. Then we’ll look look at some other
-key marker genes from some other relevant resources like <a
+</div>
+<div id="using-known-cell-type-markers" class="section level1">
+<h1>Using known cell-type markers</h1>
+<p>To confirm and/or refine the scCATCH predictions, we’ll spot check
+some known markers for immune populations. Then we’ll look look at some
+other key marker genes from some other relevant resources like <a
 href="https://www.nature.com/articles/s41467-021-27563-3">Chen et al
 (2021)</a>, <a
 href="https://www.nature.com/articles/s41586-021-03549-5">Buechler et al
@@ -698,14 +695,8 @@ immune_markers[[&#39;T-cell&#39;]] = c( &#39;Cd3d&#39;,&#39;Cd3e&#39;,&#39;Cd3g&
 <pre class="r"><code># -------------------------------------------------------------------------
 # Plot other immune to assist with cluster identification
 immune_markers_plot = DotPlot(geo_so, features = immune_markers, assay = &#39;SCT&#39;)  +
-  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))</code></pre>
-<pre><code>Warning: The `facets` argument of `facet_grid()` is deprecated as of ggplot2 2.2.0.
-ℹ Please use the `rows` argument instead.
-ℹ The deprecated feature was likely used in the Seurat package.
-  Please report the issue at &lt;https://github.com/satijalab/seurat/issues&gt;.
-This warning is displayed once every 8 hours.
-Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
-<pre class="r"><code>immune_markers_plot
+  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
+immune_markers_plot
 
 # save to file
 ggsave(filename = &#39;results/figures/immune_markers_sct_dot_plot.png&#39;, 
@@ -742,8 +733,8 @@ want to test other clustering parameters and discuss the results with a
 researcher familiar with the expected cell types. However, we can notice
 some patterns that we can use to refine our cluster annotations.</p>
 <div id="utilizing-genes-of-interest-from-the-original-paper"
-class="section level4">
-<h4>Utilizing genes of interest from the original paper</h4>
+class="section level2">
+<h2>Utilizing genes of interest from the original paper</h2>
 <details>
 <summary>
 <em>Plotting the expression of genes of interest from Sorkin, Huber et
@@ -820,16 +811,18 @@ ggsave(filename = &#39;results/figures/markers_fig1h_rna_dot_plot.png&#39;,
 <p><br></p>
 </div>
 </div>
-</div>
-<div id="annotate-clusters" class="section level1">
-<h1>Annotate clusters</h1>
+<div id="refine-annotations-and-label-clusters" class="section level1">
+<h1>Refine annotations and label clusters</h1>
 <p>Next, we’ll use a revised version of the cell type predictions from a
-file that we prepared and add those labels to our Seurat object to
-replace our clusters’ numerical identities. Note: we will create a new
-metadata object where we join cell types. However, this will destroy the
-row names - which will cause a problem in Seurat - so we have to add
-them back.
-<!--- modify to have a hidden block that runs after to keep this large block intact --></p>
+file that we prepared by refining the scCATCH predictions. How is a
+table like this created?</p>
+<p><br/> <img
+src="images/curriculum/07-CellTypeAnnotation/RefiningCellTypeAnnos.png" />
+<br/></p>
+<p>Note: To add the cell-type labels to our Seurat object to replace our
+clusters’ numerical identities, we will create a new metadata object to
+join in the cell type labels. However this will destroy the row names,
+which will cause a problem in Seurat so we have to add them back.</p>
 <div class="prepared_content cooking_show">
 <p><strong>Load a pre-prepared file:</strong></p>
 <pre class="r"><code># -------------------------------------------------------------------------
@@ -928,13 +921,13 @@ replicate1
 1.240962
 </td>
 <td style="text-align:right;">
-6062
+6061
 </td>
 <td style="text-align:right;">
-2867
+2866
 </td>
 <td style="text-align:left;">
-0
+5
 </td>
 <td style="text-align:left;">
 3
@@ -943,10 +936,10 @@ replicate1
 Hematopoietic Stem Cell
 </td>
 <td style="text-align:left;">
-0.87
+0.92
 </td>
 <td style="text-align:left;">
-Myofibroblast
+Hematopoietic Stem Cell
 </td>
 </tr>
 <tr>
@@ -981,7 +974,7 @@ replicate1
 1509
 </td>
 <td style="text-align:left;">
-0
+5
 </td>
 <td style="text-align:left;">
 3
@@ -990,10 +983,10 @@ replicate1
 Hematopoietic Stem Cell
 </td>
 <td style="text-align:left;">
-0.87
+0.92
 </td>
 <td style="text-align:left;">
-Myofibroblast
+Hematopoietic Stem Cell
 </td>
 </tr>
 <tr>
@@ -1022,25 +1015,25 @@ replicate1
 3.112002
 </td>
 <td style="text-align:right;">
-5314
+5324
 </td>
 <td style="text-align:right;">
-2370
+2380
 </td>
 <td style="text-align:left;">
-0
+1
 </td>
 <td style="text-align:left;">
 3
 </td>
 <td style="text-align:left;">
-Hematopoietic Stem Cell
+Pericyte
 </td>
 <td style="text-align:left;">
-0.87
+0.75
 </td>
 <td style="text-align:left;">
-Myofibroblast
+Pericyte
 </td>
 </tr>
 <tr>
@@ -1122,19 +1115,19 @@ replicate1
 915
 </td>
 <td style="text-align:left;">
-0
+1
 </td>
 <td style="text-align:left;">
 3
 </td>
 <td style="text-align:left;">
-Hematopoietic Stem Cell
+Pericyte
 </td>
 <td style="text-align:left;">
-0.87
+0.75
 </td>
 <td style="text-align:left;">
-Myofibroblast
+Pericyte
 </td>
 </tr>
 <tr>
@@ -1163,13 +1156,13 @@ replicate1
 2.938131
 </td>
 <td style="text-align:right;">
-5865
+5864
 </td>
 <td style="text-align:right;">
-2588
+2587
 </td>
 <td style="text-align:left;">
-0
+5
 </td>
 <td style="text-align:left;">
 3
@@ -1178,25 +1171,17 @@ replicate1
 Hematopoietic Stem Cell
 </td>
 <td style="text-align:left;">
-0.87
+0.92
 </td>
 <td style="text-align:left;">
-Myofibroblast
+Hematopoietic Stem Cell
 </td>
 </tr>
 </tbody>
 </table>
 </div>
-<p><strong>Checkpoint</strong> : Has the metadata for your
-<code>geo_so</code> object been updated?</p>
-<p>We have now added a “cell_type” column to the <code>meta.data</code>
-table:</p>
-<div class="float">
-<img src="images/seurat_schematic/Slide12.png"
-alt="Image: Schematic after adding cell_type column." />
-<div class="figcaption">Image: Schematic after adding cell_type
-column.</div>
-</div>
+<p><br/> <strong>Checkpoint</strong> : Has the metadata for your
+<code>geo_so</code> object been updated? <br/></p>
 <div id="visualise-annotated-clusters" class="section level2">
 <h2>Visualise annotated clusters</h2>
 <p>Lastly, we can generate a revised UMAP plot with our descriptive
@@ -1204,28 +1189,49 @@ cluster labels by using our updated Seurat object and providing the new
 <code>cell_type</code> label for the <code>group.by</code> argument:</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Make a labeled UMAP plot of clusters
-catch_umap_plot = 
+annos_umap_plot = 
   DimPlot(geo_so, group.by = &#39;cell_type&#39;, label = TRUE, reduction = &#39;umap.integrated.sct.rpca&#39;)
-catch_umap_plot
+annos_umap_plot
 
-ggsave(filename = &#39;results/figures/umap_integrated_catch.png&#39;, 
-       plot = catch_umap_plot,
-       width = 10, height = 8, units = &#39;in&#39;)
-
-catch_umap_condition_plot = 
+ggsave(filename = &#39;results/figures/umap_integrated_annotated.png&#39;, 
+       plot =  annos_umap_plot,
+       width = 8, height = 6, units = &#39;in&#39;)</code></pre>
+<p><img src="images/curriculum/07-CellTypeAnnotation/07-annos_umap_plot-1.png" width="960" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Repeat, splitting by day
+annos_umap_condition_plot = 
   DimPlot(geo_so,
           group.by = &#39;cell_type&#39;,
           split.by = &#39;time&#39;,
-          label = TRUE,
+          label = FALSE,
           reduction = &#39;umap.integrated.sct.rpca&#39;)
+annos_umap_condition_plot
 
-ggsave(filename = &#39;results/figures/umap_integrated_catch_byCondition.png&#39;, 
-       plot = catch_umap_condition_plot,
-       width = 10, height = 8, units = &#39;in&#39;)
-
-catch_umap_condition_plot</code></pre>
-<p><img src="images/curriculum/07-CellTypeAnnotation/07-catch_umap_plot-1.png" width="960" style="display: block; margin: auto;" /><img src="images/curriculum/07-CellTypeAnnotation/07-catch_umap_plot-2.png" width="960" style="display: block; margin: auto;" /></p>
-<!-- to add - number of cells per cluster and condition/replicate after annotation --->
+ggsave(filename = &#39;results/figures/umap_integrated_annotated_byCondition.png&#39;, 
+       plot = annos_umap_condition_plot,
+       width = 14, height = 5, units = &#39;in&#39;)</code></pre>
+<p><img src="images/curriculum/07-CellTypeAnnotation/07-annos_umap_plot_day-1.png" width="960" style="display: block; margin: auto;" /></p>
+<p>It can also be helpful to compare our annotated UMAP to the original
+clustering results:</p>
+<p><img src="images/curriculum/07-CellTypeAnnotation/07-compare_umap_plots-1.png" width="1152" style="display: block; margin: auto;" />
+<br/> <!-- Add comment on what to observe from the comparison?? --></p>
+<details>
+<summary>
+<strong>Why didn’t we just use the original scCATCH labels? (with
+code)</strong>
+</summary>
+<!-- Update to add the scCATCH labels as they were and generate labeled UMAP -->
+<p>Predictive tools can be useful but the labels produced may not match
+the level of specificity that’s relevant to <em>your</em> biological
+question or use the same labels for clusters that don’t seems to share
+similar expression programs</p>
+<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells   7080417  378.2   12502211  667.7  12502211  667.7
+Vcells 340183707 2595.4  876572846 6687.8 841451716 6419.8</code></pre>
+<img src="images/curriculum/07-CellTypeAnnotation/07-catch_umap_plots-1.png" width="1152" style="display: block; margin: auto;" />
+</details>
+<p><br> <br/></p>
+<!-- to add - number of cells per cluster and condition/replicate after annotation ?--->
 </div>
 </div>
 <div id="save-our-progress" class="section level1">
@@ -1235,14 +1241,14 @@ catch_umap_condition_plot</code></pre>
 # (Ok since we saved the plots as we went along)
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells   7091302  378.8   11548435   616.8   11548435   616.8
-Vcells 697716121 5323.2 1753349162 13377.0 1688273683 12880.6</code></pre>
-<p>We’ll save the scCATCH object. The Seurat object has not been changed
-in this module.</p>
+<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells   7000886  373.9   12502211  667.7  12502211  667.7
+Vcells 336523922 2567.5  876572846 6687.8 841451716 6419.8</code></pre>
+<p>We’ll save the scCATCH object and our updated Seurat object with cell
+type annotations.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Save Seurat object and annotations
-saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_integrated_with_catch.rds&#39;)
+saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_integrated_with_annos.rds&#39;)
 saveRDS(geo_catch, file = &#39;results/rdata/geo_catch.rds&#39;)</code></pre>
 <p><br/> <br/></p>
 </div>
