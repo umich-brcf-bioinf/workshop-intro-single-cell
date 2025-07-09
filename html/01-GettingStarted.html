@@ -742,6 +742,9 @@ memory:</p>
 # BPCells uses these files for processing, but you typically never look at 
 # their contents directly
 write_matrix_dir(mat = geo_mat, dir = &#39;~/ISC_R/bpcells&#39;, overwrite = TRUE)</code></pre>
+<pre><code>Warning: Matrix compression performs poorly with non-integers.
+• Consider calling convert_matrix_type if a compressed integer matrix is intended.
+This message is displayed once every 8 hours.</code></pre>
 <pre><code>32285 x 35269 IterableMatrix object with class MatrixDir
 
 Row names: Xkr4, Gm1992 ... AC149090.1
@@ -760,8 +763,8 @@ Queued Operations:
 rm(geo_mat)
 gc()</code></pre>
 <pre><code>           used  (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells  6661542 355.8   12110368  646.8  11956892  638.6
-Vcells 13231744 101.0  651684465 4972.0 820162128 6257.4</code></pre>
+Ncells  6309042 337.0   12623352  674.2   7637827  408.0
+Vcells 11782105  89.9  561411869 4283.3 673059693 5135.1</code></pre>
 </div>
 <div id="read-bpcells" class="section level2">
 <h2>Read BPCells</h2>
