@@ -17,6 +17,7 @@ output:
             code_download: false
 ---
 
+```{=html}
 <style type="text/css">
 body {
    font-size: 18px;
@@ -34,6 +35,7 @@ table.fig, th.fig, td.fig {
   padding: 12px;
 }
 </style>
+```
 
 ```{r klippy, include=TRUE, echo=FALSE, message=FALSE, warning=FALSE}
 klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
@@ -47,87 +49,85 @@ knitr_fig_path("08A-DifferentialExpression/08A-")
 
 # Workflow Overview {.unlisted .unnumbered}
 
-<br/>
-![](images/wayfinder/00-FullWayfinder.png)
-<br/>
-<br/>
+<br/> ![](images/wayfinder/00-FullWayfinder.png) <br/> <br/>
 
-# Introduction
+# Key decision points in analysis and methodology
 
-<br/>
-We've successfully analyzed single-cell RNA-seq data, including:     
+<br/> We've successfully analyzed our single-cell RNA-seq data, running the follow steps:
 
 <!--- revise into table format to list steps and related parameters/tools used -->
 
-* Secondary filtering to identify healthy, single-cells for downstream analysis.    
-* Normalization to separate biological effects from technical effects.      
-* Integration to remove batch effects between individual or groups of samples.  
-* Clustering with marker identification and annotation to identify what cell-types are present.      
-* Differential expression comparisons to identify genes that are impacted by the experimental groups/condition within a given cell-type.      
-Organizing the analysis steps and what tools and parameters were used can also be helpful for creating a more descriptive methods summary that would be included in a paper.
+| Step | Goal | Parameters/tools used in workshop &nbsp; &nbsp; &nbsp;|
+|:----------------|:-----------------------|:-----------------------|
+| Secondary QC filtering | Identify healthy, single-cells for downstream analysis | `nFeature_RNA < 300` (genes per cell), max `percent.mt` (% mitochondrial genes per cell) |
+| Normalization | Separate biological effects from technical effects | `SCTransform` with default parameters |
+| Integration | Remove batch effects between individual or groups of samples | `IntegrateLayers` function, using `RPCAIntegration` as the method |
+| Clustering | Group populations of cells with similar expression programs that correspond to cell-types and/or sub-types of interest | `FindNeighbors` and `FindClusters` using default Louvain algorithm with 10 PCs and 0.4 resolution |
+| Annotation | Identify cell-types present in data | `scCATCH` to generate predicted cell-types and expression plots of marker genes manually pulled from the literature to finalize the annotations |
+| Differential expression comparisons | Identify genes that are impacted by the experimental groups/condition within a given cell-type | `FindMarkers` with `wilcox` as the statistical test used for the standard comparisons and `DESeq` used for the psuedobulk comparisons |
+
+Organizing the tools and parameters used in our analysis can also be helpful for creating a more descriptive methods summary, like what would be included in a paper.
 
 <!--- then show descriptive methods (moved form wrap-up section) -->
 
-## Example descriptive methods
-<details>
-<summary>**Single cell RNA sequencing using 10× genomics**</summary>
-
-The example dataset used in the workshop was inspired by this Sorkin et al. and 
-the experimental methods below were excerpted directly from that paper:
-
-- Sorkin, Michael et al. **“Regulation of heterotopic ossification by monocytes in a mouse model of aberrant wound healing.”**
-      Nature communications vol. 11,1 722. 5 Feb. 2020.<br/>
-      <a class="external" href="https://pubmed.ncbi.nlm.nih.gov/32024825/" target="_blank">https://pubmed.ncbi.nlm.nih.gov/32024825/</a>
-
-Tissues harvested from the extremity injury site were digested for 45 min in 0.3% Type 1 Collagenase and 0.4% Dispase II (Gibco) in Roswell Park Memorial Institute (RPMI) medium at 37 °C under constant agitation at 120 rpm. Digestions were subsequently quenched with 10% FBS RPMI and filtered through 40μm sterile strainers. Cells were then washed in PBS with 0.04% BSA, counted and resuspended at a concentration of ~1000 cells/μl. Cell viability was assessed with Trypan blue exclusion on a Countess II (Thermo Fisher Scientific) automated counter and only samples with >85% viability were processed for further sequencing.
-
-University of Michigan Biomedical Research Core Facilities Advanced Genomics 
-Core generated single-cell 3' libraries on the 10× Genomics Chromium Controller following the manufacturers protocol for the v2 reagent kit (10× Genomics, Pleasanton, CA, USA). Cell suspensions were loaded onto a Chromium Single-Cell A chip along with reverse transcription (RT) master mix and single cell 3' gel beads, aiming for 2000–6000 cells per channel. In this experiment, 8700 cells were encapsulated into emulsion droplets at a concentration of 700–1200 cells/ul which targets 5000 single cells with an expected multiplet rate of 3.9%. Following generation of single-cell gel bead-in-emulsions (GEMs), reverse transcription was performed and the resulting Post GEM-RT product was cleaned up using DynaBeads MyOne Silane beads (Thermo Fisher Scientific, Waltham, MA, USA). The cDNA was amplified, SPRIselect (Beckman Coulter, Brea, CA, USA) cleaned and quantified then enzymatically fragmented and size selected using SPRIselect beads to optimize the cDNA amplicon size prior to library construction. An additional round of double-sided SPRI bead cleanup is performed after end repair and A-tailing. Another single-sided cleanup is done after adapter ligation. Indexes were added during PCR amplification and a final double-sided SPRI cleanup was performed. Libraries were quantified by Kapa qPCR for Illumina Adapters (Roche) and size was determined by Agilent tapestation D1000 tapes. Read 1 primer sequence are added to the molecules during GEM incubation. P5, P7 and sample index and read 2 primer sequence are added during library construction via end repair, A-tailing, adaptor ligation and PCR. Libraries were generated with unique sample indices (SI) for each sample. Libraries were sequenced on a HiSeq 4000, (Illumina, San Diego, CA, USA) using a HiSeq 4000 PE Cluster Kit (PN PE-410-1001) with HiSeq 4000 SBS Kit (100 cycles, PN FC-410-1002) reagents, loaded at 200 pM following Illumina's denaturing and dilution recommendations. The run configuration was 26 × 8 × 98 cycles for Read 1, Index and Read 2, respectively.
-</details>
+# Example publication style methods
 
 <details>
-<summary>**Data analysis**</summary> 
-University of Michigan Biomedical Research Core Facilities Advanced Genomics 
-Core executed 10x Genomics Cell Ranger (v9.0.0) to perform sample 
-de-multiplexing, barcode processing, and single cell gene counting (Alignment, 
-Barcoding and UMI Count); alignments were against mm10-2020-A and included 
-intronic sequence. The Cell Ranger filtered barcode feature matrix was 
-used as input to downstream analysis.
 
-All analysis and graphics were generated in R (v4.4.1) [1]. Analysis was performed primarily using the Seurat package (v5.0.1) [2]. Cells with extreme values (which indicate low complexity, doublets, or apoptotic cells) were excluded by filtering to include only cells where Genes/cell >300 and % mitochondrial < 15% resulting in approximately 600-5,600 cells per sample after filtering. Counts were then normalized using the SCTransform method with default parameters [3].
+<summary>**Data analysis**</summary>
+
+University of Michigan Biomedical Research Core Facilities Advanced Genomics Core executed 10x Genomics Cell Ranger (v9.0.0) to perform sample de-multiplexing, barcode processing, and single cell gene counting (Alignment, Barcoding and UMI Count); alignments were against mm10-2020-A and included intronic sequence. The Cell Ranger filtered barcode feature matrix was used as input to downstream analysis.
+
+All analysis and graphics were generated in R (v4.4.1) [1]. Analysis was performed primarily using the Seurat package (v5.0.1) [2]. Cells with extreme values (which indicate low complexity, doublets, or apoptotic cells) were excluded by filtering to include only cells where Genes/cell \>300 and % mitochondrial \< 15% resulting in approximately 600-5,600 cells per sample after filtering. Counts were then normalized using the SCTransform method with default parameters [3].
 
 Normalized data were integrated using the RPCA method (IntegrateLayers function with “SCT” as normalization method. Principal Component Analysis (PCA) was then performed and the first 10 significant components were used for finding nearest neighbors followed by graph-based, semi-unsupervised Louvain clustering into distinct populations (resolution = 0.4). All uniform manifold approximation and projection (UMAP) plots were generated using default settings [4]. To identify marker genes, the clusters in the integrated data were compared pairwise for differential gene expression using Wilcoxon rank-sum test for single-cell gene expression (FindAllMarkers function; default parameters) [5]. Additional marker genes and cell-type predictions were generated with scCATCH (3.2.2) [6].
 
-To identify differentially expressed (DE) genes within the total population, Case and Control samples were compared pairwise for differential expression expression (FindAllMarkers function; log2FC = 1.5; test.use = “Wilcoxon”). For each cluster, the results were further limited to significantly different genes (Benjamini-Hochberg adjusted p-value <= 0.05).  Intra-cluster case-vs-control pseudo bulk comparisons were analyzed using DESeq2 (v1.44.0) [7].
+To identify differentially expressed (DE) genes within the total population, Case and Control samples were compared pairwise for differential expression expression (FindAllMarkers function; log2FC = 1.5; test.use = “Wilcoxon”). For each cluster, the results were further limited to significantly different genes (Benjamini-Hochberg adjusted p-value \<= 0.05). Intra-cluster case-vs-control pseudo bulk comparisons were analyzed using DESeq2 (v1.44.0) [7].
 
 **References**
 
-1. R Core Team (2019). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. https://www.R-project.org/.
-2. Stuart T, Butler A, Hoffman P, Hafemeister C, Papalexi E, III WMM, Stoeckius M, Smibert P, Satija R (2018). “Comprehensive integration of single cell data.” bioRxiv. doi: 10.1101/460147, https://www.biorxiv.org/content/10.1101/460147v1
-3. Hafemeister, C., Satija, R (2019). Normalization and variance stabilization of single-cell RNA-seq data using regularized negative binomial regression. Genome Biol 20, 296. https://doi.org/10.1186/s13059-019-1874-1
-4. Becht, E. et al (2018). Dimensionality reduction for visualizing single-cell data using UMAP. Nat. Biotechnol. 37, 38–44 .
-5. Myles Hollander and Douglas A. Wolfe (1973). Nonparametric Statistical Methods. New York: John Wiley & Sons. Pages 68–75.
-6. Shao et al (2020), scCATCH:Automatic Annotation on Cell Types of Clusters from Single-Cell RNA Sequencing Data, iScience, Volume 23, Issue 3. doi: 10.1016/j.isci.2020.100882.
-7. Love MI, Huber W, Anders S (2014). “Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2.” Genome Biology, 15, 550. doi:10.1186/s13059-014-0550-8.
+1.  R Core Team (2019). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria. <https://www.R-project.org/>.
+2.  Stuart T, Butler A, Hoffman P, Hafemeister C, Papalexi E, III WMM, Stoeckius M, Smibert P, Satija R (2018). “Comprehensive integration of single cell data.” bioRxiv. doi: 10.1101/460147, <https://www.biorxiv.org/content/10.1101/460147v1>
+3.  Hafemeister, C., Satija, R (2019). Normalization and variance stabilization of single-cell RNA-seq data using regularized negative binomial regression. Genome Biol 20, 296. <https://doi.org/10.1186/s13059-019-1874-1>
+4.  Becht, E. et al (2018). Dimensionality reduction for visualizing single-cell data using UMAP. Nat. Biotechnol. 37, 38–44 .
+5.  Myles Hollander and Douglas A. Wolfe (1973). Nonparametric Statistical Methods. New York: John Wiley & Sons. Pages 68–75.
+6.  Shao et al (2020), scCATCH:Automatic Annotation on Cell Types of Clusters from Single-Cell RNA Sequencing Data, iScience, Volume 23, Issue 3. doi: 10.1016/j.isci.2020.100882.
+7.  Love MI, Huber W, Anders S (2014). “Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2.” Genome Biology, 15, 550. <doi:10.1186/s13059-014-0550-8>.
+
 </details>
 </br>
 
-While this level of detail is usually most useful for troubleshooting, the `sessionInfo` function produces a list of the relevant versions of R and all the libraries that were loaded in the analysis. It's helpful to preserve this information for your records and to include the output when asking for help, particularly in public forums.<br/>
+## Methods from original paper
+
+The example dataset used in the workshop was inspired by Sorkin et al. so it can also be helpful to consider the methods section from the original [paper](https://pubmed.ncbi.nlm.nih.gov/32024825/).
+
+<details>
+<summary>**Sorkin et al. Methods**</summary>
+
+the experimental methods below were excerpted directly from:
+
+-   Sorkin, Michael et al. **“Regulation of heterotopic ossification by monocytes in a mouse model of aberrant wound healing.”** Nature communications vol. 11,1 722. 5 Feb. 2020.<br/> <a class="external" href="https://pubmed.ncbi.nlm.nih.gov/32024825/" target="_blank">https://pubmed.ncbi.nlm.nih.gov/32024825/</a>
+
+Tissues harvested from the extremity injury site were digested for 45 min in 0.3% Type 1 Collagenase and 0.4% Dispase II (Gibco) in Roswell Park Memorial Institute (RPMI) medium at 37 °C under constant agitation at 120 rpm. Digestions were subsequently quenched with 10% FBS RPMI and filtered through 40μm sterile strainers. Cells were then washed in PBS with 0.04% BSA, counted and resuspended at a concentration of \~1000 cells/μl. Cell viability was assessed with Trypan blue exclusion on a Countess II (Thermo Fisher Scientific) automated counter and only samples with \>85% viability were processed for further sequencing.
+
+University of Michigan Biomedical Research Core Facilities Advanced Genomics Core generated single-cell 3' libraries on the 10× Genomics Chromium Controller following the manufacturers protocol for the v2 reagent kit (10× Genomics, Pleasanton, CA, USA). Cell suspensions were loaded onto a Chromium Single-Cell A chip along with reverse transcription (RT) master mix and single cell 3' gel beads, aiming for 2000–6000 cells per channel. In this experiment, 8700 cells were encapsulated into emulsion droplets at a concentration of 700–1200 cells/ul which targets 5000 single cells with an expected multiplet rate of 3.9%. Following generation of single-cell gel bead-in-emulsions (GEMs), reverse transcription was performed and the resulting Post GEM-RT product was cleaned up using DynaBeads MyOne Silane beads (Thermo Fisher Scientific, Waltham, MA, USA). The cDNA was amplified, SPRIselect (Beckman Coulter, Brea, CA, USA) cleaned and quantified then enzymatically fragmented and size selected using SPRIselect beads to optimize the cDNA amplicon size prior to library construction. An additional round of double-sided SPRI bead cleanup is performed after end repair and A-tailing. Another single-sided cleanup is done after adapter ligation. Indexes were added during PCR amplification and a final double-sided SPRI cleanup was performed. Libraries were quantified by Kapa qPCR for Illumina Adapters (Roche) and size was determined by Agilent tapestation D1000 tapes. Read 1 primer sequence are added to the molecules during GEM incubation. P5, P7 and sample index and read 2 primer sequence are added during library construction via end repair, A-tailing, adaptor ligation and PCR. Libraries were generated with unique sample indices (SI) for each sample. Libraries were sequenced on a HiSeq 4000, (Illumina, San Diego, CA, USA) using a HiSeq 4000 PE Cluster Kit (PN PE-410-1001) with HiSeq 4000 SBS Kit (100 cycles, PN FC-410-1002) reagents, loaded at 200 pM following Illumina's denaturing and dilution recommendations. The run configuration was 26 × 8 × 98 cycles for Read 1, Index and Read 2, respectively.
+
+</details>
+<br/>
+
+Additionally, the `sessionInfo` function produces a list of the relevant versions of R and all the libraries that were loaded in the analysis. While this level of detail is usually most useful for troubleshooting, it's helpful to preserve this information for your records and to include the output when asking for help, particularly in public forums.
 
 <details>
 <summary>**Session Info**</summary>
-*This info is generally not included in main body of 
-a paper, but serious reproducibility street-cred if it shows up in supplemental.<br/>
-Hear me now, believe me later.*
 
 ```{r eval = exists("on_aws") && on_aws, echo=FALSE}
 # To avoid confusion, we will only generate/refresh these files on AWS instance
 # The on_aws var is initialized in bin/set_values.R
 
 sink('session_info.txt')
-devtools::session_info()
-sink()
 ```
+
+This info is generally not included in main body of a paper, but serious reproducibility street-cred if it shows up in supplemental.<br/> *Hear me now, believe me later.*
 
 ```{r session_info, eval=FALSE}
 ################################################################################
@@ -143,114 +143,84 @@ devtools::session_info()
 
 ```{verbatim session_info_txt, file='session_info.txt', eval=FALSE}
 ```
+
 </details>
-
-Now, we can highlight some of the key decision points in the analysis process and discuss some of the downstream approaches that we aren't able to cover in this workshop.
-
 <br/>
 
----
-
-# Key decision points in analysis and related parameters
-
-<!--- TO EDIT ---> 
-
-As we discussed in the workshop, single-cell analysis can be very iterative with the impact of choices made earlier in the analysis not being apparent right away and often can only evaluate how well those choices reflect the biological context and/or the granularity of our biological question until late in the analysis (ask me how I know). 
-
-Here's a reiteration of some of the key decision points that might need to be revisited, the corresponding parameters, and how we might identify a need to test alternatives:
-
-<!-- List for now but expect would be better as a table e.g.| Step :: What we did :: Alternative(s) |-->
-<!-- -->
-
-* Secondary QC filtering: the relevant parameters are min and max feature counts per cell, min and max total UMIs/counts per cell, max % mito genes per cell; you may need to filter more strictly if you see clusters that have markers that correspond more to stress or debris than an expected cell-type or "blobby" clusters that seem to be driven more by a QC metric (like total UMIs) than biological relevant cell-types; conversely, you may need to filter less if you are missing an expected cell type that might have a different average number of genes expressed or total counts (like blood cells or T-cells) or higher % mito genes     
-
-* Normalization: the relevant step is `SCTransform` with the corresponding parameters. However, there are other normalization option with their corresponding alternative commands (like logtranforms) and also parameters within `SCTransform` or alternative normalizations to add correction for possible technical factors like cell-cycle status or % mito genes or total UMIs; you may need to add corrections for additional technical factors if the clusters seem to correspond more to those technical factors than biologically relevant cell-types; conversely if you started with some corrections and find that there is a low total % variance explained when looking at the PCs and poor clustering, that suggests that there was an overcorrection in the normalization step and some of the biological variation that would be expected to drive biological differences between cell-types across all conditions was removed.         
-
-* Integration: we chose to use `RPCA` for our integration but CCA or Harmony are among other common choices; CCA might be more appropriate if RPCA is not sufficient to correct observed batch effects and all samples/conditions are expected to share the same cell-types; Harmony might be appropriate to correct for batch while preserving unique cell populations, especially if neither RPCA or CCA work well.      
-
-* Clustering: 
-
-<!--- Is there a benchmarking paper for integration methods that's worth linking here?--->
-
-* Cell type annotation: we choose scCATCH to help annotate our clusters with cell-types but there are other sources and tools available that might be worth trying like CellMatch_2.0 or Azimuth or Label transfer, especially if more specific example data and annotations are available for your tissue (e.g. brain or blood/immune) from those alternative sources or if the predictions from scCATCH don't seem relevant to your tissue and/or experimental question.
-
-* Differential expression: we used MAST for our cells as replicates DE comparisons and DESeq2 for our pseudobulk/samples as replicates comparisons but additional parameters (like more complex models with covariates) or other tools like EdgeR can also be used; we also choose a general cutoff to call DE genes but it might make sense to relax that cutoff for some clusters if there are not enough DE genes or conversely make those cutoffs more stringent if there are too many DE genes to use for downstream steps like functional enrichments. 
-
-<!--- Does that cover the main decision points? -->
-
-* Subclustering: this is something we didn't discuss in detail but might be worth considering after initial clustering and annotation if you want to know what general cell-types present but are more interested in comparing the proportions or gene expression between subtypes of a more general cell population (e.g. it's helpful to know how many B-cell, T-cells, etc are generally in your PBMC samples but you are most interested if the proportion of different effector T-cells are impacted by the treatment and if so, what genes are differentially expressed within that subpopulation)
-
-
-<!-- consider adding a getting help section that includes a session info example -->
-
-
----
+------------------------------------------------------------------------
 
 # Downstream approaches
 
-Beyond differential expression within clusters, either with each cell as a replicate or using a pseudobulk approach, there are many other possible avenues of exploration and analysis for scRNA-seq data. This includes but is not limited to:
+Although outside the scope of the workshop, there are many other possible avenues of exploration and analysis for scRNA-seq data beyond differential expression within clusters, either with each cell as a replicate or using a pseudobulk approach. This includes but is not limited to:
 
-- Integration with other modalities (e.g. ATAC-seq, VDJ, etc.)
+-   Integration with other modalities (e.g. ATAC-seq, VDJ, etc.)
 
-- Subclustering clusters of interest - see [HBC's summary on subclustering](https://hbctraining.github.io/scRNA-seq_online/lessons/seurat_subclustering.html), [Seurat's findSubcCluster documentation](https://satijalab.org/seurat/reference/findsubcluster) and [this related issue thread](https://github.com/satijalab/seurat/issues/1883)  
+-   Subclustering clusters of interest - see [HBC's summary on subclustering](https://hbctraining.github.io/scRNA-seq_online/lessons/seurat_subclustering.html), [Seurat's findSubcCluster documentation](https://satijalab.org/seurat/reference/findsubcluster) and [this related issue thread](https://github.com/satijalab/seurat/issues/1883)
 
-- Trajectory or Pseudotime analysis - see [the Ouyang Lab's trajectory analysis](https://ouyanglab.com/singlecell/dimrd.html) or [Broad Institute's materials on trajectory analysis](https://broadinstitute.github.io/2020_scWorkshop/trajectory-analysis.html)
+-   Trajectory or Pseudotime analysis - see [the Ouyang Lab's trajectory analysis](https://ouyanglab.com/singlecell/dimrd.html) or [Broad Institute's materials on trajectory analysis](https://broadinstitute.github.io/2020_scWorkshop/trajectory-analysis.html)
 
-- Cell - Cell communication network inference, see [review by Wilk et al (2023)](https://www.nature.com/articles/s41587-023-01782-z)
+-   Cell - Cell communication network inference, see [review by Wilk et al (2023)](https://www.nature.com/articles/s41587-023-01782-z)
 
-- Velocity analysis (note: not compatible with the flex probe based kits), see [the chapter from the single-cells best practices book](https://www.sc-best-practices.org/trajectories/rna_velocity.html) for detailed theory/modeling or the [10x data vignette for velocyto](https://pklab.med.harvard.edu/velocyto/notebooks/R/SCG71.nb.html) for a practical example in R
+-   Velocity analysis (note: not compatible with the flex probe based kits), see [the chapter from the single-cells best practices book](https://www.sc-best-practices.org/trajectories/rna_velocity.html) for detailed theory/modeling or the [10x data vignette for velocyto](https://pklab.med.harvard.edu/velocyto/notebooks/R/SCG71.nb.html) for a practical example in R
 
-We would recommend looking for studies in similar tissues or experimental questions and see what kind of approaches and tools were used to answer questions related to your biological question.
+We would recommend looking for studies in similar tissues or with similar experimental questions to see what kind of approaches and tools were used to help guide your own analysis plans.
+<br/> 
 
-<br/>
-<br/>
+------------------------------------------------------------------------
 
-# Resources for continued learning
-  - Learning bioinformatic analyses is more like a process than a task. Resources 
-    to consider:
-    - A CZI NDCN curated list of resources for [self-guided learning](https://ndcn.github.io/self-guided-learning/){target="_blank"}
-    - UM Bioinformatics Core links to [training resources/workshops](https://brcf.medicine.umich.edu/cores/bioinformatics-core/training/){target="_blank"}.
-    - **Techniques in Bash and R**
-      - Lesson plans from the UM Bioinformatics Core's recent [Computational Foundations Workshop](https://umich-brcf-bioinf.github.io/workshop-computational-foundations/main/html/){target="_blank"}.
-      - Lessons and workshops in Bash / Git / R / Python : <a href="https://software-carpentry.org/lessons/" target="_blank">
-        Software Carpentry</a>
+# Troubleshooting and alternative approaches
 
-    - **More info on NGS analysis**
-      (A decidedly non-exhaustive list in no discernible order.)
-      - Lesson plans from UM Bioinformatics Core's recent [RNA-Seq Demystified Workshop](https://umich-brcf-bioinf.github.io/workshop-rnaseq-demystified/main/html/){target="_blank"}. (Note this is for bulk RNA-Seq.)
-      - Training materials from [Harvard Chan Bioinformatics Core](https://hbctraining.github.io/main/#advanced-topics-analysis-of-high-throughput-sequencing-ngs-data){target="_blank"}.
-      - [Orchestrating Single-Cell Analysis with Bioconductor](https://bioconductor.org/books/3.12/OSCA/index.html){ target="_blank"}.
-      - Welcome Sanger Instutute's [Analysis of single cell RNA-seq data](https://www.singlecellcourse.org/index.html){target="_blank"}.
-      - In addition to maintaining the Seurat analysis platform, New York Genome
-        Center's [Satija lab](https://satijalab.org/){target="_blank"} publishes
-        many excellent step-by-step tutorials on single-cell analysis, e.g.
-        [Seurat - Guided Clustering Tutorial](https://satijalab.org/seurat/articles/pbmc3k_tutorial){target="_blank"}.
-        The Satija lab also hosts [Single Cell Genomics Day](`r workshop_vars$satija_scgd`){target="_blank"}, 
-        a live-streamed annual symposium on emerging techniques in single-cell
-        analysis.
-      - Nayak, Richa, and Yasha Hasija. **“A hitchhiker's guide to single-cell transcriptomics and data analysis pipelines.”** 
-        Genomics vol. 113,2 (2021): 606-619.<br/>
-        https://pubmed.ncbi.nlm.nih.gov/33485955/
-      - Luecken, Malte D, and Fabian J Theis. **“Current best practices in single-cell RNA-seq analysis: a tutorial.”**
-        Molecular systems biology vol. 15,6 e8746. 19 Jun. 2019.<br/>
-        https://pubmed.ncbi.nlm.nih.gov/31217225/
-      - He, Jiangping et al. **“Practical bioinformatics pipelines for single-cell RNA-seq data analysis.”**
-        Biophysics reports vol. 8,3 (2022): 158-169.<br/>
-        https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10189648/
+As we discussed in the workshop, single-cell analysis can be very iterative with the impact of choices made earlier in the analysis might not being apparent until later in the analysis and often we can only evaluate how well those choices reflect the biological context and/or the granularity of our biological question until the end of the analysis (ask me how I know).
 
-    - For more context on the experiments and data we referenced during the workshop, see the source paper: <br/>
-      Sorkin, Michael et al. **“Regulation of heterotopic ossification by monocytes in a mouse model of aberrant wound healing.”**
-      Nature communications vol. 11,1 722. 5 Feb. 2020.<br/>
-      <a class="external" href="https://pubmed.ncbi.nlm.nih.gov/32024825/" target="_blank">https://pubmed.ncbi.nlm.nih.gov/32024825/</a>
+To help with future troubleshooting - here's a reiteration the key analysis steps, what we might see that would indicate a need to go back to and revise the choices made at that step, and some non-exhaustive alternative approaches or tools:
 
+<!-- List for now but expect would be better as a table e.g.| Step :: What we did :: Alternative(s) |-->
 
+| Step | Issue & potential alternative(s) &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; |
+|:---------------------|:-----------------------------------------------------|
+| Secondary QC filtering | If you see **poor clustering (one big blob) or clusters that seem be driven by quality metrics** like total counts or correspond to stress/debris instead of biological relevant cell-types, then **re-filtering with more stringent thresholds** might help, including adding a threshold for `nCount_RNA` (total counts per cell) |
+| Secondary QC filtering | If you are **missing expected cell type(s) after clustering** that might have a different average number of genes expressed or total counts (like blood cells or T-cells) or with a higher expected % mitochondrial genes, then **re-filtering with more relaxed thresholds** could help to recover those cells and allow them to be included in the downstream analysis |
+| Normalization | If **clusters correspond more to technical factors** than biologically relevant cell-types, then **covariates for those technical factors** may need to added to the normalization model or a different normalization approach might be needed |
+| Normalization | If there is a **low total % variance explained** when looking at the PCs and covariates for one or more technical factor was included in the normalization step, that suggests that there was an overcorrection and some of the biological variation that would be expected to drive biological differences between cell-types across all conditions was removed. Checking the PCA plots to see if any of the known technical covariates might be skewing the data and limiting the model to only those that show evidence of |
+| Integration | We chose to use `RPCA` for our integration but there are other integration options. If **`RPCA` is not sufficient to correct observed batch effects** and all samples/conditions are expected to share the same cell-types, a **`CCA` might be worth trying**. If **neither `RPCA` or `CCA` work well**, another option might be **Harmony, which uses a different approach and parameters** to correct for batch while preserving unique cell populations. <!--- Is there a benchmarking paper for integration methods that's worth linking here?---> |
+| Clustering | <!--Lieden as alternative --> |
+| Cell type annotation | While we used `scCATCH`, if more specific example data and annotations are available for your tissue (e.g. brain or blood/immune) or if the predictions from `scCATCH` don't seem relevant to your tissue and/or experimental question, there are other sources and tools available that might be worth trying like `CellMatch_2.0` or `Azimuth` or a label transfer using a similar dataset. |
+| Differential expression | While we used `Wilcoxin` and `DESeq2` for our differential expression testing, other tools like `MAST` or `EdgeR` can also be used and/or more complex models with covariates could be used. |
+| Differential expression | We choose a general cutoff (`p_val_adj < 0.05` & `abs(avg_log2FC) > 1.5`)) to call DE genes but if **there are not enough DE genes**, then it might make sense to **relax those cutoff for some clusters**. |
+| Differential expression | Conversely if there are **too many DE genes to use for downstream steps** like functional enrichments, then it might be necessary to **make the cutoffs more stringent** for those specific comparisons. | 
+| Subclustering | While we weren't able to cover this topic, if you wanted to know what general cell-types present but are more interested in comparing the proportions or gene expression between subtypes of a more general cell population (e.g. it's helpful to know how many B-cell, T-cells, etc are generally in your PBMC samples but you are most interested in of subtypes of effector T-cells), it might be worth considering running subclustering after initial clustering and annotation. |
+<!--- Does that cover the main decision points? -->
 
-----
+------------------------------------------------------------------------
+
+<br/>   
+
+# Resources for continued learning.    
+
+-   Learning bioinformatic analyses is more like a process than a task. Resources to consider:
+    -   A CZI NDCN curated list of resources for [self-guided learning](https://ndcn.github.io/self-guided-learning/){target="_blank"}
+    -   UM Bioinformatics Core links to [training resources/workshops](https://brcf.medicine.umich.edu/cores/bioinformatics-core/training/){target="_blank"}.
+    -   **Techniques in Bash and R**
+        -   Lesson plans from the UM Bioinformatics Core's recent [Computational Foundations Workshop](https://umich-brcf-bioinf.github.io/workshop-computational-foundations/main/html/){target="_blank"}.
+        -   Lessons and workshops in Bash / Git / R / Python : <a href="https://software-carpentry.org/lessons/" target="_blank"> Software Carpentry</a>
+    -   **More info on NGS analysis** (A decidedly non-exhaustive list in no discernible order.)
+        -   Lesson plans from UM Bioinformatics Core's recent [RNA-Seq Demystified Workshop](https://umich-brcf-bioinf.github.io/workshop-rnaseq-demystified/main/html/){target="_blank"}. (Note this is for bulk RNA-Seq.)
+        -   Training materials from [Harvard Chan Bioinformatics Core](https://hbctraining.github.io/main/#advanced-topics-analysis-of-high-throughput-sequencing-ngs-data){target="_blank"}.
+        -   [Orchestrating Single-Cell Analysis with Bioconductor](https://bioconductor.org/books/3.12/OSCA/index.html){target="_blank"}.
+        -   Welcome Sanger Instutute's [Analysis of single cell RNA-seq data](https://www.singlecellcourse.org/index.html){target="_blank"}.
+        -   In addition to maintaining the Seurat analysis platform, New York Genome Center's [Satija lab](https://satijalab.org/){target="_blank"} publishes many excellent step-by-step tutorials on single-cell analysis, e.g. [Seurat - Guided Clustering Tutorial](https://satijalab.org/seurat/articles/pbmc3k_tutorial){target="_blank"}. The Satija lab also hosts [Single Cell Genomics Day](%60r%20workshop_vars$satija_scgd%60){target="_blank"}, a live-streamed annual symposium on emerging techniques in single-cell analysis.
+        -   Nayak, Richa, and Yasha Hasija. **“A hitchhiker's guide to single-cell transcriptomics and data analysis pipelines.”** Genomics vol. 113,2 (2021): 606-619.<br/> <https://pubmed.ncbi.nlm.nih.gov/33485955/>
+        -   Luecken, Malte D, and Fabian J Theis. **“Current best practices in single-cell RNA-seq analysis: a tutorial.”** Molecular systems biology vol. 15,6 e8746. 19 Jun. 2019.<br/> <https://pubmed.ncbi.nlm.nih.gov/31217225/>
+        -   He, Jiangping et al. **“Practical bioinformatics pipelines for single-cell RNA-seq data analysis.”** Biophysics reports vol. 8,3 (2022): 158-169.<br/> <https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10189648/>
+    -   For more context on the experiments and data we referenced during the workshop, see the source paper: <br/> Sorkin, Michael et al. **“Regulation of heterotopic ossification by monocytes in a mouse model of aberrant wound healing.”** Nature communications vol. 11,1 722. 5 Feb. 2020.<br/> <a class="external" href="https://pubmed.ncbi.nlm.nih.gov/32024825/" target="_blank">https://pubmed.ncbi.nlm.nih.gov/32024825/</a>
+
+------------------------------------------------------------------------
 
 These materials have been adapted and extended from materials listed above. These are open access materials distributed under the terms of the [Creative Commons Attribution license (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.
 
-<br/>
-<br/>
+<br/> <br/>
+
 <hr/>
+
 | [Previous lesson](08-CellTypeAnnos.html) | [Top of this lesson](#top) | [Workshop Wrap Up](workshop_wrap_up.html) |
-| :--- | :----: | ---: |
+|:-----------------------|:----------------------:|-----------------------:|

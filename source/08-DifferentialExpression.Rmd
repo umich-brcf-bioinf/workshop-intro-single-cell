@@ -89,7 +89,7 @@ if(!exists('geo_so')) {
 
   options(future.globals.maxSize = 1e9)
 
-  geo_so = readRDS('results/rdata/geo_so_sct_integrated_with_catch.rds')
+  geo_so = readRDS('results/rdata/geo_so_sct_integrated_with_annos.rds')
 }
 ```
 
@@ -110,10 +110,9 @@ Wilcoxon (default), DESeq2, MAST, etc.
 -->
 
 ## Standard comparisons
-
-First we'll run cell-level comparisons for our data for the pericyte cluster, starting with cells from the D21 vs D7 conditions. We'll need to ensure our cells are labeled to reflect both the cluster and condition identities before running our comparison using `FindMarker()` and summarizing the results:
-
-<!-- add UMAP with facets by groups to show what's being compared? -->
+ 
+First we'll run cell-level comparisons for our data for the pericyte cluster, which seemed to have an interesting pattern between time points in the UMAP plots, starting with cells from the D21 vs D7 conditions. We'll need to ensure our cells are labeled to reflect both the cluster and condition identities before running our comparison using `FindMarker()` and summarizing the results:
+<!-- re-show UMAP with facets by groups to show what's being compared? -->
 
 ```{r, de_make_contrast, eval = FALSE}
 # =========================================================================

@@ -16,10 +16,9 @@ library(klippy)
 library(kableExtra)
 
 # IF KNITTING ON AWS:
-# setwd("~/workshop-intro-single-cell")
+setwd("~/workshop-intro-single-cell")
 
 # The html from the files below don't have the nav bar
-
 render('source/workshop_setup/preregistration_info.md', output_dir='html/workshop_setup/')
 render('source/workshop_setup/preworkshop_checklist.md', output_dir='html/workshop_setup/')
 render('source/workshop_setup/setup_instructions.Rmd', output_dir='html/workshop_setup/')

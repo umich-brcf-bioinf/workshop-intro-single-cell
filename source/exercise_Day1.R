@@ -1,4 +1,15 @@
-# Exercise: adjust number of PCs and resolution to see impact on clustering
+## ====================================
+## Independent exercise testing 
+## ====================================
+
+# --------------------------------------------------------
+# Day 1 Exercises: Exploring QC patterns and filtering thresholds 
+
+# --------------------------------------------------------
+# Day 2 Exercises: Exploring clustering thresholds
+
+# --------------------------------------------------------
+# Day 3 Exercises: Exploring annotations and differential expression
 
 # First - clear current Seurat object to free up memory & remove current results
 rm(geo_so) 
