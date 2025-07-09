@@ -265,6 +265,8 @@ in the __References__ section of each lesson.
 
 * The workshop Code of Conduct has been adapted the NumFocus Code of Conduct (https://numfocus.org/code-of-conduct) which itself draws from from numerous sources, including the Geek Feminism wiki, created by the Ada Initiative and other volunteers, which is under a Creative Commons Zero license, the Contributor Covenant version 1.2.0, the Bokeh Code of Conduct, the SciPy Code of Conduct, the Carpentries Code of Conduct, and the NeurIPS Code of Conduct.
 
+* Some icons/images were sourced from https://openclipart.org/.
+
 * These workshop lesson plans have been adapted and extended from materials 
 listed above. These are open access materials distributed under the terms of the
 [Creative Commons Attribution license (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/), 
