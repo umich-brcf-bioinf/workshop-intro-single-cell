@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-06-19" />
+<meta name="date" content="2025-07-09" />
 
 <title>Differential Expression Analysis</title>
 
@@ -416,7 +416,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Differential Expression Analysis</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-06-19</h4>
+<h4 class="date">2025-07-09</h4>
 
 </div>
 
@@ -537,9 +537,19 @@ and condition identities before running our comparison using
 # Create combined label of day + celltype to use for DE contrasts
 geo_so$day.celltype = paste(geo_so$time, geo_so$cell_type, sep = &#39;_&#39;)
 # check labels
-unique(geo_so$day.celltype)
-
-# Reset cell identities to the combined condition + celltype label
+unique(geo_so$day.celltype)</code></pre>
+<pre><code> [1] &quot;Day0_Hematopoietic Stem Cell&quot;  &quot;Day0_Pericyte&quot;                 &quot;Day0_Monocyte&quot;                 &quot;Day0_Dendritic Cell&quot;          
+ [5] &quot;Day0_Fibroblast&quot;               &quot;Day0_B cell&quot;                   &quot;Day0_Platelet&quot;                 &quot;Day0_Stem Cell&quot;               
+ [9] &quot;Day0_NA&quot;                       &quot;Day0_Myofibroblast&quot;            &quot;Day0_Unknown&quot;                  &quot;Day0_T Cell&quot;                  
+[13] &quot;Day0_Infl. Macrophage&quot;         &quot;Day0_Smooth muscle cell&quot;       &quot;Day7_Monocyte&quot;                 &quot;Day7_Fibroblast&quot;              
+[17] &quot;Day7_Infl. Macrophage&quot;         &quot;Day7_Hematopoietic Stem Cell&quot;  &quot;Day7_Myofibroblast&quot;            &quot;Day7_Platelet&quot;                
+[21] &quot;Day7_Dendritic Cell&quot;           &quot;Day7_Smooth muscle cell&quot;       &quot;Day7_Pericyte&quot;                 &quot;Day7_Stem Cell&quot;               
+[25] &quot;Day7_B cell&quot;                   &quot;Day7_T Cell&quot;                   &quot;Day7_Unknown&quot;                  &quot;Day7_NA&quot;                      
+[29] &quot;Day21_Hematopoietic Stem Cell&quot; &quot;Day21_Dendritic Cell&quot;          &quot;Day21_Infl. Macrophage&quot;        &quot;Day21_Pericyte&quot;               
+[33] &quot;Day21_Myofibroblast&quot;           &quot;Day21_Monocyte&quot;                &quot;Day21_Unknown&quot;                 &quot;Day21_Platelet&quot;               
+[37] &quot;Day21_T Cell&quot;                  &quot;Day21_Stem Cell&quot;               &quot;Day21_Smooth muscle cell&quot;      &quot;Day21_NA&quot;                     
+[41] &quot;Day21_Fibroblast&quot;              &quot;Day21_B cell&quot;                 </code></pre>
+<pre class="r"><code># Reset cell identities to the combined condition + celltype label
 Idents(geo_so) = &#39;day.celltype&#39;</code></pre>
 <div
 style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
@@ -962,9 +972,9 @@ section.</p>
 # (Ok since we saved the plots as we went along.)
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
-Ncells  10086367  538.7   16457942  879.0   16457942   879.0
-Vcells 349054274 2663.1 1042879492 7956.6 1628720028 12426.2</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells   9554216  510.3   18239464  974.1  12246073  654.1
+Vcells 348249914 2657.0  922625602 7039.1 922622737 7039.1</code></pre>
 <p>We’ll save a copy of the final Seurat object to final.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Save Seurat object
@@ -1017,8 +1027,8 @@ author and source are credited.</p>
 <th align="left"><a href="07-CellTypeAnnos.html">Previous
 lesson</a></th>
 <th align="center"><a href="#top">Top of this lesson</a></th>
-<th align="right"><a href="08A-AnalysisWrapUp.html">Analysis Wrap
-Up</a></th>
+<th align="right"><a href="08A-AnalysisFinale.html">Analysis
+Summary</a></th>
 </tr>
 </thead>
 <tbody>
