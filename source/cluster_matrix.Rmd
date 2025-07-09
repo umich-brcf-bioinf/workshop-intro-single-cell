@@ -29,6 +29,16 @@ pre {
   font-size: 12px
 }
 
+
+table.fig, th.fig, td.fig {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 15px;
+}
+
+table{
+   width:100%;
+}
 </style>
 
 ```{r setup, include=FALSE}
@@ -42,76 +52,93 @@ library(kableExtra)
 
 ### Why do we cluster on Principle Components (PC) instead of genes?
 
-Most genes show little variance at all (boring). Thise that do often behave
-in concert, regulating up and down in a coherent experssion program. 
-Directly clustering on genes would create a lot of noise and redundancy; it
-would be harder to see the most important patterns.
+* Most genes show little variance at all; those that do often behave 
+  in concert (regulating up and down in a coherent experssion program). Because
+  of this behavior, **clustering directly on genes doesn't work very well 
+  mathematically.** (Because in 20k dimensions, the notion of distance breaks down;
+  everything is too far from everything else.)
+* PCs naturally diminish noise and aggregate signal in expression patterns 
+   across related genes; this makes patterns clearer.
+* It's **much much faster** to cluster 15 PCs than 20k genes.
 
 ---
 
 ### How can such a small number of PCs faithfully represent so many genes? Aren't we throwing away a ton of information?
 
-Selecting a few PCs helps by bringing the most important parts of the picture into focus. 
+* Selecting a few PCs helps by bringing the most important parts of the picture 
+  into focus. Remember that each PCs represents a gene expression **pattern** 
+   across many genes.
 
-| Clustering on Genes | Clustering on PCs | 
+
+| Genes look like this | A Principle Component shows this | 
 |:-:|:-:|
 | ![](images/cluster_matrix/PC-before.png) | ![](images/cluster_matrix/PC-after.png) |
 
-Recall that almost all the variance (signal) in the dataset is captured in
-the first handful of PCs and over 99% is captured in the first 50 PCs.
+* Recall from the earlier [elbow plot](04-PCAandIntegration.html#Visualizing_relative_contributions_of_each_PC) 
+  that almost all the variance (signal) in the dataset is captured in the first 
+  handful of PCs. In our example dataset, the first 50 PCs capture over 99% of the
+  cumulative variance.
 
 ---
 
-### What's the correct numbers of PCs and cluster resolution?
+### So, what's the correct resolution and number of PCs?
 
-That depends on **how many cell types/cell states do you expect.** 
-And the answer to that depends on:
+* That depends on **how many cell types/cell states do you expect.** 
+  And the answer to that depends on:
 
-  - the tissue/bio-fluid of origin
+  -  the tissue/bio-fluid of origin
   - the quality of the sample / suspension
   - your experimental design
   - your research question
   - the number of cells profiled
   - the number of genes detected
 
-For our sample data (bone biopsies from mice), we anticipate about 20 cell types.
+* For our sample data (bone biopsies from mice), we anticipate about 20 cell types.
   
 ---
 
 ### Couldn't the computer figure out the best PCs and resolution?
 
-In the absence of biological context, the computer could make clusters, 
-and the clusters might look good numerically, but they wouldn't be the best
-representation of the different cells types.
+* The computer could try a bunch of PCs and resolutions to get the right number of
+clusters - and those clusters might look good numerically. But they wouldn't be 
+the best representation of the different cells types **because the algorithm 
+doesn't understand the cell biology**.
 
 ---
 
 ### So how do we pick the right PCs and resolution?
 
-You will want to iterate through a few cluster params. It helps to know how PCs
-and resolution work together. Here's a graph of several iterations of clustering
-with different PCs and resolutions.
+* You will want to iterate through a few combinations of PCs and resolutions.
+* It helps to know how PCs and resolution work together to influence the number 
+  of clusters.
+* We applied the clustering and UMAP code blocks from [earlier](05-ProjectionAndClustering.html) 
+  and tried a bunch of clusterings each with a different number of PCs and a 
+  different resolution.
 
-Note that PCs have a modest effect on the number of clusters; resolution has
-a strong effect on the number of clusters.
-
-![Different cluster counts across resolutions and PCs](images/cluster_matrix/pc_res_cluster.png)
+<table class='fig'>
+<tr><th class='fig'>Different cluster counts across resolutions and PCs</th></tr>
+<tr><td class='fig'>![](images/cluster_matrix/pc_res_cluster.png)</td></tr>
+<tr><td class='fig'>
+* Each dot represents the number of clusters produced with a specific resolution and number of PCs.
+* Each colored line is a different resolution.
+* Each column is a different num of PCs.
+* Note that PCs have a modest effect on the number of clusters while 
+  resolution has a strong effect on the number of clusters.
+</td></tr>
+</table>
 
 ---
 
-Consider the table of UMAPs below.
+### What do the cluster UMAPs look like at different PCs and resolutions?
 
-- Each UMAP was made with a different num of PCs and different resolution. (You can click on any UMAP to make it larger.)
+- Each UMAP below was made with a different num of PCs and different resolution. (You can click on any UMAP to make it larger.)
+- Each column is a different PC. Each row is a different resolution.
 - The first row (in black and white) shows the UMAP projection 
-  without any clustering. Note that as PCs increase, the UMAPs go from "blobby" to 
-  "spiky". (They gain local structure.)
-- As you go down the rows, the UMAP projection is the same for a given PC, but 
-  the resolution increases, making more clusters.
+  without any clustering.
+- Note that as PCs increase, the UMAPs go from "blobby" to"spindly". (They gain local structure.)
+- As the resolution increases, the UMAP projection is the same for a given PC, 
+  but that projection is cut up into more and more clusters.
 
-
----
-
-### Matrix of UMAPs
 
 ```{r render_matrix, echo=FALSE, warning=FALSE}
 base_dir = "images/cluster_matrix"
@@ -156,3 +183,12 @@ df %>%
         lightbox.run();
     });
 ```
+
+### But these are all still just ... clusters - how do I know if they are biologically accurate?
+
+* You are correct. We need two more tools to validate these are good biological clusters:
+
+  - We need to identify **gene markers** that behave differently across clusters.
+  - We need to **annotate** the clusters with prospective cell types.
+
+* We will do both of these in the next sections.

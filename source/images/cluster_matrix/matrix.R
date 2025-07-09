@@ -1,10 +1,12 @@
 # -------------------------------------------------------------------------
 # matrix.R
+#
 # Generates and saves UMAPs and csvs for a matrix of PCs and resolutions
 # In addition to the cross-product of resolutions x PCs also generates
 #   a "blank" set of blank UMAPs without clusters.
 # Takes "a good while" to run
 # Overwrites any existing files; does not delete any existing files.
+#
 # cgates 7/3/2025
 
 library(Seurat)
