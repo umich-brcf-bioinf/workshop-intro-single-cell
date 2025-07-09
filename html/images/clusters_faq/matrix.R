@@ -12,7 +12,7 @@
 library(Seurat)
 library(tidyverse)
 
-output_dir = 'source/images/cluster_matrix/'
+output_dir = 'source/images/clusters_faq/'
 geo_so = readRDS('~/ISC_R/inputs/prepared_data/rdata/geo_so_sct_integrated.rds')
 
 resolutions = c(0.2, 0.4, 0.8, 1.2)

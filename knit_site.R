@@ -45,7 +45,7 @@ render_site('source/03-Normalization.Rmd');
 
 render_site('source/04-PCAandIntegration.Rmd');
 render_site('source/05-ProjectionAndClustering.Rmd');
-render_site('source/cluster_matrix.Rmd');
+render_site('source/clusters_faq.Rmd');
 
 render_site('source/06-MarkerVisualization.Rmd');
 render_site('source/07-CellTypeAnnos.Rmd');

@@ -1,12 +1,12 @@
 ---
-title: "FAQs on PCs and Resolutions"
+title: "Clusters, PCs, and Resolutions: FAQ"
 author: "UM Bioinformatics Core Workshop Team"
 date: "`r Sys.Date()`"
 lang: "en"
 output:
   html_document:
       includes:
-          in_header: header-cluster_matrix.html
+          in_header: header-clusters_faq.html
       theme: paper
       toc: false
       toc_depth: 4
@@ -141,7 +141,7 @@ doesn't understand the cell biology**.
 
 
 ```{r render_matrix, echo=FALSE, warning=FALSE}
-base_dir = "images/cluster_matrix"
+base_dir = "images/clusters_faq"
 cluster_stats <- read_csv(sprintf("%s/pc_res_cluster.csv", base_dir), show_col_types = FALSE) %>%
   arrange(included_pcs, resolution)
 
@@ -186,9 +186,9 @@ df %>%
 
 ### But these are all still just ... clusters - how do I know if they are biologically accurate?
 
-* You are correct. We need two more tools to validate these are good biological clusters:
+* We need two more tools to validate these are good biological clusters:
 
   - We need to identify **gene markers** that behave differently across clusters.
   - We need to **annotate** the clusters with prospective cell types.
 
-* We will do both of these in the next sections.
+* We will cover both of topics in the next sections.
