@@ -30,6 +30,34 @@ pre {
 
 </style>
 
+```{js}
+$(document).ready(function () {
+var cluster1_img = document.getElementById("cluster1_img");
+
+function setClass1(e) {
+  var select = e.target;
+  cluster1_img.src = select.options[select.selectedIndex].value;
+  return false;
+}
+
+document.getElementById("cluster1_img_list").onchange = setClass1;
+
+
+var cluster2_img = document.getElementById("cluster2_img");
+
+function setClass2(e) {
+  var select = e.target;
+  cluster2_img.src = select.options[select.selectedIndex].value;
+  return false;
+}
+
+document.getElementById("cluster2_img_list").onchange = setClass2;
+
+
+})
+```
+
+
 ```{r klippy, echo=FALSE, include=TRUE}
 klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
 ```
@@ -143,3 +171,67 @@ geo_so = FindClusters(geo_so,
 head(geo_so@meta.data)
 
 ```
+
+![](images/cluster_matrix/pcs_res_clusters.png)
+
+
+<table>
+<tr>
+<td align="center">
+<select id="cluster1_img_list">
+  <option value="images/cluster_matrix/pcs=05_res=0.2.png">pcs=05_res=0.2</option>
+  <option value="images/cluster_matrix/pcs=05_res=0.4.png">pcs=05_res=0.4</option>
+  <option value="images/cluster_matrix/pcs=05_res=0.8.png">pcs=05_res=0.8</option>
+  <option value="images/cluster_matrix/pcs=05_res=1.2.png">pcs=05_res=1.2</option>
+  <option value="images/cluster_matrix/pcs=05_res=1.6.png">pcs=05_res=1.6</option>
+  <option value="images/cluster_matrix/pcs=10_res=0.2.png">pcs=10_res=0.2</option>
+  <option value="images/cluster_matrix/pcs=10_res=0.4.png">pcs=10_res=0.4</option>
+  <option value="images/cluster_matrix/pcs=10_res=0.8.png">pcs=10_res=0.8</option>
+  <option value="images/cluster_matrix/pcs=10_res=1.2.png">pcs=10_res=1.2</option>
+  <option value="images/cluster_matrix/pcs=10_res=1.6.png">pcs=10_res=1.6</option>
+  <option value="images/cluster_matrix/pcs=25_res=0.2.png">pcs=25_res=0.2</option>
+  <option value="images/cluster_matrix/pcs=25_res=0.4.png">pcs=25_res=0.4</option>
+  <option value="images/cluster_matrix/pcs=25_res=0.8.png">pcs=25_res=0.8</option>
+  <option value="images/cluster_matrix/pcs=25_res=1.2.png">pcs=25_res=1.2</option>
+  <option value="images/cluster_matrix/pcs=25_res=1.6.png">pcs=25_res=1.6</option>
+  <option value="images/cluster_matrix/pcs=50_res=0.2.png">pcs=50_res=0.2</option>
+  <option value="images/cluster_matrix/pcs=50_res=0.4.png">pcs=50_res=0.4</option>
+  <option value="images/cluster_matrix/pcs=50_res=0.8.png">pcs=50_res=0.8</option>
+  <option value="images/cluster_matrix/pcs=50_res=1.2.png">pcs=50_res=1.2</option>
+  <option value="images/cluster_matrix/pcs=50_res=1.6.png">pcs=50_res=1.6</option>
+</select>
+</td>
+<td align="center">
+<select id="cluster2_img_list">
+  <option value="images/cluster_matrix/pcs=05_res=0.2.png">pcs=05_res=0.2</option>
+  <option value="images/cluster_matrix/pcs=05_res=0.4.png">pcs=05_res=0.4</option>
+  <option value="images/cluster_matrix/pcs=05_res=0.8.png">pcs=05_res=0.8</option>
+  <option value="images/cluster_matrix/pcs=05_res=1.2.png">pcs=05_res=1.2</option>
+  <option value="images/cluster_matrix/pcs=05_res=1.6.png">pcs=05_res=1.6</option>
+  <option value="images/cluster_matrix/pcs=10_res=0.2.png">pcs=10_res=0.2</option>
+  <option value="images/cluster_matrix/pcs=10_res=0.4.png">pcs=10_res=0.4</option>
+  <option value="images/cluster_matrix/pcs=10_res=0.8.png">pcs=10_res=0.8</option>
+  <option value="images/cluster_matrix/pcs=10_res=1.2.png">pcs=10_res=1.2</option>
+  <option value="images/cluster_matrix/pcs=10_res=1.6.png">pcs=10_res=1.6</option>
+  <option value="images/cluster_matrix/pcs=25_res=0.2.png">pcs=25_res=0.2</option>
+  <option value="images/cluster_matrix/pcs=25_res=0.4.png">pcs=25_res=0.4</option>
+  <option value="images/cluster_matrix/pcs=25_res=0.8.png">pcs=25_res=0.8</option>
+  <option value="images/cluster_matrix/pcs=25_res=1.2.png">pcs=25_res=1.2</option>
+  <option value="images/cluster_matrix/pcs=25_res=1.6.png">pcs=25_res=1.6</option>
+  <option value="images/cluster_matrix/pcs=50_res=0.2.png">pcs=50_res=0.2</option>
+  <option value="images/cluster_matrix/pcs=50_res=0.4.png">pcs=50_res=0.4</option>
+  <option value="images/cluster_matrix/pcs=50_res=0.8.png">pcs=50_res=0.8</option>
+  <option value="images/cluster_matrix/pcs=50_res=1.2.png">pcs=50_res=1.2</option>
+  <option value="images/cluster_matrix/pcs=50_res=1.6.png">pcs=50_res=1.6</option>
+</select>
+</td>
+</tr>
+<tr>
+<td>
+<img id="cluster1_img" width="100%" src="images/cluster_matrix/pcs=05_res=0.2.png" />
+</td>
+<td>
+<img id="cluster2_img" width="100%" src="images/cluster_matrix/pcs=05_res=0.2.png" />
+</td>
+</tr>
+</table>

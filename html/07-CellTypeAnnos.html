@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-06-23" />
+<meta name="date" content="2025-07-09" />
 
 <title>Cell Type Annotation</title>
 
@@ -416,7 +416,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Cell Type Annotation</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-06-23</h4>
+<h4 class="date">2025-07-09</h4>
 
 </div>
 
@@ -695,8 +695,14 @@ immune_markers[[&#39;T-cell&#39;]] = c( &#39;Cd3d&#39;,&#39;Cd3e&#39;,&#39;Cd3g&
 <pre class="r"><code># -------------------------------------------------------------------------
 # Plot other immune to assist with cluster identification
 immune_markers_plot = DotPlot(geo_so, features = immune_markers, assay = &#39;SCT&#39;)  +
-  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
-immune_markers_plot
+  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))</code></pre>
+<pre><code>Warning: The `facets` argument of `facet_grid()` is deprecated as of ggplot2 2.2.0.
+ℹ Please use the `rows` argument instead.
+ℹ The deprecated feature was likely used in the Seurat package.
+  Please report the issue at &lt;https://github.com/satijalab/seurat/issues&gt;.
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+<pre class="r"><code>immune_markers_plot
 
 # save to file
 ggsave(filename = &#39;results/figures/immune_markers_sct_dot_plot.png&#39;, 
@@ -1226,8 +1232,8 @@ the level of specificity that’s relevant to <em>your</em> biological
 question or use the same labels for clusters that don’t seems to share
 similar expression programs</p>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   7080417  378.2   12502211  667.7  12502211  667.7
-Vcells 340183707 2595.4  876572846 6687.8 841451716 6419.8</code></pre>
+Ncells   6964655  372.0   12246072  654.1  12246072  654.1
+Vcells 340100010 2594.8  922625602 7039.1 922622737 7039.1</code></pre>
 <img src="images/curriculum/07-CellTypeAnnotation/07-catch_umap_plots-1.png" width="1152" style="display: block; margin: auto;" />
 </details>
 <p><br> <br/></p>
@@ -1242,8 +1248,8 @@ Vcells 340183707 2595.4  876572846 6687.8 841451716 6419.8</code></pre>
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   7000886  373.9   12502211  667.7  12502211  667.7
-Vcells 336523922 2567.5  876572846 6687.8 841451716 6419.8</code></pre>
+Ncells   6885166  367.8   12246072  654.1  12246072  654.1
+Vcells 336519145 2567.5  922625602 7039.1 922622737 7039.1</code></pre>
 <p>We’ll save the scCATCH object and our updated Seurat object with cell
 type annotations.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
