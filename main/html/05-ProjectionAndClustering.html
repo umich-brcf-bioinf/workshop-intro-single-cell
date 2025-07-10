@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-07-09" />
+<meta name="date" content="2025-07-10" />
 
 <title>Clustering and Projection</title>
 
@@ -377,7 +377,10 @@ div.tocify {
       <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
     </li>
     <li>
-      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+      <a href="05-ProjectionAndClustering.html">Clustering &amp; Projection</a>
+    </li>
+    <li>
+      <a href="clusters_faq.html">Clusters, PCs, and Resolutions: FAQ</a>
     </li>
   </ul>
 </li>
@@ -397,7 +400,13 @@ div.tocify {
     <li>
       <a href="08-DifferentialExpression.html">Differential expression analysis</a>
     </li>
+    <li>
+      <a href="08A-AnalysisFinale.html">Analysis summary and next steps</a>
+    </li>
   </ul>
+</li>
+<li>
+  <a href="exercises.html">Exercises</a>
 </li>
 <li>
   <a href="workshop_wrap_up.html">Wrap up</a>
@@ -416,7 +425,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Clustering and Projection</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-07-09</h4>
+<h4 class="date">2025-07-10</h4>
 
 </div>
 
@@ -2446,9 +2455,9 @@ plots = c(&quot;pre_integration_umap_plot_day&quot;,
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
-Ncells   9372045  500.6   16387500  875.2   16387500   875.2
-Vcells 386740909 2950.6 1073883617 8193.1 1609578717 12280.2</code></pre>
+<pre><code>            used   (Mb) gc trigger    (Mb)   max used   (Mb)
+Ncells   9452011  504.8   18308688   977.8   18308688  977.8
+Vcells 468339550 3573.2 1469093802 11208.3 1224175684 9339.8</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">
