@@ -72,7 +72,7 @@ library(kableExtra)
 
 | Genes look like this | A Principle Component shows this | 
 |:-:|:-:|
-| ![](images/cluster_faq/PC-before.png) | ![](images/cluster_faq/PC-after.png) |
+| ![](images/clusters_faq/PC-before.png) | ![](images/clusters_faq/PC-after.png) |
 
 * Recall from the earlier [elbow plot](04-PCAandIntegration.html#Visualizing_relative_contributions_of_each_PC) 
   that almost all the variance (signal) in the dataset is captured in the first 
@@ -118,7 +118,7 @@ doesn't understand the cell biology**.
 
 <table class='fig'>
 <tr><th class='fig'>Different cluster counts across resolutions and PCs</th></tr>
-<tr><td class='fig'>![](images/cluster_faq/pc_res_cluster.png)</td></tr>
+<tr><td class='fig'>![](images/clusters_faq/pc_res_cluster.png)</td></tr>
 <tr><td class='fig'>
 * Each dot represents the number of clusters produced with a specific resolution and number of PCs.
 * Each colored line is a different resolution.
