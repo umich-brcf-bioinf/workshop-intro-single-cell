@@ -53,6 +53,7 @@ render_site('source/08-DifferentialExpression.Rmd');
 render_site('source/08A-AnalysisFinale.Rmd');
 render_site('source/09-IndependentExercise.Rmd');
 render_site('source/00-ResourcesAndExtendedContent.Rmd');
+render_site('source/exercises.Rmd');
 
 
 render_site('source/workshop_wrap_up.Rmd');

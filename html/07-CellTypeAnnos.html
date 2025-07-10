@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-07-09" />
+<meta name="date" content="2025-07-10" />
 
 <title>Cell Type Annotation</title>
 
@@ -377,7 +377,10 @@ div.tocify {
       <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
     </li>
     <li>
-      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+      <a href="05-ProjectionAndClustering.html">Clustering &amp; Projection</a>
+    </li>
+    <li>
+      <a href="clusters_faq.html">Clusters, PCs, and Resolutions: FAQ</a>
     </li>
   </ul>
 </li>
@@ -397,7 +400,13 @@ div.tocify {
     <li>
       <a href="08-DifferentialExpression.html">Differential expression analysis</a>
     </li>
+    <li>
+      <a href="08A-AnalysisFinale.html">Analysis summary and next steps</a>
+    </li>
   </ul>
+</li>
+<li>
+  <a href="exercises.html">Exercises</a>
 </li>
 <li>
   <a href="workshop_wrap_up.html">Wrap up</a>
@@ -416,7 +425,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Cell Type Annotation</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-07-09</h4>
+<h4 class="date">2025-07-10</h4>
 
 </div>
 
@@ -1231,9 +1240,9 @@ code)</strong>
 the level of specificity that’s relevant to <em>your</em> biological
 question or use the same labels for clusters that don’t seems to share
 similar expression programs</p>
-<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   6964655  372.0   12246072  654.1  12246072  654.1
-Vcells 340100010 2594.8  922625602 7039.1 922622737 7039.1</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
+Ncells   9618042  513.7   18308688  977.8   18308688  977.8
+Vcells 352886515 2692.4 1175275042 8966.7 1224175684 9339.8</code></pre>
 <img src="images/curriculum/07-CellTypeAnnotation/07-catch_umap_plots-1.png" width="1152" style="display: block; margin: auto;" />
 </details>
 <p><br> <br/></p>
@@ -1247,9 +1256,9 @@ Vcells 340100010 2594.8  922625602 7039.1 922622737 7039.1</code></pre>
 # (Ok since we saved the plots as we went along)
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   6885166  367.8   12246072  654.1  12246072  654.1
-Vcells 336519145 2567.5  922625602 7039.1 922622737 7039.1</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
+Ncells   9538548  509.5   18308688  977.8   18308688  977.8
+Vcells 349305643 2665.0  940220034 7173.4 1224175684 9339.8</code></pre>
 <p>We’ll save the scCATCH object and our updated Seurat object with cell
 type annotations.</p>
 <pre class="r"><code># -------------------------------------------------------------------------

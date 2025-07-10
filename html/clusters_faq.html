@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-07-09" />
+<meta name="date" content="2025-07-10" />
 
 <title>Clusters, PCs, and Resolutions: FAQ</title>
 
@@ -318,7 +318,10 @@ $(document).ready(function () {
       <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
     </li>
     <li>
-      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+      <a href="05-ProjectionAndClustering.html">Clustering &amp; Projection</a>
+    </li>
+    <li>
+      <a href="clusters_faq.html">Clusters, PCs, and Resolutions: FAQ</a>
     </li>
   </ul>
 </li>
@@ -338,7 +341,13 @@ $(document).ready(function () {
     <li>
       <a href="08-DifferentialExpression.html">Differential expression analysis</a>
     </li>
+    <li>
+      <a href="08A-AnalysisFinale.html">Analysis summary and next steps</a>
+    </li>
   </ul>
+</li>
+<li>
+  <a href="exercises.html">Exercises</a>
 </li>
 <li>
   <a href="workshop_wrap_up.html">Wrap up</a>
@@ -357,7 +366,7 @@ $(document).ready(function () {
 
 <h1 class="title toc-ignore">Clusters, PCs, and Resolutions: FAQ</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-07-09</h4>
+<h4 class="date">2025-07-10</h4>
 
 </div>
 
@@ -427,9 +436,8 @@ expression <strong>pattern</strong> across many genes.</li>
 </thead>
 <tbody>
 <tr class="odd">
-<td align="center"><img
-src="images/cluster_matrix/PC-before.png" /></td>
-<td align="center"><img src="images/cluster_matrix/PC-after.png" /></td>
+<td align="center"><img src="images/cluster_faq/PC-before.png" /></td>
+<td align="center"><img src="images/cluster_faq/PC-after.png" /></td>
 </tr>
 </tbody>
 </table>
@@ -455,6 +463,7 @@ expect.</strong> And the answer to that depends on:</p>
 <li>your research question</li>
 <li>the number of cells profiled</li>
 <li>the number of genes detected</li>
+<li>the range and specificity of cellular expression programs</li>
 </ul></li>
 <li><p>For our sample data (bone biopsies from mice), we anticipate
 about 20 cell types.</p></li>
@@ -494,7 +503,7 @@ Different cluster counts across resolutions and PCs
 </tr>
 <tr>
 <td class="fig">
-<img src="images/cluster_matrix/pc_res_cluster.png" />
+<img src="images/cluster_faq/pc_res_cluster.png" />
 </td>
 </tr>
 <tr>

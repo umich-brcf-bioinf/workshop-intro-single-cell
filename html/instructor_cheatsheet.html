@@ -374,7 +374,10 @@ div.tocify {
       <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
     </li>
     <li>
-      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+      <a href="05-ProjectionAndClustering.html">Clustering &amp; Projection</a>
+    </li>
+    <li>
+      <a href="clusters_faq.html">Clusters, PCs, and Resolutions: FAQ</a>
     </li>
   </ul>
 </li>
@@ -394,7 +397,13 @@ div.tocify {
     <li>
       <a href="08-DifferentialExpression.html">Differential expression analysis</a>
     </li>
+    <li>
+      <a href="08A-AnalysisFinale.html">Analysis summary and next steps</a>
+    </li>
   </ul>
+</li>
+<li>
+  <a href="exercises.html">Exercises</a>
 </li>
 <li>
   <a href="workshop_wrap_up.html">Wrap up</a>
@@ -592,67 +601,6 @@ geo_so = FindClusters(geo_so,
 
 # look at meta.data to see cluster labels
 head(geo_so@meta.data)</code></pre>
-<p><img src="images/cluster_matrix/pcs_res_clusters.png" /></p>
-<table>
-<tr>
-<td align="center">
-<select id="cluster1_img_list">
-<option value="images/cluster_matrix/pcs=05_res=0.2.png">pcs=05_res=0.2</option>
-<option value="images/cluster_matrix/pcs=05_res=0.4.png">pcs=05_res=0.4</option>
-<option value="images/cluster_matrix/pcs=05_res=0.8.png">pcs=05_res=0.8</option>
-<option value="images/cluster_matrix/pcs=05_res=1.2.png">pcs=05_res=1.2</option>
-<option value="images/cluster_matrix/pcs=05_res=1.6.png">pcs=05_res=1.6</option>
-<option value="images/cluster_matrix/pcs=10_res=0.2.png">pcs=10_res=0.2</option>
-<option value="images/cluster_matrix/pcs=10_res=0.4.png">pcs=10_res=0.4</option>
-<option value="images/cluster_matrix/pcs=10_res=0.8.png">pcs=10_res=0.8</option>
-<option value="images/cluster_matrix/pcs=10_res=1.2.png">pcs=10_res=1.2</option>
-<option value="images/cluster_matrix/pcs=10_res=1.6.png">pcs=10_res=1.6</option>
-<option value="images/cluster_matrix/pcs=25_res=0.2.png">pcs=25_res=0.2</option>
-<option value="images/cluster_matrix/pcs=25_res=0.4.png">pcs=25_res=0.4</option>
-<option value="images/cluster_matrix/pcs=25_res=0.8.png">pcs=25_res=0.8</option>
-<option value="images/cluster_matrix/pcs=25_res=1.2.png">pcs=25_res=1.2</option>
-<option value="images/cluster_matrix/pcs=25_res=1.6.png">pcs=25_res=1.6</option>
-<option value="images/cluster_matrix/pcs=50_res=0.2.png">pcs=50_res=0.2</option>
-<option value="images/cluster_matrix/pcs=50_res=0.4.png">pcs=50_res=0.4</option>
-<option value="images/cluster_matrix/pcs=50_res=0.8.png">pcs=50_res=0.8</option>
-<option value="images/cluster_matrix/pcs=50_res=1.2.png">pcs=50_res=1.2</option>
-<option value="images/cluster_matrix/pcs=50_res=1.6.png">pcs=50_res=1.6</option>
-</select>
-</td>
-<td align="center">
-<select id="cluster2_img_list">
-<option value="images/cluster_matrix/pcs=05_res=0.2.png">pcs=05_res=0.2</option>
-<option value="images/cluster_matrix/pcs=05_res=0.4.png">pcs=05_res=0.4</option>
-<option value="images/cluster_matrix/pcs=05_res=0.8.png">pcs=05_res=0.8</option>
-<option value="images/cluster_matrix/pcs=05_res=1.2.png">pcs=05_res=1.2</option>
-<option value="images/cluster_matrix/pcs=05_res=1.6.png">pcs=05_res=1.6</option>
-<option value="images/cluster_matrix/pcs=10_res=0.2.png">pcs=10_res=0.2</option>
-<option value="images/cluster_matrix/pcs=10_res=0.4.png">pcs=10_res=0.4</option>
-<option value="images/cluster_matrix/pcs=10_res=0.8.png">pcs=10_res=0.8</option>
-<option value="images/cluster_matrix/pcs=10_res=1.2.png">pcs=10_res=1.2</option>
-<option value="images/cluster_matrix/pcs=10_res=1.6.png">pcs=10_res=1.6</option>
-<option value="images/cluster_matrix/pcs=25_res=0.2.png">pcs=25_res=0.2</option>
-<option value="images/cluster_matrix/pcs=25_res=0.4.png">pcs=25_res=0.4</option>
-<option value="images/cluster_matrix/pcs=25_res=0.8.png">pcs=25_res=0.8</option>
-<option value="images/cluster_matrix/pcs=25_res=1.2.png">pcs=25_res=1.2</option>
-<option value="images/cluster_matrix/pcs=25_res=1.6.png">pcs=25_res=1.6</option>
-<option value="images/cluster_matrix/pcs=50_res=0.2.png">pcs=50_res=0.2</option>
-<option value="images/cluster_matrix/pcs=50_res=0.4.png">pcs=50_res=0.4</option>
-<option value="images/cluster_matrix/pcs=50_res=0.8.png">pcs=50_res=0.8</option>
-<option value="images/cluster_matrix/pcs=50_res=1.2.png">pcs=50_res=1.2</option>
-<option value="images/cluster_matrix/pcs=50_res=1.6.png">pcs=50_res=1.6</option>
-</select>
-</td>
-</tr>
-<tr>
-<td>
-<img id="cluster1_img" width="100%" src="images/cluster_matrix/pcs=05_res=0.2.png" />
-</td>
-<td>
-<img id="cluster2_img" width="100%" src="images/cluster_matrix/pcs=05_res=0.2.png" />
-</td>
-</tr>
-</table>
 </div>
 
 
