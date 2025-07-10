@@ -43,6 +43,7 @@ library(kableExtra)
 ```
 
 ```{r, include = FALSE}
+source("../bin/set_values.R")
 source("../bin/chunk-options.R")
 knitr_fig_path("08A-DifferentialExpression/08A-")
 ```
@@ -125,9 +126,11 @@ Additionally, the `sessionInfo` function produces a list of the relevant version
 # The on_aws var is initialized in bin/set_values.R
 
 sink('session_info.txt')
+devtools::session_info()
+sink()
 ```
 
-This info is generally not included in main body of a paper, but serious reproducibility street-cred if it shows up in supplemental.<br/> *Hear me now, believe me later.*
+This info is generally not included in main body of a paper, but you will get serious *reproducibility street-cred* if it shows up in supplemental. &#x1F60E;<br/>
 
 ```{r session_info, eval=FALSE}
 ################################################################################
