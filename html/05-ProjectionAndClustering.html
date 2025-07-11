@@ -2224,8 +2224,14 @@ genes to determine if there might be interesting cell death patterns or
 indicate that further filtering is needed:</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Check mitochondrial gene expression
-percent_mito_plot = FeaturePlot(geo_so, features=&#39;percent.mt&#39;)
-percent_mito_plot</code></pre>
+percent_mito_plot = FeaturePlot(geo_so, features=&#39;percent.mt&#39;)</code></pre>
+<pre><code>Warning: The `slot` argument of `FetchData()` is deprecated as of SeuratObject 5.0.0.
+ℹ Please use the `layer` argument instead.
+ℹ The deprecated feature was likely used in the Seurat package.
+  Please report the issue at &lt;https://github.com/satijalab/seurat/issues&gt;.
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+<pre class="r"><code>percent_mito_plot</code></pre>
 <p><img src="images/curriculum/05-ProjectionAndClustering/05-check_mito_UMAP-1.png" width="816" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># save to file
 ggsave(filename = &#39;results/figures/percent_umap_mito_plot.png&#39;, 
@@ -2341,9 +2347,9 @@ plots = c(&quot;pre_integration_umap_plot_day&quot;,
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
-Ncells   9447613  504.6   17356211  927.0   17356211   927.0
-Vcells 387946077 2959.8 1136637116 8671.9 1420796228 10839.9</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
+Ncells   7032172  375.6   10892882  581.8   10892882  581.8
+Vcells 379640972 2896.5 1062606086 8107.1 1113653353 8496.6</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">
@@ -2397,8 +2403,8 @@ the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
 Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
 use, distribution, and reproduction in any medium, provided the original
 author and source are credited.</p>
-<br/> <br/>
-<hr/>
+<p><br/> <br/></p>
+<hr />
 <table style="width:100%;">
 <colgroup>
 <col width="28%" />
@@ -2410,8 +2416,7 @@ author and source are credited.</p>
 <th align="left"><a href="04-PCAandIntegration.html">Previous
 lesson</a></th>
 <th align="center"><a href="#top">Top of this lesson</a></th>
-<th align="right"><a href="06-MarkerVisualization.html">Next
-lesson</a></th>
+<th align="right"><a href="clusters_faq.html">Next lesson</a></th>
 </tr>
 </thead>
 <tbody>

@@ -1,0 +1,7 @@
+| ![](images/headshots/headshot_cgates.jpg) | ![](images/headshots/headshot_mbradenb.jpg) | ![](images/headshots/headshot_trsaari.jpg) |
+|:-:|:-:|:-:|
+| **Chris** | **Marci** | **Travis** |
+| ![](images/headshots/headshot_daisyfu.jpg) | ![](images/headshots/headshot_damki.jpg) | ![](images/headshots/headshot_weishwu.jpg) |
+| **Daisy** | **Dana** | **Weisheng** |
+| ![](images/headshots/headshot_dfhannum.jpg) | ![](images/headshots/headshot_phillipa.jpg) | ![](images/headshots/headshot_rcavalca.jpg) |
+| **Ford** | **Tricia** | **Raymond** |

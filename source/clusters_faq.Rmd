@@ -193,3 +193,8 @@ df %>%
   - We need to **annotate** the clusters with prospective cell types.
 
 * We will cover both of topics in the next sections.
+
+--------
+
+| [Previous lesson](05-ProjectionAndClustering.html) | [Top of this lesson](#top) | [Next lesson](06-MarkerVisualization.html) |
+| :--- | :----: | ---: |
