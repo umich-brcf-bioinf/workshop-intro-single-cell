@@ -557,6 +557,8 @@ These materials have been adapted and extended from materials listed above. Thes
 
 <br/>
 <br/>
-<hr/>
-| [Previous lesson](04-PCAandIntegration.html) | [Top of this lesson](#top) | [Next lesson](06-MarkerVisualization.html) |
+
+-------
+
+| [Previous lesson](04-PCAandIntegration.html) | [Top of this lesson](#top) | [Next lesson](clusters_faq.html) |
 | :--- | :----: | ---: |

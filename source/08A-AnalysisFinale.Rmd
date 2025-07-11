@@ -225,5 +225,5 @@ These materials have been adapted and extended from materials listed above. Thes
 
 <hr/>
 
-| [Previous lesson](08-CellTypeAnnos.html) | [Top of this lesson](#top) | [Workshop Wrap Up](workshop_wrap_up.html) |
-|:-----------------------|:----------------------:|-----------------------:|
+| [Previous lesson](08-DifferentialExpression.html) | [Top of this lesson](#top) | [Workshop Wrap Up](workshop_wrap_up.html) |
+| :--- | :----: | ---: |

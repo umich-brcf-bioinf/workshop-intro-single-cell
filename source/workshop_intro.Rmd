@@ -56,13 +56,9 @@ source("../bin/set_values.R")
 
 
 ## About the workshop team
-| ![](images/headshots/headshot_cgates.jpg) | ![](images/headshots/headshot_mbradenb.jpg) | ![](images/headshots/headshot_rcavalca.jpg) | 
-|:-:|:-:|:-:|
-| **Chris** | **Marci** | **Raymond** |
-| ![](images/headshots/headshot_damki.jpg) | ![](images/headshots/headshot_dfhannum.jpg) | ![](images/headshots/headshot_trsaari.jpg) |
-| **Dana** | **Ford** | **Travis** |
-| ![](images/headshots/headshot_phillipa.jpg) | ![](images/headshots/headshot_clairis.jpg) | ![](images/headshots/headshot_mkdohert.jpg) |
-| **Tricia** | **Clair** | **Matt** |
+```{r, child='helper-gallery.Rmd'}
+```
+
 <br/>
 
 # Code of Conduct

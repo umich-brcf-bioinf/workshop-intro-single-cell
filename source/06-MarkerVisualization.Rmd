@@ -303,6 +303,8 @@ These materials have been adapted and extended from materials listed above. Thes
 
 <br/>
 <br/>
-<hr/>
-| [Previous lesson](05-ProjectionAndClustering.html) | [Top of this lesson](#top) | [Next lesson](07-CellTypeAnnos.html) |
+
+--------------
+
+| [Previous lesson](clusters_faq.html) | [Top of this lesson](#top) | [Next lesson](07-CellTypeAnnos.html) |
 | :--- | :----: | ---: |
