@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-06-23" />
+<meta name="date" content="2025-07-10" />
 
 <title>PCA and Integration</title>
 
@@ -375,7 +375,10 @@ div.tocify {
       <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
     </li>
     <li>
-      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+      <a href="05-ProjectionAndClustering.html">Clustering &amp; Projection</a>
+    </li>
+    <li>
+      <a href="clusters_faq.html">Clusters, PCs, and Resolutions: FAQ</a>
     </li>
   </ul>
 </li>
@@ -395,7 +398,13 @@ div.tocify {
     <li>
       <a href="08-DifferentialExpression.html">Differential expression analysis</a>
     </li>
+    <li>
+      <a href="08A-AnalysisFinale.html">Analysis summary and next steps</a>
+    </li>
   </ul>
+</li>
+<li>
+  <a href="exercises.html">Exercises</a>
 </li>
 <li>
   <a href="workshop_wrap_up.html">Wrap up</a>
@@ -414,7 +423,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">PCA and Integration</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-06-23</h4>
+<h4 class="date">2025-07-10</h4>
 
 </div>
 
@@ -664,11 +673,11 @@ with those PCs.</p>
 geo_so = RunPCA(geo_so, reduction.name = &#39;unintegrated.sct.pca&#39;)
 geo_so</code></pre>
 <pre><code>An object of class Seurat 
-47050 features across 31559 samples within 2 assays 
-Active assay: SCT (20561 features, 3000 variable features)
+46957 features across 31559 samples within 2 assays 
+Active assay: SCT (20468 features, 3000 variable features)
  3 layers present: counts, data, scale.data
  1 other assay present: RNA
- 2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca</code></pre>
+ 1 dimensional reduction calculated: unintegrated.sct.pca</code></pre>
 <p>After running the command in the console, we should see that
 <code>geo_so</code> has a new reduction added to that slot in the Seurat
 object as shown in the schematic:</p>
@@ -857,7 +866,7 @@ check_pcs = function(so, reduction) {
 # Apply function to our data
 pcs = check_pcs(geo_so, &#39;unintegrated.sct.pca&#39;)
 pcs</code></pre>
-<pre><code>[1] 17</code></pre>
+<pre><code>[1] 16</code></pre>
 <p>Again, this number is likely a starting point and may need to be
 revised depending on the outcome of the downstream steps.</p>
 <summary>
@@ -944,9 +953,9 @@ check_pcs_advanced = function(so, reduction, print_plot=TRUE, verbose=TRUE) {
 alt_pcs = check_pcs_advanced(geo_so, &#39;unintegrated.sct.pca&#39;)</code></pre>
 <p><img src="images/curriculum/04-PCAandIntegration/04-apply_estimate_alt_pcs-1.png" width="816" style="display: block; margin: auto;" /></p>
 <pre><code>Reduction unintegrated.sct.pca: 50 PCs (total var = 100)
-    PC 42 (total var = 90.93) : Smallest PC that explains at least 90% total variance
-    PC 17 (total var = 55.04) : Largest PC with incremental variance step at least 0.1%
-    Recommended num of PCs: 17</code></pre>
+    PC 42 (total var = 90.98) : Smallest PC that explains at least 90% total variance
+    PC 16 (total var = 53.21) : Largest PC with incremental variance step at least 0.1%
+    Recommended num of PCs: 16</code></pre>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Save plot of PCs
 ggsave(filename = &#39;results/figures/optimal_pcs.png&#39;,
@@ -955,9 +964,9 @@ ggsave(filename = &#39;results/figures/optimal_pcs.png&#39;,
 
 rm(alt_pcs)
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   6762606  361.2   12502211  667.7  12502211  667.7
-Vcells 373483938 2849.5  876572846 6687.8 761677796 5811.2</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
+Ncells   9277927  495.5   17356211  927.0   17356211   927.0
+Vcells 377326204 2878.8 1136637116 8671.9 1420796228 10839.9</code></pre>
 <p>Again, this number is likely a starting point and may need to be
 revised depending on the outcome of the downstream steps.</p>
 <p>While outside the scope of this workshop, there are community efforts
@@ -1085,8 +1094,8 @@ the <code>Seurat</code> object:</p>
 # Observe that we now have a new reduction, `integrated.sct.rpca`
 geo_so </code></pre>
 <pre><code>An object of class Seurat 
-47050 features across 31559 samples within 2 assays 
-Active assay: SCT (20561 features, 3000 variable features)
+46957 features across 31559 samples within 2 assays 
+Active assay: SCT (20468 features, 3000 variable features)
  3 layers present: counts, data, scale.data
  1 other assay present: RNA
  2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca</code></pre>
@@ -1129,9 +1138,9 @@ plots = c(&quot;heatmap_1&quot;)
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   6760541  361.1   12502211  667.7  12502211  667.7
-Vcells 373529569 2849.9  876572846 6687.8 762020796 5813.8</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
+Ncells   9376373  500.8   17356211  927.0   17356211   927.0
+Vcells 379354907 2894.3 1136637116 8671.9 1420796228 10839.9</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">

@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-06-23" />
+<meta name="date" content="2025-07-10" />
 
 <title>Cell Type Annotation</title>
 
@@ -377,7 +377,10 @@ div.tocify {
       <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
     </li>
     <li>
-      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+      <a href="05-ProjectionAndClustering.html">Clustering &amp; Projection</a>
+    </li>
+    <li>
+      <a href="clusters_faq.html">Clusters, PCs, and Resolutions: FAQ</a>
     </li>
   </ul>
 </li>
@@ -397,7 +400,13 @@ div.tocify {
     <li>
       <a href="08-DifferentialExpression.html">Differential expression analysis</a>
     </li>
+    <li>
+      <a href="08A-AnalysisFinale.html">Analysis summary and next steps</a>
+    </li>
   </ul>
+</li>
+<li>
+  <a href="exercises.html">Exercises</a>
 </li>
 <li>
   <a href="workshop_wrap_up.html">Wrap up</a>
@@ -416,7 +425,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Cell Type Annotation</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-06-23</h4>
+<h4 class="date">2025-07-10</h4>
 
 </div>
 
@@ -628,27 +637,25 @@ sc_pred_tbl = geo_catch@celltype %&gt;%
   select(cluster, cell_type, celltype_score) %&gt;%
   rename(cell_type_prediction = cell_type)
 sc_pred_tbl</code></pre>
-<pre><code>   cluster    cell_type_prediction celltype_score
-1        0                Pericyte           0.75
-2        1               Stem Cell           0.83
-3        2              Macrophage           0.82
-4        3          Dendritic Cell           0.86
-5        4 Hematopoietic Stem Cell           0.92
-6        5 Hematopoietic Stem Cell           0.87
-7        6                Monocyte           0.82
-8        7  Muscle Progenitor Cell           0.71
-9        8  Muscle Progenitor Cell           0.71
-10       9                Monocyte           0.82
-11      10 Hematopoietic Stem Cell           0.86
-12      11 Hematopoietic Stem Cell           0.90
-13      12       Regulatory T Cell           0.90
-14      13          Dendritic Cell           0.85
-15      14               Stem Cell           0.73
-16      15             CD8+ T Cell           0.88
-17      16               Stem Cell           0.84
-18      17   Muscle Satellite Cell           0.94
-19      18 Hematopoietic Stem Cell           0.87
-20      19             Muscle Cell           0.69</code></pre>
+<pre><code>   cluster                      cell_type_prediction   celltype_score
+1        0                   Hematopoietic Stem Cell             0.87
+2        1                                  Pericyte             0.75
+3        2                                Macrophage             0.82
+4        3                            Dendritic Cell             0.86
+5        4                                  Monocyte             0.82
+6        5                   Hematopoietic Stem Cell             0.92
+7        6                    Muscle Progenitor Cell             0.71
+8        7                   Hematopoietic Stem Cell             0.87
+9        8                    Muscle Progenitor Cell             0.75
+10       9                     Muscle Satellite Cell             0.93
+11      10                   Hematopoietic Stem Cell              0.9
+12      11                            Dendritic Cell             0.85
+13      12                         Regulatory T Cell              0.9
+14      13                            Dendritic Cell             0.85
+15      14 Dendritic Cell, Monocyte, Progenitor Cell 0.71, 0.71, 0.71
+16      15                               CD8+ T Cell             0.88
+17      16                                 Stem Cell             0.84
+18      17                               Muscle Cell             0.69</code></pre>
 <p>When we look at our results we can see the cell type score, which
 gives us an idea of the confidence of that prediction. Not shown here
 but the full <code>celltype</code> table also includes marker genes and
@@ -695,8 +702,14 @@ immune_markers[[&#39;T-cell&#39;]] = c( &#39;Cd3d&#39;,&#39;Cd3e&#39;,&#39;Cd3g&
 <pre class="r"><code># -------------------------------------------------------------------------
 # Plot other immune to assist with cluster identification
 immune_markers_plot = DotPlot(geo_so, features = immune_markers, assay = &#39;SCT&#39;)  +
-  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
-immune_markers_plot
+  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))</code></pre>
+<pre><code>Warning: The `facets` argument of `facet_grid()` is deprecated as of ggplot2 2.2.0.
+ℹ Please use the `rows` argument instead.
+ℹ The deprecated feature was likely used in the Seurat package.
+  Please report the issue at &lt;https://github.com/satijalab/seurat/issues&gt;.
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+<pre class="r"><code>immune_markers_plot
 
 # save to file
 ggsave(filename = &#39;results/figures/immune_markers_sct_dot_plot.png&#39;, 
@@ -921,13 +934,13 @@ replicate1
 1.240962
 </td>
 <td style="text-align:right;">
-6061
+6062
 </td>
 <td style="text-align:right;">
-2866
+2867
 </td>
 <td style="text-align:left;">
-5
+0
 </td>
 <td style="text-align:left;">
 3
@@ -936,10 +949,10 @@ replicate1
 Hematopoietic Stem Cell
 </td>
 <td style="text-align:left;">
-0.92
+0.87
 </td>
 <td style="text-align:left;">
-Hematopoietic Stem Cell
+Myofibroblast
 </td>
 </tr>
 <tr>
@@ -974,7 +987,7 @@ replicate1
 1509
 </td>
 <td style="text-align:left;">
-5
+0
 </td>
 <td style="text-align:left;">
 3
@@ -983,10 +996,10 @@ replicate1
 Hematopoietic Stem Cell
 </td>
 <td style="text-align:left;">
-0.92
+0.87
 </td>
 <td style="text-align:left;">
-Hematopoietic Stem Cell
+Myofibroblast
 </td>
 </tr>
 <tr>
@@ -1015,25 +1028,25 @@ replicate1
 3.112002
 </td>
 <td style="text-align:right;">
-5324
+5314
 </td>
 <td style="text-align:right;">
-2380
+2370
 </td>
 <td style="text-align:left;">
-1
+0
 </td>
 <td style="text-align:left;">
 3
 </td>
 <td style="text-align:left;">
-Pericyte
+Hematopoietic Stem Cell
 </td>
 <td style="text-align:left;">
-0.75
+0.87
 </td>
 <td style="text-align:left;">
-Pericyte
+Myofibroblast
 </td>
 </tr>
 <tr>
@@ -1115,19 +1128,19 @@ replicate1
 915
 </td>
 <td style="text-align:left;">
-1
+0
 </td>
 <td style="text-align:left;">
 3
 </td>
 <td style="text-align:left;">
-Pericyte
+Hematopoietic Stem Cell
 </td>
 <td style="text-align:left;">
-0.75
+0.87
 </td>
 <td style="text-align:left;">
-Pericyte
+Myofibroblast
 </td>
 </tr>
 <tr>
@@ -1156,13 +1169,13 @@ replicate1
 2.938131
 </td>
 <td style="text-align:right;">
-5864
+5865
 </td>
 <td style="text-align:right;">
-2587
+2588
 </td>
 <td style="text-align:left;">
-5
+0
 </td>
 <td style="text-align:left;">
 3
@@ -1171,10 +1184,10 @@ replicate1
 Hematopoietic Stem Cell
 </td>
 <td style="text-align:left;">
-0.92
+0.87
 </td>
 <td style="text-align:left;">
-Hematopoietic Stem Cell
+Myofibroblast
 </td>
 </tr>
 </tbody>
@@ -1225,9 +1238,9 @@ code)</strong>
 the level of specificity that’s relevant to <em>your</em> biological
 question or use the same labels for clusters that don’t seems to share
 similar expression programs</p>
-<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   7080417  378.2   12502211  667.7  12502211  667.7
-Vcells 340183707 2595.4  876572846 6687.8 841451716 6419.8</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
+Ncells   9696950  517.9   17356211  927.0   17356211   927.0
+Vcells 345269818 2634.2 1136637116 8671.9 1420796228 10839.9</code></pre>
 <img src="images/curriculum/07-CellTypeAnnotation/07-catch_umap_plots-1.png" width="1152" style="display: block; margin: auto;" />
 </details>
 <p><br> <br/></p>
@@ -1241,9 +1254,9 @@ Vcells 340183707 2595.4  876572846 6687.8 841451716 6419.8</code></pre>
 # (Ok since we saved the plots as we went along)
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   7000886  373.9   12502211  667.7  12502211  667.7
-Vcells 336523922 2567.5  876572846 6687.8 841451716 6419.8</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
+Ncells   9616784  513.6   17356211  927.0   17356211   927.0
+Vcells 341686978 2606.9 1136637116 8671.9 1420796228 10839.9</code></pre>
 <p>We’ll save the scCATCH object and our updated Seurat object with cell
 type annotations.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
