@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+
+<html lang="en" xml:lang="en">
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core Workshop Team" />
+
+<meta name="date" content="2025-07-10" />
+
+<title>Clusters, PCs, and Resolutions: FAQ</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<!--
+Favicon dervied from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<link rel="manifest" href="site.webmanifest">
+<link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="dist/css/dbox.css">
+
+<script src="dist/js/dbox.min.js" defer></script>
+
+<style type="text/css">
+  .active,
+.demo:hover {
+  opacity: 1;
+}
+
+img.hover-shadow {
+  transition: 0.3s;
+}
+
+.hover-shadow:hover {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+</style>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+    </li>
+    <li>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+    </li>
+    <li>
+      <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
+    </li>
+    <li>
+      <a href="03-Normalization.html">Normalization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
+    </li>
+    <li>
+      <a href="05-ProjectionAndClustering.html">Clustering &amp; Projection</a>
+    </li>
+    <li>
+      <a href="clusters_faq.html">Clusters, PCs, and Resolutions: FAQ</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="06-MarkerVisualization.html">Marker identification and visualization</a>
+    </li>
+    <li>
+      <a href="07-CellTypeAnnos.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="08-DifferentialExpression.html">Differential expression analysis</a>
+    </li>
+    <li>
+      <a href="08A-AnalysisFinale.html">Analysis summary and next steps</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="exercises.html">Exercises</a>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Clusters, PCs, and Resolutions: FAQ</h1>
+<h4 class="author">UM Bioinformatics Core Workshop Team</h4>
+<h4 class="date">2025-07-10</h4>
+
+</div>
+
+
+<style type="text/css">
+
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+
+
+table.fig, th.fig, td.fig {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 15px;
+}
+
+table{
+   width:100%;
+}
+</style>
+<hr />
+<div id="why-do-we-cluster-on-principle-components-pc-instead-of-genes"
+class="section level3">
+<h3>Why do we cluster on Principle Components (PC) instead of
+genes?</h3>
+<ul>
+<li>Most genes show little variance at all; those that do often behave
+in concert (regulating up and down in a coherent experssion program).
+Because of this behavior, <strong>clustering directly on genes doesn’t
+work very well mathematically.</strong> (Because in 20k dimensions, the
+notion of distance breaks down; everything is too far from everything
+else.)</li>
+<li>PCs naturally diminish noise and aggregate signal in expression
+patterns across related genes; this makes patterns clearer.</li>
+<li>It’s <strong>much much faster</strong> to cluster 15 PCs than 20k
+genes.</li>
+</ul>
+<hr />
+</div>
+<div
+id="how-can-such-a-small-number-of-pcs-faithfully-represent-so-many-genes-arent-we-throwing-away-a-ton-of-information"
+class="section level3">
+<h3>How can such a small number of PCs faithfully represent so many
+genes? Aren’t we throwing away a ton of information?</h3>
+<ul>
+<li>Selecting a few PCs helps by bringing the most important parts of
+the picture into focus. Remember that each PCs represents a gene
+expression <strong>pattern</strong> across many genes.</li>
+</ul>
+<table>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Genes look like this</th>
+<th align="center">A Principle Component shows this</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><img src="images/clusters_faq/PC-before.png" /></td>
+<td align="center"><img src="images/clusters_faq/PC-after.png" /></td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li>Recall from the earlier <a
+href="04-PCAandIntegration.html#Visualizing_relative_contributions_of_each_PC">elbow
+plot</a> that almost all the variance (signal) in the dataset is
+captured in the first handful of PCs. In our example dataset, the first
+50 PCs capture over 99% of the cumulative variance.</li>
+</ul>
+<hr />
+</div>
+<div id="so-whats-the-correct-resolution-and-number-of-pcs"
+class="section level3">
+<h3>So, what’s the correct resolution and number of PCs?</h3>
+<ul>
+<li><p>That depends on <strong>how many cell types/cell states do you
+expect.</strong> And the answer to that depends on:</p>
+<ul>
+<li>the tissue/bio-fluid of origin</li>
+<li>the quality of the sample / suspension</li>
+<li>your experimental design</li>
+<li>your research question</li>
+<li>the number of cells profiled</li>
+<li>the number of genes detected</li>
+<li>the range and specificity of cellular expression programs</li>
+</ul></li>
+<li><p>For our sample data (bone biopsies from mice), we anticipate
+about 20 cell types.</p></li>
+</ul>
+<hr />
+</div>
+<div id="couldnt-the-computer-figure-out-the-best-pcs-and-resolution"
+class="section level3">
+<h3>Couldn’t the computer figure out the best PCs and resolution?</h3>
+<ul>
+<li>The computer could try a bunch of PCs and resolutions to get the
+right number of clusters - and those clusters might look good
+numerically. But they wouldn’t be the best representation of the
+different cells types <strong>because the algorithm doesn’t understand
+the cell biology</strong>.</li>
+</ul>
+<hr />
+</div>
+<div id="so-how-do-we-pick-the-right-pcs-and-resolution"
+class="section level3">
+<h3>So how do we pick the right PCs and resolution?</h3>
+<ul>
+<li>You will want to iterate through a few combinations of PCs and
+resolutions.</li>
+<li>It helps to know how PCs and resolution work together to influence
+the number of clusters.</li>
+<li>We applied the clustering and UMAP code blocks from <a
+href="05-ProjectionAndClustering.html">earlier</a> and tried a bunch of
+clusterings each with a different number of PCs and a different
+resolution.</li>
+</ul>
+<table class="fig">
+<tr>
+<th class="fig">
+Different cluster counts across resolutions and PCs
+</th>
+</tr>
+<tr>
+<td class="fig">
+<img src="images/clusters_faq/pc_res_cluster.png" />
+</td>
+</tr>
+<tr>
+<td class="fig">
+<ul>
+<li>Each dot represents the number of clusters produced with a specific
+resolution and number of PCs.</li>
+<li>Each colored line is a different resolution.</li>
+<li>Each column is a different num of PCs.</li>
+<li>Note that PCs have a modest effect on the number of clusters while
+resolution has a strong effect on the number of clusters.</li>
+</ul>
+</td>
+</tr>
+</table>
+<hr />
+</div>
+<div
+id="what-do-the-cluster-umaps-look-like-at-different-pcs-and-resolutions"
+class="section level3">
+<h3>What do the cluster UMAPs look like at different PCs and
+resolutions?</h3>
+<ul>
+<li>Each UMAP below was made with a different num of PCs and different
+resolution. (You can click on any UMAP to make it larger.)</li>
+<li>Each column is a different PC. Each row is a different
+resolution.</li>
+<li>The first row (in black and white) shows the UMAP projection without
+any clustering.</li>
+<li>Note that as PCs increase, the UMAPs go from “blobby” to”spindly”.
+(They gain local structure.)</li>
+<li>As the resolution increases, the UMAP projection is the same for a
+given PC, but that projection is cut up into more and more
+clusters.</li>
+</ul>
+<table class="table" style="margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:center;">
+resolution
+</th>
+<th style="text-align:center;">
+5
+</th>
+<th style="text-align:center;">
+10
+</th>
+<th style="text-align:center;">
+16
+</th>
+<th style="text-align:center;">
+30
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center;font-weight: bold;vertical-align:middle;">
+0.0
+</td>
+<td style="text-align:center;">
+<a class="dbox" href="images/clusters_faq/umaps/res=0_pcs=05.png"><img alt="clusters=0 : pcs=5 res=0 " title="clusters=0 : pcs=5 res=0 " src="images/clusters_faq/umaps/res=0_pcs=05.png" class="hover-shadow"></a>
+</td>
+<td style="text-align:center;">
+<a class="dbox" href="images/clusters_faq/umaps/res=0_pcs=10.png"><img alt="clusters=0 : pcs=10 res=0 " title="clusters=0 : pcs=10 res=0 " src="images/clusters_faq/umaps/res=0_pcs=10.png" class="hover-shadow"></a>
+</td>
+<td style="text-align:center;">
+<a class="dbox" href="images/clusters_faq/umaps/res=0_pcs=16.png"><img alt="clusters=0 : pcs=16 res=0 " title="clusters=0 : pcs=16 res=0 " src="images/clusters_faq/umaps/res=0_pcs=16.png" class="hover-shadow"></a>
+</td>
+<td style="text-align:center;">
+<a class="dbox" href="images/clusters_faq/umaps/res=0_pcs=30.png"><img alt="clusters=0 : pcs=30 res=0 " title="clusters=0 : pcs=30 res=0 " src="images/clusters_faq/umaps/res=0_pcs=30.png" class="hover-shadow"></a>
+</td>
+</tr>
+<tr>
+<td style="text-align:center;font-weight: bold;vertical-align:middle;">
+0.2
+</td>
+<td style="text-align:center;">
+<a class="dbox" href="images/clusters_faq/umaps/res=0.2_pcs=05.png"><img alt="clusters=11 : pcs=5 res=0.2 " title="clusters=11 : pcs=5 res=0.2 " src="images/clusters_faq/umaps/res=0.2_pcs=05.png" class="hover-shadow"></a>
+</td>
+<td style="text-align:center;">
+<a class="dbox" href="images/clusters_faq/umaps/res=0.2_pcs=10.png"><img alt="clusters=14 : pcs=10 res=0.2 " title="clusters=14 : pcs=10 res=0.2 " src="images/clusters_faq/umaps/res=0.2_pcs=10.png" class="hover-shadow"></a>
+</td>
+<td style="text-align:center;">
+<a class="dbox" href="images/clusters_faq/umaps/res=0.2_pcs=16.png"><img alt="clusters=13 : pcs=16 res=0.2 " title="clusters=13 : pcs=16 res=0.2 " src="images/clusters_faq/umaps/res=0.2_pcs=16.png" class="hover-shadow"></a>
+</td>
+<td style="text-align:center;">
+<a class="dbox" href="images/clusters_faq/umaps/res=0.2_pcs=30.png"><img alt="clusters=16 : pcs=30 res=0.2 " title="clusters=16 : pcs=30 res=0.2 " src="images/clusters_faq/umaps/res=0.2_pcs=30.png" class="hover-shadow"></a>
+</td>
+</tr>
+<tr>
+<td style="text-align:center;font-weight: bold;vertical-align:middle;">
+0.4
+</td>
+<td style="text-align:center;">
+<a class="dbox" href="images/clusters_faq/umaps/res=0.4_pcs=05.png"><img alt="clusters=17 : pcs=5 res=0.4 " title="clusters=17 : pcs=5 res=0.4 " src="images/clusters_faq/umaps/res=0.4_pcs=05.png" class="hover-shadow"></a>
+</td>
+<td style="text-align:center;">
+<a class="dbox" href="images/clusters_faq/umaps/res=0.4_pcs=10.png"><img alt="clusters=18 : pcs=10 res=0.4 " title="clusters=18 : pcs=10 res=0.4 " src="images/clusters_faq/umaps/res=0.4_pcs=10.png" class="hover-shadow"></a>
+</td>
+<td style="text-align:center;">
+<a class="dbox" href="images/clusters_faq/umaps/res=0.4_pcs=16.png"><img alt="clusters=24 : pcs=16 res=0.4 " title="clusters=24 : pcs=16 res=0.4 " src="images/clusters_faq/umaps/res=0.4_pcs=16.png" class="hover-shadow"></a>
+</td>
+<td style="text-align:center;">
+<a class="dbox" href="images/clusters_faq/umaps/res=0.4_pcs=30.png"><img alt="clusters=24 : pcs=30 res=0.4 " title="clusters=24 : pcs=30 res=0.4 " src="images/clusters_faq/umaps/res=0.4_pcs=30.png" class="hover-shadow"></a>
+</td>
+</tr>
+<tr>
+<td style="text-align:center;font-weight: bold;vertical-align:middle;">
+0.8
+</td>
+<td style="text-align:center;">
+<a class="dbox" href="images/clusters_faq/umaps/res=0.8_pcs=05.png"><img alt="clusters=28 : pcs=5 res=0.8 " title="clusters=28 : pcs=5 res=0.8 " src="images/clusters_faq/umaps/res=0.8_pcs=05.png" class="hover-shadow"></a>
+</td>
+<td style="text-align:center;">
+<a class="dbox" href="images/clusters_faq/umaps/res=0.8_pcs=10.png"><img alt="clusters=27 : pcs=10 res=0.8 " title="clusters=27 : pcs=10 res=0.8 " src="images/clusters_faq/umaps/res=0.8_pcs=10.png" class="hover-shadow"></a>
+</td>
+<td style="text-align:center;">
+<a class="dbox" href="images/clusters_faq/umaps/res=0.8_pcs=16.png"><img alt="clusters=30 : pcs=16 res=0.8 " title="clusters=30 : pcs=16 res=0.8 " src="images/clusters_faq/umaps/res=0.8_pcs=16.png" class="hover-shadow"></a>
+</td>
+<td style="text-align:center;">
+<a class="dbox" href="images/clusters_faq/umaps/res=0.8_pcs=30.png"><img alt="clusters=33 : pcs=30 res=0.8 " title="clusters=33 : pcs=30 res=0.8 " src="images/clusters_faq/umaps/res=0.8_pcs=30.png" class="hover-shadow"></a>
+</td>
+</tr>
+<tr>
+<td style="text-align:center;font-weight: bold;vertical-align:middle;">
+1.2
+</td>
+<td style="text-align:center;">
+<a class="dbox" href="images/clusters_faq/umaps/res=1.2_pcs=05.png"><img alt="clusters=32 : pcs=5 res=1.2 " title="clusters=32 : pcs=5 res=1.2 " src="images/clusters_faq/umaps/res=1.2_pcs=05.png" class="hover-shadow"></a>
+</td>
+<td style="text-align:center;">
+<a class="dbox" href="images/clusters_faq/umaps/res=1.2_pcs=10.png"><img alt="clusters=36 : pcs=10 res=1.2 " title="clusters=36 : pcs=10 res=1.2 " src="images/clusters_faq/umaps/res=1.2_pcs=10.png" class="hover-shadow"></a>
+</td>
+<td style="text-align:center;">
+<a class="dbox" href="images/clusters_faq/umaps/res=1.2_pcs=16.png"><img alt="clusters=36 : pcs=16 res=1.2 " title="clusters=36 : pcs=16 res=1.2 " src="images/clusters_faq/umaps/res=1.2_pcs=16.png" class="hover-shadow"></a>
+</td>
+<td style="text-align:center;">
+<a class="dbox" href="images/clusters_faq/umaps/res=1.2_pcs=30.png"><img alt="clusters=38 : pcs=30 res=1.2 " title="clusters=38 : pcs=30 res=1.2 " src="images/clusters_faq/umaps/res=1.2_pcs=30.png" class="hover-shadow"></a>
+</td>
+</tr>
+</tbody>
+</table>
+<dialog id="js-dbox" class="dbox-dialog">
+  <div class="dbox-dialog--content">
+    <div class="dbox-dialog--container">
+      <p class="dbox-dialog--caption" style="font-size:x-large"></p>
+        <button type="button"  class="dbox-dialog--close" style="font-size:x-large">&times;</button>
+    </div>
+    <img src="" alt="" class="dbox-dialog--image">
+  </div>
+</dialog>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let lightbox = new Dbox();
+        lightbox.run();
+    });
+</script>
+</div>
+<div
+id="but-these-are-all-still-just-clusters---how-do-i-know-if-they-are-biologically-accurate"
+class="section level3">
+<h3>But these are all still just … clusters - how do I know if they are
+biologically accurate?</h3>
+<ul>
+<li><p>We need two more tools to validate these are good biological
+clusters:</p>
+<ul>
+<li>We need to identify <strong>gene markers</strong> that behave
+differently across clusters.</li>
+<li>We need to <strong>annotate</strong> the clusters with prospective
+cell types.</li>
+</ul></li>
+<li><p>We will cover both of topics in the next sections.</p></li>
+</ul>
+<hr />
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="05-ProjectionAndClustering.html">Previous
+lesson</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="06-MarkerVisualization.html">Next
+lesson</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+
+
+
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

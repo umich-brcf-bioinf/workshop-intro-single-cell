@@ -31,8 +31,10 @@ navbar:
       menu:
         - text: "PCA & Integration"
           href: 04-PCAandIntegration.html
-        - text: "Projection & Clustering"
+        - text: "Clustering & Projection"
           href: 05-ProjectionAndClustering.html
+        - text: "Clusters, PCs, and Resolutions: FAQ"
+          href: clusters_faq.html
     - text: "Day 3"
       menu:
         - text: "Marker identification and visualization"
@@ -41,5 +43,9 @@ navbar:
           href: 07-CellTypeAnnos.html
         - text: "Differential expression analysis"
           href: 08-DifferentialExpression.html
+        - text: "Analysis summary and next steps"
+          href: 08A-AnalysisFinale.html
+    - text: "Exercises"
+      href: exercises.html
     - text: "Wrap up"
       href: workshop_wrap_up.html
