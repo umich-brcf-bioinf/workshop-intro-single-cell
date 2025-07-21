@@ -69,7 +69,7 @@ Before making any comparisons between experimental conditions, its important to 
 
 ## Objectives
 
-- Select an initial subset of the PCs to approximate biological variation of interest
+- Choose an appropriate number of principal components to represent our data   
 - Understand the clustering process and input parameters
 - Generate initial clusters using `FindNeighbors()` and `FindClusters()`
 - Visualize our clustering results with `DimPlot()`
@@ -108,22 +108,17 @@ To generate clusters, we will select a subset of the PCs and then generate "comm
 <!--- Contrast the previous dimensionality reduction versus nearest neighbors clustering and plotting the cells in lower dimensionality with the cluster labels? --->
 
 
-## Choosing the number of significant PCs for dimensionality reduction
+## Choosing the number of PCs to represent our data
 
-The short answer selected the number of PCs for an analysis is often an iterative process.
+The short answer is while we might not know if that number of PCs is appropriate for the "resolution" of our biological question until we begin to identify marker genes and/or begin to annotate cell-types, we can start by visually or empirically determine how many PCs represent the *majority* of the variation in a dataset and use that number as a starting point.
 
-<!-- Section may still need to be edited more & consider adding a figure --> 
-An important consideration for determining how many PCs to select for your single-cell analysis is to understand the "resolution" of your biological question. Is answering your biological question dependent on identifying rarer cell types or specific subtypes? Or are broader cell-types more relevant and less PCs are needed?
-
-
-
-<!-- Section may need more editing
+<!-- Section may need more editing  & consider adding a figure
 Related - how important is that decision to the downstream impact (e.g. how much does changing the number of PCs change the clustering)?
 --> 
 
-### Visualizing variance across PCs for a dataset
+### Visualizing variance across PCs
 
-One way to evaluate how many PCs to use is by looking at an elbow plot, which shows the percent variance explained by successive PCs. We'll use the `ElbowPlot()` function to do this, specifying that the first 50 PCs be plotted. 
+So in addition to the heatmaps we generated in the last module, one way to evaluate how many PCs explain the majority of the variation is by generating an elbow plot, which shows the percent variance explained by successive PCs. We'll use the `ElbowPlot()` function to do this, specifying that the first 50 PCs be plotted. 
 
 ```{r, elbow_plot, fig.show='hold', out.width='80%'}
 # -------------------------------------------------------------------------
@@ -133,12 +128,12 @@ ggsave(filename = 'results/figures/qc_sct_elbow_plot.png',
        width = 8, height = 8, units = 'in')
 ```
 
-In this plot, we could arbitrarily choose a number along the x-axis that looks like a sharp change in the variance from one PC to the next, that is, an "elbow". Of course, while that's often the recommendation in tutorials the choice of where the point of the "elbow" is not always obvious, and this plot is no different.
+In this plot, we could arbitrarily choose a number along the x-axis that looks like a sharp change in the variance from one PC to the next, that is, an "elbow", which indicates diminishing explained variance. While this approach is a common recommendation in in tutorials, the choice of where the point of the "elbow" is not always obvious, and this plot is no different.
 
 
 ### An algorithmic approach
 
-Instead of choosing based on the elbow plot by sight alone, we can try to  quantify our choice algorithmically. Here we create a function to return a recommended PC based on two possible metrics ( (A) cumulative variation or (B) above a minimum step size). We can apply a version of this function that was borrowed from [HBC](https://hbctraining.github.io/scRNA-seq/lessons/elbow_plot_metric.html) to our data to select a good starting point for number of PCs to include for clustering later on.
+Instead of choosing based on the elbow plot by sight alone, we can try to  quantify our choice algorithmically. Here we create a function to return a recommended PC based on two possible metrics ( (A) cumulative variation or (B) above a minimum step size). We can apply a version of this function that was borrowed from [HBC](https://hbctraining.github.io/scRNA-seq/lessons/elbow_plot_metric.html) to our data to help select a good starting point for the number of PCs to include for clustering.
 <!--- revised function name per discussion with Raymond --->
 
 ```{r, check_pcs}
@@ -277,9 +272,9 @@ few popular approaches:
 </details>
 <br/>
 
-## Selecting initial PCs
+## Selecting the number of PCs to be used for clustering
 
-For this dataset, we are expecting a diversity of cell types and cell populations that mediate wound healing, but also an aberrant transition to bone. 
+For this dataset, we are expecting a diversity of cell types and cell populations that mediate wound healing, but also an aberrant transition to bone. For the purposes of the workshop and after 
 
 <!-- move this section to projection and clustering once ready to incorporate examples of alternative PCA choices-->
 ```{r, revised_select_pcs}
@@ -288,7 +283,7 @@ For this dataset, we are expecting a diversity of cell types and cell population
 pcs = 10
 ```
 
-Again, in a full analysis workflow, our selection at this step can be more of a starting point for further iterations than a final decision. <!--- add link to PC/clustering exploration here/ -->
+Again, in a full analysis workflow, our selection at this step can be more of a starting point for further iterations than a final decision. In the exercises, you'll have the opportunity to test how alternative parameters impact the clustering results, including selecting fewer or more PCs. <!--- also add link to PC/clustering exploration here/ -->
 
 ## Clustering
 
@@ -393,7 +388,7 @@ The result of `FindClusters()` adds two columns to the `meta.data` table and cha
 ![Image: Schematic after FindClusters().](images/seurat_schematic/Slide9.png)
 <br>
 
-Generally it's preferable to err on the side of too many clusters, as they can be combined manually in later steps. In our experience, this is another parameter that often needs to be iteratively revised and reviewed. 
+Generally it's preferable to err on the side of too many clusters, as they can be combined manually in later steps.
 
 ### Resolution parameters recommendations
 <details>
@@ -440,7 +435,7 @@ After we generate the UMAP reduction, we can then visualize the results using th
 
 At this stage, we want to determine if the clusters look fairly well separated, if they seem to correspond to how cells are grouped in the UMAP, and if the number of clusters is generally aligned with the resolution of our biological question. Again, if there are "too many" clusters that's not necessarily a problem.
 
-We can also look at the same UMAP labeled by `day` to visually inspect if the UMAP structure corresponds to the `day`.
+We can also look at the same UMAP labeled by `time` to visually inspect if the UMAP structure corresponds to the day of collection.
 
 ```{r, umap_by_clusters, fig.show='hold', fig.height = 6, fig.width=6}
 # -------------------------------------------------------------------------
@@ -491,9 +486,9 @@ ggsave(filename = 'results/figures/umap_integrated_sct_day.png',
 
 ```
 
-Similar to the PCA plots, the `day` labeled UMAP can tell us if technical sources of variation might be driving or stratifying the clusters, which would suggest that the normalization and integration steps should be revisted before proceeding.
+Similar to the PCA plots, the `time` labeled UMAP can tell us if technical sources of variation might be driving or stratifying the clusters, which would suggest that the normalization and integration steps should be revisted before proceeding.
 
-Another approach is to evaluate the number of cells per cluster using the `table()` function, split by `day` or split by `orig.ident` to see if the individual samples are driving any of the UMAP structure:
+Another approach is to evaluate the number of cells per cluster using the `table()` function, split by `time` or split by `orig.ident` to see if the individual samples are driving any of the UMAP structure:
 <!-- add step to write out tables to file? or only do that once clusters are labeled?-->
 ```{r, table_by_day, eval = FALSE, message=FALSE}
 # -------------------------------------------------------------------------
@@ -557,24 +552,6 @@ clusters_counts_sample %>%
 # Other approaches for visualizing scRNA-sq data
 e.g. code for tSNE visualization 
 -->
-## Check mitochondrial signal
-
-Before proceeding, we can also check the percentage of mitochondrial genes to determine if there might be interesting cell death patterns or indicate that further filtering is needed:
-```{r, check_mito_UMAP, echo=TRUE, eval= TRUE}
-# -------------------------------------------------------------------------
-# Check mitochondrial gene expression
-percent_mito_plot = FeaturePlot(geo_so, features='percent.mt')
-percent_mito_plot
-
-# save to file
-ggsave(filename = 'results/figures/percent_umap_mito_plot.png', 
-       plot = percent_mito_plot, 
-       width = 6, height = 6, units = 'in')
-```
-
-
-We see that a higher percentages seem to be somewhat concentrated in a few places, but if cell death might be of interest for the research question, we'd want to consider investigating this pattern further by splitting up the plots by day and/or waiting until after running initial differential expression analysis to determine if these cell populations are interesting biology or not.
-
 
 # Comparing to unintegrated data
 
@@ -685,8 +662,7 @@ Before proceeding, we'll remove the ggplot objects from our environment to avoid
 plots = c("pre_integration_umap_plot_day", 
           "post_integration_umap_plot_clusters", 
           "post_integration_umap_plot_split_clusters", 
-          "post_integration_umap_plot_day",
-          "percent_mito_plot")
+          "post_integration_umap_plot_day")
 
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))

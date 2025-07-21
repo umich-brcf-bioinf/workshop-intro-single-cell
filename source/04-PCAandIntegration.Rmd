@@ -82,7 +82,6 @@ After filtering and normalization, our next goal is to cluster the cells accordi
 
 - Understand why PCA is used prior to integration and clustering for single-cell data   
 - Use the `RunPCA()` function to generate principal components for our data    
-- Choose an appropriate number of principal components to represent our data   
 - Use `IntegrateLayers()` to integrate our sample data prior to clustering   
 
 <br/>
