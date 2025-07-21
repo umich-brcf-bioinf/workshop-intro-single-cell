@@ -695,8 +695,14 @@ immune_markers[[&#39;T-cell&#39;]] = c( &#39;Cd3d&#39;,&#39;Cd3e&#39;,&#39;Cd3g&
 <pre class="r"><code># -------------------------------------------------------------------------
 # Plot other immune to assist with cluster identification
 immune_markers_plot = DotPlot(geo_so, features = immune_markers, assay = &#39;SCT&#39;)  +
-  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
-immune_markers_plot
+  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))</code></pre>
+<pre><code>Warning: The `facets` argument of `facet_grid()` is deprecated as of ggplot2 2.2.0.
+ℹ Please use the `rows` argument instead.
+ℹ The deprecated feature was likely used in the Seurat package.
+  Please report the issue at &lt;https://github.com/satijalab/seurat/issues&gt;.
+This warning is displayed once every 8 hours.
+Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
+<pre class="r"><code>immune_markers_plot
 
 # save to file
 ggsave(filename = &#39;results/figures/immune_markers_sct_dot_plot.png&#39;, 
@@ -817,7 +823,7 @@ ggsave(filename = &#39;results/figures/markers_fig1h_rna_dot_plot.png&#39;,
 file that we prepared by refining the scCATCH predictions. How is a
 table like this created?</p>
 <p><br/> <img
-src="images/curriculum/07-CellTypeAnnotation/RefiningCellTypeAnnos.png" />
+src="images/curriculum/07-CellTypeAnnotation/RefiningCellTypeAnnos_altLayout.png" />
 <br/></p>
 <p>Note: To add the cell-type labels to our Seurat object to replace our
 clusters’ numerical identities, we will create a new metadata object to
@@ -1226,8 +1232,8 @@ the level of specificity that’s relevant to <em>your</em> biological
 question or use the same labels for clusters that don’t seems to share
 similar expression programs</p>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   7080417  378.2   12502211  667.7  12502211  667.7
-Vcells 340183707 2595.4  876572846 6687.8 841451716 6419.8</code></pre>
+Ncells   6854498  366.1   12248732  654.2  12248732  654.2
+Vcells 339906234 2593.3  564865262 4309.6 392144188 2991.9</code></pre>
 <img src="images/curriculum/07-CellTypeAnnotation/07-catch_umap_plots-1.png" width="1152" style="display: block; margin: auto;" />
 </details>
 <p><br> <br/></p>
@@ -1242,8 +1248,8 @@ Vcells 340183707 2595.4  876572846 6687.8 841451716 6419.8</code></pre>
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   7000886  373.9   12502211  667.7  12502211  667.7
-Vcells 336523922 2567.5  876572846 6687.8 841451716 6419.8</code></pre>
+Ncells   6775013  361.9   12248732  654.2  12248732  654.2
+Vcells 336325385 2566.0  564865262 4309.6 392144188 2991.9</code></pre>
 <p>We’ll save the scCATCH object and our updated Seurat object with cell
 type annotations.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
