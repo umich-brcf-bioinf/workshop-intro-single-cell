@@ -1,3 +1,4 @@
+## if not running on AWS - setup environment
 # module load singularity
 # singularity exec /nfs/mm-isilon/bioinfcore/Common/singularity/single_cell_0.11.0.sif R ## activate R
 # singularity exec /nfs/mm-isilon/bioinfcore/Common/singularity/single_cell_0.11.0.sif rstudio ##activate Rstudio
@@ -51,7 +52,7 @@ render_site('source/06-MarkerVisualization.Rmd');
 render_site('source/07-CellTypeAnnos.Rmd');
 render_site('source/08-DifferentialExpression.Rmd');
 render_site('source/08A-AnalysisFinale.Rmd');
-render_site('source/09-IndependentExercise.Rmd');
+render_site('source/exercises.Rmd');
 render_site('source/00-ResourcesAndExtendedContent.Rmd');
 render_site('source/exercises.Rmd');
 
