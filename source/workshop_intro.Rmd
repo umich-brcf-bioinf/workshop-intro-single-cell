@@ -56,13 +56,9 @@ source("../bin/set_values.R")
 
 
 ## About the workshop team
-| ![](images/headshots/headshot_cgates.jpg) | ![](images/headshots/headshot_mbradenb.jpg) | ![](images/headshots/headshot_rcavalca.jpg) | 
-|:-:|:-:|:-:|
-| **Chris** | **Marci** | **Raymond** |
-| ![](images/headshots/headshot_damki.jpg) | ![](images/headshots/headshot_dfhannum.jpg) | ![](images/headshots/headshot_trsaari.jpg) |
-| **Dana** | **Ford** | **Travis** |
-| ![](images/headshots/headshot_phillipa.jpg) | ![](images/headshots/headshot_clairis.jpg) | ![](images/headshots/headshot_mkdohert.jpg) |
-| **Tricia** | **Clair** | **Matt** |
+```{r, child='helper-gallery.Rmd'}
+```
+
 <br/>
 
 # Code of Conduct
@@ -264,6 +260,8 @@ in the __References__ section of each lesson.
   * [10x Genomics](https://www.10xgenomics.com/support/single-cell-gene-expression/documentation){target="_blank"}
 
 * The workshop Code of Conduct has been adapted the NumFocus Code of Conduct (https://numfocus.org/code-of-conduct) which itself draws from from numerous sources, including the Geek Feminism wiki, created by the Ada Initiative and other volunteers, which is under a Creative Commons Zero license, the Contributor Covenant version 1.2.0, the Bokeh Code of Conduct, the SciPy Code of Conduct, the Carpentries Code of Conduct, and the NeurIPS Code of Conduct.
+
+* Some icons/images were sourced from https://openclipart.org/.
 
 * These workshop lesson plans have been adapted and extended from materials 
 listed above. These are open access materials distributed under the terms of the

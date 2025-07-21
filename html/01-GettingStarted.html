@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-06-19" />
+<meta name="date" content="2025-07-10" />
 
 <title>Getting Started with Seurat</title>
 
@@ -375,7 +375,10 @@ div.tocify {
       <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
     </li>
     <li>
-      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+      <a href="05-ProjectionAndClustering.html">Clustering &amp; Projection</a>
+    </li>
+    <li>
+      <a href="clusters_faq.html">Clusters, PCs, and Resolutions: FAQ</a>
     </li>
   </ul>
 </li>
@@ -395,7 +398,13 @@ div.tocify {
     <li>
       <a href="08-DifferentialExpression.html">Differential expression analysis</a>
     </li>
+    <li>
+      <a href="08A-AnalysisFinale.html">Analysis summary and next steps</a>
+    </li>
   </ul>
+</li>
+<li>
+  <a href="exercises.html">Exercises</a>
 </li>
 <li>
   <a href="workshop_wrap_up.html">Wrap up</a>
@@ -414,7 +423,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Getting Started with Seurat</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-06-19</h4>
+<h4 class="date">2025-07-10</h4>
 
 </div>
 
@@ -438,6 +447,16 @@ table.fig, th.fig, td.fig {
   border: 1px solid lightgray;
   border-collapse: collapse;
   padding: 12px;
+}
+
+.pro_tip {
+  border-radius: 10px;
+  padding: 5px 5px 5px 95px;
+  background: #EBF7FF left 10px top 10px / 85px no-repeat;
+}
+
+.pro_tip_icon {
+  background-image: url("images/curriculum/pro-tip.png");
 }
 
 </style>
@@ -744,7 +763,7 @@ Data type: double
 Storage order: column major
 
 Queued Operations:
-1. Load compressed matrix from directory /home/workshop/damki/ISC_R/bpcells</code></pre>
+1. Load compressed matrix from directory /home/workshop/cgates/ISC_R/bpcells</code></pre>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Cleanup
 # Since we&#39;ll now be reading in from BPCells files, we will remove geo_mat
@@ -752,9 +771,9 @@ Queued Operations:
 # to free up unused memory
 rm(geo_mat)
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
-Ncells   9649005  515.4   16457942  879.0   16457942   879.0
-Vcells 341637717 2606.5 1022843650 7803.7 1593731306 12159.3</code></pre>
+<pre><code>           used  (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells  6285483 335.7   12061464  644.2   8521727  455.2
+Vcells 11729495  89.5  564562660 4307.3 673007083 5134.7</code></pre>
 </div>
 <div id="read-bpcells" class="section level2">
 <h2>Read BPCells</h2>
@@ -969,6 +988,37 @@ options(future.globals.maxSize = 1e9)
 # Load the Seurat object
 geo_so = readRDS(&#39;results/rdata/geo_so_unfiltered.rds&#39;)</code></pre>
 <p><br/> <br/></p>
+<div id="pro-tip-rstudio-seurat-and-memory"
+class="section level2 pro_tip pro_tip_icon">
+<h2>Pro-tip: RStudio, Seurat, and Memory</h2>
+<ul>
+<li><p>R and RStudio are designed to grab computer memory (RAM) when
+necessary and release that memory when it’s no longer needed. R does
+this with a fancy computer science technique called <strong>garbage
+collection</strong>.</p></li>
+<li><p>The R <strong>garbage collector</strong> is very good for small
+objects and simple analyses, but complex single-cell analysis can
+overwhelm it. So <strong>don’t rely on R/RStudio’s built in garbage
+collection and session management for single-cell analysis</strong>.
+Instead, do the following:</p></li>
+</ul>
+<hr />
+<ol style="list-style-type: decimal">
+<li>Save intermediate versions of the Seurat object as you go along
+using <code>saveRDS()</code>. This gives you “savepoints” so if you need
+to backtrack, you don’t have to go back to the beginning. <br/></li>
+<li>Save ggplots into image files as you go along. Periodically clear
+ggplot objects from the R environment. <br/></li>
+<li>At the end of each day, wherever you are in the analysis, explicitly
+save the Seurat object and “power down” your session. <br/></li>
+<li>The next day, you can load the Seruat object using readRDS().
+<br/></li>
+</ol>
+<hr />
+<p>This simple pattern will make your code more reproducible and your
+RStudio session more reliable.</p>
+</div>
+<hr />
 </div>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
@@ -993,13 +1043,33 @@ for both routes in this section.
 <li>Created the directory structure for analysis.</li>
 <li>Learned how to read 10X data into Seurat.</li>
 <li>Introduced the Seurat object, and how to access parts of it.</li>
+<li>Learned some tips on managing memory.</li>
+<li>Learned to save our work and also to stop and restart the RStudio
+session.</li>
 </ul>
 <hr />
-<p>These materials have been adapted and extended from materials listed
-above. These are open access materials distributed under the terms of
-the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
-Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
-use, distribution, and reproduction in any medium, provided the original
+<div id="references" class="section level2">
+<h2>References:</h2>
+<ul>
+<li><a href="https://satijalab.org/seurat/" target="_blank">Seurat
+documentation</a></li>
+<li><a href="https://bnprks.github.io/BPCells/index.html"
+target="_blank">BPCells documentation</a></li>
+<li><a href="https://www.tidyverse.org/" target="_blank">tidyverse
+documentation</a></li>
+<li><a
+href="https://rdpeng.github.io/RProgDA/the-role-of-physical-memory.html"
+target="_blank">How R uses memory</a></li>
+<li><a
+href="https://support.posit.co/hc/en-us/articles/1500005616261-Understanding-Memory-Usage-in-the-RStudio-IDE"
+target="_blank">Memory monitoring in RStudio</a></li>
+</ul>
+<p><strong>Acknowledgements</strong> These materials have been adapted
+and extended from materials listed above. These are open access
+materials distributed under the terms of the <a
+href="http://creativecommons.org/licenses/by/4.0/">Creative Commons
+Attribution license (CC BY 4.0)</a>, which permits unrestricted use,
+distribution, and reproduction in any medium, provided the original
 author and source are credited.</p>
 <p><br/> <br/></p>
 <hr />
@@ -1021,6 +1091,7 @@ lesson</a></th>
 <tbody>
 </tbody>
 </table>
+</div>
 </div>
 
 

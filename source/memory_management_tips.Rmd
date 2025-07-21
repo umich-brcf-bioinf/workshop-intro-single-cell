@@ -1,0 +1,28 @@
+- R and RStudio are designed to grab computer memory (RAM) when necessary
+and release that memory when it's no longer needed. R does this with
+  a fancy computer science technique called **garbage collection**.
+
+- The R **garbage collector** is very good for small objects and simple 
+  analyses, but  complex single-cell analysis can overwhelm it. So **don't rely
+on R/RStudio's built in garbage collection and session management for 
+  single-cell analysis**. Instead, do the following:
+
+---
+
+1. Save intermediate versions of the Seurat object as you go along using 
+  `saveRDS()`. This gives you "savepoints" so if you need to backtrack, you 
+  don't have to go back to the beginning.
+<br/>
+  2. Save ggplots into image files as you go along. Periodically clear ggplot 
+objects from the R environment.
+<br/>
+  3. At the end of each day, wherever you are in the analysis, explicitly save 
+the Seurat object and "power down" your session.
+<br/>
+  4. The next day, you can load the Seruat object using readRDS().
+<br/>
+  
+  ---
+  
+  This simple pattern will make your code more reproducible and your RStudio 
+session more reliable.

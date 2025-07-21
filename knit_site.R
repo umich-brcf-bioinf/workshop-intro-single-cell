@@ -45,12 +45,16 @@ render_site('source/03-Normalization.Rmd');
 
 render_site('source/04-PCAandIntegration.Rmd');
 render_site('source/05-ProjectionAndClustering.Rmd');
+render_site('source/clusters_faq.Rmd');
+
 render_site('source/06-MarkerVisualization.Rmd');
 render_site('source/07-CellTypeAnnos.Rmd');
 render_site('source/08-DifferentialExpression.Rmd');
 render_site('source/08A-AnalysisFinale.Rmd');
 render_site('source/09-IndependentExercise.Rmd');
 render_site('source/00-ResourcesAndExtendedContent.Rmd');
+render_site('source/exercises.Rmd');
+
 
 render_site('source/workshop_wrap_up.Rmd');
 rm(list=ls(all.names = TRUE))
