@@ -69,6 +69,7 @@ Before making any comparisons between experimental conditions, its important to 
 
 ## Objectives
 
+- Select an initial subset of the PCs to approximate biological variation of interest
 - Understand the clustering process and input parameters
 - Generate initial clusters using `FindNeighbors()` and `FindClusters()`
 - Visualize our clustering results with `DimPlot()`
@@ -95,19 +96,199 @@ if(!exists('geo_so')) {
 
 # Clustering and projection
 
-Now that we selected a number of PCs that we think are likely to represent biological variation and integrated our data across samples/batches, our next task is clustering. 
-
-
-An important aspect of parameter selection for clustering is to understand the "resolution" of the underlying biology and your experimental design:   
+Now that we generated a PCA reduction of our data and integrated across samples/batches, our next task is clustering. An important aspect of parameter selection for clustering is to understand the "resolution" of the underlying biology and your experimental design:   
 
 - Is answering your biological question dependent on identifying rarer cell types or specific subtypes?   
 - Or are broader cell-types more relevant to address your biological question?   
 
 The OSCA book has a [helpful analogy comparing clustering to microscopy](https://bioconductor.org/books/3.15/OSCA.basic/clustering.html#overview-1) and points out that "asking for an unqualified 'best' clustering is akin to asking for the best magnification on a microscope without any context". 
 
-To generate clusters, we will generate "communities" of cells using the PCs we selected, before choosing a resolution parameter to divide those communities into discrete clusters.
+To generate clusters, we will select a subset of the PCs and then generate "communities" of cells from that reduction before choosing a resolution parameter to divide those communities into discrete clusters. So how do we determine how many PCs represent the "resolution" of biological variation we are interested in?
 
 <!--- Contrast the previous dimensionality reduction versus nearest neighbors clustering and plotting the cells in lower dimensionality with the cluster labels? --->
+
+
+## Choosing the number of significant PCs for dimensionality reduction
+
+The short answer selected the number of PCs for an analysis is often an iterative process.
+
+<!-- Section may still need to be edited more & consider adding a figure --> 
+An important consideration for determining how many PCs to select for your single-cell analysis is to understand the "resolution" of your biological question. Is answering your biological question dependent on identifying rarer cell types or specific subtypes? Or are broader cell-types more relevant and less PCs are needed?
+
+
+
+<!-- Section may need more editing
+Related - how important is that decision to the downstream impact (e.g. how much does changing the number of PCs change the clustering)?
+--> 
+
+### Visualizing variance across PCs for a dataset
+
+One way to evaluate how many PCs to use is by looking at an elbow plot, which shows the percent variance explained by successive PCs. We'll use the `ElbowPlot()` function to do this, specifying that the first 50 PCs be plotted. 
+
+```{r, elbow_plot, fig.show='hold', out.width='80%'}
+# -------------------------------------------------------------------------
+# Visualize how many PCs to include using an elbow plot
+ElbowPlot(geo_so, ndims = 50, reduction = 'unintegrated.sct.pca')
+ggsave(filename = 'results/figures/qc_sct_elbow_plot.png',
+       width = 8, height = 8, units = 'in')
+```
+
+In this plot, we could arbitrarily choose a number along the x-axis that looks like a sharp change in the variance from one PC to the next, that is, an "elbow". Of course, while that's often the recommendation in tutorials the choice of where the point of the "elbow" is not always obvious, and this plot is no different.
+
+
+### An algorithmic approach
+
+Instead of choosing based on the elbow plot by sight alone, we can try to  quantify our choice algorithmically. Here we create a function to return a recommended PC based on two possible metrics ( (A) cumulative variation or (B) above a minimum step size). We can apply a version of this function that was borrowed from [HBC](https://hbctraining.github.io/scRNA-seq/lessons/elbow_plot_metric.html) to our data to select a good starting point for number of PCs to include for clustering later on.
+<!--- revised function name per discussion with Raymond --->
+
+```{r, check_pcs}
+# -------------------------------------------------------------------------
+# Estimate the number of PCs to use for clustering with a function
+check_pcs = function(so, reduction) {
+    # quantitative check for number of PCs to include
+    pct = so@reductions[[reduction]]@stdev / sum(so@reductions[[reduction]]@stdev) * 100
+    cum = cumsum(pct)
+    co1 = which(cum > 90 & pct < 5)[1]
+    co2 = sort(which((pct[1:length(pct)-1] - pct[2:length(pct)]) > .1), decreasing = T)[1] + 1
+    pcs = min(co1, co2) 
+    
+    return(pcs)
+}
+
+# Apply function to our data
+pcs = check_pcs(geo_so, 'unintegrated.sct.pca')
+pcs
+```
+
+Again, this number is likely a starting point and may need to be revised depending on the outcome of the downstream steps. 
+
+<summary>Optional: A more advanced function for picking PCs</summary>
+<details>
+
+This function is derived from the function above; it's useful for understanding
+the overall variance of the PCs as well as visualizing the two kinds of cutoffs. 
+It returns the same recommended PCs as the original function, but also:
+
+- prints more details 
+- prints a plot of the PC variance with key PCs highlighted 
+- returns a named list of detailed results
+
+
+```{r, estimate_alt_pcs_fn}
+# -------------------------------------------------------------------------
+# Define a function to estimate optimal PCs for clustering
+check_pcs_advanced = function(so, reduction, print_plot=TRUE, verbose=TRUE) {
+  # quantitative check for number of PCs to include
+  threshold_var_cum_min = 90
+  threshold_var_pct_max = 5
+  threshold_step_min = 0.1
+  pct = so@reductions[[reduction]]@stdev / sum(so@reductions[[reduction]]@stdev) * 100
+  cum = cumsum(pct)
+  co1 = which(cum > threshold_var_cum_min & pct < threshold_var_pct_max)[1]
+  co2 = sort(which((pct[1:length(pct)-1] - pct[2:length(pct)]) > threshold_step_min), decreasing = T)[1] + 1
+  pcs = min(co1, co2) 
+  
+  plot_df <- data.frame(pc = 1:length(pct),
+                        pct_var = pct, 
+                        cum_var = cum)
+  plot_df$labels = ''
+  co1_label = paste0('PC ', co1)
+  co2_label = paste0('PC ', co2)
+  if (co1 == co2) {
+    plot_df$labels[plot_df$pc == co1] = paste0(co1_label, '\n', co2_label)
+  } else {
+    plot_df$labels[plot_df$pc == co1] = co1_label
+    plot_df$labels[plot_df$pc == co2] = co2_label
+  }
+  
+  
+  p = ggplot(plot_df, aes(x=pc, y=cum_var, label=labels)) +
+    geom_point(color="grey", alpha=1) +
+    geom_text(hjust = 0, vjust=1, nudge_x=2, nudge_y=-5) +
+    geom_step(data=filter(plot_df, pc<=co2), color="blue", alpha=0.6, direction='vh') +
+    geom_step(data=filter(plot_df, pc>=co2), color="grey", alpha=0.6, direction='hv') +
+    geom_hline(yintercept = 90, color = "red", alpha=0.6, linetype = 'dashed') +
+    geom_point(data=filter(plot_df, pc==co1), aes(x=pc,y=cum_var), color='red') + 
+    geom_point(data=filter(plot_df, pc==co2), aes(x=pc,y=cum_var), color='blue') +
+    scale_y_continuous(breaks = c(0,25,50,75,100, threshold_var_cum_min)) +
+    theme_bw() +
+    labs(title = 'Optimal num of PCs',
+         x = 'Principal Component', 
+         y = 'Cumulative percent variance')
+
+  if (print_plot) {
+          print(p)
+  }
+  
+  if (verbose) {
+     results = paste(
+                sprintf('Reduction %s: %s PCs (total var = %s)', 
+                     reduction,
+                     nrow(plot_df),
+                     plot_df[plot_df$pc==nrow(plot_df), 'cum_var']),
+                sprintf("\t%s (total var = %s) : Smallest PC that explains at least %s%% total variance", 
+                     co1_label,
+                     round(plot_df[plot_df$pc==co1, 'cum_var'], 2),
+                     threshold_var_cum_min),
+                sprintf("\t%s (total var = %s) : Largest PC with incremental variance step at least %s%%", 
+                      co2_label,
+                      round(plot_df[plot_df$pc==co2, 'cum_var'],2),
+                      threshold_step_min),
+                sprintf('\tRecommended num of PCs: %s', pcs),
+                sep='\n')
+      message(results)
+  }
+  
+  return(list(recommended_pcs=pcs, plot=p, co1=co1, co2=co2, df=plot_df))
+}
+
+```
+
+```{r, apply_estimate_alt_pcs}
+# -------------------------------------------------------------------------
+# Apply function to our data
+alt_pcs = check_pcs_advanced(geo_so, 'unintegrated.sct.pca')
+```
+
+```{r, save_alt_pcs}
+# -------------------------------------------------------------------------
+# Save plot of PCs
+ggsave(filename = 'results/figures/optimal_pcs.png',
+       plot=alt_pcs$plot,
+       width = 8, height = 8, units = 'in')
+
+rm(alt_pcs)
+gc()
+```
+
+
+Again, this number is likely a starting point and may need to be revised depending on the outcome of the downstream steps. 
+
+While outside the scope of this workshop, there are community efforts to develop 
+more sophisticated methods to select an appropriate number of PCs; here are a 
+few popular approaches:
+
+- [chooseR package](https://github.com/rbpatt2019/chooseR)
+- [findPC package](https://academic.oup.com/bioinformatics/article/38/10/2949/6565314)
+- [using clustering trees](https://lazappi.id.au/posts/2017-07-19-building-a-clustering-tree/)
+
+<br/>
+<hr/>
+</details>
+<br/>
+
+## Selecting initial PCs
+
+For this dataset, we are expecting a diversity of cell types and cell populations that mediate wound healing, but also an aberrant transition to bone. 
+
+<!-- move this section to projection and clustering once ready to incorporate examples of alternative PCA choices-->
+```{r, revised_select_pcs}
+# -------------------------------------------------------------------------
+# Based on the heatmaps (and some behind the scenes testing), we'll modify the number of PCs
+pcs = 10
+```
+
+Again, in a full analysis workflow, our selection at this step can be more of a starting point for further iterations than a final decision. <!--- add link to PC/clustering exploration here/ -->
 
 ## Clustering
 
