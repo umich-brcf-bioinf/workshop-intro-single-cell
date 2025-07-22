@@ -283,7 +283,7 @@ For this dataset, we are expecting a diversity of cell types and cell population
 pcs = 10
 ```
 
-Again, in a full analysis workflow, our selection at this step can be more of a starting point for further iterations than a final decision. In the exercises, you'll have the opportunity to test how alternative parameters impact the clustering results, including selecting fewer or more PCs. <!--- also add link to PC/clustering exploration here/ -->
+Again, in a full analysis workflow, our selection at this step can be more of a starting point for further iterations than a final decision. In the exercises, you'll also have the opportunity to test alternative parameters yourself, including selecting fewer or more PCs. <!-- Also link out to `clusters_faq.Rmd` to show examples? -->
 
 ## Clustering
 

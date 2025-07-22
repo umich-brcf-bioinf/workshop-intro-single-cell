@@ -86,7 +86,7 @@ After filtering and normalization, our next goal is to cluster the cells accordi
 
 <br/>
 
-Similar to the previous sections, while you may see only a single approach in a paper and we will be showing one example of executing these steps here, testing multiple methods or parameters might be necessary. 
+Similar to the previous sections, while we will be showing one example of executing these steps and you may see only a single approach reported in a paper, testing multiple methods or parameter options might be necessary. 
 
 <br/>
 
@@ -129,7 +129,7 @@ The high dimensionality of single-cell data present two major challenges for ana
 - The sparseness means there is likely uninteresting variation that should be excluded    
 
 
-In practical terms, Principal component analysis (PCA) creates a simpler, more concise version of data while preserving the same "story". For example, we can think of watching football - attending a game in person is exciting but can take hours, especially considering the time that will be spent traveling and waiting. Conversely, watching a highlight reel of those same game might not give you the full experience, but by seeing the key plays you can get a good understand what happened in the game in a fraction of the time. 
+In practical terms, Principal component analysis (PCA) creates a simpler, more concise version of data while preserving the same "story". For example, a football game is exciting to attend in person but can take hours, especially considering the time spent traveling and waiting. Conversely, watching a highlight reel of the same game might not give you the full experience, but by seeing the key plays conveys what happened in the game in a fraction of the time. 
 
 Similarly to a highlight reel, running PCA allows us to select PCs that represent correlated gene expression to reduce the size and complexity of the data while still capturing the overall expression patterns and also reducing computation time.
 
@@ -281,7 +281,7 @@ png(filename = 'results/figures/qc_pca_heatmap-select.png', width = 12, height =
 dev.off()
 ```
 
-When we look at the selected PCs, we can see that PC10 has quite a bit of blocky structure that is separating about half the cells for a subset of genes. For the later PCs, we are seeing less 'blocks' suggesting that the variation explained by these later components might not correspond to the larger cell-type differences that would be of interest for clustering.
+When we look at the selected PCs, we can see a blocky structure for PC10 for about half the cells for a subset of genes. For the later PCs, we are seeing less 'blocks' suggesting that the variation explained by these later components might not correspond to the larger cell-type differences that important for clustering.
 
 
 
@@ -289,7 +289,7 @@ When we look at the selected PCs, we can see that PC10 has quite a bit of blocky
   <summary>*What genes are contributing the most to each PC?*</summary>
   We can also visualize the loadings for genes contributing to each principal components using Seurat provided functions [source](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction).
   
-  We can highlight genes loaded for dimenstions of interest using using `VizDimLoadings()`:
+  We can highlight genes loaded for dimensions of interest using using `VizDimLoadings()`:
 
 ```{r, pca_loading_plot, eval = TRUE, fig.show='hold'}
 # -------------------------------------------------------------------------
