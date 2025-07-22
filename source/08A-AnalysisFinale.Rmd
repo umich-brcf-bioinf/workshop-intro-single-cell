@@ -50,7 +50,10 @@ knitr_fig_path("08A-DifferentialExpression/08A-")
 
 # Workflow Overview {.unlisted .unnumbered}
 
-<br/> ![](images/wayfinder/00-FullWayfinder.png) <br/> <br/>
+<br/> 
+![](images/wayfinder/00-FullWayfinder.png) 
+<br/> 
+<br/>
 
 # Key decision points in analysis and methodology
 
@@ -184,9 +187,9 @@ To help with future troubleshooting - here's a reiteration the key analysis step
 | Secondary QC filtering | If you see **poor clustering (one big blob) or clusters that seem be driven by quality metrics** like total counts or correspond to stress/debris instead of biological relevant cell-types, then **re-filtering with more stringent thresholds** might help, including adding a threshold for `nCount_RNA` (total counts per cell) |
 | Secondary QC filtering | If you are **missing expected cell type(s) after clustering** that might have a different average number of genes expressed or total counts (like blood cells or T-cells) or with a higher expected % mitochondrial genes, then **re-filtering with more relaxed thresholds** could help to recover those cells and allow them to be included in the downstream analysis |
 | Normalization | If **clusters correspond more to technical factors** than biologically relevant cell-types, then **covariates for those technical factors** may need to added to the normalization model or a different normalization approach might be needed |
-| Normalization | If there is a **low total % variance explained** when looking at the PCs and covariates for one or more technical factor was included in the normalization step, that suggests that there was an overcorrection and some of the biological variation that would be expected to drive biological differences between cell-types across all conditions was removed. Checking the PCA plots to see if any of the known technical covariates might be skewing the data and limiting the model to only those that show evidence of |
+| Normalization | If there is a **low total % variance explained** when looking at the PCs and covariates for one or more technical factor was included in the normalization step, then **the normalization step may have overcorrected and some of the biological variation that corresponds to cell-types was also removed**. Check to see if any of the known technical covariates have evidence of skewing the data and limit the model to a minimal number of covariates. |
 | Integration | We chose to use `RPCA` for our integration but there are other integration options. If **`RPCA` is not sufficient to correct observed batch effects** and all samples/conditions are expected to share the same cell-types, a **`CCA` might be worth trying**. If **neither `RPCA` or `CCA` work well**, another option might be **Harmony, which uses a different approach and parameters** to correct for batch while preserving unique cell populations. <!--- Is there a benchmarking paper for integration methods that's worth linking here?---> |
-| Clustering | <!--Lieden as alternative --> |
+| Clustering | If the **clustering looks too blobby (e.g. few or no distinct clusters)**, then you may have **over corrected by including the wrong or too many covariates in the normalization step and/or used too few PCs to define distinct celltypes**. Additionally, while we used the default Louvain algorithm for cluster determination, alternative algorithms are supported including Leiden clustering. |
 | Cell type annotation | While we used `scCATCH`, if more specific example data and annotations are available for your tissue (e.g. brain or blood/immune) or if the predictions from `scCATCH` don't seem relevant to your tissue and/or experimental question, there are other sources and tools available that might be worth trying like `CellMatch_2.0` or `Azimuth` or a label transfer using a similar dataset. |
 | Differential expression | While we used `Wilcoxin` and `DESeq2` for our differential expression testing, other tools like `MAST` or `EdgeR` can also be used and/or more complex models with covariates could be used. |
 | Differential expression | We choose a general cutoff (`p_val_adj < 0.05` & `abs(avg_log2FC) > 1.5`)) to call DE genes but if **there are not enough DE genes**, then it might make sense to **relax those cutoff for some clusters**. |
