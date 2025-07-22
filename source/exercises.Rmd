@@ -28,6 +28,13 @@ body, td {
 klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
 ```
 
+# Workflow Overview {.unlisted .unnumbered}
+
+<br/> 
+![](images/wayfinder/00-FullWayfinder.png) 
+<br/> 
+<br/>
+
 # Workshop exercises
 
 ```{r klippy, echo=FALSE, include=TRUE}
@@ -63,7 +70,7 @@ Build on the content and analysis steps covered in the workshop sessions by work
 
 ## Day 2
 
-<!-- Add Rmd version of exercises with smaller code blocks --> 
+<!-- link out to `clusters_faq.Rmd` to show examples? -->
 
 ```{r day2_exercise, child='exercises/day2_ex.Rmd'}
 ```
