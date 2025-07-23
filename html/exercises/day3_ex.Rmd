@@ -16,7 +16,7 @@ library(tidyverse)
 <br/>
 
 
-## Day 3 Exercise 1 - examine impact of more or fewer PCs on marker genes and cell type predictions
+### Day 3 Exercise 1 - examine impact of more or fewer PCs on marker genes and cell type predictions
 
 Now that we've covered how to generate emperical marker genes and use a prediction tool to identify possible cell-type labels, let's start by extending the exercise from yesterday to check what our results would look like if we had proceed with fewer or more PCs.
 
@@ -47,7 +47,7 @@ write_csv(top_5, file = paste0('results/tables/top5_marker_genes_fewer.csv'))
 ```
 <br/>
 
-#### Check-in Question - clustering impact on marker genes
+##### Check-in Question - clustering impact on marker genes
 After you generate markers for the "fewer" `pcs` option, how do the results differ from the markers found for `pcs=10` in the workshop session? What do you think would happen if you tried this with the "more" results?
 
 <br/>
@@ -104,7 +104,7 @@ saveRDS(geo2_so, file = paste0('results/rdata/geo_so_sct_integrated_alt.rds'))
 ```
 <br/>
 
-## Day 3 Challenge - Run additional DE comparisons using session results
+### Day 3 Challenge - Run additional DE comparisons using session results
 
 ```{r, eval=FALSE}
 ## BEFORE PROCEEDING, MAKE SURE SESSION HAS BEEN restarted and environment is clear

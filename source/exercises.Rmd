@@ -1,5 +1,5 @@
 ---
-title: "Intro to Single-Cell Analysis - Exercises"
+title: "Exercises - Intro to Single-Cell Analysis"
 author: "UM Bioinformatics Core Workshop Team"
 lang: "en"
 output:
@@ -27,6 +27,13 @@ body, td {
 
 ```{r klippy, echo=FALSE, include=TRUE}
 klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
+```
+
+
+```{css, echo=FALSE}
+.doNotRun {
+background-color: CornSilk;
+}
 ```
 
 ```{r, include = FALSE}
@@ -62,8 +69,13 @@ Build on the content and analysis steps covered in the workshop sessions by work
 
 <!-- Use R script as key in hidden dropdown --> 
 
+<details>
+    <summary>*Example Solutions - Day 1*</summary>
 ```{r day1, file='exercises/day1.R', eval=FALSE}
 ```
+</details>
+<br>
+
 
 
 ## Day 2
@@ -75,9 +87,12 @@ Build on the content and analysis steps covered in the workshop sessions by work
 
 <!-- Use R script as key in hidden dropdown --> 
 
+<details>
+    <summary>*Example Solutions - Day 2*</summary>
 ```{r day2_solution, file='exercises/day2.R', eval=FALSE}
 ```
-
+</details>
+<br>
 
 ## Day 3
 
@@ -87,5 +102,11 @@ Build on the content and analysis steps covered in the workshop sessions by work
 ```
 
 <!-- Use R script as key in hidden dropdown --> 
+
+<details>
+    <summary>*Example Solutions - Day 3*</summary>
 ```{r day3, file='exercises/day3.R', eval=FALSE}
 ```
+
+</details>
+<br>

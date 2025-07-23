@@ -12,7 +12,7 @@
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
 
-<title>Intro to Single-Cell Analysis - Exercises</title>
+<title>Exercises - Intro to Single-Cell Analysis</title>
 
 <script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -425,8 +425,8 @@ div.tocify {
 
 
 
-<h1 class="title toc-ignore">Intro to Single-Cell Analysis -
-Exercises</h1>
+<h1 class="title toc-ignore">Exercises - Intro to Single-Cell
+Analysis</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
 
 </div>
@@ -442,6 +442,11 @@ body, td {
   addClassKlippyTo("pre.r, pre.markdown, pre.bash");
   addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
 </script>
+<style type="text/css">
+.doNotRun {
+background-color: CornSilk;
+}
+</style>
 <div id="workflow-overview" class="section level1 unlisted unnumbered">
 <h1 class="unlisted unnumbered">Workflow Overview</h1>
 <p><br/> <img src="images/wayfinder/00-FullWayfinder.png" /> <br/>
@@ -488,6 +493,10 @@ RStudio session more reliable.</p>
 <h2>Day 1</h2>
 <!-- Add Rmd version of exercises with smaller code blocks -->
 <!-- Use R script as key in hidden dropdown -->
+<details>
+<summary>
+<em>Example Solutions - Day 1</em>
+</summary>
 <pre class="r"><code>## ====================================
 ## Independent exercise testing 
 ## ====================================
@@ -597,6 +606,8 @@ catch_umap_plot
 #########
 
 ## Extension - how might you generate DE comparisons between D21 and D7 for all annotated clusters?</code></pre>
+</details>
+<p><br></p>
 </div>
 <div id="day-2" class="section level2">
 <h2>Day 2</h2>
@@ -614,10 +625,9 @@ library(tidyverse)
 geo2_so = readRDS(&#39;inputs/prepared_data/rdata/geo_so_sct_integrated.rds&#39;)
 
 ## NOTE - BEFORE STOPPING WORK ON THE EXERCISES REMEMBER TO POWER DOWN AND RESTART R SESSION !!!!</code></pre>
-</div>
 <div id="day-2-exercise-1---clustering-with-reduced-number-of-pcs"
-class="section level2">
-<h2>Day 2 Exercise 1 - Clustering with reduced number of PCs</h2>
+class="section level3">
+<h3>Day 2 Exercise 1 - Clustering with reduced number of PCs</h3>
 <!--- expect to shift clustering testing to same code that Chris used to generate examples of alt clustering --->
 <pre class="r"><code>## -----------------------------------------
 ## Round 1: try with fewer PCs included
@@ -672,13 +682,13 @@ gc()
 ## Save a copy of the Seurat object in its current state
 saveRDS(geo2_so, file = paste0(&#39;results/rdata/geo_so_sct_integrated_alt.rds&#39;))</code></pre>
 <div id="check-in-questions---umap-with-fewer-pcs"
-class="section level4">
-<h4>Check-in Questions - UMAP with fewer PCs</h4>
+class="section level5">
+<h5>Check-in Questions - UMAP with fewer PCs</h5>
 <p>How does the UMAP plot look when fewer PCs are used? How is the plot
 impacted if different resolution parameters are used?</p>
 </div>
-<div id="clean-up-session" class="section level3">
-<h3>Clean up session</h3>
+<div id="clean-up-session" class="section level4">
+<h4>Clean up session</h4>
 <pre class="r"><code>## -------------------
 ## Clean up session 
 
@@ -694,8 +704,8 @@ restart R session!!!</strong> <br/></p>
 </div>
 </div>
 <div id="day-2-exercise-2---clustering-with-increased-number-of-pcs"
-class="section level2">
-<h2>Day 2 Exercise 2 - Clustering with increased number of PCs</h2>
+class="section level3">
+<h3>Day 2 Exercise 2 - Clustering with increased number of PCs</h3>
 <pre class="r"><code>## -----------------------------------------
 ## Round 2 - choose a larger number of PCs
 
@@ -717,8 +727,8 @@ geo2_so = RunUMAP(geo2_so, dims = 1:pcs,
                   reduction.name = paste0(&#39;umap.integrated.sct.rpca_more&#39;))
 geo2_so</code></pre>
 <p><br/></p>
-<div id="extension-challenge" class="section level4">
-<h4>Extension Challenge</h4>
+<div id="extension-challenge" class="section level5">
+<h5>Extension Challenge</h5>
 <p>Using the code from above, how would you generate a new ggplot named
 <code>post_integration_umap_clusters_testing</code> that uses the larger
 number of PCs and the clusters defined with the resolution you defined
@@ -734,14 +744,18 @@ gc()
 saveRDS(geo2_so, file = paste0(&#39;results/rdata/geo_so_sct_integrated_alt.Rmd&#39;))</code></pre>
 <p><br/></p>
 </div>
-<div id="check-in-question---umap-with-more-pcs" class="section level4">
-<h4>Check-in question - UMAP with more PCs</h4>
+<div id="check-in-question---umap-with-more-pcs" class="section level5">
+<h5>Check-in question - UMAP with more PCs</h5>
 <p>How does the UMAP plot look when more PCs are used? Was a higher or
 lower resolution needed to better align the cluster divisions to the
 structure observed in the UMAP plot compared to the resolution used in
 the workshop session?</p>
 <p><br/></p>
 <!-- Use R script as key in hidden dropdown -->
+<details>
+<summary>
+<em>Example Solutions - Day 2</em>
+</summary>
 <pre class="r"><code>## ====================================
 ## Independent exercise testing 
 ## ====================================
@@ -851,6 +865,9 @@ catch_umap_plot
 #########
 
 ## Extension - how might you generate DE comparisons between D21 and D7 for all annotated clusters?</code></pre>
+</details>
+<p><br></p>
+</div>
 </div>
 </div>
 <div id="day-3" class="section level2">
@@ -867,12 +884,11 @@ library(tidyverse)
 
 ## NOTE - BEFORE STOPPING WORK ON THE EXERCISES REMEMBER TO POWER DOWN AND RESTART R SESSION !!!!</code></pre>
 <p><br/></p>
-</div>
 <div
 id="day-3-exercise-1---examine-impact-of-more-or-fewer-pcs-on-marker-genes-and-cell-type-predictions"
-class="section level2">
-<h2>Day 3 Exercise 1 - examine impact of more or fewer PCs on marker
-genes and cell type predictions</h2>
+class="section level3">
+<h3>Day 3 Exercise 1 - examine impact of more or fewer PCs on marker
+genes and cell type predictions</h3>
 <p>Now that we’ve covered how to generate emperical marker genes and use
 a prediction tool to identify possible cell-type labels, let’s start by
 extending the exercise from yesterday to check what our results would
@@ -899,8 +915,8 @@ head(top_5, n = 10) # look at results
 write_csv(top_5, file = paste0(&#39;results/tables/top5_marker_genes_fewer.csv&#39;))</code></pre>
 <p><br/></p>
 <div id="check-in-question---clustering-impact-on-marker-genes"
-class="section level4">
-<h4>Check-in Question - clustering impact on marker genes</h4>
+class="section level5">
+<h5>Check-in Question - clustering impact on marker genes</h5>
 <p>After you generate markers for the “fewer” <code>pcs</code> option,
 how do the results differ from the markers found for <code>pcs=10</code>
 in the workshop session? What do you think would happen if you tried
@@ -955,9 +971,9 @@ saveRDS(geo2_so, file = paste0(&#39;results/rdata/geo_so_sct_integrated_alt.rds&
 </div>
 <div
 id="day-3-challenge---run-additional-de-comparisons-using-session-results"
-class="section level2">
-<h2>Day 3 Challenge - Run additional DE comparisons using session
-results</h2>
+class="section level3">
+<h3>Day 3 Challenge - Run additional DE comparisons using session
+results</h3>
 <pre class="r"><code>## BEFORE PROCEEDING, MAKE SURE SESSION HAS BEEN restarted and environment is clear
 
 # After restarting our R session, load the required libraries
@@ -1000,6 +1016,10 @@ gc()
 ## BEFORE CLOSING WINDOW - POWER DOWN AND RESTART R SESSION !!!!</code></pre>
 <p></br></p>
 <!-- Use R script as key in hidden dropdown -->
+<details>
+<summary>
+<em>Example Solutions - Day 3</em>
+</summary>
 <pre class="r"><code>## ====================================
 ## Independent exercise testing 
 ## ====================================
@@ -1109,6 +1129,9 @@ catch_umap_plot
 #########
 
 ## Extension - how might you generate DE comparisons between D21 and D7 for all annotated clusters?</code></pre>
+</details>
+<p><br></p>
+</div>
 </div>
 </div>
 

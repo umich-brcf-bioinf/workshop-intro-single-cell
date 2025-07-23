@@ -16,7 +16,7 @@ geo2_so = readRDS('inputs/prepared_data/rdata/geo_so_sct_integrated.rds')
 ## NOTE - BEFORE STOPPING WORK ON THE EXERCISES REMEMBER TO POWER DOWN AND RESTART R SESSION !!!!
 ```
 
-## Day 2 Exercise 1 - Clustering with reduced number of PCs
+### Day 2 Exercise 1 - Clustering with reduced number of PCs
 
 <!--- expect to shift clustering testing to same code that Chris used to generate examples of alt clustering --->
 
@@ -76,11 +76,11 @@ saveRDS(geo2_so, file = paste0('results/rdata/geo_so_sct_integrated_alt.rds'))
 
 ```
 
-#### Check-in Questions - UMAP with fewer PCs
+##### Check-in Questions - UMAP with fewer PCs
 How does the UMAP plot look when fewer PCs are used? How is the plot impacted if different resolution parameters are used?
 
 
-### Clean up session 
+#### Clean up session 
 
 ```{r, cleanup_day1, eval=FALSE}
 ## -------------------
@@ -98,7 +98,7 @@ saveRDS(geo2_so, file = paste0('results/rdata/geo_so_sct_integrated_alt.rds'))
 **If stopping here - make sure to clear environement and restart R session!!!**
 <br/>
 
-## Day 2 Exercise 2 - Clustering with increased number of PCs
+### Day 2 Exercise 2 - Clustering with increased number of PCs
 
 ```{r, Day2_clustering2, eval = FALSE}
 ## -----------------------------------------
@@ -124,7 +124,7 @@ geo2_so
 ```
 <br/>
 
-#### Extension Challenge
+##### Extension Challenge
 Using the code from above, how would you generate a new ggplot named `post_integration_umap_clusters_testing` that uses the larger number of PCs and the clusters defined with the resolution you defined in the previous code block?
 
 ```{r, eval = FALSE}
@@ -141,7 +141,7 @@ saveRDS(geo2_so, file = paste0('results/rdata/geo_so_sct_integrated_alt.Rmd'))
 ```
 <br/>
 
-#### Check-in question - UMAP with more PCs
+##### Check-in question - UMAP with more PCs
 How does the UMAP plot look when more PCs are used? Was a higher or lower resolution needed to better align the cluster divisions to the structure observed in the UMAP plot compared to the resolution used in the workshop session?
 
 <br/>
