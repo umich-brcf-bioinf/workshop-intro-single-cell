@@ -24,8 +24,14 @@ body, td {
 }
 </style>
 
+
 ```{r klippy, echo=FALSE, include=TRUE}
 klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
+```
+
+```{r, include = FALSE}
+source("../bin/chunk-options.R")
+knitr_fig_path("XX")
 ```
 
 # Workflow Overview {.unlisted .unnumbered}
@@ -37,14 +43,6 @@ klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
 
 # Workshop exercises
 
-```{r klippy, echo=FALSE, include=TRUE}
-klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
-```
-
-```{r, include = FALSE}
-source("../bin/chunk-options.R")
-knitr_fig_path("XX")
-```
 Build on the content and analysis steps covered in the workshop sessions by working through these independent exercises. **Note - if you work on the exercises make sure to restart R session to clear out environment before closing the window (like we have at the end of each session) to avoid lags when logging in the next day**
 <br/>
 
