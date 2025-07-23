@@ -69,6 +69,7 @@ Before making any comparisons between experimental conditions, its important to 
 
 ## Objectives
 
+- Choose an appropriate number of principal components to represent our data   
 - Understand the clustering process and input parameters
 - Generate initial clusters using `FindNeighbors()` and `FindClusters()`
 - Visualize our clustering results with `DimPlot()`
@@ -95,19 +96,194 @@ if(!exists('geo_so')) {
 
 # Clustering and projection
 
-Now that we selected a number of PCs that we think are likely to represent biological variation and integrated our data across samples/batches, our next task is clustering. 
-
-
-An important aspect of parameter selection for clustering is to understand the "resolution" of the underlying biology and your experimental design:   
+Now that we generated a PCA reduction of our data and integrated across samples/batches, our next task is clustering. An important aspect of parameter selection for clustering is to understand the "resolution" of the underlying biology and your experimental design:   
 
 - Is answering your biological question dependent on identifying rarer cell types or specific subtypes?   
 - Or are broader cell-types more relevant to address your biological question?   
 
 The OSCA book has a [helpful analogy comparing clustering to microscopy](https://bioconductor.org/books/3.15/OSCA.basic/clustering.html#overview-1) and points out that "asking for an unqualified 'best' clustering is akin to asking for the best magnification on a microscope without any context". 
 
-To generate clusters, we will generate "communities" of cells using the PCs we selected, before choosing a resolution parameter to divide those communities into discrete clusters.
+To generate clusters, we will select a subset of the PCs and then generate "communities" of cells from that reduction before choosing a resolution parameter to divide those communities into discrete clusters. So how do we determine how many PCs represent the "resolution" of biological variation we are interested in?
 
 <!--- Contrast the previous dimensionality reduction versus nearest neighbors clustering and plotting the cells in lower dimensionality with the cluster labels? --->
+
+
+## Choosing the number of PCs to represent our data
+
+The short answer is while we might not know if that number of PCs is appropriate for the "resolution" of our biological question until we begin to identify marker genes and/or begin to annotate cell-types, we can start by visually or empirically determine how many PCs represent the *majority* of the variation in a dataset and use that number as a starting point.
+
+<!-- Section may need more editing  & consider adding a figure
+Related - how important is that decision to the downstream impact (e.g. how much does changing the number of PCs change the clustering)?
+--> 
+
+### Visualizing variance across PCs
+
+So in addition to the heatmaps we generated in the last module, one way to evaluate how many PCs explain the majority of the variation is by generating an elbow plot, which shows the percent variance explained by successive PCs. We'll use the `ElbowPlot()` function to do this, specifying that the first 50 PCs be plotted. 
+
+```{r, elbow_plot, fig.show='hold', out.width='80%'}
+# -------------------------------------------------------------------------
+# Visualize how many PCs to include using an elbow plot
+ElbowPlot(geo_so, ndims = 50, reduction = 'unintegrated.sct.pca')
+ggsave(filename = 'results/figures/qc_sct_elbow_plot.png',
+       width = 8, height = 8, units = 'in')
+```
+
+In this plot, we could arbitrarily choose a number along the x-axis that looks like a sharp change in the variance from one PC to the next, that is, an "elbow", which indicates diminishing explained variance. While this approach is a common recommendation in in tutorials, the choice of where the point of the "elbow" is not always obvious, and this plot is no different.
+
+
+### An algorithmic approach
+
+Instead of choosing based on the elbow plot by sight alone, we can try to  quantify our choice algorithmically. Here we create a function to return a recommended PC based on two possible metrics ( (A) cumulative variation or (B) above a minimum step size). We can apply a version of this function that was borrowed from [HBC](https://hbctraining.github.io/scRNA-seq/lessons/elbow_plot_metric.html) to our data to help select a good starting point for the number of PCs to include for clustering.
+<!--- revised function name per discussion with Raymond --->
+
+```{r, check_pcs}
+# -------------------------------------------------------------------------
+# Estimate the number of PCs to use for clustering with a function
+check_pcs = function(so, reduction) {
+    # quantitative check for number of PCs to include
+    pct = so@reductions[[reduction]]@stdev / sum(so@reductions[[reduction]]@stdev) * 100
+    cum = cumsum(pct)
+    co1 = which(cum > 90 & pct < 5)[1]
+    co2 = sort(which((pct[1:length(pct)-1] - pct[2:length(pct)]) > .1), decreasing = T)[1] + 1
+    pcs = min(co1, co2) 
+    
+    return(pcs)
+}
+
+# Apply function to our data
+pcs = check_pcs(geo_so, 'unintegrated.sct.pca')
+pcs
+```
+
+Again, this number is likely a starting point and may need to be revised depending on the outcome of the downstream steps. 
+
+<summary>Optional: A more advanced function for picking PCs</summary>
+<details>
+
+This function is derived from the function above; it's useful for understanding
+the overall variance of the PCs as well as visualizing the two kinds of cutoffs. 
+It returns the same recommended PCs as the original function, but also:
+
+- prints more details 
+- prints a plot of the PC variance with key PCs highlighted 
+- returns a named list of detailed results
+
+
+```{r, estimate_alt_pcs_fn}
+# -------------------------------------------------------------------------
+# Define a function to estimate optimal PCs for clustering
+check_pcs_advanced = function(so, reduction, print_plot=TRUE, verbose=TRUE) {
+  # quantitative check for number of PCs to include
+  threshold_var_cum_min = 90
+  threshold_var_pct_max = 5
+  threshold_step_min = 0.1
+  pct = so@reductions[[reduction]]@stdev / sum(so@reductions[[reduction]]@stdev) * 100
+  cum = cumsum(pct)
+  co1 = which(cum > threshold_var_cum_min & pct < threshold_var_pct_max)[1]
+  co2 = sort(which((pct[1:length(pct)-1] - pct[2:length(pct)]) > threshold_step_min), decreasing = T)[1] + 1
+  pcs = min(co1, co2) 
+  
+  plot_df <- data.frame(pc = 1:length(pct),
+                        pct_var = pct, 
+                        cum_var = cum)
+  plot_df$labels = ''
+  co1_label = paste0('PC ', co1)
+  co2_label = paste0('PC ', co2)
+  if (co1 == co2) {
+    plot_df$labels[plot_df$pc == co1] = paste0(co1_label, '\n', co2_label)
+  } else {
+    plot_df$labels[plot_df$pc == co1] = co1_label
+    plot_df$labels[plot_df$pc == co2] = co2_label
+  }
+  
+  
+  p = ggplot(plot_df, aes(x=pc, y=cum_var, label=labels)) +
+    geom_point(color="grey", alpha=1) +
+    geom_text(hjust = 0, vjust=1, nudge_x=2, nudge_y=-5) +
+    geom_step(data=filter(plot_df, pc<=co2), color="blue", alpha=0.6, direction='vh') +
+    geom_step(data=filter(plot_df, pc>=co2), color="grey", alpha=0.6, direction='hv') +
+    geom_hline(yintercept = 90, color = "red", alpha=0.6, linetype = 'dashed') +
+    geom_point(data=filter(plot_df, pc==co1), aes(x=pc,y=cum_var), color='red') + 
+    geom_point(data=filter(plot_df, pc==co2), aes(x=pc,y=cum_var), color='blue') +
+    scale_y_continuous(breaks = c(0,25,50,75,100, threshold_var_cum_min)) +
+    theme_bw() +
+    labs(title = 'Optimal num of PCs',
+         x = 'Principal Component', 
+         y = 'Cumulative percent variance')
+
+  if (print_plot) {
+          print(p)
+  }
+  
+  if (verbose) {
+     results = paste(
+                sprintf('Reduction %s: %s PCs (total var = %s)', 
+                     reduction,
+                     nrow(plot_df),
+                     plot_df[plot_df$pc==nrow(plot_df), 'cum_var']),
+                sprintf("\t%s (total var = %s) : Smallest PC that explains at least %s%% total variance", 
+                     co1_label,
+                     round(plot_df[plot_df$pc==co1, 'cum_var'], 2),
+                     threshold_var_cum_min),
+                sprintf("\t%s (total var = %s) : Largest PC with incremental variance step at least %s%%", 
+                      co2_label,
+                      round(plot_df[plot_df$pc==co2, 'cum_var'],2),
+                      threshold_step_min),
+                sprintf('\tRecommended num of PCs: %s', pcs),
+                sep='\n')
+      message(results)
+  }
+  
+  return(list(recommended_pcs=pcs, plot=p, co1=co1, co2=co2, df=plot_df))
+}
+
+```
+
+```{r, apply_estimate_alt_pcs}
+# -------------------------------------------------------------------------
+# Apply function to our data
+alt_pcs = check_pcs_advanced(geo_so, 'unintegrated.sct.pca')
+```
+
+```{r, save_alt_pcs}
+# -------------------------------------------------------------------------
+# Save plot of PCs
+ggsave(filename = 'results/figures/optimal_pcs.png',
+       plot=alt_pcs$plot,
+       width = 8, height = 8, units = 'in')
+
+rm(alt_pcs)
+gc()
+```
+
+
+Again, this number is likely a starting point and may need to be revised depending on the outcome of the downstream steps. 
+
+While outside the scope of this workshop, there are community efforts to develop 
+more sophisticated methods to select an appropriate number of PCs; here are a 
+few popular approaches:
+
+- [chooseR package](https://github.com/rbpatt2019/chooseR)
+- [findPC package](https://academic.oup.com/bioinformatics/article/38/10/2949/6565314)
+- [using clustering trees](https://lazappi.id.au/posts/2017-07-19-building-a-clustering-tree/)
+
+<br/>
+<hr/>
+</details>
+<br/>
+
+## Selecting the number of PCs to be used for clustering
+
+For this dataset, we are expecting a diversity of cell types and cell populations that mediate wound healing, but also an aberrant transition to bone. For the purposes of the workshop and after 
+
+<!-- move this section to projection and clustering once ready to incorporate examples of alternative PCA choices-->
+```{r, revised_select_pcs}
+# -------------------------------------------------------------------------
+# Based on the heatmaps (and some behind the scenes testing), we'll modify the number of PCs
+pcs = 10
+```
+
+Again, in a full analysis workflow, our selection at this step can be more of a starting point for further iterations than a final decision. In the exercises, you'll also have the opportunity to test alternative parameters yourself, including selecting fewer or more PCs. <!-- Also link out to `clusters_faq.Rmd` to show examples? -->
 
 ## Clustering
 
@@ -212,7 +388,7 @@ The result of `FindClusters()` adds two columns to the `meta.data` table and cha
 ![Image: Schematic after FindClusters().](images/seurat_schematic/Slide9.png)
 <br>
 
-Generally it's preferable to err on the side of too many clusters, as they can be combined manually in later steps. In our experience, this is another parameter that often needs to be iteratively revised and reviewed. 
+Generally it's preferable to err on the side of too many clusters, as they can be combined manually in later steps.
 
 ### Resolution parameters recommendations
 <details>
@@ -259,7 +435,7 @@ After we generate the UMAP reduction, we can then visualize the results using th
 
 At this stage, we want to determine if the clusters look fairly well separated, if they seem to correspond to how cells are grouped in the UMAP, and if the number of clusters is generally aligned with the resolution of our biological question. Again, if there are "too many" clusters that's not necessarily a problem.
 
-We can also look at the same UMAP labeled by `day` to visually inspect if the UMAP structure corresponds to the `day`.
+We can also look at the same UMAP labeled by `time` to visually inspect if the UMAP structure corresponds to the day of collection.
 
 ```{r, umap_by_clusters, fig.show='hold', fig.height = 6, fig.width=6}
 # -------------------------------------------------------------------------
@@ -310,9 +486,9 @@ ggsave(filename = 'results/figures/umap_integrated_sct_day.png',
 
 ```
 
-Similar to the PCA plots, the `day` labeled UMAP can tell us if technical sources of variation might be driving or stratifying the clusters, which would suggest that the normalization and integration steps should be revisted before proceeding.
+Similar to the PCA plots, the `time` labeled UMAP can tell us if technical sources of variation might be driving or stratifying the clusters, which would suggest that the normalization and integration steps should be revisted before proceeding.
 
-Another approach is to evaluate the number of cells per cluster using the `table()` function, split by `day` or split by `orig.ident` to see if the individual samples are driving any of the UMAP structure:
+Another approach is to evaluate the number of cells per cluster using the `table()` function, split by `time` or split by `orig.ident` to see if the individual samples are driving any of the UMAP structure:
 <!-- add step to write out tables to file? or only do that once clusters are labeled?-->
 ```{r, table_by_day, eval = FALSE, message=FALSE}
 # -------------------------------------------------------------------------
@@ -376,24 +552,6 @@ clusters_counts_sample %>%
 # Other approaches for visualizing scRNA-sq data
 e.g. code for tSNE visualization 
 -->
-## Check mitochondrial signal
-
-Before proceeding, we can also check the percentage of mitochondrial genes to determine if there might be interesting cell death patterns or indicate that further filtering is needed:
-```{r, check_mito_UMAP, echo=TRUE, eval= TRUE}
-# -------------------------------------------------------------------------
-# Check mitochondrial gene expression
-percent_mito_plot = FeaturePlot(geo_so, features='percent.mt')
-percent_mito_plot
-
-# save to file
-ggsave(filename = 'results/figures/percent_umap_mito_plot.png', 
-       plot = percent_mito_plot, 
-       width = 6, height = 6, units = 'in')
-```
-
-
-We see that a higher percentages seem to be somewhat concentrated in a few places, but if cell death might be of interest for the research question, we'd want to consider investigating this pattern further by splitting up the plots by day and/or waiting until after running initial differential expression analysis to determine if these cell populations are interesting biology or not.
-
 
 # Comparing to unintegrated data
 
@@ -504,8 +662,7 @@ Before proceeding, we'll remove the ggplot objects from our environment to avoid
 plots = c("pre_integration_umap_plot_day", 
           "post_integration_umap_plot_clusters", 
           "post_integration_umap_plot_split_clusters", 
-          "post_integration_umap_plot_day",
-          "percent_mito_plot")
+          "post_integration_umap_plot_day")
 
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
