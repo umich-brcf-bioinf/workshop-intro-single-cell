@@ -8,7 +8,7 @@ output:
       includes:
           in_header: header-clusters_faq.html
       theme: paper
-      toc: false
+      toc: true
       toc_depth: 4
       toc_float: true
       number_sections: false
@@ -50,7 +50,19 @@ library(kableExtra)
 ```
 ---
 
-### Why do we cluster on Principle Components (PC) instead of genes?
+<br/>
+![](images/wayfinder/05-ProjectionAndClustering-Wayfinder.png)
+
+Making clusters is a very important step in single-cell analysis. It often takes 
+a few iterations be confident that the clusters accurately represent the 
+different cell types or cell states. As we get started, it's useful to
+step back for a moment and consider some key questions.
+
+---
+
+### PCs vs genes?
+
+**Why do we cluster on Principle Components (PC) instead of genes?**
 
 * Most genes show little variance at all; those that do often behave 
   in concert (regulating up and down in a coherent experssion program). Because
@@ -63,7 +75,9 @@ library(kableExtra)
 
 ---
 
-### How can such a small number of PCs faithfully represent so many genes? Aren't we throwing away a ton of information?
+### Just a few PCs?
+
+**How can such a small number of PCs faithfully represent so many genes? Aren't we throwing away a ton of information?**
 
 * Selecting a few PCs helps by bringing the most important parts of the picture 
   into focus. Remember that each PCs represents a gene expression **pattern** 
@@ -81,7 +95,9 @@ library(kableExtra)
 
 ---
 
-### So, what's the correct resolution and number of PCs?
+### Resolution? PCs?
+
+**So, what's the correct resolution and number of PCs?**
 
 * That depends on **how many cell types/cell states do you expect.** 
   And the answer to that depends on:
@@ -98,7 +114,9 @@ library(kableExtra)
   
 ---
 
-### Couldn't the computer figure out the best PCs and resolution?
+### A little help?
+
+**Couldn't the computer figure out the best PCs and resolution?**
 
 * The computer could try a bunch of PCs and resolutions to get the right number of
 clusters - and those clusters might look good numerically. But they wouldn't be 
@@ -107,7 +125,9 @@ doesn't understand the cell biology**.
 
 ---
 
-### So how do we pick the right PCs and resolution?
+### Resolution, PCs, and clusters
+
+**So how do we pick the right PCs and resolution to get the right clusters?**
 
 * You will want to iterate through a few combinations of PCs and resolutions.
 * It helps to know how PCs and resolution work together to influence the number 
@@ -130,7 +150,9 @@ doesn't understand the cell biology**.
 
 ---
 
-### What do the cluster UMAPs look like at different PCs and resolutions?
+### Resolution, PCs, and UMAPs
+
+**What do the cluster UMAPs look like at different PCs and resolutions?**
 
 - Each UMAP below was made with a different num of PCs and different resolution. (You can click on any UMAP to make it larger.)
 - Each column is a different PC. Each row is a different resolution.
@@ -185,7 +207,9 @@ df %>%
     });
 ```
 
-### But these are all still just ... clusters - how do I know if they are biologically accurate?
+### Don't stop yet!
+
+**But these are all still just ... clusters - how do I know if they are biologically accurate?**
 
 * We need two more tools to validate these are good biological clusters:
 
