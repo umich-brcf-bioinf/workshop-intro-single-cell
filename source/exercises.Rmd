@@ -17,13 +17,6 @@ output:
             code_download: false
 ---
 
-<style type="text/css">
-
-body, td {
-   font-size: 18px;
-}
-</style>
-
 
 ```{r klippy, echo=FALSE, include=TRUE}
 klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
@@ -31,9 +24,25 @@ klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
 
 
 ```{css, echo=FALSE}
+
+body, td {
+   font-size: 18px;
+}
+
 .doNotRun {
 background-color: CornSilk;
 }
+
+.pro_tip {
+  border-radius: 10px;
+  padding: 5px 5px 5px 95px;
+  background: #EBF7FF left 10px top 10px / 85px no-repeat;
+}
+
+.pro_tip_icon {
+  background-image: url("images/curriculum/pro-tip.png");
+}
+
 ```
 
 ```{r, include = FALSE}
@@ -53,6 +62,7 @@ knitr_fig_path("XX")
 Build on the content and analysis steps covered in the workshop sessions by working through these independent exercises. **Note - if you work on the exercises make sure to restart R session to clear out environment before closing the window (like we have at the end of each session) to avoid lags when logging in the next day**
 <br/>
 
+---
 
 ::: {.pro_tip .pro_tip_icon data-latex="{pro_tip}"}
 ## Reminder: RStudio, Seurat, and Memory Management
@@ -62,6 +72,7 @@ Build on the content and analysis steps covered in the workshop sessions by work
 
 :::
 
+---
 
 ## Day 1
 
