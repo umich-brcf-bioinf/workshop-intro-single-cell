@@ -212,7 +212,7 @@ Before we start creating directories, let's make sure we're in the right locatio
 getwd()
 ```
 
-This means that any references to files loaded or files saved **is with respect to this location**. This can simplify our code a bit by allowing us to use relative paths rather than full paths. Let's set our working directory to the IRR folder in our respective home directories.
+This means that any references to files loaded or files saved **is with respect to this location**. This can simplify our code a bit by allowing us to use relative paths rather than full paths. Let's set our working directory to the ISC folder in our respective home directories.
 
 ```{r setwd, eval = FALSE}
 # -------------------------------------------------------------------------
@@ -234,7 +234,7 @@ dir.create('results/rdata', recursive = TRUE, showWarnings = FALSE)
 
 ## Saving scripts
 
-Let's save our currently open script in the `scripts/` folder as `IRR_day1.R` by clicking <KBD>File</KBD> and then <KBD>Save</KBD>.
+Let's save our currently open script in the `scripts/` folder as `ISC_day1.R` by clicking <KBD>File</KBD> and then <KBD>Save</KBD>.
 
 **Checkpoint**
 
@@ -281,18 +281,18 @@ The `Read10X()` function will read in the triples organized within sample folder
 #   Naming the sample_dirs vector makes Seurat name the
 #     samples in the corresponding manner, which is nice for us.
 sample_dirs = list(
-  HODay0replicate1  = "inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate1", 
-  HODay0replicate2  = "inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate2",
-  HODay0replicate3  = "inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate3",
-  HODay0replicate4  = "inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate4",
-  HODay7replicate1  = "inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate1",
-  HODay7replicate2  = "inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate2",
-  HODay7replicate3  = "inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate3",
-  HODay7replicate4  = "inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate4",
-  HODay21replicate1 = "inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate1",
-  HODay21replicate2 = "inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate2",
-  HODay21replicate3 = "inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate3",
-  HODay21replicate4 = "inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate4")
+  HODay0replicate1  = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate1", 
+  HODay0replicate2  = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate2",
+  HODay0replicate3  = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate3",
+  HODay0replicate4  = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate4",
+  HODay7replicate1  = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate1",
+  HODay7replicate2  = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate2",
+  HODay7replicate3  = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate3",
+  HODay7replicate4  = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate4",
+  HODay21replicate1 = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate1",
+  HODay21replicate2 = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate2",
+  HODay21replicate3 = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate3",
+  HODay21replicate4 = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate4")
 
 # Create the expression matrix from sample dirs
 #   Read10X needs a *vector* instead of a *list*, so we use *unlist* to convert
