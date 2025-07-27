@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-04-24" />
+<meta name="date" content="2025-07-10" />
 
 <title>Marker identification and visualization</title>
 
-<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -375,7 +375,10 @@ div.tocify {
       <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
     </li>
     <li>
-      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+      <a href="05-ProjectionAndClustering.html">Clustering &amp; Projection</a>
+    </li>
+    <li>
+      <a href="clusters_faq.html">Clusters, PCs, and Resolutions: FAQ</a>
     </li>
   </ul>
 </li>
@@ -395,7 +398,13 @@ div.tocify {
     <li>
       <a href="08-DifferentialExpression.html">Differential expression analysis</a>
     </li>
+    <li>
+      <a href="08A-AnalysisFinale.html">Analysis summary and next steps</a>
+    </li>
   </ul>
+</li>
+<li>
+  <a href="exercises.html">Exercises</a>
 </li>
 <li>
   <a href="workshop_wrap_up.html">Wrap up</a>
@@ -415,7 +424,7 @@ div.tocify {
 <h1 class="title toc-ignore">Marker identification and
 visualization</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-04-24</h4>
+<h4 class="date">2025-07-10</h4>
 
 </div>
 
@@ -576,10 +585,7 @@ default is a Wilcoxon test.
 # Marker identification and visualization
 # =========================================================================
 
-# -------------------------------------------------------------------------
-# Find empirical markers
-
-# Prep for cluster comparisons
+# Prep for cluster comparisons to find empirical markers
 geo_so = SetIdent(geo_so, value = &#39;integrated.sct.rpca.clusters&#39;)
 geo_so = PrepSCTFindMarkers(geo_so)
 
@@ -587,7 +593,7 @@ geo_so = PrepSCTFindMarkers(geo_so)
 geo_markers = FindAllMarkers(geo_so, only.pos = TRUE, min.pct = 0.05)
 
 # Write out full cluster marker results to file
-write_csv(geo_markers, file = &#39;results/tables/marker_genes_0.4res.csv&#39;)
+write_csv(geo_markers, file = &#39;results/tables/marker_genes_PC10-0.4res.csv&#39;)
 
 # Take a look at the first few rows of the result
 head(geo_markers)</code></pre>
@@ -617,8 +623,8 @@ For marker generation, Seurat v5 uses the <a
 href="https://www.biorxiv.org/content/10.1101/653253v1">presto
 package</a> to reduce the time required to run DE comparisons,
 particularly for large datasets. For users who are not using presto,
-Seurat recommends increasing the min.pct and logfc.threshold
-parameterscto increase the speed of DE testing (<a
+Seurat recommends increasing the min.pct and logfc.threshold parameters
+to increase the speed of DE testing (<a
 href="https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#finding-differentially-expressed-features-cluster-biomarkers">source</a>).
 </details>
 <p><br></p>
@@ -750,39 +756,17 @@ ggsave(filename = &#39;results/figures/markers_top_5_rna_dot_plot.png&#39;,
        width = 8, height = 18, units = &#39;in&#39;) </code></pre>
 </details>
 <p><br> <br></p>
-<p>Before proceeding with cluster annotations, we’ll also check the
-percentage of mitochondrial genes to determine if there are any clusters
-(or sub populations) that might correspond to interesting cell death
-patterns (or might indicate further filtering is needed):</p>
-<pre class="r"><code># -------------------------------------------------------------------------
-# Check mitochondrial gene expression
-percent_mito_plot = FeaturePlot(geo_so, features=&#39;percent.mt&#39;)
-
-# save to file
-ggsave(filename = &#39;results/figures/percent_umap_mito_plot.png&#39;, 
-       plot = percent_mito_plot, 
-       width = 6, height = 6, units = &#39;in&#39;)
-
-percent_mito_plot</code></pre>
-<p><img src="images/curriculum/06-MarkerVisualization/06-unnamed-chunk-2-1.png" width="816" style="display: block; margin: auto;" /></p>
-<p>We see that a higher % seem to be somewhat concentrated in a few
-places, but if cell death might be of interest for the research
-question, we’d want to consider investigating this pattern further by
-splitting up the plots by day and/or waiting until after running initial
-differential expression analysis to determine if these cell populations
-are interesting biology or not.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Remove the plot variables from the environment to avoid excessive memory usage
 plots = c(&quot;top_5_sct_dot_plot&quot;, 
-          &quot;top_5_rna_dot_plot&quot;, 
-          &quot;percent_mito_plot&quot;)
+          &quot;top_5_rna_dot_plot&quot;)
 
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells   7026561  375.3   11548435   616.8   11548435   616.8
-Vcells 696355232 5312.8 1753349162 13377.0 1688273683 12880.6</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
+Ncells   7111117  379.8   10892882  581.8   10892882  581.8
+Vcells 338108747 2579.6 1062606086 8107.1 1113653353 8496.6</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">
@@ -833,8 +817,8 @@ the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
 Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
 use, distribution, and reproduction in any medium, provided the original
 author and source are credited.</p>
-<br/> <br/>
-<hr/>
+<p><br/> <br/></p>
+<hr />
 <table style="width:100%;">
 <colgroup>
 <col width="28%" />
@@ -843,8 +827,7 @@ author and source are credited.</p>
 </colgroup>
 <thead>
 <tr class="header">
-<th align="left"><a href="05-ProjectionAndClustering.html">Previous
-lesson</a></th>
+<th align="left"><a href="clusters_faq.html">Previous lesson</a></th>
 <th align="center"><a href="#top">Top of this lesson</a></th>
 <th align="right"><a href="07-CellTypeAnnos.html">Next lesson</a></th>
 </tr>

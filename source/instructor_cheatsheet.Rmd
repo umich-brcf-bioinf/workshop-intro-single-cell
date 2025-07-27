@@ -30,6 +30,34 @@ pre {
 
 </style>
 
+```{js}
+$(document).ready(function () {
+var cluster1_img = document.getElementById("cluster1_img");
+
+function setClass1(e) {
+  var select = e.target;
+  cluster1_img.src = select.options[select.selectedIndex].value;
+  return false;
+}
+
+document.getElementById("cluster1_img_list").onchange = setClass1;
+
+
+var cluster2_img = document.getElementById("cluster2_img");
+
+function setClass2(e) {
+  var select = e.target;
+  cluster2_img.src = select.options[select.selectedIndex].value;
+  return false;
+}
+
+document.getElementById("cluster2_img_list").onchange = setClass2;
+
+
+})
+```
+
+
 ```{r klippy, echo=FALSE, include=TRUE}
 klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
 ```

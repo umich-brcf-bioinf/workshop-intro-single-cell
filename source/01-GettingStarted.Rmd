@@ -38,6 +38,16 @@ table.fig, th.fig, td.fig {
   padding: 12px;
 }
 
+.pro_tip {
+  border-radius: 10px;
+  padding: 5px 5px 5px 95px;
+  background: #EBF7FF left 10px top 10px / 85px no-repeat;
+}
+
+.pro_tip_icon {
+  background-image: url("images/curriculum/pro-tip.png");
+}
+
 </style>
 
 ```{r klippy, echo=FALSE, include=TRUE}
@@ -471,6 +481,16 @@ geo_so = readRDS('results/rdata/geo_so_unfiltered.rds')
 <br/>
 <br/>
 
+::: {.pro_tip .pro_tip_icon data-latex="{pro_tip}"}
+## Pro-tip: RStudio, Seurat, and Memory
+
+```{r, child='memory_management_tips.Rmd'}
+```
+
+:::
+
+---
+
 # Summary
 
 <table class='fig'><tr><td class='fig'>
@@ -486,9 +506,20 @@ In this section we:
 - Created the directory structure for analysis.
 - Learned how to read 10X data into Seurat.
 - Introduced the Seurat object, and how to access parts of it.
+- Learned some tips on managing memory.
+- Learned to save our work and also to stop and restart the RStudio session.
 
 ----
 
+## References:
+
+- [Seurat documentation](https://satijalab.org/seurat/){target="_blank"}
+- [BPCells documentation](https://bnprks.github.io/BPCells/index.html){target="_blank"}
+- [tidyverse documentation](https://www.tidyverse.org/){target="_blank"}
+- [How R uses memory](https://rdpeng.github.io/RProgDA/the-role-of-physical-memory.html){target="_blank"}
+- [Memory monitoring in RStudio](https://support.posit.co/hc/en-us/articles/1500005616261-Understanding-Memory-Usage-in-the-RStudio-IDE){target="_blank"}
+
+**Acknowledgements**
 These materials have been adapted and extended from materials listed above. These are open access materials distributed under the terms of the [Creative Commons Attribution license (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.
 
 <br/>

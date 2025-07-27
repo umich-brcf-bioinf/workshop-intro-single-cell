@@ -119,11 +119,12 @@ As described [in more detail by the Ouyang Lab](https://ouyanglab.com/singlecell
 2. Correlation based approaches that estimate the similarity between the cells or clusters in the input data and some reference data
 3. Machine learning approaches that include training on a single-cell reference atlas. 
 
-![Image: Diagram of types of cell annotation approaches (from Oyang materials).](./images/curriculum/07-CellTypeAnnotation/Ouyang_clust-celltype.png)   
+![Image: Diagram of types of cell annotation approaches (from Oyang materials).](./images/curriculum/07-CellTypeAnnotation/Ouyang_clust-celltype.png){height=50%}     
+<br/>
 
 However, across any of these approaches the quality of the reference data (and reliability of the authors labels) and relevancy to your specific tissue/experiment (and the resolution of your biological question) is crucial. Additionally, it's important to consider that rare or novel cell populations may not be present or well-characterized in available references and that even after filtering, some clusters might correspond to stressed or dying cells and not a particular cell-type or subtype. Therefore, any prediction should be reviewed and considered in the context both marker gene expression for the dataset and knowledge of the biological system and broader literature. 
 
-Some tools and references are available solely or primarily for human tissues (and not mouse or rat), particular for tissues other than PBMCs and the brain. For human data, if a relevant reference is available for your experiment, we would recommend trying [Azimuth (created by authors of Seurat)](https://azimuth.hubmapconsortium.org/). [10x has a tutorial](https://www.10xgenomics.com/analysis-guides/automated-cell-type-annotation-from-r-to-loupe-using-louper) that includes example of using Azimuth, including a feature of the tool that allows for first pass of cell-type assignment of more common cell-types followed by identifying rarer populations that may not be identified in the first pass. 
+Some tools and references are available solely or primarily for human tissues (and not mouse or rat), particular for tissues other than PBMCs and the brain. For human data, if a relevant reference is available for your experiment, we would recommend trying [Azimuth (created by authors of Seurat)](https://azimuth.hubmapconsortium.org/). [10x has a tutorial](https://www.10xgenomics.com/analysis-guides/automated-cell-type-annotation-from-r-to-loupe-using-louper) that includes example of using Azimuth, including a feature of the tool that allows for first pass of cell-type assignment of more common cell-types followed by identifying rarer populations. 
 
 <details>
     <summary>*Additional automated annotation resources*</summary>
@@ -137,7 +138,8 @@ A tool we often use for both mouse and human data cell-type predictions is calle
 
 <!-- consider adding [scType](https://cran.r-project.org/web/packages/scCATCH/vignettes/tutorial.html) as an alternative -->
 
-![Image: scCATCH summary from Shao et al (2020).](./images/curriculum/07-CellTypeAnnotation/scCATCH-paper-VizAbstract.jpeg) 
+![Image: scCATCH summary from Shao et al (2020).](./images/curriculum/07-CellTypeAnnotation/scCATCH-paper-VizAbstract.jpeg){height=60%}   
+<br/>
 
 First, we need to load the scCATCH library. Then, we'll double check that we are using the expected resolution cluster results (this is particularly important if we generated multiple resolutions in our clustering steps), before creating a new object from our `counts` data with `createscCATCH()` and adding our marker genes to the scCATCCH object.
 
@@ -148,7 +150,6 @@ To increase the speed and accuracy of our predictions, we'll create query of rel
 # Cell Type Annotation
 # =========================================================================
 
-# -------------------------------------------------------------------------
 # Load scCATCH
 library(scCATCH)
 
@@ -194,9 +195,9 @@ To revise the cluster annotation from those predicted by scCATCH, it can be help
 write_csv(sc_pred_tbl, file = 'results/tables/scCATCH_cluster_predictions.csv')
 ```
 
-## Using known cell-type markers
+# Using known cell-type markers
 
-To confirm and refine the scCATCH predictions, we'll spot check some known markers for immune populations. Then we'll look look at some other key marker genes from some other relevant resources like [Chen et al (2021)](https://www.nature.com/articles/s41467-021-27563-3), [Buechler et al (2021)](https://www.nature.com/articles/s41586-021-03549-5) [Roman (2023)](https://pmc.ncbi.nlm.nih.gov/articles/PMC10296409/#sec3-biomolecules-13-00945 ),  [Li et al (2022)](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-022-04817-5/figures/2) and [Nestorowa et al (2016)](https://ashpublications.org/blood/article/128/8/e20/35749/A-single-cell-resolution-map-of-mouse) to see if other modifications should be made to the scCATCH predictions:
+To confirm and/or refine the scCATCH predictions, we'll spot check some known markers for immune populations. Then we'll look look at some other key marker genes from some other relevant resources like [Chen et al (2021)](https://www.nature.com/articles/s41467-021-27563-3), [Buechler et al (2021)](https://www.nature.com/articles/s41586-021-03549-5) [Roman (2023)](https://pmc.ncbi.nlm.nih.gov/articles/PMC10296409/#sec3-biomolecules-13-00945 ),  [Li et al (2022)](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-022-04817-5/figures/2) and [Nestorowa et al (2016)](https://ashpublications.org/blood/article/128/8/e20/35749/A-single-cell-resolution-map-of-mouse) to see if other modifications should be made to the scCATCH predictions:
 ```{r, imm_marker_genes, fig.show='hold'}
 # -------------------------------------------------------------------------
 # Create lists of immune cells and associated gene markers
@@ -253,7 +254,7 @@ In the first plot, B-cell and T-cell markers seem to line up with the prediction
 
 From the other marker genes, the patterns are less clear so we may want to test other clustering parameters and discuss the results with a researcher familiar with the expected cell types. However, we can notice some patterns that we can use to refine our cluster annotations. 
 
-#### Utilizing genes of interest from the original paper 
+## Utilizing genes of interest from the original paper 
 
 <details>
     <summary>*Plotting the expression of genes of interest from Sorkin, Huber et al*</summary>
@@ -307,11 +308,15 @@ ggsave(filename = 'results/figures/markers_fig1h_rna_dot_plot.png',
 <br>
 
 
-# Annotate clusters
+# Refine annotations and label clusters
 
-Next, we'll use a revised version of the cell type predictions from a file that we prepared and add those labels to our Seurat object to replace our clusters' numerical identities. Note: we will create a new metadata object where we join cell types. However, this will destroy the row names - which will cause a problem in Seurat - so we have to add them back. <!--- modify to have a hidden block that runs after to keep this large block intact -->
+Next, we'll use a revised version of the cell type predictions from a file that we prepared by refining the scCATCH predictions. How is a table like this created?
 
+<br/>
+![](images/curriculum/07-CellTypeAnnotation/RefiningCellTypeAnnos_altLayout.png)
+<br/>
 
+Note: To add the cell-type labels to our Seurat object to replace our clusters' numerical identities, we will create a new metadata object to join in the cell type labels. However this will destroy the row names, which will cause a problem in Seurat so we have to add them back.
 
 ::: {.prepared_content .cooking_show data-latex="{cooking_show}"}
 **Load a pre-prepared file:**
@@ -367,44 +372,82 @@ head(geo_so@meta.data) %>%
   scroll_box(height='100%', width='1000px')
 ```
 
-
+<br/>
 **Checkpoint** : Has the metadata for your `geo_so` object been updated?
-
-We have now added a "cell_type" column to the `meta.data` table:
-
-![Image: Schematic after adding cell_type column.](images/seurat_schematic/Slide12.png)
+<br/>
 
 ## Visualise annotated clusters
 
 Lastly, we can generate a revised UMAP plot with our descriptive cluster labels by using our updated Seurat object and providing the new `cell_type` label for the `group.by` argument:
 
-```{r, catch_umap_plot, fig.width = 10, fig.height = 8, fig.show='hold'}
+```{r, annos_umap_plot, fig.width = 10, fig.height = 8, fig.show='hold'}
 # -------------------------------------------------------------------------
 # Make a labeled UMAP plot of clusters
-catch_umap_plot = 
+annos_umap_plot = 
   DimPlot(geo_so, group.by = 'cell_type', label = TRUE, reduction = 'umap.integrated.sct.rpca')
-catch_umap_plot
+annos_umap_plot
 
-ggsave(filename = 'results/figures/umap_integrated_catch.png', 
-       plot = catch_umap_plot,
-       width = 10, height = 8, units = 'in')
+ggsave(filename = 'results/figures/umap_integrated_annotated.png', 
+       plot =  annos_umap_plot,
+       width = 8, height = 6, units = 'in')
+```
 
-catch_umap_condition_plot = 
+```{r, annos_umap_plot_day, fig.width = 10, fig.height = 4, fig.show='hold'}
+# -------------------------------------------------------------------------
+# Repeat, splitting by day
+annos_umap_condition_plot = 
   DimPlot(geo_so,
           group.by = 'cell_type',
           split.by = 'time',
-          label = TRUE,
+          label = FALSE,
           reduction = 'umap.integrated.sct.rpca')
+annos_umap_condition_plot
 
-ggsave(filename = 'results/figures/umap_integrated_catch_byCondition.png', 
-       plot = catch_umap_condition_plot,
-       width = 10, height = 8, units = 'in')
-
-catch_umap_condition_plot
+ggsave(filename = 'results/figures/umap_integrated_annotated_byCondition.png', 
+       plot = annos_umap_condition_plot,
+       width = 14, height = 5, units = 'in')
 
 ```
 
-<!-- to add - number of cells per cluster and condition/replicate after annotation --->
+It can also be helpful to compare our annotated UMAP to the original clustering results:
+
+```{r, compare_umap_plots, fig.width = 12, fig.height = 5, fig.show='hold', echo = FALSE, warning = FALSE, message = FALSE}
+org_umap_plot = 
+  DimPlot(geo_so, group.by = 'seurat_clusters', label = TRUE, reduction = 'umap.integrated.sct.rpca')
+
+org_umap_plot + annos_umap_plot
+```
+<br/>
+<!-- Add comment on what to observe from the comparison?? -->
+
+<details>
+<summary>**Why didn't we just use the original scCATCH labels? (with code)**</summary>
+<!-- Update to add the scCATCH labels as they were and generate labeled UMAP -->
+
+Predictive tools can be useful but the labels produced may not match the level of specificity that's relevant to *your* biological question or use the same labels for clusters that don't seems to share similar expression programs 
+```{r, catch_umap_plots, fig.width = 12, fig.height = 4.5, fig.show='hold', echo = FALSE, warning = FALSE, message = FALSE}
+# -------------------------------------------------------------------------
+# optional code to create UMAP with initial scCATCH labels
+catch_umap_plot = 
+  DimPlot(geo_so, group.by = 'cell_type_prediction', label = TRUE, reduction = 'umap.integrated.sct.rpca')
+
+ggsave(filename = 'results/figures/umap_integrated_scCatch-only.png',
+       plot = catch_umap_plot,
+       width = 8, height = 6, units = 'in')
+
+# show scCATCH labels compared to original clustering results
+org_umap_plot + catch_umap_plot
+
+# -------------------------------------------------------------------------
+# Remove the plot variables from the environment to manage memory
+rm(catch_umap_plot) 
+gc()
+```
+</details>
+<br>
+<br/>
+
+<!-- to add - number of cells per cluster and condition/replicate after annotation ?--->
 
 # Save our progress
 
@@ -417,11 +460,11 @@ gc()
 
 ```
 
-We'll save the scCATCH object. The Seurat object has not been changed in this module.
+We'll save the scCATCH object and our updated Seurat object with cell type annotations.
 
 ```{r, save_rds_hidden, echo = FALSE}
 if(!file.exists('results/rdata/geo_so_sct_integrated_with_catch.rds')) {
-  saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated_with_catch.rds')
+  saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated_with_annos.rds')
 }
 
 if(!file.exists('results/rdata/geo_catch.rds')) {
@@ -433,7 +476,7 @@ if(!file.exists('results/rdata/geo_catch.rds')) {
 ```{r, save_rds, eval=FALSE}
 # -------------------------------------------------------------------------
 # Save Seurat object and annotations
-saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated_with_catch.rds')
+saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated_with_annos.rds')
 saveRDS(geo_catch, file = 'results/rdata/geo_catch.rds')
 ```
 

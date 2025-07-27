@@ -14,7 +14,7 @@
 
 <title>Intro Single Cell Analysis: Instructor Cheatsheet</title>
 
-<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -374,7 +374,10 @@ div.tocify {
       <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
     </li>
     <li>
-      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+      <a href="05-ProjectionAndClustering.html">Clustering &amp; Projection</a>
+    </li>
+    <li>
+      <a href="clusters_faq.html">Clusters, PCs, and Resolutions: FAQ</a>
     </li>
   </ul>
 </li>
@@ -394,7 +397,13 @@ div.tocify {
     <li>
       <a href="08-DifferentialExpression.html">Differential expression analysis</a>
     </li>
+    <li>
+      <a href="08A-AnalysisFinale.html">Analysis summary and next steps</a>
+    </li>
   </ul>
+</li>
+<li>
+  <a href="exercises.html">Exercises</a>
 </li>
 <li>
   <a href="workshop_wrap_up.html">Wrap up</a>
@@ -431,6 +440,56 @@ pre {
 }
 
 </style>
+<pre class="js"><code>$(document).ready(function () {
+var cluster1_img = document.getElementById(&quot;cluster1_img&quot;);
+
+function setClass1(e) {
+  var select = e.target;
+  cluster1_img.src = select.options[select.selectedIndex].value;
+  return false;
+}
+
+document.getElementById(&quot;cluster1_img_list&quot;).onchange = setClass1;
+
+
+var cluster2_img = document.getElementById(&quot;cluster2_img&quot;);
+
+function setClass2(e) {
+  var select = e.target;
+  cluster2_img.src = select.options[select.selectedIndex].value;
+  return false;
+}
+
+document.getElementById(&quot;cluster2_img_list&quot;).onchange = setClass2;
+
+
+})</code></pre>
+<script>
+$(document).ready(function () {
+var cluster1_img = document.getElementById("cluster1_img");
+
+function setClass1(e) {
+  var select = e.target;
+  cluster1_img.src = select.options[select.selectedIndex].value;
+  return false;
+}
+
+document.getElementById("cluster1_img_list").onchange = setClass1;
+
+
+var cluster2_img = document.getElementById("cluster2_img");
+
+function setClass2(e) {
+  var select = e.target;
+  cluster2_img.src = select.options[select.selectedIndex].value;
+  return false;
+}
+
+document.getElementById("cluster2_img_list").onchange = setClass2;
+
+
+})
+</script>
 <script>
   addClassKlippyTo("pre.r, pre.markdown, pre.bash");
   addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
@@ -501,7 +560,7 @@ library(Seurat)
 library(BPCells)
 library(tidyverse)
 options(future.globals.maxSize = 1e9)
-pcs = 13
+pcs = 10
 
 # Load data  ---------------------------------------------------
 # This starts from the data you saved yesterday

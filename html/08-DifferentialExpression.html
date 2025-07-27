@@ -11,11 +11,11 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-04-24" />
+<meta name="date" content="2025-07-10" />
 
 <title>Differential Expression Analysis</title>
 
-<script src="site_libs/header-attrs-2.28/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
@@ -377,7 +377,10 @@ div.tocify {
       <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
     </li>
     <li>
-      <a href="05-ProjectionAndClustering.html">Projection &amp; Clustering</a>
+      <a href="05-ProjectionAndClustering.html">Clustering &amp; Projection</a>
+    </li>
+    <li>
+      <a href="clusters_faq.html">Clusters, PCs, and Resolutions: FAQ</a>
     </li>
   </ul>
 </li>
@@ -397,7 +400,13 @@ div.tocify {
     <li>
       <a href="08-DifferentialExpression.html">Differential expression analysis</a>
     </li>
+    <li>
+      <a href="08A-AnalysisFinale.html">Analysis summary and next steps</a>
+    </li>
   </ul>
+</li>
+<li>
+  <a href="exercises.html">Exercises</a>
 </li>
 <li>
   <a href="workshop_wrap_up.html">Wrap up</a>
@@ -416,7 +425,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Differential Expression Analysis</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-04-24</h4>
+<h4 class="date">2025-07-10</h4>
 
 </div>
 
@@ -524,22 +533,32 @@ Wilcoxon (default), DESeq2, MAST, etc.
 <div id="standard-comparisons" class="section level2">
 <h2>Standard comparisons</h2>
 <p>First we’ll run cell-level comparisons for our data for the pericyte
-cluster, starting with cells from the D21 vs D7 conditions. We’ll need
-to ensure our cells are labeled to reflect both the cluster and
-condition identities before running our comparison using
-<code>FindMarker()</code> and summarizing the results:</p>
-<!-- add UMAP with facets by groups to show what's being compared? -->
+cluster, which seemed to have an interesting pattern between time points
+in the UMAP plots, starting with cells from the D21 vs D7 conditions.
+We’ll need to ensure our cells are labeled to reflect both the cluster
+and condition identities before running our comparison using
+<code>FindMarker()</code> and summarizing the results:
+<!-- re-show UMAP with facets by groups to show what's being compared? --></p>
 <pre class="r"><code># =========================================================================
 # Differential Expression Analysis
 # =========================================================================
 
-# -------------------------------------------------------------------------
-# Make a day-celltype contrast
-
-# set up combined label of day + celltype &amp; assign as identities
+# Create combined label of day + celltype to use for DE contrasts
 geo_so$day.celltype = paste(geo_so$time, geo_so$cell_type, sep = &#39;_&#39;)
 # check labels
 unique(geo_so$day.celltype)</code></pre>
+<pre><code> [1] &quot;Day0_Myofibroblast&quot;            &quot;Day0_Hematopoietic Stem Cell&quot;  &quot;Day0_Dendritic Cell&quot;           &quot;Day0_Monocyte&quot;                
+ [5] &quot;Day0_B cell&quot;                   &quot;Day0_Platelet&quot;                 &quot;Day0_Smooth muscle cell&quot;       &quot;Day0_Stem Cell&quot;               
+ [9] &quot;Day0_Pericyte&quot;                 &quot;Day0_Fibroblast&quot;               &quot;Day0_Unknown&quot;                  &quot;Day0_T Cell&quot;                  
+[13] &quot;Day0_Infl. Macrophage&quot;         &quot;Day7_Hematopoietic Stem Cell&quot;  &quot;Day7_Dendritic Cell&quot;           &quot;Day7_Monocyte&quot;                
+[17] &quot;Day7_Pericyte&quot;                 &quot;Day7_Myofibroblast&quot;            &quot;Day7_Platelet&quot;                 &quot;Day7_Infl. Macrophage&quot;        
+[21] &quot;Day7_Smooth muscle cell&quot;       &quot;Day7_Stem Cell&quot;                &quot;Day7_Fibroblast&quot;               &quot;Day7_B cell&quot;                  
+[25] &quot;Day7_T Cell&quot;                   &quot;Day7_Unknown&quot;                  &quot;Day21_Smooth muscle cell&quot;      &quot;Day21_Dendritic Cell&quot;         
+[29] &quot;Day21_Monocyte&quot;                &quot;Day21_Myofibroblast&quot;           &quot;Day21_Pericyte&quot;                &quot;Day21_Hematopoietic Stem Cell&quot;
+[33] &quot;Day21_Fibroblast&quot;              &quot;Day21_Platelet&quot;                &quot;Day21_T Cell&quot;                  &quot;Day21_Stem Cell&quot;              
+[37] &quot;Day21_Infl. Macrophage&quot;        &quot;Day21_Unknown&quot;                 &quot;Day21_B cell&quot;                 </code></pre>
+<pre class="r"><code># Reset cell identities to the combined condition + celltype label
+Idents(geo_so) = &#39;day.celltype&#39;</code></pre>
 <div
 style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:400px; overflow-x: scroll; width:100%; ">
 <table class="table" style="font-size: 14px; font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
@@ -750,12 +769,7 @@ Day21_B cell
 </table>
 </div>
 <pre class="r"><code># -------------------------------------------------------------------------
-# Consider pericyte cluster D21 v D7
-
-# Reset cell identities to the combined condition + cluster label
-Idents(geo_so) = &#39;day.celltype&#39;
-
-# run comparison for D21 vs D7, using wilcoxon test
+# Consider pericyte cluster D21 v D7 &amp; run DE comparison using wilcoxon test
 de_cell_pericyte_D21_vs_D7 = FindMarkers(
     object = geo_so,
     slot = &#39;data&#39;, test = &#39;wilcox&#39;,
@@ -763,7 +777,7 @@ de_cell_pericyte_D21_vs_D7 = FindMarkers(
 
 head(de_cell_pericyte_D21_vs_D7)</code></pre>
 <pre><code>                p_val avg_log2FC pct.1 pct.2     p_val_adj
-Fmod     0.000000e+00  2.3143072 0.934 0.518  0.000000e+00
+Fmod    5.928788e-323  2.3143072 0.934 0.518 1.213504e-318
 Prelp   1.541258e-301  2.6531170 0.760 0.217 3.154647e-297
 Gm10076 1.873982e-301 -1.2351650 0.818 0.964 3.835667e-297
 Cilp2   1.170085e-283  5.8112649 0.418 0.014 2.394930e-279
@@ -775,7 +789,7 @@ Wfdc1   3.601155e-265  6.2241539 0.372 0.006 7.370845e-261</code></pre>
 # Add rownames as a column for output
 de_cell_pericyte_D21_vs_D7$gene = rownames(de_cell_pericyte_D21_vs_D7)
 
-# save
+# save to file
 write_csv(de_cell_pericyte_D21_vs_D7, 
           file = &#39;results/tables/de_standard_pericyte_D21_vs_D7.csv&#39;)
 
@@ -798,7 +812,7 @@ quite stringent as the default log2FC threshold for the function is
 0.25. However the default threshold corresponds to only a 19% difference
 in RNA levels, which is quite permissive.</p>
 <p>If there is enough time - we can also compare between cells from the
-D7 and D0 conditions.</p>
+D7 and D0 conditions within the pericyte population.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Compare pericyte cluster D7 v D0
 de_cell_pericyte_D7_vs_D0 = FindMarkers(
@@ -877,16 +891,14 @@ Prss23   2.598750e-87   1.644203     1     1  6.883828e-83
 Nav3     3.019557e-87  -1.594133     1     1  7.998504e-83
 Gm42418  7.456053e-82   2.249675     1     1  1.975034e-77</code></pre>
 <pre class="r"><code># -------------------------------------------------------------------------
-# Add genes and review pseudobulk results
-
-# Add rownames as a column for output
+# add genes rownames as a column for output
 de_pseudo_pericyte_D21_vs_D7$gene = rownames(de_pseudo_pericyte_D21_vs_D7)
 
 # save results
 write_csv(de_pseudo_pericyte_D21_vs_D7,
           file = &#39;results/tables/de_pseudo_pericyte_D21_vs_D7.csv&#39;)
 
-# look at results, using the same thresholds
+# review pseudobulk results, using the same thresholds
 table(de_pseudo_pericyte_D21_vs_D7$p_val_adj &lt; 0.05 &amp; 
         abs(de_pseudo_pericyte_D21_vs_D7$avg_log2FC) &gt; 1.5)</code></pre>
 <pre><code>
@@ -911,7 +923,7 @@ pseudo_pericyte_D21_vs_D7_volcano</code></pre>
 <!--- 
 ### Iterating over all clusters
 
-Add code to generate pseudobulk results for each cluster for all Day 7 vs Day 21 comparisons
+Add code to generate pseudobulk results for each cluster for all Day 7 vs Day 21 comparisons?
 ---></p>
 <div id="further-examining-de-results" class="section level3">
 <h3>Further examining DE results</h3>
@@ -942,8 +954,8 @@ interest in determining why abberant bone can form after injury.</p>
 like in the case of Cd55, it’s not a very efficient process. So after
 running ‘standard’ and/or psuedobulk differential expression
 comparisons, we can use the same types of tools used downstream of bulk
-RNA-seq to interpret these results, such as GO term enrichment, KEGG
-pathway enrichment, and GSEA with mSigDB.</p>
+RNA-seq to interpret these results, which we’ll touch on in the next
+section.</p>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">
@@ -953,52 +965,14 @@ pathway enrichment, and GSEA with mSigDB.</p>
 # (Ok since we saved the plots as we went along.)
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells   9492324  507.0   18791374  1003.6   18791374  1003.6
-Vcells 709196418 5410.8 1753349162 13377.0 1688273683 12880.6</code></pre>
-<p>We’ll save the scCATCH object. The Seurat object has not been changed
-in this module.</p>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
+Ncells   9923056  530.0   17356211  927.0   17356211   927.0
+Vcells 348977776 2662.5 1136637116 8671.9 1420796228 10839.9</code></pre>
+<p>We’ll save a copy of the final Seurat object to final.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Save Seurat object
 saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_integrated_final.rds&#39;)</code></pre>
 <hr />
-</div>
-<div id="downstream-approaches" class="section level1">
-<h1>Downstream approaches</h1>
-<p>Beyond differential expression within clusters and , there are many
-other possible avenues of exploration and analysis for scRNA-seq data.
-Including, but not limited to:</p>
-<ul>
-<li><p>Integration with other modalities (e.g. ATAC-seq, VDJ,
-etc.)</p></li>
-<li><p>Subclustering clusters of interest, see <a
-href="https://hbctraining.github.io/scRNA-seq_online/lessons/seurat_subclustering.html">HBC’s
-summary on subclustering</a>, <a
-href="https://satijalab.org/seurat/reference/findsubcluster">Seurat’s
-findSubcCluster documentation</a> and <a
-href="https://github.com/satijalab/seurat/issues/1883">this related
-issue thread</a></p></li>
-<li><p>Trajectory or Pseudotime analysis, see<a
-href="https://ouyanglab.com/singlecell/dimrd.html">Ouyang Lab’s
-trajectory analysis</a> or <a
-href="https://broadinstitute.github.io/2020_scWorkshop/trajectory-analysis.html">Broad
-Institute’s materials on trajectory analysis</a>, among other
-resources</p></li>
-<li><p>Cell - Cell communication network inference, see <a
-href="https://www.nature.com/articles/s41587-023-01782-z">review by Wilk
-et al (2023)</a></p></li>
-<li><p>Velocity analysis (note: not compatible with the flex probe based
-kits), see <a
-href="https://www.sc-best-practices.org/trajectories/rna_velocity.html">the
-chapter from the single-cells best practices book</a> for detailed
-theory/modeling or the <a
-href="https://pklab.med.harvard.edu/velocyto/notebooks/R/SCG71.nb.html">10x
-data vignette for velocyto</a> for a practical example in R</p></li>
-</ul>
-<p>We would recommend looking for studies in similar tissues or
-experimental questions and see what kind of approaches and tools were
-used to answer questions related to your biological question</p>
-<p><br/> <br/></p>
 </div>
 <div id="summary" class="section level1">
 <h1>Summary</h1>
@@ -1046,8 +1020,8 @@ author and source are credited.</p>
 <th align="left"><a href="07-CellTypeAnnos.html">Previous
 lesson</a></th>
 <th align="center"><a href="#top">Top of this lesson</a></th>
-<th align="right"><a href="workshop_wrap_up.html">Workshop Wrap
-Up</a></th>
+<th align="right"><a href="08A-AnalysisFinale.html">Analysis
+Summary</a></th>
 </tr>
 </thead>
 <tbody>

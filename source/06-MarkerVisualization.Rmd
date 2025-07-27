@@ -122,10 +122,7 @@ Then we'll run the`FindAllMarkers()` [function](https://satijalab.org/seurat/ref
 # Marker identification and visualization
 # =========================================================================
 
-# -------------------------------------------------------------------------
-# Find empirical markers
-
-# Prep for cluster comparisons
+# Prep for cluster comparisons to find empirical markers
 geo_so = SetIdent(geo_so, value = 'integrated.sct.rpca.clusters')
 geo_so = PrepSCTFindMarkers(geo_so)
 
@@ -133,7 +130,7 @@ geo_so = PrepSCTFindMarkers(geo_so)
 geo_markers = FindAllMarkers(geo_so, only.pos = TRUE, min.pct = 0.05)
 
 # Write out full cluster marker results to file
-write_csv(geo_markers, file = 'results/tables/marker_genes_0.4res.csv')
+write_csv(geo_markers, file = 'results/tables/marker_genes_PC10-0.4res.csv')
 
 # Take a look at the first few rows of the result
 head(geo_markers)
@@ -150,7 +147,7 @@ After running `SetIdent()`, cells in our Seurat object are identified by the num
 
 <details>
     <summary>*Seurat v5 improvements*</summary>
-    For marker generation, Seurat v5 uses the [presto package](https://www.biorxiv.org/content/10.1101/653253v1) to reduce the time required to run DE comparisons, particularly for large datasets. For users who are not using presto, Seurat recommends increasing the min.pct and logfc.threshold parameterscto increase the speed of DE testing ([source](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#finding-differentially-expressed-features-cluster-biomarkers)).
+    For marker generation, Seurat v5 uses the [presto package](https://www.biorxiv.org/content/10.1101/653253v1) to reduce the time required to run DE comparisons, particularly for large datasets. For users who are not using presto, Seurat recommends increasing the min.pct and logfc.threshold parameters to increase the speed of DE testing ([source](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#finding-differentially-expressed-features-cluster-biomarkers)).
 </details>
 <br>
 
@@ -243,24 +240,29 @@ ggsave(filename = 'results/figures/markers_top_5_rna_dot_plot.png',
 <br>
 <br>
 
-Before proceeding with cluster annotations, we'll also check the percentage of mitochondrial genes to determine if there are any clusters (or sub populations) that might correspond to interesting cell death patterns (or might indicate further filtering is needed):
-```{r, echo=TRUE, eval= TRUE}
+## Check mitochondrial signal
+
+We can also visualize how individual - like specific genes - or collective features - like metrics in our metadata are expressed across our dataset. For example, we can use `FeaturePLot()` to visualize the percentage of mitochondrial genes expressed per cell to determine if there might be a pattern to where more cells are showing stress.
+```{r, check_mito_UMAP, echo=TRUE, eval= TRUE}
 # -------------------------------------------------------------------------
 # Check mitochondrial gene expression
 percent_mito_plot = FeaturePlot(geo_so, features='percent.mt')
+percent_mito_plot
 
 # save to file
 ggsave(filename = 'results/figures/percent_umap_mito_plot.png', 
        plot = percent_mito_plot, 
        width = 6, height = 6, units = 'in')
-
-percent_mito_plot
-
 ```
 
 
-We see that a higher % seem to be somewhat concentrated in a few places, but if cell death might be of interest for the research question, we'd want to consider investigating this pattern further by splitting up the plots by day and/or waiting until after running initial differential expression analysis to determine if these cell populations are interesting biology or not.
+We see that a higher percentages seem to be somewhat concentrated in a few places, but if cell death might be of interest for the research question, we'd want to consider investigating this pattern further by splitting up the plots by day and/or waiting until after running initial differential expression analysis to determine if these cell populations are interesting biology or not. 
 
+This approach can also be useful to apply to specific gene markers of interest, particularly if there are rarer cell types or subtypes that you want to ensure were segregated into their own cluster with the number of PCs used. 
+
+### Plot object clean-up
+
+Before moving on to the next section, we'll clean up our environment to manage our memory usage: 
 
 ```{r}
 # -------------------------------------------------------------------------
@@ -273,7 +275,6 @@ plots = c("top_5_sct_dot_plot",
 rm(list=Filter(exists, plots))
 gc()
 ```
-
 
 
 # Save our progress
@@ -324,6 +325,8 @@ These materials have been adapted and extended from materials listed above. Thes
 
 <br/>
 <br/>
-<hr/>
-| [Previous lesson](05-ProjectionAndClustering.html) | [Top of this lesson](#top) | [Next lesson](07-CellTypeAnnos.html) |
+
+--------------
+
+| [Previous lesson](clusters_faq.html) | [Top of this lesson](#top) | [Next lesson](07-CellTypeAnnos.html) |
 | :--- | :----: | ---: |

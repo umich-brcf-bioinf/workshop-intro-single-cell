@@ -1,3 +1,4 @@
+## if not running on AWS - setup environment
 # module load singularity
 # singularity exec /nfs/mm-isilon/bioinfcore/Common/singularity/single_cell_0.11.0.sif R ## activate R
 # singularity exec /nfs/mm-isilon/bioinfcore/Common/singularity/single_cell_0.11.0.sif rstudio ##activate Rstudio
@@ -16,10 +17,9 @@ library(klippy)
 library(kableExtra)
 
 # IF KNITTING ON AWS:
-# setwd("~/workshop-intro-single-cell")
+setwd("~/workshop-intro-single-cell")
 
 # The html from the files below don't have the nav bar
-
 render('source/workshop_setup/preregistration_info.md', output_dir='html/workshop_setup/')
 render('source/workshop_setup/preworkshop_checklist.md', output_dir='html/workshop_setup/')
 render('source/workshop_setup/setup_instructions.Rmd', output_dir='html/workshop_setup/')
@@ -37,7 +37,7 @@ render_site('source/instructor_cheatsheet.Rmd');
 render_site('source/analysis_scripts.Rmd');
 render_site('source/SeuratOnGreatLakes.Rmd');
 
-## add content pages
+## content pages
 render_site('source/00A-OrientingOnScRNASeq.Rmd');
 render_site('source/01-GettingStarted.Rmd');
 render_site('source/00B-CellRangerInAction.Rmd');
@@ -46,11 +46,16 @@ render_site('source/03-Normalization.Rmd');
 
 render_site('source/04-PCAandIntegration.Rmd');
 render_site('source/05-ProjectionAndClustering.Rmd');
+render_site('source/clusters_faq.Rmd');
+
 render_site('source/06-MarkerVisualization.Rmd');
 render_site('source/07-CellTypeAnnos.Rmd');
 render_site('source/08-DifferentialExpression.Rmd');
-render_site('source/09-IndependentExercise.Rmd');
+render_site('source/08A-AnalysisFinale.Rmd');
+
 render_site('source/00-ResourcesAndExtendedContent.Rmd');
+render_site('source/exercises.Rmd');
+
 
 render_site('source/workshop_wrap_up.Rmd');
 rm(list=ls(all.names = TRUE))
