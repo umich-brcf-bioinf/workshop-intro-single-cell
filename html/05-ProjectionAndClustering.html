@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-07-21" />
+<meta name="date" content="2025-07-23" />
 
 <title>Clustering and Projection</title>
 
@@ -425,7 +425,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Clustering and Projection</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-07-21</h4>
+<h4 class="date">2025-07-23</h4>
 
 </div>
 
@@ -540,9 +540,10 @@ as a starting point.</p>
 <!-- Section may need more editing  & consider adding a figure
 Related - how important is that decision to the downstream impact (e.g. how much does changing the number of PCs change the clustering)?
 -->
+<p><br/></p>
 <div id="visualizing-variance-across-pcs" class="section level3">
 <h3>Visualizing variance across PCs</h3>
-<p>So in addition to the heatmaps we generated in the last module, one
+<p>In addition to the heatmaps we generated in the last module, another
 way to evaluate how many PCs explain the majority of the variation is by
 generating an elbow plot, which shows the percent variance explained by
 successive PCs. We’ll use the <code>ElbowPlot()</code> function to do
@@ -685,9 +686,9 @@ ggsave(filename = &#39;results/figures/optimal_pcs.png&#39;,
 
 rm(alt_pcs)
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
-Ncells   9619723  513.8   17578952  938.9   17578952  938.9
-Vcells 379984693 2899.1 1096617344 8366.6 1185400528 9043.9</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells   6904428  368.8   12771040  682.1  12771040  682.1
+Vcells 830401103 6335.5 1192805494 9100.4 856720855 6536.3</code></pre>
 <p>Again, this number is likely a starting point and may need to be
 revised depending on the outcome of the downstream steps.</p>
 <p>While outside the scope of this workshop, there are community efforts
@@ -706,24 +707,29 @@ clustering trees</a></li>
 <br/>
 <hr/>
 </details>
-<p><br/></p>
+<p><br/> <br/></p>
 </div>
-</div>
-<div id="selecting-the-number-of-pcs-to-be-used-for-clustering"
-class="section level2">
-<h2>Selecting the number of PCs to be used for clustering</h2>
+<div id="setting-pc-parameter-value" class="section level3">
+<h3>Setting PC parameter value</h3>
 <p>For this dataset, we are expecting a diversity of cell types and cell
 populations that mediate wound healing, but also an aberrant transition
-to bone. For the purposes of the workshop and after</p>
+to bone. Based on some “behind the scenes” testing, for the purposes of
+the workshop we’ll set the number of PCs to be used for clustering to
+<code>10</code> instead of the 16 suggested using the algorithmic
+approach.</p>
 <!-- move this section to projection and clustering once ready to incorporate examples of alternative PCA choices-->
 <pre class="r"><code># -------------------------------------------------------------------------
-# Based on the heatmaps (and some behind the scenes testing), we&#39;ll modify the number of PCs
+# Based some behind the scenes testing, we&#39;ll modify the number of PCs to use for clustering
 pcs = 10</code></pre>
 <p>Again, in a full analysis workflow, our selection at this step can be
-more of a starting point for further iterations than a final decision.
-In the exercises, you’ll also have the opportunity to test alternative
-parameters yourself, including selecting fewer or more PCs.
-<!-- Also link out to `clusters_faq.Rmd` to show examples? --></p>
+more of a starting point for further iterations than a final decision
+both at this stage and after attempting to assign cell-type labels. In
+the exercises, you’ll have an opportunity to try clustering with fewer
+or more PCs than we are using here to see the impact of this parameter
+and related parameters on the clustering results.
+<!-- Also link out to `clusters_faq.Rmd` to show examples? --> <br/>
+<br/></p>
+</div>
 </div>
 <div id="clustering" class="section level2">
 <h2>Clustering</h2>
@@ -1238,7 +1244,9 @@ post_integration_umap_plot_day =
   DimPlot(geo_so,
           group.by = &#39;time&#39;,
           label = FALSE,
-          reduction = &#39;umap.integrated.sct.rpca&#39;)
+          combine = FALSE,
+          reduction = &#39;umap.integrated.sct.rpca&#39;)[[1]] + 
+  ggtitle(&quot;Post-integration clustering, by timepoint&quot;)
 post_integration_umap_plot_day
 
 ggsave(filename = &#39;results/figures/umap_integrated_sct_day.png&#39;,
@@ -2517,9 +2525,9 @@ plots = c(&quot;pre_integration_umap_plot_day&quot;,
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
-Ncells   9684656  517.3   17578952  938.9   17578952  938.9
-Vcells 388642717 2965.2 1096617344 8366.6 1185400528 9043.9</code></pre>
+<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells   6957792  371.6   12771040   682.1   12771040   682.1
+Vcells 837329055 6388.4 1866938864 14243.7 1602793504 12228.4</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">
