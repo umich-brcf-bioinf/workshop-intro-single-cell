@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-07-21" />
+<meta name="date" content="2025-07-27" />
 
 <title>Getting Started with Seurat</title>
 
@@ -423,7 +423,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Getting Started with Seurat</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-07-21</h4>
+<h4 class="date">2025-07-27</h4>
 
 </div>
 
@@ -506,60 +506,94 @@ project will be to get the data into R for analysis. <br/></p>
 </div>
 <div id="orienting-on-rstudio" class="section level1">
 <h1>Orienting on RStudio</h1>
+<p>To get started, let’s log in to the workshop server by going here: <a
+href="http://bfx-workshop02.med.umich.edu"
+target="blank">http://bfx-workshop02.med.umich.edu</a></p>
+<p>The login page for the server looks like:</p>
+<p><img src="images/01_rstudio_login_screen.png" alt="rstudio login screen" style="width: 1000px;"/></p>
+<p>Enter your user credentials and click <kbd>Sign In</kbd>. The RStudio
+interface should load and look like:</p>
+<p><img src="images/02_rstudio_session_default.png" alt="rstudio default session" style="width:1000px;"/></p>
+<p><strong>Checkpoint</strong></p>
 <p>RStudio is an integrated development environment where you can write,
 execute, and see the results of your code. The interface is arranged in
 different panes:</p>
 <ul>
-<li>The Console pane along the left where you can enter commands and
-execute them.</li>
-<li>The Environment pane in the upper right shows any variables you have
-created, along with their values.</li>
+<li>The <strong>Console pane</strong> along the left where you can enter
+commands and execute them.</li>
+<li>The <strong>Environment pane</strong> in the upper right shows any
+variables you have created, along with their values.</li>
 <li>The pane in the lower right has a few functions:
 <ul>
-<li>The Files tab let’s you navigate the file system.</li>
-<li>The Plots tab displays any plots from code run in the Console.</li>
-<li>The Help tab displays the documentation of functions.</li>
+<li>The <strong>Files tab</strong> let’s you navigate the file
+system.</li>
+<li>The <strong>Plots tab</strong> displays any plots from code run in
+the Console.</li>
+<li>The <strong>Help tab</strong> displays the documentation of
+functions.</li>
 </ul></li>
 </ul>
 <div id="commands-in-the-console" class="section level2">
 <h2>Commands in the Console</h2>
-<p>We can input commands directly into the Console and press
-<KBD>Enter</KBD> to execute them. Try it with:</p>
+<p>Commands can be run in the Console directly. Press <KBD>Enter</KBD>
+to execute them:</p>
 <pre><code>&gt; 2+2
 [1] 4</code></pre>
-<p>If we enter commands directly into the Console and execute them,
-<strong>there is no record</strong> that persists after we close
-RStudio.</p>
 <p><img src="images/03_rstudio_console_execution.png" alt="rstudio console execution" style="width:1000px;"/></p>
 <p><strong>Checkpoint</strong></p>
 </div>
 <div id="commands-in-the-script" class="section level2">
 <h2>Commands in the Script</h2>
-<p>To keep that record, we will enter our commands in a script. When
-first opening RStudio, there is no pane to write code to save as a file.
-But by clicking on the icon in the upper-right-most of the interface (a
-blank piece of paper with a + sign), and selecting <KBD>R Script</KBD> a
-new pane opens. This last pane is the Source (or Script) pane, and it is
-here that we’ll keep a running record of the commands we learn in this
-workshop.</p>
+<p>Commands can also be run in a script. Some beenefits to using a
+script rather than relying on the Console pane:</p>
+<ul>
+<li>Scripts are files that can be shared.</li>
+<li>Scripts record the steps taken to analyze the data.</li>
+<li>Scripts can be re-run, allowing for reproducibility.</li>
+</ul>
+<p>When first opening RStudio, a script file is not automatically
+opened. We’ll create our script file by clicking on the icon in the
+upper-left of the interface (a blank piece of paper with a + sign), and
+selecting <KBD>R Script</KBD>.</p>
 <p><img src="images/04_rstudio_create_script.png" alt="rstudio create script" style="width:1000px;"/></p>
-<p>Which will swing open the Script pane:</p>
+<p>The new pane that opens is the <strong>Source pane</strong>:</p>
 <p><img src="images/05_rstudio_script_pane.png" alt="rstudio script pane" style="width:1000px;"/></p>
-<p>In the Script pane, enter:</p>
+<p>You can think of this as a simple text editor. In the Script pane,
+enter:</p>
 <pre><code>3+2</code></pre>
 <p>Notice that if we press <KBD>Enter</KBD> in the Source pane, we get a
-new line. <strong>The code does note execute.</strong> In order to
-execute the code we press <KBD>Ctrl + Enter</KBD> <strong>on the line of
-code we want to execute</strong>. We then see that code executed, along
+new line instead of running the code. In order to execute the code, we
+press <KBD>Ctrl + Enter</KBD> either on the single line we want to run,
+or on a highlighted block of code. We then see that code executed, along
 with its result in in the Console pane.</p>
 <p><img src="images/06_rstudio_script_execution.png" alt="rstudio script execution" style="width:1000px;"/></p>
-<blockquote>
-<h2 id="note-script-pane-and-console-pane"
-class="unlisted unnumbered">Note: Script Pane and Console Pane</h2>
-<p>The code written in the Script Pane is just text until it is executed
-with <KBD>Control + Enter</KBD>. The Console Pane is the record of the
-code that has been executed. <br></p>
-</blockquote>
+</div>
+<div id="summary-console-vs-script" class="section level2">
+<h2>Summary: Console vs Script</h2>
+<p>Here are some of the key differences between the Console and Script
+panes in RStudio:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Console</th>
+<th align="left">Script</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Ephemeral code</td>
+<td align="left">Preserved code</td>
+</tr>
+<tr class="even">
+<td align="left">Run with <KBD>Enter</KBD></td>
+<td align="left">Run with <KBD>Ctrl + Enter</KBD></td>
+</tr>
+<tr class="odd">
+<td align="left">Hard to share</td>
+<td align="left">Easy to share</td>
+</tr>
+</tbody>
+</table>
 </div>
 <div id="configuring-rstudio" class="section level2">
 <h2>Configuring RStudio</h2>
@@ -575,94 +609,89 @@ then <KBD>Soft Wrap Long Lines</KBD>.</p>
 </div>
 </div>
 <div id="workshop-flow" class="section level1">
-<h1>Workshop Flow</h1>
-<p>The code we execute together is available in three forms:</p>
-<ol style="list-style-type: decimal">
-<li>By viewing the instructor’s Zoom screen share,</li>
-<li>By code pasted into Slack, and</li>
-<li>By code blocks on these web pages.</li>
-</ol>
-<p>As a learner you are welcome to get the same code into your Script
-Pane by:</p>
-<ol style="list-style-type: decimal">
-<li>Typing the code from the Zoom screen share into your Script
-Pane,</li>
-<li>Copying the code from Slack and pasting into your Script Pane,
-or</li>
-<li>Copying the code from the code blocks on these web pages and pasting
-into your Script Pane.</li>
-</ol>
+<h1>Workshop flow</h1>
+<p>To accomodate learning styles and to keep us moving along, we’ll
+provide code in three different ways, and you can get that code into
+RStudio in corresponding ways:</p>
+<table>
+<colgroup>
+<col width="48%" />
+<col width="51%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Source of Code</th>
+<th align="left">Execution of Code</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Zoom screen share</td>
+<td align="left">Type the code yourself.</td>
+</tr>
+<tr class="even">
+<td align="left">Slack</td>
+<td align="left">Copy and paste code into RStudio.</td>
+</tr>
+<tr class="odd">
+<td align="left">Website</td>
+<td align="left">Use code block copy button and paste into RStudio.</td>
+</tr>
+</tbody>
+</table>
 <p><strong>Questions?</strong></p>
-<div id="creating-a-project" class="section level2">
-<h2>Creating a project</h2>
-<p>We will create an RStudio Project to keep our files and code
-organized. See the <a
-href="https://r4ds.hadley.nz/workflow-scripts.html#projects">Projects</a>
-section of <a href="https://r4ds.hadley.nz/">R for Data Science</a> for
-a more in-depth description of what a project is and how it’s
-helpful.</p>
-<p>To create a Project for this workshop, click <kbd>File</kbd> then
-<kbd>New Project…</kbd>. In the New Project Wizard window that opens,
-select <kbd>Existing Directory</kbd>, then <kbd>Browse…</kbd>. In the
-Choose Directory window, select the <code>ISC_R</code> folder by
-clicking it once, and then click the <kbd>Choose</kbd> button. Finally,
-click <kbd>Create Project</kbd>.</p>
-<p>Once we do this, RStudio will restart and the Files pane (lower
-right) should put us in the <code>~/ISC_R</code> folder where there is
-an <code>inputs/</code> folder and an <code>ISC_R.Rproj</code> file.</p>
 </div>
-<div id="directory-structure" class="section level2">
-<h2>Directory structure</h2>
-<p>We have included the data to be used in the workshop in the
-<code>inputs/</code> folder. However, the project will need to include
-folders for our analysis and our analysis scripts. Let’s create that
-directory structure with the <code>dir.create()</code> function. We will
-start by putting the following commands into the Console pane
-directly.</p>
-<pre class="r"><code># Create project directories
-dir.create(&#39;scripts&#39;, showWarnings = FALSE, recursive = TRUE)
-dir.create(&#39;results/figures&#39;, showWarnings = FALSE, recursive = TRUE)
-dir.create(&#39;results/tables&#39;, showWarnings = FALSE, recursive = TRUE)
-dir.create(&#39;results/rdata&#39;, showWarnings = FALSE, recursive = TRUE)</code></pre>
-<p>In the Files pane we should see the new <code>results/</code> and
-<code>scripts/</code> folders.</p>
-</div>
-<div id="analysis-script" class="section level2">
-<h2>Analysis script</h2>
-<p>The two most important artifacts of our analysis are the data from
-Cell Ranger, and the script to analyze the data. There will be outputs
-in <code>results/</code>, and these will be important, but if the
-contents of <code>results/</code> are ever lost, the script will be able
-to re-generate them if we’ve captured all our steps as code, which we
-aim to do.</p>
-<p>To create the analysis script, click <kbd>File</kbd>, hover over
-<kbd>New File</kbd>, and click on <kbd>R Script</kbd>. A new pane in the
-upper left slides into view and is the Untitled script file. Save this
-file, and name it, by clicking <kbd>File</kbd> then <kbd>Save</kbd>.
-Double click the <code>scripts/</code> folder, and in the File name:
-text box type “analysis.R”. Then click <kbd>Save</kbd>.</p>
-<p>As we proceed through the workshop, we should save this file (by
-clicking the Floppy disk, clicking <kbd>File</kbd> then <kbd>Save</kbd>,
-or by typing <kbd>Control + S</kbd>).</p>
-<blockquote>
-<p><strong>Good scripting practices</strong></p>
-<p>In any analysis script, we recommend using comments (lines preceded
-by a “#”) to provide additional information about code that may not be
-self-evident. This is to the benefit of others that may look at the
-code, but also to your future-self. <br></p>
-</blockquote>
-<p>For completeness, insert the <code>dir.create</code> commands at the
-top of our new script.</p>
+<div id="setting-up" class="section level1">
+<h1>Setting up</h1>
+<p>Before we begin, the folder structure of a working directory /
+project organizes all the relevant files. Typically we make directories
+for the following types of files:</p>
+<ul>
+<li>Raw data, called <code>data</code>, <code>input</code>, etc,</li>
+<li>Results, often <code>results</code> or <code>output</code> with
+subfolders for <code>tables</code>, <code>figures</code>, and
+<code>rdata</code>, and</li>
+<li>Scripts, often <code>scripts</code>.</li>
+</ul>
+<p>We’ve already provided the raw data in the <code>data/</code> folder,
+but you’d otherwise want to move the starting, unaltered, data into this
+folder.</p>
+<div id="creating-directory-stucture" class="section level2">
+<h2>Creating directory stucture</h2>
+<p>Before we start creating directories, let’s make sure we’re in the
+right location. To print the current working directory:</p>
 <pre class="r"><code># =========================================================================
 # Getting Started with Seurat
 # =========================================================================
 
 # -------------------------------------------------------------------------
-# Create project directories
-dir.create(&#39;scripts&#39;, showWarnings = FALSE, recursive = TRUE)
-dir.create(&#39;results/figures&#39;, showWarnings = FALSE, recursive = TRUE)
-dir.create(&#39;results/tables&#39;, showWarnings = FALSE, recursive = TRUE)
-dir.create(&#39;results/rdata&#39;, showWarnings = FALSE, recursive = TRUE)</code></pre>
+# Get current working directory
+getwd()</code></pre>
+<pre><code>[1] &quot;/home/workshop/rcavalca/workshop-intro-single-cell/source&quot;</code></pre>
+<p>This means that any references to files loaded or files saved
+<strong>is with respect to this location</strong>. This can simplify our
+code a bit by allowing us to use relative paths rather than full paths.
+Let’s set our working directory to the ISC folder in our respective home
+directories.</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Set current working directory
+setwd(&#39;~/ISC_R&#39;)</code></pre>
+<p>Now that we’re sure of our working directory, let’s create some
+folders for our analysis scripts and results thereof.</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Create directory structure
+
+dir.create(&#39;scripts&#39;, recursive = TRUE, showWarnings = FALSE)
+dir.create(&#39;results/figures&#39;, recursive = TRUE, showWarnings = FALSE)
+dir.create(&#39;results/tables&#39;, recursive = TRUE, showWarnings = FALSE)
+dir.create(&#39;results/rdata&#39;, recursive = TRUE, showWarnings = FALSE)</code></pre>
+</div>
+<div id="saving-scripts" class="section level2">
+<h2>Saving scripts</h2>
+<p>Let’s save our currently open script in the <code>scripts/</code>
+folder as <code>ISC_day1.R</code> by clicking <KBD>File</KBD> and then
+<KBD>Save</KBD>.</p>
+<p><strong>Checkpoint</strong></p>
 </div>
 </div>
 <div id="loading-libraries" class="section level1">
@@ -721,18 +750,18 @@ organized within sample folders:</p>
 #   Naming the sample_dirs vector makes Seurat name the
 #     samples in the corresponding manner, which is nice for us.
 sample_dirs = list(
-  HODay0replicate1  = &quot;inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate1&quot;, 
-  HODay0replicate2  = &quot;inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate2&quot;,
-  HODay0replicate3  = &quot;inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate3&quot;,
-  HODay0replicate4  = &quot;inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate4&quot;,
-  HODay7replicate1  = &quot;inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate1&quot;,
-  HODay7replicate2  = &quot;inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate2&quot;,
-  HODay7replicate3  = &quot;inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate3&quot;,
-  HODay7replicate4  = &quot;inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate4&quot;,
-  HODay21replicate1 = &quot;inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate1&quot;,
-  HODay21replicate2 = &quot;inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate2&quot;,
-  HODay21replicate3 = &quot;inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate3&quot;,
-  HODay21replicate4 = &quot;inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate4&quot;)
+  HODay0replicate1  = &quot;~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate1&quot;, 
+  HODay0replicate2  = &quot;~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate2&quot;,
+  HODay0replicate3  = &quot;~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate3&quot;,
+  HODay0replicate4  = &quot;~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate4&quot;,
+  HODay7replicate1  = &quot;~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate1&quot;,
+  HODay7replicate2  = &quot;~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate2&quot;,
+  HODay7replicate3  = &quot;~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate3&quot;,
+  HODay7replicate4  = &quot;~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate4&quot;,
+  HODay21replicate1 = &quot;~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate1&quot;,
+  HODay21replicate2 = &quot;~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate2&quot;,
+  HODay21replicate3 = &quot;~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate3&quot;,
+  HODay21replicate4 = &quot;~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate4&quot;)
 
 # Create the expression matrix from sample dirs
 #   Read10X needs a *vector* instead of a *list*, so we use *unlist* to convert
@@ -751,9 +780,6 @@ memory:</p>
 # BPCells uses these files for processing, but you typically never look at 
 # their contents directly
 write_matrix_dir(mat = geo_mat, dir = &#39;~/ISC_R/bpcells&#39;, overwrite = TRUE)</code></pre>
-<pre><code>Warning: Matrix compression performs poorly with non-integers.
-• Consider calling convert_matrix_type if a compressed integer matrix is intended.
-This message is displayed once every 8 hours.</code></pre>
 <pre><code>32285 x 35269 IterableMatrix object with class MatrixDir
 
 Row names: Xkr4, Gm1992 ... AC149090.1
@@ -763,7 +789,7 @@ Data type: double
 Storage order: column major
 
 Queued Operations:
-1. Load compressed matrix from directory /home/workshop/damki/ISC_R/bpcells</code></pre>
+1. Load compressed matrix from directory /home/workshop/rcavalca/ISC_R/bpcells</code></pre>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Cleanup
 # Since we&#39;ll now be reading in from BPCells files, we will remove geo_mat
@@ -772,8 +798,8 @@ Queued Operations:
 rm(geo_mat)
 gc()</code></pre>
 <pre><code>           used  (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells  6567754 350.8   12562242  670.9   7175955  383.3
-Vcells 12525620  95.6  567781456 4331.9 673803872 5140.8</code></pre>
+Ncells  6717009 358.8   10572127  564.7  10572127  564.7
+Vcells 13003785  99.3  521256963 3976.9 673950265 5141.9</code></pre>
 </div>
 <div id="read-bpcells" class="section level2">
 <h2>Read BPCells</h2>
@@ -804,8 +830,9 @@ reads for 50 or fewer genes. In the context of this workshop, this helps
 us minimize memory usage.</p>
 </div>
 <div id="molecule_info.h5-as-an-alternative-input-to-seurat"
-class="section level2">
-<h2>molecule_info.h5 as an alternative input to Seurat</h2>
+class="section level2 unlisted unnumbered">
+<h2 class="unlisted unnumbered">molecule_info.h5 as an alternative input
+to Seurat</h2>
 <details>
 <summary>
 <em>H5 (aka HDF5) is an alternative file format</em>
