@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-07-10" />
+<meta name="date" content="2025-07-29" />
 
 <title>Marker identification and visualization</title>
 
@@ -424,7 +424,7 @@ div.tocify {
 <h1 class="title toc-ignore">Marker identification and
 visualization</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-07-10</h4>
+<h4 class="date">2025-07-29</h4>
 
 </div>
 
@@ -756,17 +756,51 @@ ggsave(filename = &#39;results/figures/markers_top_5_rna_dot_plot.png&#39;,
        width = 8, height = 18, units = &#39;in&#39;) </code></pre>
 </details>
 <p><br> <br></p>
+</div>
+<div id="check-mitochondrial-signal" class="section level2">
+<h2>Check mitochondrial signal</h2>
+<p>We can also visualize how individual - like specific genes - or
+collective features - like metrics in our metadata are expressed across
+our dataset. For example, we can use <code>FeaturePLot()</code> to
+visualize the percentage of mitochondrial genes expressed per cell to
+determine if there might be a pattern to where more cells are showing
+stress.</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Check mitochondrial gene expression
+percent_mito_plot = FeaturePlot(geo_so, features=&#39;percent.mt&#39;)
+percent_mito_plot</code></pre>
+<p><img src="images/curriculum/06-MarkerVisualization/06-check_mito_UMAP-1.png" width="816" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># save to file
+ggsave(filename = &#39;results/figures/percent_umap_mito_plot.png&#39;, 
+       plot = percent_mito_plot, 
+       width = 6, height = 6, units = &#39;in&#39;)</code></pre>
+<p>We see that a higher percentages seem to be somewhat concentrated in
+a few places, but if cell death might be of interest for the research
+question, we’d want to consider investigating this pattern further by
+splitting up the plots by day and/or waiting until after running initial
+differential expression analysis to determine if these cell populations
+are interesting biology or not.</p>
+<p>This approach can also be useful to apply to specific gene markers of
+interest, particularly if there are rarer cell types or subtypes that
+you want to ensure were segregated into their own cluster with the
+number of PCs used.</p>
+<div id="plot-object-clean-up" class="section level3">
+<h3>Plot object clean-up</h3>
+<p>Before moving on to the next section, we’ll clean up our environment
+to manage our memory usage:</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Remove the plot variables from the environment to avoid excessive memory usage
 plots = c(&quot;top_5_sct_dot_plot&quot;, 
-          &quot;top_5_rna_dot_plot&quot;)
+          &quot;top_5_rna_dot_plot&quot;, 
+          &quot;percent_mito_plot&quot;)
 
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
-Ncells   7111117  379.8   10892882  581.8   10892882  581.8
-Vcells 338108747 2579.6 1062606086 8107.1 1113653353 8496.6</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
+Ncells  10045440  536.5   17682058  944.4   17682058   944.4
+Vcells 425207275 3244.1 1174666813 8962.0 1468329871 11202.5</code></pre>
+</div>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">

@@ -1,0 +1,113 @@
+Since we are working with larger object sizes, it's best to start with a fresh session. All variable names will be different from the lessons. Load the libraries (it's okay if they're already loaded) and the **integrated** Seurat object with the following code:
+
+<!-- Exploring clustering thresholds -->
+
+```{r, Day2_startup, eval = FALSE}
+# =========================================================================
+# Independent Exercise - Day 2 Startup
+# =========================================================================
+
+# After restarting our R session, load the required libraries & input data
+library(Seurat)
+library(BPCells)
+library(tidyverse)
+
+setwd('~/ISC_R')
+
+# Use provided copy of integrated data
+exso2 = readRDS('inputs/prepared_data/rdata/geo_so_sct_integrated.rds')
+exso2 # check that object loaded
+
+## NOTE - BEFORE STOPPING WORK ON THE EXERCISES REMEMBER TO POWER DOWN AND RESTART R SESSION !!!!
+```
+<br/>
+
+### Day 2 Exercise 1 - Clustering with reduced number of PCs
+
+Test how the clustering results would change if you used *fewer* or *more* PCs when clustering these data. 
+
+```{r, Day2_clustering1A, eval = FALSE}
+# -------------------------------------------------------------------------
+# Testing fewer PCs for clustering 
+
+# look at elbow plot to check PCs and consider alternatives to the number selected for main materials
+ElbowPlot(exso2, ndims = 50, reduction = 'unintegrated.sct.pca')
+
+# select alternative value to try (choose a number <10 or >10 PCs)
+pcs = # Your value here #
+
+# generate nearest neighbor (graph), using selected number of PCs
+exso2 = FindNeighbors(exso2, dims = 1:pcs, reduction = 'integrated.sct.rpca')
+```
+<br/>
+
+After generating clustering, set resolution parameter - remember this only impacts the how the boundaries of the neighbors are drawn, not the underlying NN graph/structure. 
+
+```{r, Day2_clustering1B, eval = FALSE}
+# -------------------------------------------------------------------------
+# Testing resolution options to see impact
+
+# start with one resolution
+res = # Your value here #
+
+# generate clusters, using `pcs` and `res` to make a custom cluster name that will be added to the metadata
+exso2 = FindClusters(exso2, resolution = res, 
+                     cluster.name = paste0('int.sct.rpca.clusters', res))
+
+# look at meta.data to see cluster labels
+head(exso2@meta.data)
+
+# run UMAP reduction to prepare for plotting
+exso2 = RunUMAP(exso2, dims = 1:pcs, 
+                  reduction = 'integrated.sct.rpca', 
+                  reduction.name = paste0('umap.integrated.sct.rpca_alt', res))
+
+# check object to see if named reduction was added
+exso2
+```
+
+<br/>
+
+**Challenge 1**: How could we generate clusters for multiple alternative resolutions (e.g. 0.4, 0.8, & 1.0)? *Hint* - [`for` loops](https://r4ds.had.co.nz/iteration.html) can be useful for iteration in many programming languages, including R. 
+
+<br/>
+
+### Day 2 Exercise 2 - Plotting alternative clustering results
+
+After generating our clustering results it's time to visualize them - create a UMAP plot, ensuring that you generate a UMAP reduction for the appropriate reduction 
+
+*Hint 1* - Remember the previous code chunk used `paste0('umap.integrated.sct.rpca_alt', res))` for the cluster name parameter. 
+
+*Hint 2* - For a reminder of how to generate a UMAP plot, look at the [Visualizing and evaluating clustering](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/main/html/05-ProjectionAndClustering.html#Visualizing_and_evaluating_clustering) from the Clustering and Projection module.
+
+<br/>
+
+**Challenge 2**: Create UMAP plots for the alternative resolutions (e.g. 0.4, 0.8, & 1.0) generated in the previous challenge.
+
+<br/>
+
+**Check-in Questions - UMAP for alternative PCs**
+
+> How does the UMAP plot look when fewer or more PCs are used? Do you notice any relationship between the PC parameter and resolution parameter?
+
+<br/>
+
+### Clean up session 
+
+Before closing out the window, **make sure to clear environment and restart R session to manage the memory usage**
+
+```{r, cleanup_day2, eval=FALSE}
+## ----------------------------------------------------------
+## Clean up session, including any plot objects
+rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot)))));
+gc()
+
+## Save copy of Seurat object in current state to file
+saveRDS(exso2, file = paste0('results/rdata/geo_so_sct_integrated_exercise.rds'))
+rm(exso2)
+gc()
+```
+<br/>
+<br/>
+
+

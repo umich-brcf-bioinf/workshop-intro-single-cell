@@ -64,11 +64,10 @@ connect to enable single-cell gene expression analysis from RNA-Seq data.
 
 ---
 
-## Looking ahead
-
-### Workshop environment
-- RStudio workshop compute environment will be available until **`r workshop_vars$rstudio_server_enddate`**.
+### Can I continue to use the RStudio environments we used in the workshop?
+- The RStudio workshop compute environment will be available through `r workshop_vars$rstudio_server_enddate`.
   - _Please save all your R scripts now_ so that we can "right-size" the compute environment immediately following today's workshop session.
+
 - You can download files from the workshop environment from your terminal/command line window as below. 
   (You will need to substitute your actual workshop username and type workshop password when prompted.)
   ```
@@ -81,16 +80,22 @@ connect to enable single-cell gene expression analysis from RNA-Seq data.
     speeds it could take a while. (We do not recommend you download the full set of Cell 
     Ranger outputs.)
 
-#### Installing software locally
-  - You can install necessary programs to run programs locally. Note
-    that for typical data, Cell Ranger steps (reviewed Day 1) assume your 
+---
+
+### Where else could I use RStudio?
+  - See [Advanced setup instructions](workshop_setup/setup_instructions_advanced.html){target="_blank"}
+    for details on how to install RStudio and required packages on your own computer.
+    Please note:
+    - Installing bioinformatics software is often non-trivial.
+    - For typical data, Cell Ranger steps (reviewed Day 1) assume your 
     computer has powerful compute (many CPUs and lots of RAM) and sizable 
     storage capacity. (i.e. it's impractical to run these on your laptop.)
-      - [Setting up R/R-Studio](workshop_setup/setup_instructions_advanced.html)
-      
-  - Note that installing bioinformatics software is often non-trivial.
+  - [PositCloud](https://posit.cloud/){target="_blank"} allows you to run R-Studio over the web for free. Click here to [login to PositCloud](https://posit.cloud/content/10156998) and launch an R session. (UM users can login using their umich.edu Google account.) *Note: A full single-cell analysis will require you to upgrade beyond the free tier.*
+  - UMich users can run RStudio on the [UM Great Lakes HPC](seurat-on-great-lakes.html){target="_blank"}.
 
-#### Downloading Seurat inputs
+---
+
+#### Could I download Seurat inputs used in the workshop?
 
   - The Seurat inputs (cellranger triples and dbcells files) used in this 
     workshop can be installed locally like so:
@@ -114,22 +119,23 @@ connect to enable single-cell gene expression analysis from RNA-Seq data.
     ```
 <br/>
 
-### [An independent exercise](09-IndependentExercise.html)
-<!-- when to introduce independent exercise if we don't get to breaking it into more modular pieces? -->
+---
 
-  - A variation on the workshop workflow that considers different clustering parameters and their downstream effects.
-  
-<br/>
+### Can you recommend other relevant workshops or tutorials?
+- The [University of Michigan Bioinformatics Core](https://michmed.org/XYQwq){target="_blank"} regularly hosts workshops.
+- Intro lessons and workshops in Bash / Git / R / Python : 
+  - [Software Carpentry](https://software-carpentry.org/lessons/){target="_blank"}
+  - [The Carpentries at the University of Michigan](https://umcarpentries.org/){target="_blank"} host several introductory workshops each year following curricula that are developed collaboratively and using the latest research into best practices for teaching computer science content. All workshops are offered for free to learners. 
 
+---
 
-## University of Michigan Resources
+## How can I learn more about computational research at University of Michigan?
 
-- [UM CoderSpaces "office hours"](https://datascience.isr.umich.edu/events/coderspaces/){target="_blank"} and UM CoderSpaces Slack workspace. _(See "Useful Resources" section of the CoderSpaces page for instructions on how to join the CoderSpaces Slack workspace.)_
+- [UM CoderSpaces "office hours"](https://datascience.isr.umich.edu/events/coderspaces/){target="_blank"} and UM CoderSpaces Slack workspace. _(See "Useful Resources" section in CoderSpaces page for instructions on how to join and access the CoderSpaces Slack workspace.)_
 - [Advanced Research Computing](https://its.umich.edu/advanced-research-computing){target="_blank"}
-- [Research Computing Package](https://its.umich.edu/advanced-research-computing/research-computing-package){target="_blank"}
-- Upcoming [UM Advanced Research Computing workshops](https://ttc.iss.lsa.umich.edu/ttc/sessions/tag/arc/){target="_blank"}
-- Videos on [getting started with Great Lakes](https://www.mivideo.it.umich.edu/channel/ARC-TS%2BTraining/181860561/){target="_blank"}
-
+  - [Research Computing Package](https://its.umich.edu/advanced-research-computing/research-computing-package){target="_blank"}
+  - Upcoming [UM Advanced Research Computing workshops](https://ttc.iss.lsa.umich.edu/ttc/sessions/tag/hpc/){target="_blank"}
+  - Videos on [getting started with Great Lakes](https://www.mivideo.it.umich.edu/playlist/dedicated/1_rmm5rnp1/){target="_blank"} (Requires UM login)
 
 
 ---

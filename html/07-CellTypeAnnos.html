@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-07-10" />
+<meta name="date" content="2025-07-29" />
 
 <title>Cell Type Annotation</title>
 
@@ -425,7 +425,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Cell Type Annotation</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-07-10</h4>
+<h4 class="date">2025-07-29</h4>
 
 </div>
 
@@ -830,7 +830,7 @@ ggsave(filename = &#39;results/figures/markers_fig1h_rna_dot_plot.png&#39;,
 file that we prepared by refining the scCATCH predictions. How is a
 table like this created?</p>
 <p><br/> <img
-src="images/curriculum/07-CellTypeAnnotation/RefiningCellTypeAnnos.png" />
+src="images/curriculum/07-CellTypeAnnotation/RefiningCellTypeAnnos_altLayout.png" />
 <br/></p>
 <p>Note: To add the cell-type labels to our Seurat object to replace our
 clusters’ numerical identities, we will create a new metadata object to
@@ -1239,8 +1239,8 @@ the level of specificity that’s relevant to <em>your</em> biological
 question or use the same labels for clusters that don’t seems to share
 similar expression programs</p>
 <pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
-Ncells   9696950  517.9   17356211  927.0   17356211   927.0
-Vcells 345269818 2634.2 1136637116 8671.9 1420796228 10839.9</code></pre>
+Ncells  10181539  543.8   17682058  944.4   17682058   944.4
+Vcells 353652426 2698.2 1174666813 8962.0 1468329871 11202.5</code></pre>
 <img src="images/curriculum/07-CellTypeAnnotation/07-catch_umap_plots-1.png" width="1152" style="display: block; margin: auto;" />
 </details>
 <p><br> <br/></p>
@@ -1255,8 +1255,8 @@ Vcells 345269818 2634.2 1136637116 8671.9 1420796228 10839.9</code></pre>
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
-Ncells   9616784  513.6   17356211  927.0   17356211   927.0
-Vcells 341686978 2606.9 1136637116 8671.9 1420796228 10839.9</code></pre>
+Ncells  10103992  539.7   17682058  944.4   17682058   944.4
+Vcells 350076147 2670.9  939733451 7169.6 1468329871 11202.5</code></pre>
 <p>We’ll save the scCATCH object and our updated Seurat object with cell
 type annotations.</p>
 <pre class="r"><code># -------------------------------------------------------------------------

@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-07-10" />
+<meta name="date" content="2025-07-29" />
 
 <title>Running Seurat on UMich Great Lakes HPC</title>
 
@@ -424,7 +424,7 @@ div.tocify {
 <h1 class="title toc-ignore">Running Seurat on UMich Great Lakes
 HPC</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-07-10</h4>
+<h4 class="date">2025-07-29</h4>
 
 </div>
 
@@ -444,7 +444,8 @@ pre {
   addClassKlippyTo("pre.r, pre.markdown, pre.bash");
   addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
 </script>
-<p><br/> <br/></p>
+<p><img
+src="images/seurat-on-great-lakes/great-lakes-wayfinder.png" /></p>
 <div id="objectives" class="section level2">
 <h2>Objectives</h2>
 <p>You can run Seurat and several related R libraries using University
@@ -489,9 +490,8 @@ doing a low to moderate amount of data analysis may not have to pay
 anything.)</li>
 </ul>
 <hr />
-</div>
-<div id="how-to-get-help" class="section level2">
-<h2>How to get help</h2>
+<div id="how-to-get-help" class="section level3">
+<h3>How to get help</h3>
 <ul>
 <li><p>If you have problems/questions, please don’t hesitate to email us
 at: <a
@@ -508,8 +508,8 @@ of the OS you are using).</li>
 </ul>
 <hr />
 </div>
-<div id="what-you-need" class="section level2">
-<h2>What you need</h2>
+<div id="what-you-need" class="section level3">
+<h3>What you need</h3>
 <ol style="list-style-type: decimal">
 <li><p>You need a UM core-imaged workstation and a web browser.</p></li>
 <li><p>You need to be on UM campus or connected to the UM VPN or
@@ -560,7 +560,7 @@ inputs as a guide:</p>
 analyses, 10Gb is a good working number. Each user is allocated 80Gb of
 storage in their home dir. As a new user, you can execute this tutorial
 from your home dir. As your experiments and analyses grow, you can check
-your available space from the command line (<code>homw-quota</code>) and
+your available space from the command line (<code>home-quota</code>) and
 request more storage from ARC as necessary.</p></li>
 <li><p>You will need data. Below, we’ll show you how to download the
 input data used in the workshop, but you can adapt that to use your own
@@ -568,11 +568,20 @@ data.</p></li>
 </ol>
 <hr />
 </div>
+</div>
 <div id="using-open-ondemand" class="section level2">
 <h2>Using Open OnDemand</h2>
-<p>Open OnDemand (OOD) connects you to the Great Lakes cluster through
-your web browser. Once you’ve got everything you need from above, you’re
-going to use OOD to launch a RStudio session.</p>
+<p><img
+src="images/seurat-on-great-lakes/great-lakes-wayfinder-ood.png" /></p>
+<p>Once you’ve got everything you need from above, you’re going to use
+<strong>Open OnDemand</strong> (OOD) to launch a RStudio session.</p>
+<ul>
+<li>OOD connects you to the Great Lakes cluster through your web
+browser.</li>
+<li>OOD works with the <strong>SLURM workload manager</strong> to
+reserve and configure a <strong>compute node</strong> that will run
+RStudio.</li>
+</ul>
 <ol style="list-style-type: decimal">
 <li><p>If off-campus, connect to the VPN using Cisco Secure
 Client.</p></li>
@@ -582,10 +591,10 @@ target="_blank">greatlakes.arc-ts.umich.edu</a> and login with your
 uniqname and password.</p></li>
 <li><p>In the menu at the top of the screen, click <strong>Interactive
 Apps</strong> and select <strong>RStudio</strong>. <img
-src="images/seuratOnGreatLakes/ood-interactive-apps.png" /></p></li>
+src="images/seurat-on-great-lakes/ood-interactive-apps.png" /></p></li>
 <li><p>The previous step will display a <em>launch configuration
 page</em> with several fields, e.g. <img
-src="images/seuratOnGreatLakes/ood-launch-config.png"
+src="images/seurat-on-great-lakes/ood-launch-config.png"
 alt="partial screen shot" /> …</p>
 <p>Enter values below in the corresponding fields:</p>
 <table>
@@ -641,11 +650,11 @@ presto scCATCH RglmGamPoi RDESeq2</strong></td>
 click <strong>Launch</strong>. (Conveniently, the values you entered
 above will now be your default for launching an RStudio session.) The
 screen will update to show Great Lakes is preparing your session. <img
-src="images/seuratOnGreatLakes/ood-queue-rstudio.png"
+src="images/seurat-on-great-lakes/ood-queue-rstudio.png"
 style="width:50.0%" /></p></li>
 <li><p>When the session is ready (usually a few seconds later), the
 screen will update: <img
-src="images/seuratOnGreatLakes/ood-launch-rstudio.png"
+src="images/seurat-on-great-lakes/ood-launch-rstudio.png"
 style="width:50.0%" /></p>
 <ul>
 <li>Drag the Compression slider all the way to the right</li>
@@ -654,44 +663,51 @@ style="width:50.0%" /></p>
 </ul></li>
 <li><p>This will open a new browser tab that contains your RStudio
 session: <img
-src="images/seuratOnGreatLakes/rstudio-startup.png" /></p></li>
+src="images/seurat-on-great-lakes/rstudio-startup.png" /></p></li>
 <li><p>You may see a prompt asking permission to use the clipboard.
 Click <strong>Allow</strong>. <img
-src="images/seuratOnGreatLakes/clipboard-permission.png"
+src="images/seurat-on-great-lakes/clipboard-permission.png"
 style="width:25.0%" /></p></li>
 </ol>
+<p>If you need to set or reset the clipboard settings, you can click on
+the <em>site information icon</em> left of the browser’s URL:</p>
+<table>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center">Edge Browser</th>
+<th align="center">Chrome Browser</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><img
+src="images/seurat-on-great-lakes/browser-edge-clipboard-setting.png" /></td>
+<td align="center"><img
+src="images/seurat-on-great-lakes/browser-chrome-clipboard-setting.png" /></td>
+</tr>
+</tbody>
+</table>
 <hr />
 </div>
 <div id="using-rstudio" class="section level2">
 <h2>Using RStudio</h2>
-<div id="exiting" class="section level3">
-<h3>Exiting</h3>
+<p><img
+src="images/seurat-on-great-lakes/great-lakes-wayfinder-worker-node.png" /></p>
+<p>On Great Lakes, you launch a RStudio session on a SLURM
+<strong>compute node</strong>.</p>
 <ul>
-<li>The RStudio session will last for 4 hours (or however long you
-specified in launch config above).</li>
-<li>If you close the browser window, you can click <strong>Launch
-RStudio</strong> again from the <a
-href="https://greatlakes.arc-ts.umich.edu/pun/sys/dashboard/batch_connect/sessions"
-target="_blank">Open OnDemand session page</a></li>
-<li>You can end the session several ways. <em>Make sure your scripts and
-data are saved because these actions do not prompt to save or confirm;
-and once the session is closed it is gone for good.</em>
-<ul>
-<li>In RStudio menu at the top, click File | Quit</li>
-<li>In RStudio, click Session | Quit Session</li>
-<li>In RStudio, close the RStudio window (top right X) <img
-src="images/seuratOnGreatLakes/rstudio-close.png"
-style="width:25.0%" /></li>
-<li>In <a
-href="https://greatlakes.arc-ts.umich.edu/pun/sys/dashboard/batch_connect/sessions"
-target="_blank">Open OnDemand session page</a>, click
-<strong>Delete</strong>. <img
-src="images/seuratOnGreatLakes/ood-delete.png"
-style="width:50.0%" /></li>
-</ul></li>
+<li>The compute node can run RStudio, a browser, or other
+programs/tools.</li>
+<li>The browser connects to the the compute node through a utility
+called <strong>NoVNC</strong>.</li>
+<li>Accessing the compute node through the browser is a convenient way
+to use a GUI like RStudio, but it means that some functionality
+(e.g. copy-paste) works slightly differently.</li>
 </ul>
-<hr />
-</div>
 <div id="shortcuts-copy-paste" class="section level3">
 <h3>Shortcuts / copy-paste</h3>
 <ul>
@@ -713,17 +729,17 @@ Mac-users</em>.</li>
 browsers. Other browsers (e.g. Safari) require extra steps:
 <ul>
 <li>Open the control panel (left side) <img
-src="images/seuratOnGreatLakes/novnc-controls.png"
+src="images/seurat-on-great-lakes/novnc-controls.png"
 style="width:25.0%" /></li>
 <li>Select the clipboard icon. <img
-src="images/seuratOnGreatLakes/novnc-controlpanel.png"
+src="images/seurat-on-great-lakes/novnc-controlpanel.png"
 style="width:25.0%" /></li>
 <li>Copy text into the clipboard area; within that area, use the native
 keyboard shortcuts, i.e. control-C on PC or command-C on Mac). Close the
 control panel. <img
-src="images/seuratOnGreatLakes/novnc-clipboard.png" /></li>
+src="images/seurat-on-great-lakes/novnc-clipboard.png" /></li>
 <li>Right-click (or <em>control V</em>) to paste the contents into the
-console. <img src="images/seuratOnGreatLakes/novnc-paste.png"
+console. <img src="images/seurat-on-great-lakes/novnc-paste.png"
 style="width:50.0%" /></li>
 </ul></li>
 </ul></li>
@@ -743,11 +759,40 @@ href="#how-to-get-help">reach out</a> and we can help.</li>
 <ul>
 <li>FYI, you can launch the Firefox browser by clicking on Applications
 (top left) | Web Browser. This will open another application tab (along
-the top). <img src="images/seuratOnGreatLakes/ood-browser.png"
+the top). <img src="images/seurat-on-great-lakes/ood-browser.png"
 style="width:50.0%" /></li>
 <li>If you want to do any substantial copy/paste, we recommend you use
 this browser window because it’s more reliable to copy/paste within the
 session than from your local computer.</li>
+</ul>
+<hr />
+</div>
+<div id="exiting" class="section level3">
+<h3>Exiting</h3>
+<ul>
+<li>The RStudio session will last for 4 hours (or however long you
+specified in launch config above).</li>
+<li>If you close the browser window, you can click <strong>Launch
+RStudio</strong> again from the <a
+href="https://greatlakes.arc-ts.umich.edu/pun/sys/dashboard/batch_connect/sessions"
+target="_blank">Open OnDemand session page</a></li>
+<li>You can end the session several ways. <em>Make sure your scripts and
+data are saved because these actions do not prompt to save or confirm;
+and once the session is closed it is gone for good.</em> <br/> Any of
+the following actions will end your session:
+<ul>
+<li>In RStudio menu at the top, click File | Quit</li>
+<li>In RStudio, click Session | Quit Session</li>
+<li>In RStudio, close the RStudio window (top right X) <img
+src="images/seurat-on-great-lakes/rstudio-close.png"
+style="width:25.0%" /></li>
+<li>In <a
+href="https://greatlakes.arc-ts.umich.edu/pun/sys/dashboard/batch_connect/sessions"
+target="_blank">Open OnDemand session page</a>, click
+<strong>Delete</strong>. <img
+src="images/seurat-on-great-lakes/ood-delete.png"
+style="width:50.0%" /></li>
+</ul></li>
 </ul>
 <hr />
 </div>
@@ -792,18 +837,19 @@ these input data.</p></li>
 </div>
 <div id="transferring-files" class="section level2">
 <h2>Transferring files</h2>
-<ul>
-<li><p>Below are details on several ways to move files to or from Great
-Lakes.</p>
+<p><img
+src="images/seurat-on-great-lakes/great-lakes-file-transfer.png" /></p>
+<p>There are several ways to move files to or from Great Lakes.</p>
 <ol style="list-style-type: decimal">
 <li>For small transfers, you can use <a
 href="#open-ondemand-file-browser">Open OnDemand file browser</a>.</li>
 <li>For large transfers, we recommend <a href="#globus">Globus</a></li>
 <li>You can also use <a href="#command-line-tools">command line
 tools</a></li>
-</ol></li>
-<li><p>Note that to transfer a file to/from Great Lakes, you will need
-to be on the campus network or on the VPN.</p></li>
+</ol>
+<ul>
+<li>Note that to transfer a file to/from Great Lakes, you will need to
+be on the campus network or on the VPN.</li>
 </ul>
 <div id="open-ondemand-file-browser" class="section level3">
 <h3>Open OnDemand file browser</h3>
@@ -816,18 +862,18 @@ Dashboard</a>. Along the top menu, click on <strong>Files</strong>.
 (Note that if you shrink the screen very small, the menu items will be
 hidden in a “hamburger”.) In the dropdown menu, click <strong>Home
 Directory</strong>.</p>
-<p><img src="images/seuratOnGreatLakes/ood-files.png" /> 1.2 OOD will
+<p><img src="images/seurat-on-great-lakes/ood-files.png" /> 1.2 OOD will
 display the contents of your home directory. You can click on a
 directory to see its contents. <img
-src="images/seuratOnGreatLakes/ood-files-browse.png" /> 1.3 To view a
+src="images/seurat-on-great-lakes/ood-files-browse.png" /> 1.3 To view a
 plot graphic, you can click on the hamburger and then select
 <strong>View</strong>. This will open the plot in a new browser tab.
-<img src="images/seuratOnGreatLakes/ood-files-view.png" /> 1.4 You can
-download one or more files by selecting their checkboxes and clicking
-the <strong>Download</strong> button. (Note: if you select a directory
-and click <strong>Download</strong>, OOD will download the contents as a
-single zipped file.) <img
-src="images/seuratOnGreatLakes/ood-files-download.png" /></p>
+<img src="images/seurat-on-great-lakes/ood-files-view.png" /> 1.4 You
+can download one or more files by selecting their checkboxes and
+clicking the <strong>Download</strong> button. (Note: if you select a
+directory and click <strong>Download</strong>, OOD will download the
+contents as a single zipped file.) <img
+src="images/seurat-on-great-lakes/ood-files-download.png" /></p>
 </div>
 <div id="globus" class="section level3">
 <h3>Globus</h3>
@@ -901,23 +947,276 @@ are typing your password;</strong>* this is ok.</li>
 <hr />
 </div>
 </div>
+<div id="cell-ranger-on-great-lakes" class="section level2">
+<h2>Cell Ranger on Great Lakes</h2>
+<p><img
+src="images/seurat-on-great-lakes/great-lakes-wayfinder-shell.png" /></p>
+<p>Since sequencing providers typically run Cell Ranger on your behalf,
+you generally will not need to do this yourself. That said, in the rarer
+instances when you may need to run Cell Ranger, Great Lakes is a nice
+option. Unlike RStudio, the Cell Ranger program is a command line tool;
+but similar to how we launched RStudio above, we can use <strong>Open
+OnDemand</strong> to launch a <strong>Bash shell</strong>, which we can
+use to launch Cell Ranger.</p>
+<blockquote>
+<p><em>Note: as an alternative to Open OnDemand, you can use
+<strong>SSH</strong> and <strong>SLURM login nodes</strong> to launch
+SLURM compute nodes directly from the Mac Terminal or MS Command Prompt.
+Each alternative has advantages; this guide focuses on Open OnDemand
+because it can be used from the browser.</em></p>
+</blockquote>
+<div id="launch-a-basic-desktop" class="section level3">
+<h3>Launch a Basic Desktop</h3>
+<p>Open OnDemand (OOD) connects you to the Great Lakes cluster through
+your web browser. Once you’ve got everything you need from above, you’re
+going to use OOD to launch a <strong>Basic Desktop</strong> session.</p>
+<ol style="list-style-type: decimal">
+<li><p>If off-campus, connect to the VPN using Cisco Secure
+Client.</p></li>
+<li><p>In your browser, go to Great Lakes Open On Demand:<br />
+<a href="https://greatlakes.arc-ts.umich.edu"
+target="_blank">greatlakes.arc-ts.umich.edu</a> and login with your
+uniqname and password.</p></li>
+<li><p>In the menu at the top of the screen, click <strong>Interactive
+Apps</strong> and select <strong>Basic Desktop</strong>. <img
+src="images/seurat-on-great-lakes/ood-interactive-apps-basic-desktop.png" /></p></li>
+<li><p>The previous step will display a <em>launch configuration
+page</em> with several fields, e.g. <img
+src="images/seurat-on-great-lakes/ood-launch-config-basic-desktop.png"
+alt="partial screen shot" /> …</p>
+<p>Enter values below in the corresponding fields:</p>
+<table>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Slurm account</td>
+<td><em>(This is in the email from ARC)</em></td>
+</tr>
+<tr class="even">
+<td>Partition</td>
+<td><strong>standard</strong></td>
+</tr>
+<tr class="odd">
+<td>Number of hours</td>
+<td><strong>1</strong></td>
+</tr>
+<tr class="even">
+<td>Number of cores</td>
+<td><strong>2</strong></td>
+</tr>
+<tr class="odd">
+<td>Memory (GB)</td>
+<td><strong>4</strong></td>
+</tr>
+</tbody>
+</table></li>
+</ol>
+<blockquote>
+<p><em>Note: The values above are suitable to <strong>test your access
+to Cell Ranger</strong>. If you need to <strong>run Cell Ranger</strong>
+please review <a
+href="https://www.10xgenomics.com/support/software/cell-ranger/downloads/cr-system-requirements"
+target="_blank">10x Genomics Cell Ranger system requirements</a> and
+adjust the values accordingly. For the best results, follow the 10x
+recommendations and also note that several of the following steps will
+take slightly longer as you are allocating for significantly more
+resources.</em></p>
+</blockquote>
+<ol start="5" style="list-style-type: decimal">
+<li><p>After you’ve entered the launch config values, at the bottom of
+this page click <strong>Launch</strong>. The screen will update to show
+Great Lakes is preparing your session. <img
+src="images/seurat-on-great-lakes/ood-queue-basic-desktop.png"
+style="width:50.0%" /></p></li>
+<li><p>When the session is ready (usually a few seconds later), the
+screen will update: <img
+src="images/seurat-on-great-lakes/ood-launch-basic-desktop.png"
+style="width:50.0%" /></p>
+<ul>
+<li>Drag the Compression slider all the way to the right</li>
+<li>Drag Image Quality slider all the way to the right</li>
+<li>Click <strong>Launch Basic Desktop</strong></li>
+<li>This will open a new browser tab that contains your Basic Desktop
+session.</li>
+</ul></li>
+</ol>
+<hr />
+</div>
+<div id="launch-terminal-window" class="section level3">
+<h3>Launch Terminal Window</h3>
+<ol start="7" style="list-style-type: decimal">
+<li><p>Click on the Terminal App at the bottom to launch a
+<strong>Terminal Window</strong>. <img
+src="images/seurat-on-great-lakes/basic-desktop-startup.png" /></p></li>
+<li><p>This creates a new <strong>Terminal Window</strong> in your Basic
+Desktop. <img
+src="images/seurat-on-great-lakes/basic-desktop-terminal.png" /></p></li>
+<li><p>In the <strong>Terminal Window</strong> run the following
+commands to prepare Cell Ranger. <em>(Note that you can <a
+href="#Shortcuts__copy-paste">copy &amp; paste from the clipboard</a> as
+detailed above.)</em></p></li>
+</ol>
+<pre class="bash"><code># Use latest version of Cell Ranger installed on Great Lakes 
+module load Bioinformatics cellranger
+# Confirm cellranger ok; this will return an error if something is wrong
+cellranger --version
+cellranger --help</code></pre>
+<ol start="9" style="list-style-type: decimal">
+<li>Details on how to run Cell Ranger on your data are outside the scope
+of this guide. For more information, see this <a
+href="00B-CellRangerInAction.html">overview of Cell Ranger</a> and the
+<a
+href="https://www.10xgenomics.com/support/software/cell-ranger/latest/tutorials/cr-tutorial-ct"
+target="&quot;_blank">10x Genomics Cell Ranger count tutorial</a>.</li>
+</ol>
+<hr />
+</div>
+<div id="exiting-1" class="section level3">
+<h3>Exiting</h3>
+<ul>
+<li>The Basic Desktop session will last for 1 hour (or however long you
+specified in launch config above).</li>
+<li>If you close the browser window, you can reconnect by clicking
+<strong>Launch Basic Desktop</strong> again from the <a
+href="https://greatlakes.arc-ts.umich.edu/pun/sys/dashboard/batch_connect/sessions"
+target="_blank">Open OnDemand session page</a></li>
+<li>Any of the following actions will end your session:
+<ul>
+<li>Click on the <strong>Applications</strong> menu (top left) and
+select <strong>Log Out</strong>.</li>
+<li>Click on your name (top right) and select <strong>Log
+Out</strong>.</li>
+<li>In <a
+href="https://greatlakes.arc-ts.umich.edu/pun/sys/dashboard/batch_connect/sessions"
+target="_blank">Open OnDemand session page</a>, click
+<strong>Delete</strong>. <img
+src="images/seurat-on-great-lakes/ood-basic-desktop-delete.png"
+style="width:50.0%" /></li>
+</ul></li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="launch-templates" class="section level2">
+<h2>Launch templates</h2>
+<p>Many config values have to be specified when launching an interactive
+job from Open OnDemand (OOD). Different jobs require different configs,
+but quite often a <em>type of job</em> (e.g. bulk RNA-Seq, scRNA-Seq,
+Cell Ranger) will use the same values each time. OOD allows you to save
+<strong>launch templates</strong> to simplify starting common jobs.</p>
+<div id="seurat-template" class="section level3">
+<h3>Seurat template</h3>
+<ol style="list-style-type: decimal">
+<li><p>If off-campus, connect to the VPN using Cisco Secure
+Client.</p></li>
+<li><p>In your browser, go to Great Lakes Open On Demand:<br />
+<a href="https://greatlakes.arc-ts.umich.edu"
+target="_blank">greatlakes.arc-ts.umich.edu</a> and login with your
+uniqname and password.</p></li>
+<li><p>In the menu at the top of the screen, click <strong>Interactive
+Apps</strong> and select <strong>RStudio</strong>. <img
+src="images/seurat-on-great-lakes/ood-interactive-apps.png" /></p></li>
+<li><p>Enter the following launch config values:</p>
+<table>
+<colgroup>
+<col width="50%" />
+<col width="50%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Field</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>R Version</td>
+<td><strong>Rtidyverse/4.4.0</strong></td>
+</tr>
+<tr class="even">
+<td>RStudio version</td>
+<td><strong>RStudio/2024.04.1</strong></td>
+</tr>
+<tr class="odd">
+<td>Slurm account</td>
+<td><em>(This is in the email from ARC)</em></td>
+</tr>
+<tr class="even">
+<td>Partition</td>
+<td><strong>standard</strong></td>
+</tr>
+<tr class="odd">
+<td>Number of hours</td>
+<td><strong>4</strong></td>
+</tr>
+<tr class="even">
+<td>Number of cores</td>
+<td><strong>4</strong></td>
+</tr>
+<tr class="odd">
+<td>Memory (GB)</td>
+<td><strong>16</strong></td>
+</tr>
+<tr class="even">
+<td>Module commands</td>
+<td><strong>load Bioinformatics r-seurat/5.1.0-R-4.4.1-c3m7yfq BPCells
+presto scCATCH RglmGamPoi RDESeq2</strong></td>
+</tr>
+</tbody>
+</table></li>
+<li><p>Scroll to the bottom and click the checkbox <strong>Save
+settings</strong>. This will show a dialog that let’s you name this
+template. Enter <strong>Seurat-RStudio</strong> and click
+<strong>Save</strong>. <img
+src="images/seurat-on-great-lakes/ood-template-name.png"
+style="width:50.0%" /></p></li>
+<li><p>Now click <strong>Save settings and close</strong>.<br/> <img
+src="images/seurat-on-great-lakes/ood-template-save-settings-and-close.png"
+style="width:50.0%" /></p></li>
+<li><p>Saved templates are listed at the top of <a
+href="https://greatlakes.arc-ts.umich.edu/pun/sys/dashboard/batch_connect/sessions"
+target="_blank">My Interactive Sessions</a> <img
+src="images/seurat-on-great-lakes/ood-template-saved-settings.png" /></p></li>
+</ol>
+<ul>
+<li>You can review the launch config values by clicking on the name
+<strong>RStudio-Seurat</strong> (1).</li>
+<li>You can change the launch config values by clicking
+<strong>edit</strong> (2).</li>
+<li>You can launch a new job with this config by clicking launch
+(3).</li>
+</ul>
+<hr />
+</div>
+</div>
 <div id="summary" class="section level2">
 <h2>Summary</h2>
+<p><img
+src="images/seurat-on-great-lakes/great-lakes-wayfinder-summary.png" /></p>
 <ul>
-<li>You can run Seurat on RStudio using University of Michigan’s
-<strong>Great Lakes</strong> High Performance Cluster (HPC).</li>
-<li>Running RStudio on Great Lakes is a bit different than running it on
-your workstation. Using Great Lakes requires some set up.</li>
+<li>You can run <strong>Seurat on RStudio</strong> or <strong>Cell
+Ranger</strong> using University of Michigan’s <strong>Great
+Lakes</strong> High Performance Cluster (HPC).</li>
 <li>Running on Great Lakes is a nice option because the libraries and
 software are pre-installed and you can run RStudio with as much memory
 as you need.<br />
 </li>
 <li><strong>Open OnDemand</strong> (OOD) connects you to the Great Lakes
 cluster through your web browser.</li>
-<li>Depending on your workstation and browser, copy/paste on RStudio can
-require different keyboard shortcuts or different steps.</li>
+<li>Using Great Lakes requires some set up.</li>
+<li>Running RStudio on Great Lakes is a bit different than running it on
+your workstation. Depending on your workstation and browser, copy/paste
+on RStudio can require different keyboard shortcuts or different
+steps.</li>
 <li>OOD, Globus, and command line tools are several ways to transfer
-files between Great Lakes and your workstation</li>
+files between Great Lakes and your workstation.</li>
+<li>OOD <strong>Launch templates</strong> can save launch configs and
+simplify how you start common jobs.</li>
 </ul>
 <hr />
 </div>
