@@ -115,10 +115,11 @@ The short answer is while we might not know if that number of PCs is appropriate
 <!-- Section may need more editing  & consider adding a figure
 Related - how important is that decision to the downstream impact (e.g. how much does changing the number of PCs change the clustering)?
 --> 
+<br/>
 
 ### Visualizing variance across PCs
 
-So in addition to the heatmaps we generated in the last module, one way to evaluate how many PCs explain the majority of the variation is by generating an elbow plot, which shows the percent variance explained by successive PCs. We'll use the `ElbowPlot()` function to do this, specifying that the first 50 PCs be plotted. 
+In addition to the heatmaps we generated in the last module, another way to evaluate how many PCs explain the majority of the variation is by generating an elbow plot, which shows the percent variance explained by successive PCs. We'll use the `ElbowPlot()` function to do this, specifying that the first 50 PCs be plotted. 
 
 ```{r, elbow_plot, fig.show='hold', out.width='80%'}
 # -------------------------------------------------------------------------
@@ -271,19 +272,22 @@ few popular approaches:
 <hr/>
 </details>
 <br/>
+<br/>
 
-## Selecting the number of PCs to be used for clustering
+### Setting PC parameter value
 
-For this dataset, we are expecting a diversity of cell types and cell populations that mediate wound healing, but also an aberrant transition to bone. For the purposes of the workshop and after 
+For this dataset, we are expecting a diversity of cell types and cell populations that mediate wound healing, but also an aberrant transition to bone. Based on some "behind the scenes" testing, for the purposes of the workshop we'll set the number of PCs to be used for clustering to `10` instead of the 16 suggested using the algorithmic approach. 
 
 <!-- move this section to projection and clustering once ready to incorporate examples of alternative PCA choices-->
 ```{r, revised_select_pcs}
 # -------------------------------------------------------------------------
-# Based on the heatmaps (and some behind the scenes testing), we'll modify the number of PCs
+# Based some behind the scenes testing, we'll modify the number of PCs to use for clustering
 pcs = 10
 ```
 
-Again, in a full analysis workflow, our selection at this step can be more of a starting point for further iterations than a final decision. In the exercises, you'll also have the opportunity to test alternative parameters yourself, including selecting fewer or more PCs. <!-- Also link out to `clusters_faq.Rmd` to show examples? -->
+Again, in a full analysis workflow, our selection at this step can be more of a starting point for further iterations than a final decision both at this stage and after attempting to assign cell-type labels. In the exercises, you'll have an opportunity to try clustering with fewer or more PCs than we are using here to see the impact of this parameter and related parameters on the clustering results. <!-- Also link out to `clusters_faq.Rmd` to show examples? -->
+<br/>
+<br/>
 
 ## Clustering
 
@@ -477,7 +481,9 @@ post_integration_umap_plot_day =
   DimPlot(geo_so,
           group.by = 'time',
           label = FALSE,
-          reduction = 'umap.integrated.sct.rpca')
+          combine = FALSE,
+          reduction = 'umap.integrated.sct.rpca')[[1]] + 
+  ggtitle("Post-integration clustering, by timepoint")
 post_integration_umap_plot_day
 
 ggsave(filename = 'results/figures/umap_integrated_sct_day.png',
@@ -569,7 +575,7 @@ geo_so = FindClusters(geo_so, resolution = 0.4, cluster.name = 'unintegrated.sct
 
 geo_so = RunUMAP(geo_so, dims = 1:pcs, reduction = 'unintegrated.sct.pca', reduction.name = 'umap.unintegrated.sct.pca')
 
-pre_integration_umap_plot_day = DimPlot(geo_so, group.by = 'time', label = FALSE, reduction = 'umap.unintegrated.sct.pca')
+pre_integration_umap_plot_day = DimPlot(geo_so, group.by = 'time', label = FALSE, combine = FALSE, reduction = 'umap.unintegrated.sct.pca')[[1]] + ggtitle("Pre-integration clustering, by timepoint")
 
 print(pre_integration_umap_plot_day + post_integration_umap_plot_day)
 ```

@@ -45,6 +45,7 @@ background-color: CornSilk;
 
 ```
 
+
 ```{r, include = FALSE}
 source("../bin/chunk-options.R")
 knitr_fig_path("XX")
@@ -72,11 +73,14 @@ Build on the content and analysis steps covered in the workshop sessions by work
 
 :::
 
----
+<br/>
 
 ## Day 1
 
 <!-- Add Rmd version of exercises with smaller code blocks --> 
+
+```{r day1_exercise, child='exercises/day1_ex.Rmd'}
+```
 
 <!-- Use R script as key in hidden dropdown --> 
 
@@ -87,7 +91,7 @@ Build on the content and analysis steps covered in the workshop sessions by work
 </details>
 <br>
 
-
+----
 
 ## Day 2
 
@@ -104,6 +108,8 @@ Build on the content and analysis steps covered in the workshop sessions by work
 ```
 </details>
 <br>
+
+----
 
 ## Day 3
 

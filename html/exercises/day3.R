@@ -1,110 +1,97 @@
-## ====================================
-## Independent exercise testing 
-## ====================================
+# =========================================================================
+# Independent Exercise - Day 3 Startup
+# =========================================================================
 
-# --------------------------------------------------------
-# Day 1 Exercises: Exploring QC patterns and filtering thresholds 
-
-# --------------------------------------------------------
-# Day 2 Exercises: Exploring clustering thresholds
-
-# --------------------------------------------------------
-# Day 3 Exercises: Exploring annotations and differential expression
-
-# First - clear current Seurat object to free up memory & remove current results
-rm(geo_so) 
-
-# Then  load in integrated data & reset object on each iteration to avoid exceeding allocated space
-geo2_so = readRDS('/home/workshop/rcavalca/ISC_R/results/rdata/geo_so_sct_integrated.rds')
-
-# look at elbow plot
-ElbowPlot(geo2_so, ndims = 50, reduction = 'unintegrated.sct.pca')
-
-## Clustering
-# Round 1: manually adjust number of PCs to include in clustering
-#pcs = 20 # increase number of PCs
-pcs = 10 # reduce number of PCs
-
-# generate nearest neighbor (graph), using selected number of PCs
-geo2_so = FindNeighbors(geo2_so, dims = 1:pcs, reduction = 'integrated.sct.rpca')
-
-# Round 2: adjust resolution after testing PCs (remember this only impacts the how the boundaries of the neighbors are drawn, not the underlying NN graph/structure)
-res = 0.4
-# res = 1.0
-# res = 0.2
-
-# generate clusters, using 
-geo2_so = FindClusters(geo2_so, resolution = res, cluster.name = 'integrated.sct.rpca.clusters')
-
-# look at meta.data to see cluster labels
-head(geo2_so@meta.data)
-
-# Prep for UMAP
-geo2_so = RunUMAP(geo2_so, dims = 1:pcs, reduction = 'integrated.sct.rpca', 
-                 reduction.name = 'umap.integrated.sct.rpca')
-geo2_so
-
-# look at clustering results
-post_integration_umap_clusters_testing = 
-  DimPlot(geo2_so, group.by = 'seurat_clusters', label = TRUE, 
-          reduction = 'umap.integrated.sct.rpca') + NoLegend()
-post_integration_umap_clusters_testing # look at plot
-
-# output to file, including the number of PCs and resolution used to generate results
-ggsave(filename = paste0('results/figures/umap_integrated_sct_clusters', 
-                         pcs,'PCs',res,'res.png'),
-       plot = post_integration_umap_plot_clusters, 
-       width = 8, height = 6, units = 'in')
-
-## generate markers and annotate clusters to see how that changes
-
-# prep for cluster comparisons
-geo2_so = SetIdent(geo2_so, value = 'integrated.sct.rpca.clusters')
-geo2_so = PrepSCTFindMarkers(geo2_so)
-
-# run comparisons for each cluster to generate markers
-geo2_markers = FindAllMarkers(geo2_so, only.pos = TRUE)
-
-
-# run cell type predictions for current clustering results
+# After restarting our R session, load the required libraries
+library(Seurat)
+library(BPCells)
+library(tidyverse)
 library(scCATCH)
 
-# create scCATCH object, using count data
-geo2_catch = createscCATCH(data = geo2_so@assays$SCT@counts, cluster = as.character(Idents(geo2_so)))
+# Load in seurat object with alternative clustering results from yesterday's exercises
+exso3 = readRDS('results/rdata/geo_so_sct_integrated_exercise.rds')
+exso3 # check that object loaded
 
-# add marker genes to use for predictions
-catch_markers = geo2_markers %>% rename('logfc' = 'avg_log2FC')
-geo2_catch@markergene = geo2_markers
+## NOTE - BEFORE STOPPING WORK ON THE EXERCISES REMEMBER TO POWER DOWN AND RESTART R SESSION !!!!
 
-# specify tissues/cell-types from the scCATCH reference
-geo2_catch@marker = cellmatch[cellmatch$species == 'Mouse' & cellmatch$tissue %in% c('Blood', 'Peripheral Blood', 'Muscle', 'Skeletal muscle', 'Epidermis', 'Skin'), ]
 
-# run scCATCH to generate predictions
-geo2_catch = findcelltype(geo2_catch)
+### Day 3 Exercise 1 - examine marker genes and cell type predictions for alternative clustering
+## ----------------------------------------------------------
+# Check what identities are set
+Idents(exso3) %>% head()
 
-# look at the predictions
-geo2_catch@celltype %>% select(cluster, cell_type, celltype_score)
+## use same values as previous exercise
+pcs = 6
+res = 0.2 
 
-## annotate clusters
-# Extract the cell types only to merge into the meta.data
-catch_celltypes = geo2_catch@celltype %>% select(cluster, cell_type)
+## Set identities to clustering for selected resolution
+exso3 = SetIdent(exso3, value = paste0('int.sct.rpca.clusters', res))
+Idents(exso3) %>% head()
 
-# Merge cell types in but as a new table to slide into @meta.data
-new_metadata = geo2_so@meta.data %>% left_join(catch_celltypes, 
-                                              by = c('integrated.sct.rpca.clusters' = 'cluster'))
-rownames(new_metadata) = rownames(geo2_so@meta.data) #  We are implicitly relying on the same row order!
 
-# Replace the meta.data
-geo2_so@meta.data = new_metadata 
-head(geo2_so@meta.data)
+## ----------------------------------------------------------
+## Generate cluster markers to see how that changes with new parameters 
+exso3 = PrepSCTFindMarkers(exso3, assay = "SCT") # NOTE - this step will take some time to run
+exso3_markers = FindAllMarkers(exso3, only.pos = TRUE)
+head(exso3)
 
-catch_umap_plot = DimPlot(geo2_so, group.by = 'cell_type', 
-                          label = TRUE, reduction = 'umap.integrated.sct.rpca')
+# Create table of top 5 markers per cluster (using default ranking)
+top_5 = exso3_markers %>% filter(p_val_adj < 0.01) %>% group_by(cluster) %>% slice_head(n = 5)
+head(top_5, n = 10) # look at results
+write_csv(top_5, file = paste0('results/tables/top5_marker_genes_exercise.csv'))
+
+
+#### Day 3 Exercise 2 - Generate predictions for alternative clustering 
+## ----------------------------------------------------
+## Next - run scCATCH predictions for alternative clustering results
+exso3_catch = createscCATCH(data = exso3@assays$SCT@counts, cluster = as.character(Idents(exso3)))
+catch_markers = exso3_markers %>% rename('logfc' = 'avg_log2FC')
+exso3_catch@markergene = exso3_markers
+exso3_catch@marker = cellmatch[cellmatch$species == 'Mouse' & cellmatch$tissue %in% c('Blood', 'Peripheral Blood', 'Muscle', 'Skeletal muscle', 'Epidermis', 'Skin'), ]
+exso3_catch = findcelltype(exso3_catch)
+
+# Check predictions
+exso3_catch@celltype %>% select(cluster, cell_type, celltype_score)
+
+
+#### Day 3 Exercise 3 - Add predictions to Seurat object
+## ------------------------------------------------------
+## Use predictions to label clusters and UMAP plot
+catch_celltypes = exso3_catch@celltype %>% select(cluster, cell_type)
+colnames(catch_celltypes)[2] = paste0('cell_type.',pcs,'PC.',res,'res')
+new_metadata = exso3@meta.data %>% 
+  left_join(catch_celltypes, 
+            by = c('seurat_clusters' = 'cluster')) # using `seurat_clusters`, which will store the most recently generated cluster labels for each cell
+rownames(new_metadata) = rownames(exso3@meta.data) #  We are implicitly relying on the same row order!
+exso3@meta.data = new_metadata # Replace the meta.data
+head(exso3@meta.data)
+
+
+#### Day 3 Exercise 4 - Plot UMAP with new cluster labels
+## ------------------------------------------------------
+catch_umap_plot = DimPlot(exso3, group.by = paste0('cell_type.',pcs,'PC.',res,'res'), 
+                          label = TRUE, reduction = paste0('umap.integrated.sct.rpca_alt', res))
 catch_umap_plot
 
 
+# Save the plot to file
+# output to file, including the number of PCs and resolution used to generate results
+ggsave(filename = paste0('results/figures/umap_int_catch-labeled_', 
+                         pcs,'PC.',res,'res','.png'),
+       plot = catch_umap_plot, 
+       width = 8, height = 6, units = 'in')
 
-#########
 
-## Extension - how might you generate DE comparisons between D21 and D7 for all annotated clusters?
+## ----------------------------------------------------------
+## Clean up session 
+rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
+rm(catch_celltypes, catch_markers, exso3_catch, exso3_markers, new_metadata, top_5); 
+gc()
+
+## (Optional) - Save copy of exso3
+saveRDS(exso3, file = paste0('results/rdata/geo_so_sct_integrated_with_markers_exercise.rds'))
+rm(exso3)
+gc()
+
+## BEFORE PROCEEDING TO THE NEXT SECTION or closing window - POWER DOWN AND RESTART R SESSION
 
