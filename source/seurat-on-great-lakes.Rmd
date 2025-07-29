@@ -119,7 +119,7 @@ A few key ideas:
     10Gb is a good working number. Each user is allocated 80Gb of storage in their 
     home dir. As a new user, you can execute this tutorial from your home dir. As 
     your experiments and analyses grow, you can check your available space from the 
-    command line (`homw-quota`) and request more storage from ARC as necessary. 
+    command line (`home-quota`) and request more storage from ARC as necessary. 
 
 
 5. You will need data. Below, we'll show you how to download the input data used
@@ -131,9 +131,12 @@ A few key ideas:
 
 ![](images/seurat-on-great-lakes/great-lakes-wayfinder-ood.png)
 
-Open OnDemand (OOD) connects you to the Great Lakes cluster through your web browser.
-Once you've got everything you need from above, you're going to use OOD to 
-launch a RStudio session.
+Once you've got everything you need from above, you're going to use **Open OnDemand** 
+(OOD) to launch a RStudio session.
+
+- OOD connects you to the Great Lakes cluster through your web browser.
+- OOD works with the **SLURM workload manager** to reserve and configure a 
+**compute node** that will run RStudio. 
 
 1. If off-campus, connect to the VPN using Cisco Secure Client.
 
@@ -193,10 +196,11 @@ If you need to set or reset the clipboard settings, you can click on the
 
 ![](images/seurat-on-great-lakes/great-lakes-wayfinder-worker-node.png)
 
-On Great Lakes, you launch a RStudio session on a Slurm **worker node**. The 
-worker node can run RStudio, a browser, or other programs/tools. You 
-access the worker node through your browser using a tool call **NoVNC**. 
-Accessing the worker node through the browser is a convenient way to use a GUI
+On Great Lakes, you launch a RStudio session on a SLURM **compute node**. 
+
+- The compute node can run RStudio, a browser, or other programs/tools. 
+- The browser connects to the the compute node through a utility called **NoVNC**. 
+- Accessing the compute node through the browser is a convenient way to use a GUI
 like RStudio, but it means that some functionality (e.g. copy-paste) works 
 slightly differently.
 
@@ -420,7 +424,7 @@ launched RStudio above, we can use **Open OnDemand** to launch a **Bash shell**,
 which we can use to launch Cell Ranger.
 
 > *Note: as an alternative to Open OnDemand, you can use **SSH** and **SLURM login nodes** 
-> to launch SLURM worker nodes directly from the Mac Terminal or MS Command Prompt.
+> to launch SLURM compute nodes directly from the Mac Terminal or MS Command Prompt.
 > Each alternative has advantages; this guide focuses on Open OnDemand because 
 > it can be used from the browser.* 
 
@@ -578,7 +582,8 @@ common jobs.
   different keyboard shortcuts or different steps. 
 - OOD, Globus, and command line tools are several ways to transfer files between 
   Great Lakes and your workstation.
-- You can us **launch templates** to save common launch configs.  
+- OOD **Launch templates** can save launch configs and simplify how you start 
+  common jobs.  
 
 ---
 
