@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-07-10" />
+<meta name="date" content="2025-07-29" />
 
 <title>PCA and Integration</title>
 
@@ -423,7 +423,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">PCA and Integration</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-07-10</h4>
+<h4 class="date">2025-07-29</h4>
 
 </div>
 
@@ -502,17 +502,14 @@ single-cell data<br />
 <li>Use the <code>RunPCA()</code> function to generate principal
 components for our data<br />
 </li>
-<li>Choose an appropriate number of principal components to represent
-our data<br />
-</li>
 <li>Use <code>IntegrateLayers()</code> to integrate our sample data
 prior to clustering</li>
 </ul>
 <p><br/></p>
-<p>Similar to the previous sections, while you may see only a single
-approach in a paper and we will be showing one example of executing
-these steps here, testing multiple methods or parameters might be
-necessary.</p>
+<p>Similar to the previous sections, while we will be showing one
+example of executing these steps and you may see only a single approach
+reported in a paper, testing multiple methods or parameter options might
+be necessary.</p>
 <p><br/></p>
 <hr />
 <!--Before this section - Day 1: Starting w/ Seurat, Initial QC, & Batch correction (SCtransform)-->
@@ -536,12 +533,11 @@ should be excluded</li>
 </ul>
 <p>In practical terms, Principal component analysis (PCA) creates a
 simpler, more concise version of data while preserving the same “story”.
-For example, we can think of watching football - attending a game in
-person is exciting but can take hours, especially considering the time
-that will be spent traveling and waiting. Conversely, watching a
-highlight reel of those same game might not give you the full
-experience, but by seeing the key plays you can get a good understand
-what happened in the game in a fraction of the time.</p>
+For example, a football game is exciting to attend in person but can
+take hours, especially considering the time spent traveling and waiting.
+Conversely, watching a highlight reel of the same game might not give
+you the full experience, but by seeing the key plays conveys what
+happened in the game in a fraction of the time.</p>
 <p>Similarly to a highlight reel, running PCA allows us to select PCs
 that represent correlated gene expression to reduce the size and
 complexity of the data while still capturing the overall expression
@@ -762,12 +758,11 @@ DimHeatmap for select PCs
 </div>
 <pre><code>png 
   2 </code></pre>
-<p>When we look at the selected PCs, we can see that PC10 has quite a
-bit of blocky structure that is separating about half the cells for a
-subset of genes. For the later PCs, we are seeing less ‘blocks’
-suggesting that the variation explained by these later components might
-not correspond to the larger cell-type differences that we want to
-capture for the purposes of clustering.</p>
+<p>When we look at the selected PCs, we can see a blocky structure for
+PC10 for about half the cells for a subset of genes. For the later PCs,
+we are seeing less ‘blocks’ suggesting that the variation explained by
+these later components might not correspond to the larger cell-type
+differences that important for clustering.</p>
 <details>
 <summary>
 <em>What genes are contributing the most to each PC?</em>
@@ -775,7 +770,7 @@ capture for the purposes of clustering.</p>
 <p>We can also visualize the loadings for genes contributing to each
 principal components using Seurat provided functions <a
 href="https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction">source</a>.</p>
-<p>We can highlight genes loaded for dimenstions of interest using using
+<p>We can highlight genes loaded for dimensions of interest using using
 <code>VizDimLoadings()</code>:</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Visualize gene loadings for PC1 and PC2
@@ -797,207 +792,15 @@ combines information across a correlated feature set. The top principal
 components therefore represent a robust compression of the dataset.”
 <!-- Note, may want to edit/remove above section --></p>
 </blockquote>
-<div id="visualizing-relative-contributions-of-each-pc"
-class="section level3">
-<h3>Visualizing relative contributions of each PC</h3>
-<p>So how do we determine how many PCs to use before classifying cells
-into clusters based on their expression? One way to evaluate how many
-PCs to use for clustering is by looking at an elbow plot, which shows
-the percent variance explained by successive PCs. We’ll use the
-<code>ElbowPlot()</code> function to do this, specifying that the first
-50 PCs be plotted.</p>
-<pre class="r"><code># -------------------------------------------------------------------------
-# Visualize how many PCs to include using an elbow plot
-ElbowPlot(geo_so, ndims = 50, reduction = &#39;unintegrated.sct.pca&#39;)
-ggsave(filename = &#39;results/figures/qc_sct_elbow_plot.png&#39;,
-       width = 8, height = 8, units = &#39;in&#39;)</code></pre>
-<p><img src="images/curriculum/04-PCAandIntegration/04-elbow_plot-1.png" width="80%" style="display: block; margin: auto;" /></p>
-<p>In this plot, we could arbitrarily choose a number along the x-axis
-that looks like a sharp change in the variance from one PC to the next,
-that is, an elbow. Of course, while that’s often the recommendation in
-tutorials, the choice of where the point of the “elbow” is, is not
-always obvious, and this plot is no different.</p>
-</div>
-<div
-id="choosing-the-number-of-significant-pcs-for-dimensionality-reduction"
-class="section level2">
-<h2>Choosing the number of significant PCs for dimensionality
-reduction</h2>
-<!-- Section may still need to be edited more & consider adding a figure -->
-<p>An important consideration for determining how many PCs to select for
-your single-cell analysis is to understand the “resolution” of your
-biological question. Is answering your biological question dependent on
-identifying rarer cell types or specific subtypes? Or are broader
-cell-types more relevant and less PCs are needed?</p>
-<p>For this dataset, we are expecting a diversity of cell types and cell
-populations that mediate wound healing, but also an aberrant transition
-to bone, which might include rarer cells in the population. So for this
-dataset, we can consider starting with more PCS rather than too few PCs
-to start. Again, in a full analysis workflow, our selection at this step
-might be more of a starting point for further iterations than a final
-decision.</p>
-<!-- Section may need more editing
-Related - how important is that decision to the downstream impact (e.g. how much does changing the number of PCs change the clustering)?
--->
-<div id="an-algorithmic-approach" class="section level3">
-<h3>An algorithmic approach</h3>
-<p>Instead of choosing based on the elbow plot by sight alone, we can
-try to quantify our choice algorithmically. Here we create a function to
-return a recommended PC based on two possible metrics ( (A) cumulative
-variation or (B) above a minimum step size). We can apply a version of
-this function that was borrowed from <a
-href="https://hbctraining.github.io/scRNA-seq/lessons/elbow_plot_metric.html">HBC</a>
-to our data to select a good starting point for number of PCs to include
-for clustering later on.
-<!--- revised function name per discussion with Raymond ---></p>
-<pre class="r"><code># -------------------------------------------------------------------------
-# Estimate the number of PCs to use for clustering with a function
-check_pcs = function(so, reduction) {
-    # quantitative check for number of PCs to include
-    pct = so@reductions[[reduction]]@stdev / sum(so@reductions[[reduction]]@stdev) * 100
-    cum = cumsum(pct)
-    co1 = which(cum &gt; 90 &amp; pct &lt; 5)[1]
-    co2 = sort(which((pct[1:length(pct)-1] - pct[2:length(pct)]) &gt; .1), decreasing = T)[1] + 1
-    pcs = min(co1, co2) 
-    
-    return(pcs)
-}
-
-# Apply function to our data
-pcs = check_pcs(geo_so, &#39;unintegrated.sct.pca&#39;)
-pcs</code></pre>
-<pre><code>[1] 16</code></pre>
-<p>Again, this number is likely a starting point and may need to be
-revised depending on the outcome of the downstream steps.</p>
-<summary>
-Optional: A more advanced function for picking PCs
-</summary>
-<details>
-<p>This function is derived from the function above; it’s useful for
-understanding the overall variance of the PCs as well as visualizing the
-two kinds of cutoffs. It returns the same recommended PCs as the
-original function, but also:</p>
-<ul>
-<li>prints more details</li>
-<li>prints a plot of the PC variance with key PCs highlighted</li>
-<li>returns a named list of detailed results</li>
-</ul>
-<pre class="r"><code># -------------------------------------------------------------------------
-# Define a function to estimate optimal PCs for clustering
-check_pcs_advanced = function(so, reduction, print_plot=TRUE, verbose=TRUE) {
-  # quantitative check for number of PCs to include
-  threshold_var_cum_min = 90
-  threshold_var_pct_max = 5
-  threshold_step_min = 0.1
-  pct = so@reductions[[reduction]]@stdev / sum(so@reductions[[reduction]]@stdev) * 100
-  cum = cumsum(pct)
-  co1 = which(cum &gt; threshold_var_cum_min &amp; pct &lt; threshold_var_pct_max)[1]
-  co2 = sort(which((pct[1:length(pct)-1] - pct[2:length(pct)]) &gt; threshold_step_min), decreasing = T)[1] + 1
-  pcs = min(co1, co2) 
-  
-  plot_df &lt;- data.frame(pc = 1:length(pct),
-                        pct_var = pct, 
-                        cum_var = cum)
-  plot_df$labels = &#39;&#39;
-  co1_label = paste0(&#39;PC &#39;, co1)
-  co2_label = paste0(&#39;PC &#39;, co2)
-  if (co1 == co2) {
-    plot_df$labels[plot_df$pc == co1] = paste0(co1_label, &#39;\n&#39;, co2_label)
-  } else {
-    plot_df$labels[plot_df$pc == co1] = co1_label
-    plot_df$labels[plot_df$pc == co2] = co2_label
-  }
-  
-  
-  p = ggplot(plot_df, aes(x=pc, y=cum_var, label=labels)) +
-    geom_point(color=&quot;grey&quot;, alpha=1) +
-    geom_text(hjust = 0, vjust=1, nudge_x=2, nudge_y=-5) +
-    geom_step(data=filter(plot_df, pc&lt;=co2), color=&quot;blue&quot;, alpha=0.6, direction=&#39;vh&#39;) +
-    geom_step(data=filter(plot_df, pc&gt;=co2), color=&quot;grey&quot;, alpha=0.6, direction=&#39;hv&#39;) +
-    geom_hline(yintercept = 90, color = &quot;red&quot;, alpha=0.6, linetype = &#39;dashed&#39;) +
-    geom_point(data=filter(plot_df, pc==co1), aes(x=pc,y=cum_var), color=&#39;red&#39;) + 
-    geom_point(data=filter(plot_df, pc==co2), aes(x=pc,y=cum_var), color=&#39;blue&#39;) +
-    scale_y_continuous(breaks = c(0,25,50,75,100, threshold_var_cum_min)) +
-    theme_bw() +
-    labs(title = &#39;Optimal num of PCs&#39;,
-         x = &#39;Principal Component&#39;, 
-         y = &#39;Cumulative percent variance&#39;)
-
-  if (print_plot) {
-          print(p)
-  }
-  
-  if (verbose) {
-     results = paste(
-                sprintf(&#39;Reduction %s: %s PCs (total var = %s)&#39;, 
-                     reduction,
-                     nrow(plot_df),
-                     plot_df[plot_df$pc==nrow(plot_df), &#39;cum_var&#39;]),
-                sprintf(&quot;\t%s (total var = %s) : Smallest PC that explains at least %s%% total variance&quot;, 
-                     co1_label,
-                     round(plot_df[plot_df$pc==co1, &#39;cum_var&#39;], 2),
-                     threshold_var_cum_min),
-                sprintf(&quot;\t%s (total var = %s) : Largest PC with incremental variance step at least %s%%&quot;, 
-                      co2_label,
-                      round(plot_df[plot_df$pc==co2, &#39;cum_var&#39;],2),
-                      threshold_step_min),
-                sprintf(&#39;\tRecommended num of PCs: %s&#39;, pcs),
-                sep=&#39;\n&#39;)
-      message(results)
-  }
-  
-  return(list(recommended_pcs=pcs, plot=p, co1=co1, co2=co2, df=plot_df))
-}</code></pre>
-<pre class="r"><code># -------------------------------------------------------------------------
-# Apply function to our data
-alt_pcs = check_pcs_advanced(geo_so, &#39;unintegrated.sct.pca&#39;)</code></pre>
-<p><img src="images/curriculum/04-PCAandIntegration/04-apply_estimate_alt_pcs-1.png" width="816" style="display: block; margin: auto;" /></p>
-<pre><code>Reduction unintegrated.sct.pca: 50 PCs (total var = 100)
-    PC 42 (total var = 90.98) : Smallest PC that explains at least 90% total variance
-    PC 16 (total var = 53.21) : Largest PC with incremental variance step at least 0.1%
-    Recommended num of PCs: 16</code></pre>
-<pre class="r"><code># -------------------------------------------------------------------------
-# Save plot of PCs
-ggsave(filename = &#39;results/figures/optimal_pcs.png&#39;,
-       plot=alt_pcs$plot,
-       width = 8, height = 8, units = &#39;in&#39;)
-
-rm(alt_pcs)
-gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
-Ncells   9277927  495.5   17356211  927.0   17356211   927.0
-Vcells 377326204 2878.8 1136637116 8671.9 1420796228 10839.9</code></pre>
-<p>Again, this number is likely a starting point and may need to be
-revised depending on the outcome of the downstream steps.</p>
-<p>While outside the scope of this workshop, there are community efforts
-to develop more sophisticated methods to select an appropriate number of
-PCs; here are a few popular approaches:</p>
-<ul>
-<li><a href="https://github.com/rbpatt2019/chooseR">chooseR
-package</a></li>
-<li><a
-href="https://academic.oup.com/bioinformatics/article/38/10/2949/6565314">findPC
-package</a></li>
-<li><a
-href="https://lazappi.id.au/posts/2017-07-19-building-a-clustering-tree/">using
-clustering trees</a></li>
-</ul>
-<br/>
-<hr/>
-</details>
-<p><br/></p>
-<!-- move this section to projection and clustering once ready to incorporate examples of alternative PCA choices-->
-<pre class="r"><code># -------------------------------------------------------------------------
-# Based on the heatmaps (and some behind the scenes testing), we&#39;ll modify the number of PCs
-pcs = 10</code></pre>
-</div>
 <div id="visualizing-our-pc-results" class="section level3">
 <h3>Visualizing our PC results</h3>
-<p>In addition to selecting a reduced number of PCs to represent our
-data, we can also visualize , similarly to how we often look at samples
-for bulk RNA-seq using the <code>DimPlot()</code> function, with each
-cell plotted along the selected PCs and colored by a selected meta-data
-column:</p>
+<p>While we’ll discuss selecting the number of PCs to use for clustering
+in the next section, it be useful to visualize the first 2-3 PCs.
+Similarly to how we use PCA plots bulk RNA-seq, we can see if there
+might be batch effects or other technical variation contributing to the
+components representing the top overall variance by using the
+<code>DimPlot()</code> function, with each cell plotted along the
+selected PCs and colored by a selected meta-data column:</p>
 <pre><code>?DimPlot # default dims = c(1,2)</code></pre>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Visualize PCA (PC1 and PC2, unintegrated)
@@ -1019,7 +822,6 @@ batch effect related to the day status than interesting biological
 variation. This suggests that clustering our data using our selected
 number of PCs, integration should be performed to mitigate these
 differences and better align our data.</p>
-</div>
 </div>
 </div>
 <div id="integrate-layers" class="section level1">
@@ -1138,9 +940,9 @@ plots = c(&quot;heatmap_1&quot;)
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
-Ncells   9376373  500.8   17356211  927.0   17356211   927.0
-Vcells 379354907 2894.3 1136637116 8671.9 1420796228 10839.9</code></pre>
+<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells   9908602  529.2   17682058   944.4   17682058   944.4
+Vcells 464990128 3547.6 1468333516 11202.5 1468329871 11202.5</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">

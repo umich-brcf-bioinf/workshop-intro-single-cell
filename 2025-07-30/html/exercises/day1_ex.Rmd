@@ -1,0 +1,43 @@
+You don't need to have a fresh environment for these exercises. All variable names will be different from the lessons. Load the libraries (it's okay if they're already loaded) and the unfiltered Seurat object with the following code:
+
+```{r, day1ex_startup, eval = FALSE}
+# =========================================================================
+# Independent Exercise - Day 1 Startup
+# =========================================================================
+
+# After restarting our R session, load the required libraries & input data
+library(Seurat)
+library(BPCells)
+library(tidyverse)
+
+setwd('~/ISC_R')
+
+# Use provided copy of integrated data
+exso = readRDS('./inputs/prepared_data/rdata/geo_so_unfiltered.rds')
+
+# Add percent.mt column to meta.data
+exso$percent.mt = PercentageFeatureSet(exso, pattern = '^mt-')
+
+## NOTE - BEFORE STOPPING WORK ON THE EXERCISES REMEMBER TO POWER DOWN AND RESTART R SESSION !!!!
+```
+
+Let's practice filtering cells based on different criteria than we're using in the lessons.
+
+### Day 1 Exercise 1
+
+Subset `exso` so that all cells have `nFeature_RNA` greater than or equal to 1000. How many cells remain?
+
+Hint 1: For a reminder of how to subset a Seurat object, see the "Removing low-quality cells" section of the  [Secondary QC and Filtering module](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/main/html/02-QCandFiltering.html).
+Hint 2: For a reminder, of how to count the number cells per sample, see the "Cell counts" section of the [Secondary QC and Filtering module](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/main/html/02-QCandFiltering.html).
+
+### Day 1 Exercise 2
+
+Subset `exso` so that all cells have `nCount_RNA` greater than or equal to 5000. How many cells remain?
+
+### Day 1 Exercise 3
+
+Subset `exso` so that all cells have `percent.mt` less than 10%. How many cells remain?
+
+### Day 1 Exercise 4
+
+Subset `exso` so that each of the previous three conditions are satisfied. How many cells remain?
