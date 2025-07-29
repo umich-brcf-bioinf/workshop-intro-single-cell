@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-07-27" />
+<meta name="date" content="2025-07-28" />
 
 <title>Getting Started with Seurat</title>
 
@@ -423,7 +423,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Getting Started with Seurat</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-07-27</h4>
+<h4 class="date">2025-07-28</h4>
 
 </div>
 
@@ -667,7 +667,7 @@ right location. To print the current working directory:</p>
 # -------------------------------------------------------------------------
 # Get current working directory
 getwd()</code></pre>
-<pre><code>[1] &quot;/home/workshop/rcavalca/workshop-intro-single-cell/source&quot;</code></pre>
+<pre><code>[1] &quot;/home/workshop/damki/workshop-intro-single-cell/source&quot;</code></pre>
 <p>This means that any references to files loaded or files saved
 <strong>is with respect to this location</strong>. This can simplify our
 code a bit by allowing us to use relative paths rather than full paths.
@@ -780,6 +780,9 @@ memory:</p>
 # BPCells uses these files for processing, but you typically never look at 
 # their contents directly
 write_matrix_dir(mat = geo_mat, dir = &#39;~/ISC_R/bpcells&#39;, overwrite = TRUE)</code></pre>
+<pre><code>Warning: Matrix compression performs poorly with non-integers.
+• Consider calling convert_matrix_type if a compressed integer matrix is intended.
+This message is displayed once every 8 hours.</code></pre>
 <pre><code>32285 x 35269 IterableMatrix object with class MatrixDir
 
 Row names: Xkr4, Gm1992 ... AC149090.1
@@ -789,7 +792,7 @@ Data type: double
 Storage order: column major
 
 Queued Operations:
-1. Load compressed matrix from directory /home/workshop/rcavalca/ISC_R/bpcells</code></pre>
+1. Load compressed matrix from directory /home/workshop/damki/ISC_R/bpcells</code></pre>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Cleanup
 # Since we&#39;ll now be reading in from BPCells files, we will remove geo_mat
@@ -798,8 +801,8 @@ Queued Operations:
 rm(geo_mat)
 gc()</code></pre>
 <pre><code>           used  (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells  6717009 358.8   10572127  564.7  10572127  564.7
-Vcells 13003785  99.3  521256963 3976.9 673950265 5141.9</code></pre>
+Ncells  6557407 350.3   10228652  546.3  10228652  546.3
+Vcells 12493817  95.4  576761470 4400.4 701580763 5352.7</code></pre>
 </div>
 <div id="read-bpcells" class="section level2">
 <h2>Read BPCells</h2>
