@@ -66,6 +66,7 @@ exso2 = RunUMAP(exso2, dims = 1:pcs,
 exso2
 ```
 
+<br/>
 
 **Challenge 1**: How could we generate clusters for multiple alternative resolutions (e.g. 0.4, 0.8, & 1.0)? *Hint* - [`for` loops](https://r4ds.had.co.nz/iteration.html) can be useful for iteration in many programming languages, including R. 
 

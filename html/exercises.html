@@ -674,6 +674,7 @@ exso2 = RunUMAP(exso2, dims = 1:pcs,
 
 # check object to see if named reduction was added
 exso2</code></pre>
+<p><br/></p>
 <p><strong>Challenge 1</strong>: How could we generate clusters for
 multiple alternative resolutions (e.g. 0.4, 0.8, &amp; 1.0)?
 <em>Hint</em> - <a
@@ -875,8 +876,8 @@ object is set up and has an expected identity set.</p>
 # Check what identities are set
 Idents(exso3) %&gt;% head()
 
-pcs = 6
-res = 0.2 
+pcs = ## use same values as yesterday
+res = ## use same values as yesterday
 
 ## Set identities to clustering for selected resolution
 exso3 = SetIdent(exso3, value = paste0(&#39;int.sct.rpca.clusters&#39;, res))
