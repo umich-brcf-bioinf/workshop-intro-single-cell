@@ -1,110 +1,112 @@
-## ====================================
-## Independent exercise testing 
-## ====================================
+# =========================================================================
+# Independent Exercise - Day 2 Startup
+# =========================================================================
 
-# --------------------------------------------------------
-# Day 1 Exercises: Exploring QC patterns and filtering thresholds 
+# After restarting our R session, load the required libraries & input data
+library(Seurat)
+library(BPCells)
+library(tidyverse)
 
-# --------------------------------------------------------
-# Day 2 Exercises: Exploring clustering thresholds
+setwd('~/ISC_R')
 
-# --------------------------------------------------------
-# Day 3 Exercises: Exploring annotations and differential expression
+# Use provided copy of integrated data
+exso2 = readRDS('inputs/prepared_data/rdata/geo_so_sct_integrated.rds')
+exso2 # check that object loaded
 
-# First - clear current Seurat object to free up memory & remove current results
-rm(geo_so) 
 
-# Then  load in integrated data & reset object on each iteration to avoid exceeding allocated space
-geo2_so = readRDS('/home/workshop/rcavalca/ISC_R/results/rdata/geo_so_sct_integrated.rds')
+### Day 2 Exercise 1 - Clustering with reduced number of PCs
+# -------------------------------------------------------------------------
+# Testing fewer PCs for clustering 
 
-# look at elbow plot
-ElbowPlot(geo2_so, ndims = 50, reduction = 'unintegrated.sct.pca')
+# look at elbow plot to check PCs and consider alternatives to the number selected for main materials
+ElbowPlot(exso2, ndims = 50, reduction = 'unintegrated.sct.pca')
 
-## Clustering
-# Round 1: manually adjust number of PCs to include in clustering
-#pcs = 20 # increase number of PCs
-pcs = 10 # reduce number of PCs
+# select alternative value to try (can choose a number <10 or >10 PCs)
+pcs = 6
 
 # generate nearest neighbor (graph), using selected number of PCs
-geo2_so = FindNeighbors(geo2_so, dims = 1:pcs, reduction = 'integrated.sct.rpca')
+exso2 = FindNeighbors(exso2, dims = 1:pcs, reduction = 'integrated.sct.rpca')
 
-# Round 2: adjust resolution after testing PCs (remember this only impacts the how the boundaries of the neighbors are drawn, not the underlying NN graph/structure)
-res = 0.4
-# res = 1.0
-# res = 0.2
+# -------------------------------------------------------------------------
+# start with one resolution
+res = 0.2
 
-# generate clusters, using 
-geo2_so = FindClusters(geo2_so, resolution = res, cluster.name = 'integrated.sct.rpca.clusters')
+# generate clusters, using `pcs` and `res` to make a custom cluster name that will be added to the metadata
+exso2 = FindClusters(exso2, resolution = res, 
+                     cluster.name = paste0('int.sct.rpca.clusters', res))
 
 # look at meta.data to see cluster labels
-head(geo2_so@meta.data)
+head(exso2@meta.data)
 
-# Prep for UMAP
-geo2_so = RunUMAP(geo2_so, dims = 1:pcs, reduction = 'integrated.sct.rpca', 
-                 reduction.name = 'umap.integrated.sct.rpca')
-geo2_so
+# run UMAP reduction to prepare for plotting
+exso2 = RunUMAP(exso2, dims = 1:pcs, 
+                reduction = 'integrated.sct.rpca', 
+                reduction.name = paste0('umap.integrated.sct.rpca_alt', res))
 
-# look at clustering results
+# check object to see if named reduction was added
+exso2
+
+
+## Challenge 1 - solution option
+# -------------------------------------------------------------------------
+# use for loop to generate clustering with alternative resolutions
+for(i in c(0.4, 0.8, 1.0)){
+  exso2 = FindClusters(exso2, resolution = i, 
+                       cluster.name = paste0('int.sct.rpca.clusters', i))
+  
+  # look at meta.data to see cluster labels
+  head(exso2@meta.data)
+  
+  # run UMAP reduction to prepare for plotting
+  exso2 = RunUMAP(exso2, dims = 1:pcs, 
+                  reduction = 'integrated.sct.rpca', 
+                  reduction.name = paste0('umap.integrated.sct.rpca_alt', i))
+  
+  # check object to see if multiple cluster resolutions are added
+  head(exso2@meta.data)
+}
+
+
+
+### Day 2 Exercise 2 - Plotting alternative clustering results
+# -------------------------------------------------------------------------
+# plot clustering results
 post_integration_umap_clusters_testing = 
-  DimPlot(geo2_so, group.by = 'seurat_clusters', label = TRUE, 
-          reduction = 'umap.integrated.sct.rpca') + NoLegend()
+  DimPlot(exso2, group.by = paste0('int.sct.rpca.clusters', res), label = TRUE, 
+          reduction = paste0('umap.integrated.sct.rpca_alt', res)) + NoLegend()
 post_integration_umap_clusters_testing # look at plot
 
 # output to file, including the number of PCs and resolution used to generate results
-ggsave(filename = paste0('results/figures/umap_integrated_sct_clusters', 
-                         pcs,'PCs',res,'res.png'),
-       plot = post_integration_umap_plot_clusters, 
+ggsave(filename = paste0('results/figures/umap_int_sct_clusters_alt_', 
+                         pcs,'PC.',res,'res','.png'),
+       plot = post_integration_umap_clusters_testing, 
        width = 8, height = 6, units = 'in')
 
-## generate markers and annotate clusters to see how that changes
 
-# prep for cluster comparisons
-geo2_so = SetIdent(geo2_so, value = 'integrated.sct.rpca.clusters')
-geo2_so = PrepSCTFindMarkers(geo2_so)
+## Challenge 2 - solution option
+# -------------------------------------------------------------------------
+# use for loop to visualize clustering across tested resolutions
+post_integration_umap_plots <- c()
+for(i in c(0.4, 0.8, 1.0)){
+  res_type = paste0("res_", i)
+  post_integration_umap_plots[[res_type]] = 
+    DimPlot(exso2, group.by = paste0('int.sct.rpca.clusters', i), label = TRUE, 
+            reduction = paste0('umap.integrated.sct.rpca_alt', i)) + NoLegend()
+}
 
-# run comparisons for each cluster to generate markers
-geo2_markers = FindAllMarkers(geo2_so, only.pos = TRUE)
-
-
-# run cell type predictions for current clustering results
-library(scCATCH)
-
-# create scCATCH object, using count data
-geo2_catch = createscCATCH(data = geo2_so@assays$SCT@counts, cluster = as.character(Idents(geo2_so)))
-
-# add marker genes to use for predictions
-catch_markers = geo2_markers %>% rename('logfc' = 'avg_log2FC')
-geo2_catch@markergene = geo2_markers
-
-# specify tissues/cell-types from the scCATCH reference
-geo2_catch@marker = cellmatch[cellmatch$species == 'Mouse' & cellmatch$tissue %in% c('Blood', 'Peripheral Blood', 'Muscle', 'Skeletal muscle', 'Epidermis', 'Skin'), ]
-
-# run scCATCH to generate predictions
-geo2_catch = findcelltype(geo2_catch)
-
-# look at the predictions
-geo2_catch@celltype %>% select(cluster, cell_type, celltype_score)
-
-## annotate clusters
-# Extract the cell types only to merge into the meta.data
-catch_celltypes = geo2_catch@celltype %>% select(cluster, cell_type)
-
-# Merge cell types in but as a new table to slide into @meta.data
-new_metadata = geo2_so@meta.data %>% left_join(catch_celltypes, 
-                                              by = c('integrated.sct.rpca.clusters' = 'cluster'))
-rownames(new_metadata) = rownames(geo2_so@meta.data) #  We are implicitly relying on the same row order!
-
-# Replace the meta.data
-geo2_so@meta.data = new_metadata 
-head(geo2_so@meta.data)
-
-catch_umap_plot = DimPlot(geo2_so, group.by = 'cell_type', 
-                          label = TRUE, reduction = 'umap.integrated.sct.rpca')
-catch_umap_plot
+# look at plots for each resolution stored in list
+post_integration_umap_plots
+# remove plot list to clean up session 
+rm(post_integration_umap_plots)
 
 
+## ----------------------------------------------------------
+## Clean up session, including any plot objects
+rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot)))));
+gc()
 
-#########
-
-## Extension - how might you generate DE comparisons between D21 and D7 for all annotated clusters?
+## Save copy of Seurat object in current state to file
+saveRDS(exso2, file = paste0('results/rdata/geo_so_sct_integrated_alt.rds'))
+rm(exso2)
+gc()
 

@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-07-23" />
+<meta name="date" content="2025-07-28" />
 
 <title>Clustering and Projection</title>
 
@@ -425,7 +425,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Clustering and Projection</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-07-23</h4>
+<h4 class="date">2025-07-28</h4>
 
 </div>
 
@@ -686,9 +686,9 @@ ggsave(filename = &#39;results/figures/optimal_pcs.png&#39;,
 
 rm(alt_pcs)
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   6904428  368.8   12771040  682.1  12771040  682.1
-Vcells 830401103 6335.5 1192805494 9100.4 856720855 6536.3</code></pre>
+<pre><code>             used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells    9624452  514.1   19047869  1017.3   19047869  1017.3
+Vcells 1191336550 9089.2 2534319508 19335.4 2288842787 17462.5</code></pre>
 <p>Again, this number is likely a starting point and may need to be
 revised depending on the outcome of the downstream steps.</p>
 <p>While outside the scope of this workshop, there are community efforts
@@ -2439,7 +2439,7 @@ Number of edges: 977875
 Running Louvain algorithm...
 Maximum modularity in 10 random starts: 0.9522
 Number of communities: 22
-Elapsed time: 3 seconds</code></pre>
+Elapsed time: 4 seconds</code></pre>
 <p><img src="images/curriculum/05-ProjectionAndClustering/05-run_umap_unintegrated-1.png" width="816" style="display: block; margin: auto;" /></p>
 <p>In the plot at left, we see that while there are distinct clusters,
 those clusters seem to stratified by day. This suggests that without
@@ -2525,9 +2525,9 @@ plots = c(&quot;pre_integration_umap_plot_day&quot;,
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells   6957792  371.6   12771040   682.1   12771040   682.1
-Vcells 837329055 6388.4 1866938864 14243.7 1602793504 12228.4</code></pre>
+<pre><code>             used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells    9688342  517.5   19047869  1017.3   19047869  1017.3
+Vcells 1200039838 9155.6 2534319508 19335.4 2288842787 17462.5</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">

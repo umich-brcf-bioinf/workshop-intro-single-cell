@@ -1,4 +1,6 @@
+Since we are working with larger object sizes, it's best to start with a fresh session. All variable names will be different from the lessons. Load the libraries (it's okay if they're already loaded) and the **integrated** Seurat object with the following code:
 
+<!-- Exploring clustering thresholds -->
 
 ```{r, Day2_startup, eval = FALSE}
 # =========================================================================
@@ -10,138 +12,93 @@ library(Seurat)
 library(BPCells)
 library(tidyverse)
 
+setwd('~/ISC_R')
+
 # Use provided copy of integrated data
-geo2_so = readRDS('inputs/prepared_data/rdata/geo_so_sct_integrated.rds')
+exso2 = readRDS('inputs/prepared_data/rdata/geo_so_sct_integrated.rds')
+exso2 # check that object loaded
 
 ## NOTE - BEFORE STOPPING WORK ON THE EXERCISES REMEMBER TO POWER DOWN AND RESTART R SESSION !!!!
 ```
 
 ### Day 2 Exercise 1 - Clustering with reduced number of PCs
 
-<!--- expect to shift clustering testing to same code that Chris used to generate examples of alt clustering --->
+Test how the clustering results would change if you used *fewer* or *more* PCs when clustering these data. 
 
-```{r, Day2_clustering1, eval = FALSE}
-## -----------------------------------------
-## Round 1: try with fewer PCs included
+```{r, Day2_clustering1A, eval = FALSE}
+# -------------------------------------------------------------------------
+# Testing fewer PCs for clustering 
 
-# look at elbow plot to check PCs and alternatives to the number selected today
-ElbowPlot(geo2_so, ndims = 50, reduction = 'unintegrated.sct.pca')
+# look at elbow plot to check PCs and consider alternatives to the number selected for main materials
+ElbowPlot(exso2, ndims = 50, reduction = 'unintegrated.sct.pca')
 
-# select smaller value to try (we used 6)
-pcs = 6
+# select alternative value to try (choose a number <10 or >10 PCs)
+pcs = # Your value here #
 
 # generate nearest neighbor (graph), using selected number of PCs
-geo2_so = FindNeighbors(geo2_so, dims = 1:pcs, reduction = 'integrated.sct.rpca')
-
-# Round 2: adjust resolution after testing PCs (remember this only impacts the how the boundaries of the neighbors are drawn, not the underlying NN graph/structure)
-# start with one resolution, but can see impact of changing this parameter by changing which commands are commented out/run
-res = 0.2
-# res = 0.4
-# res = 1.0
-
-# generate clusters, using `pcs` and `res` to make a custom cluster name that will be added to the metadata
-geo2_so = FindClusters(geo2_so, resolution = res, 
-                       cluster.name = paste0('int.sct.rpca.clusters_fewer'))
-
-# look at meta.data to see cluster labels
-head(geo2_so@meta.data)
-
-# Prep for UMAP plots by creating reduction (using the reduction name we assigned in the last step)
-# Note - only want to include the `pcs` in the reduction name since `res` changes the cluster divisions but not reduction run at this step
-geo2_so = RunUMAP(geo2_so, dims = 1:pcs, 
-                  reduction = 'integrated.sct.rpca', 
-                  reduction.name = paste0('umap.integrated.sct.rpca_fewer'))
-# check object ot see if named reduction was added
-geo2_so
-
-# plot clustering results
-post_integration_umap_clusters_testing = 
-  DimPlot(geo2_so, group.by = 'seurat_clusters', label = TRUE, 
-          reduction = paste0('umap.integrated.sct.rpca_fewer')) + NoLegend()
-post_integration_umap_clusters_testing # look at plot
-
-# output to file, including the number of PCs and resolution used to generate results
-ggsave(filename = paste0('results/figures/umap_int_sct_clusters_', 
-                         pcs,'PC.',res,'res','.png'),
-       plot = post_integration_umap_clusters_testing, 
-       width = 8, height = 6, units = 'in')
-
-## Discard all ggplot objects currently in environment to manage memory usage
-# Ok since we saved the plots as we went along
-rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
-gc()
-
-## Save a copy of the Seurat object in its current state
-saveRDS(geo2_so, file = paste0('results/rdata/geo_so_sct_integrated_alt.rds'))
-
+exso2 = FindNeighbors(exso2, dims = 1:pcs, reduction = 'integrated.sct.rpca')
 ```
 
-##### Check-in Questions - UMAP with fewer PCs
-How does the UMAP plot look when fewer PCs are used? How is the plot impacted if different resolution parameters are used?
+
+After generating clustering, set resolution parameter - remember this only impacts the how the boundaries of the neighbors are drawn, not the underlying NN graph/structure. 
+
+```{r, Day2_clustering1B, eval = FALSE}
+# -------------------------------------------------------------------------
+# Testing resolution options to see impact
+
+# start with one resolution
+res = # Your value here #
+
+# generate clusters, using `pcs` and `res` to make a custom cluster name that will be added to the metadata
+exso2 = FindClusters(exso2, resolution = res, 
+                     cluster.name = paste0('int.sct.rpca.clusters', res))
+
+# look at meta.data to see cluster labels
+head(exso2@meta.data)
+
+# run UMAP reduction to prepare for plotting
+exso2 = RunUMAP(exso2, dims = 1:pcs, 
+                  reduction = 'integrated.sct.rpca', 
+                  reduction.name = paste0('umap.integrated.sct.rpca_alt', res))
+
+# check object to see if named reduction was added
+exso2
+```
+
+
+**Challenge 1**: How could we generate clusters for multiple alternative resolutions (e.g. 0.4, 0.8, & 1.0)? *Hint* - [`for` loops](https://r4ds.had.co.nz/iteration.html) can be useful for iteration in many programming languages, including R. 
+
+
+### Day 2 Exercise 2 - Plotting alternative clustering results
+
+After generating our clustering results it's time to visualize them - create a UMAP plot, ensuring that you generate a UMAP reduction for the appropriate reduction 
+
+*Hint 1* - Remember the previous code chunk used `paste0('umap.integrated.sct.rpca_alt', res))` for the cluster name parameter. 
+
+*Hint 2* - For a reminder of how to generate a UMAP plot, look at the [Visualizing and evaluating clustering](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/main/html/05-ProjectionAndClustering.html#Visualizing_and_evaluating_clustering) from the Clustering and Projection module.
+
+**Challenge 2**: Create UMAP plots for the alternative resolutions (e.g. 0.4, 0.8, & 1.0) generated in the previous challenge.
+
+> Check-in Questions - UMAP for alternative PCs
+> How does the UMAP plot look when fewer or more PCs are used? Do you notice any relationship between the PC parameter and resolution parameter?
 
 
 #### Clean up session 
 
-```{r, cleanup_day1, eval=FALSE}
-## -------------------
-## Clean up session 
+Before closing out the window, **make sure to clear environment and restart R session to manage the memory usage**
 
-rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
-rm(catch_celltypes, catch_markers, geo2_catch, geo2_markers, new_metadata, top_5); 
+```{r, cleanup_day2, eval=FALSE}
+## ----------------------------------------------------------
+## Clean up session, including any plot objects
+rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot)))));
 gc()
 
-## Save copy of geo2_seo in current state to use for future exercises
-saveRDS(geo2_so, file = paste0('results/rdata/geo_so_sct_integrated_alt.rds'))
-```
-<br/>
-
-**If stopping here - make sure to clear environement and restart R session!!!**
-<br/>
-
-### Day 2 Exercise 2 - Clustering with increased number of PCs
-
-```{r, Day2_clustering2, eval = FALSE}
-## -----------------------------------------
-## Round 2 - choose a larger number of PCs
-
-pcs = 20 # can use this provided value or select a different value
-res = 0.8 # Set resolution (may need to test other values)
-
-# Run code (copied from above) - outputs will use pcs and res parameters set above
-# Reductions and metadata labels for clusters will be added to the existing geo2_so, with the set pcs and res values. Objects with the same name will be overwritten if code is adjusted and re-run
-
-# generate nearest neighbor (graph) & clusters, with custom naming for metasata
-geo2_so = FindNeighbors(geo2_so, dims = 1:pcs, reduction = 'integrated.sct.rpca')
-geo2_so = FindClusters(geo2_so, resolution = res, 
-                       cluster.name = paste0('int.sct.rpca.clusters_more'))
-head(geo2_so@meta.data)
-
-# Prep for UMAP plots by creating reduction (using the reduction name we assigned in the last step)
-geo2_so = RunUMAP(geo2_so, dims = 1:pcs, 
-                  reduction = 'integrated.sct.rpca', 
-                  reduction.name = paste0('umap.integrated.sct.rpca_more'))
-geo2_so
-```
-<br/>
-
-##### Extension Challenge
-Using the code from above, how would you generate a new ggplot named `post_integration_umap_clusters_testing` that uses the larger number of PCs and the clusters defined with the resolution you defined in the previous code block?
-
-```{r, eval = FALSE}
-
-# plot clustering results for new parameters
-post_integration_umap_clusters_testing = {add your own code here}
-
-## Remove ggplots and clean up environment 
-rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
+## Save copy of Seurat object in current state to file
+saveRDS(exso2, file = 'results/rdata/geo_so_sct_clustered_alt2.rds')
+rm(exso2)
 gc()
-
-## Save a copy of the Seurat object in its current state to use for future exercises
-saveRDS(geo2_so, file = paste0('results/rdata/geo_so_sct_integrated_alt.Rmd'))
 ```
 <br/>
-
-##### Check-in question - UMAP with more PCs
-How does the UMAP plot look when more PCs are used? Was a higher or lower resolution needed to better align the cluster divisions to the structure observed in the UMAP plot compared to the resolution used in the workshop session?
-
 <br/>
+
+
