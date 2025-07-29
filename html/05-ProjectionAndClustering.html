@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-07-28" />
+<meta name="date" content="2025-07-29" />
 
 <title>Clustering and Projection</title>
 
@@ -425,7 +425,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Clustering and Projection</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-07-28</h4>
+<h4 class="date">2025-07-29</h4>
 
 </div>
 
@@ -686,9 +686,9 @@ ggsave(filename = &#39;results/figures/optimal_pcs.png&#39;,
 
 rm(alt_pcs)
 gc()</code></pre>
-<pre><code>             used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells    9624452  514.1   19047869  1017.3   19047869  1017.3
-Vcells 1191336550 9089.2 2534319508 19335.4 2288842787 17462.5</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells   6525814  348.6   12097037  646.1  12097037  646.1
+Vcells 373131227 2846.8  793186808 6051.6 759183650 5792.2</code></pre>
 <p>Again, this number is likely a starting point and may need to be
 revised depending on the outcome of the downstream steps.</p>
 <p>While outside the scope of this workshop, there are community efforts
@@ -2525,9 +2525,9 @@ plots = c(&quot;pre_integration_umap_plot_day&quot;,
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>             used   (Mb) gc trigger    (Mb)   max used    (Mb)
-Ncells    9688342  517.5   19047869  1017.3   19047869  1017.3
-Vcells 1200039838 9155.6 2534319508 19335.4 2288842787 17462.5</code></pre>
+<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells   6666811  356.1   12097037   646.1   12097037   646.1
+Vcells 744695383 5681.6 1318219760 10057.3 1317373744 10050.8</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">

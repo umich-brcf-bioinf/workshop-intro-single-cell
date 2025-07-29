@@ -31,10 +31,27 @@ klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
 
 
 ```{css, echo=FALSE}
+
+body, td {
+   font-size: 18px;
+}
+
 .doNotRun {
 background-color: CornSilk;
 }
+
+.pro_tip {
+  border-radius: 10px;
+  padding: 5px 5px 5px 95px;
+  background: #EBF7FF left 10px top 10px / 85px no-repeat;
+}
+
+.pro_tip_icon {
+  background-image: url("images/curriculum/pro-tip.png");
+}
+
 ```
+
 
 ```{r, include = FALSE}
 source("../bin/chunk-options.R")
@@ -66,6 +83,9 @@ Build on the content and analysis steps covered in the workshop sessions by work
 ## Day 1
 
 <!-- Add Rmd version of exercises with smaller code blocks --> 
+
+```{r day1_exercise, child='exercises/day1_ex.Rmd'}
+```
 
 <!-- Use R script as key in hidden dropdown --> 
 
