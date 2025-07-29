@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-07-28" />
+<meta name="date" content="2025-07-29" />
 
 <title>Running Seurat on UMich Great Lakes HPC</title>
 
@@ -424,7 +424,7 @@ div.tocify {
 <h1 class="title toc-ignore">Running Seurat on UMich Great Lakes
 HPC</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-07-28</h4>
+<h4 class="date">2025-07-29</h4>
 
 </div>
 
@@ -560,7 +560,7 @@ inputs as a guide:</p>
 analyses, 10Gb is a good working number. Each user is allocated 80Gb of
 storage in their home dir. As a new user, you can execute this tutorial
 from your home dir. As your experiments and analyses grow, you can check
-your available space from the command line (<code>homw-quota</code>) and
+your available space from the command line (<code>home-quota</code>) and
 request more storage from ARC as necessary.</p></li>
 <li><p>You will need data. Below, we’ll show you how to download the
 input data used in the workshop, but you can adapt that to use your own
@@ -573,9 +573,15 @@ data.</p></li>
 <h2>Using Open OnDemand</h2>
 <p><img
 src="images/seurat-on-great-lakes/great-lakes-wayfinder-ood.png" /></p>
-<p>Open OnDemand (OOD) connects you to the Great Lakes cluster through
-your web browser. Once you’ve got everything you need from above, you’re
-going to use OOD to launch a RStudio session.</p>
+<p>Once you’ve got everything you need from above, you’re going to use
+<strong>Open OnDemand</strong> (OOD) to launch a RStudio session.</p>
+<ul>
+<li>OOD connects you to the Great Lakes cluster through your web
+browser.</li>
+<li>OOD works with the <strong>SLURM workload manager</strong> to
+reserve and configure a <strong>compute node</strong> that will run
+RStudio.</li>
+</ul>
 <ol style="list-style-type: decimal">
 <li><p>If off-campus, connect to the VPN using Cisco Secure
 Client.</p></li>
@@ -691,13 +697,17 @@ src="images/seurat-on-great-lakes/browser-chrome-clipboard-setting.png" /></td>
 <h2>Using RStudio</h2>
 <p><img
 src="images/seurat-on-great-lakes/great-lakes-wayfinder-worker-node.png" /></p>
-<p>On Great Lakes, you launch a RStudio session on a Slurm
-<strong>worker node</strong>. The worker node can run RStudio, a
-browser, or other programs/tools. You access the worker node through
-your browser using a tool call <strong>NoVNC</strong>. Accessing the
-worker node through the browser is a convenient way to use a GUI like
-RStudio, but it means that some functionality (e.g. copy-paste) works
-slightly differently.</p>
+<p>On Great Lakes, you launch a RStudio session on a SLURM
+<strong>compute node</strong>.</p>
+<ul>
+<li>The compute node can run RStudio, a browser, or other
+programs/tools.</li>
+<li>The browser connects to the the compute node through a utility
+called <strong>NoVNC</strong>.</li>
+<li>Accessing the compute node through the browser is a convenient way
+to use a GUI like RStudio, but it means that some functionality
+(e.g. copy-paste) works slightly differently.</li>
+</ul>
 <div id="shortcuts-copy-paste" class="section level3">
 <h3>Shortcuts / copy-paste</h3>
 <ul>
@@ -951,7 +961,7 @@ use to launch Cell Ranger.</p>
 <blockquote>
 <p><em>Note: as an alternative to Open OnDemand, you can use
 <strong>SSH</strong> and <strong>SLURM login nodes</strong> to launch
-SLURM worker nodes directly from the Mac Terminal or MS Command Prompt.
+SLURM compute nodes directly from the Mac Terminal or MS Command Prompt.
 Each alternative has advantages; this guide focuses on Open OnDemand
 because it can be used from the browser.</em></p>
 </blockquote>
@@ -1205,8 +1215,8 @@ on RStudio can require different keyboard shortcuts or different
 steps.</li>
 <li>OOD, Globus, and command line tools are several ways to transfer
 files between Great Lakes and your workstation.</li>
-<li>You can us <strong>launch templates</strong> to save common launch
-configs.</li>
+<li>OOD <strong>Launch templates</strong> can save launch configs and
+simplify how you start common jobs.</li>
 </ul>
 <hr />
 </div>
