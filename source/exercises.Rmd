@@ -96,7 +96,7 @@ Build on the content and analysis steps covered in the workshop sessions by work
 </details>
 <br>
 
-
+----
 
 ## Day 2
 
@@ -113,6 +113,8 @@ Build on the content and analysis steps covered in the workshop sessions by work
 ```
 </details>
 <br>
+
+----
 
 ## Day 3
 
