@@ -106,7 +106,7 @@ rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot)))));
 gc()
 
 ## Save copy of Seurat object in current state to file
-saveRDS(exso2, file = paste0('results/rdata/geo_so_sct_integrated_exercise.rds'))
+saveRDS(exso2, file = paste0('results/rdata/geo_so_sct_clustered_exercise.rds'))
 rm(exso2)
 gc()
 

@@ -43,48 +43,45 @@ Using the approach from the [marker identification](https://umich-brcf-bioinf.gi
 
 > Check-in Question - clustering impact on marker genes
 > After you generate markers for the "fewer" `pcs` option, how do the results differ from the markers found for `pcs=10` in the workshop session? What do you think would happen if you tried this with the "more" results?
+
 <br/>
 
 
 #### Day 3 Exercise 2 - Generate predictions for alternative clustering 
 
-Using scCATCH, generate 
+Using [scCATCH like we did for our annotation process](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/main/html/07-CellTypeAnnos.html#Refine_annotations_and_label_clusters), generate predictions for the alternative clustering results.
 
-```{r, eval=FALSE}
-## ------------------------------------------------------
-## Use predictions to label clusters and UMAP plot
+<br/>
 
-catch_celltypes = geo2_catch@celltype %>% select(cluster, cell_type)
-colnames(catch_celltypes)[2] = paste0('cell_type.',pcs,'PC.',res,'res')
-new_metadata = exso3@meta.data %>% 
-  left_join(catch_celltypes, 
-            by = c('seurat_clusters' = 'cluster')) # using `seurat_clusters`, which will store the most recently generated cluster labels for each cell
-rownames(new_metadata) = rownames(exso3@meta.data) #  We are implicitly relying on the same row order!
-exso3@meta.data = new_metadata # Replace the meta.data
-head(exso3@meta.data)
-```
 
-```{r}
-# Create UMAP plot with new cluster labels
-catch_umap_plot = DimPlot(exso3, group.by = paste0('cell_type.',pcs,'PC.',res,'res'), 
-                          label = TRUE, reduction = paste0('umap.integrated.sct.rpca_',pcs,'PC'))
-catch_umap_plot
-#### Question: How did the number of pcs and/or resolution change the predictions? Do you think the predictions correspond better or worse to the cluster structure we see in the UMAP?
+#### Day 3 Exercise 3 - Add predictions to Seurat object
 
-# Save the plot to file
-# output to file, including the number of PCs and resolution used to generate results
-ggsave(filename = paste0('results/figures/umap_int_catch-labeled_', 
-                         pcs,'PC.',res,'res','.png'),
-       plot = catch_umap_plot, 
-       width = 8, height = 6, units = 'in')
+Skipping the refinement step, add the cell-type predictions to the Seurat object using the numeric labels as a key, similarly to the our [annotation step](file:///Users/damki/Desktop/ActiveProjectsMount/damki/repos/workshop-intro-single-cell/html/07-CellTypeAnnos.html#Refine_annotations_and_label_clusters)
 
+#### Day 3 Exercise 4 - Plot UMAP with new cluster labels
+
+Using a similar approach used to [visualize the annotations in the workshop](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/main/html/07-CellTypeAnnos.html), generate a UMAP plot 
+
+*Hint* - use the same reduction name as yesterday's exercise and make sure the `group_by` parameter matches the column name added to the metadata that stores the predicted cell-types.
+
+> Check-in Question: How did the number of pcs and/or resolution change the predictions? Do you think the predictions correspond better or worse to the cluster structure we see in the UMAP?
+
+</br>
+
+
+#### Clean up session 
+
+Before closing out the window, **make sure to clear environment and restart R session to manage the memory usage**
+
+```{r, cleanup_day3, eval=FALSE}
+## ----------------------------------------------------------
 ## Clean up session 
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 rm(catch_celltypes, catch_markers, geo2_catch, geo2_markers, new_metadata, top_5); 
 gc()
 
 ## (Optional) - Save copy of exso3
-saveRDS(exso3, file = paste0('results/rdata/exso3_sct_integrated_alt.rds'))
+saveRDS(exso3, file = paste0('results/rdata/geo_so_sct_integrated_with_markers_exercise.rds'))
 
 ## BEFORE PROCEEDING TO THE NEXT SECTION or closing window - POWER DOWN AND RESTART R SESSION
 

@@ -54,6 +54,7 @@ exso3_catch = findcelltype(exso3_catch)
 exso3_catch@celltype %>% select(cluster, cell_type, celltype_score)
 
 
+#### Day 3 Exercise 3 - Add predictions to Seurat object
 ## ------------------------------------------------------
 ## Use predictions to label clusters and UMAP plot
 catch_celltypes = exso3_catch@celltype %>% select(cluster, cell_type)
@@ -65,11 +66,13 @@ rownames(new_metadata) = rownames(exso3@meta.data) #  We are implicitly relying 
 exso3@meta.data = new_metadata # Replace the meta.data
 head(exso3@meta.data)
 
-# Create UMAP plot with new cluster labels
+
+#### Day 3 Exercise 4 - Plot UMAP with new cluster labels
+## ------------------------------------------------------
 catch_umap_plot = DimPlot(exso3, group.by = paste0('cell_type.',pcs,'PC.',res,'res'), 
                           label = TRUE, reduction = paste0('umap.integrated.sct.rpca_alt', res))
 catch_umap_plot
-#### Question: How did the number of pcs and/or resolution change the predictions? Do you think the predictions correspond better or worse to the cluster structure we see in the UMAP?
+
 
 # Save the plot to file
 # output to file, including the number of PCs and resolution used to generate results
@@ -78,13 +81,15 @@ ggsave(filename = paste0('results/figures/umap_int_catch-labeled_',
        plot = catch_umap_plot, 
        width = 8, height = 6, units = 'in')
 
+
+## ----------------------------------------------------------
 ## Clean up session 
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 rm(catch_celltypes, catch_markers, exso3_catch, exso3_markers, new_metadata, top_5); 
 gc()
 
 ## (Optional) - Save copy of exso3
-saveRDS(exso3, file = paste0('results/rdata/geo_so_sct_integrated_with_markers_alt3.rds'))
+saveRDS(exso3, file = paste0('results/rdata/geo_so_sct_integrated_with_markers_exercise.rds'))
 rm(exso3)
 gc()
 
