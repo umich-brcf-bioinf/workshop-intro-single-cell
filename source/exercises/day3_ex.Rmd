@@ -10,9 +10,10 @@ Since we are working with larger object sizes, it's best to start with a fresh s
 library(Seurat)
 library(BPCells)
 library(tidyverse)
+library(scCATCH)
 
 # Load in seurat object with alternative clustering results from yesterday's exercises
-exso3 = readRDS('results/rdata/geo_so_sct_clustered_alt2.rds')
+exso3 = readRDS('results/rdata/geo_so_sct_integrated_exercise.rds')
 exso3 # check that object loaded
 
 ## NOTE - BEFORE STOPPING WORK ON THE EXERCISES REMEMBER TO POWER DOWN AND RESTART R SESSION !!!!
@@ -20,54 +21,34 @@ exso3 # check that object loaded
 
 <br/>
 
-
-### Day 3 Exercise 1 - examine marker genes and cell type predictions for alternative clustering
-
-Now that we've covered how to generate emperical marker genes and use a prediction tool to identify possible cell-type labels, let's start by extending the exercise from yesterday to check what our results would look like if we had proceed with fewer or more PCs.
+Before testing what marker genes and cell-type predictions are generated for an alternative clustering, start by ensuring the Seurat object is set up and has an expected identity set. 
 
 ```{r, eval=FALSE}
 ## ----------------------------------------------------------
 # Check what identities are set
 Idents(exso3) %>% head()
 
-res = 6 ## use same res values as previous exercise
+pcs = 6
+res = 0.2 
 
-## Note - in the example code, we use the results from "fewer" but can swap to "more" instead
+## Set identities to clustering for selected resolution
 exso3 = SetIdent(exso3, value = paste0('int.sct.rpca.clusters', res))
 Idents(exso3) %>% head()
 ```
 
+#### Day 3 Exercise 1 - examine marker genes for alternative clusters
+
+Using the approach from the [marker identification](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/main/html/06-MarkerVisualization.html#Marker_identification) module, run `PrepSCTFindMarkers` and generate markers for the alternative clustering results. Bonus to generate a table of the top 5 markers and outputing that to file. 
 
 
-```{r, eval=FALSE}
-## Generate cluster markers to see how that changes with new parameters 
-exso3 = PrepSCTFindMarkers(exso3, assay = "SCT") # NOTE - this step will take some time to run
-geo2_markers = FindAllMarkers(exso3, only.pos = TRUE)
-
-# Create table of top 5 markers per cluster (using default ranking)
-top_5 = geo2_markers %>% filter(p_val_adj < 0.01) %>% group_by(cluster) %>% slice_head(n = 5)
-head(top_5, n = 10) # look at results
-write_csv(top_5, file = paste0('results/tables/top5_marker_genes_fewer.csv'))
-```
+> Check-in Question - clustering impact on marker genes
+> After you generate markers for the "fewer" `pcs` option, how do the results differ from the markers found for `pcs=10` in the workshop session? What do you think would happen if you tried this with the "more" results?
 <br/>
 
-##### Check-in Question - clustering impact on marker genes
-After you generate markers for the "fewer" `pcs` option, how do the results differ from the markers found for `pcs=10` in the workshop session? What do you think would happen if you tried this with the "more" results?
 
-<br/>
+#### Day 3 Exercise 2 - Generate predictions for alternative clustering 
 
-```{r, eval=FALSE}
-## ----------------------------------------------------
-## Next - run scCATCH predictions for alternative clustering results
-geo2_catch = createscCATCH(data = exso3@assays$SCT@counts, cluster = as.character(Idents(exso3)))
-catch_markers = geo2_markers %>% rename('logfc' = 'avg_log2FC')
-geo2_catch@markergene = geo2_markers
-geo2_catch@marker = cellmatch[cellmatch$species == 'Mouse' & cellmatch$tissue %in% c('Blood', 'Peripheral Blood', 'Muscle', 'Skeletal muscle', 'Epidermis', 'Skin'), ]
-geo2_catch = findcelltype(geo2_catch)
-
-# Check predictions
-geo2_catch@celltype %>% select(cluster, cell_type, celltype_score)
-```
+Using scCATCH, generate 
 
 ```{r, eval=FALSE}
 ## ------------------------------------------------------
@@ -81,7 +62,9 @@ new_metadata = exso3@meta.data %>%
 rownames(new_metadata) = rownames(exso3@meta.data) #  We are implicitly relying on the same row order!
 exso3@meta.data = new_metadata # Replace the meta.data
 head(exso3@meta.data)
+```
 
+```{r}
 # Create UMAP plot with new cluster labels
 catch_umap_plot = DimPlot(exso3, group.by = paste0('cell_type.',pcs,'PC.',res,'res'), 
                           label = TRUE, reduction = paste0('umap.integrated.sct.rpca_',pcs,'PC'))

@@ -6,9 +6,10 @@
 library(Seurat)
 library(BPCells)
 library(tidyverse)
+library(scCATCH)
 
 # Load in seurat object with alternative clustering results from yesterday's exercises
-exso3 = readRDS('results/rdata/geo_so_sct_clustered_alt2.rds')
+exso3 = readRDS('results/rdata/geo_so_sct_integrated_exercise.rds')
 exso3 # check that object loaded
 
 ## NOTE - BEFORE STOPPING WORK ON THE EXERCISES REMEMBER TO POWER DOWN AND RESTART R SESSION !!!!
@@ -19,9 +20,11 @@ exso3 # check that object loaded
 # Check what identities are set
 Idents(exso3) %>% head()
 
-res = 6 ## use same res values as previous exercise
+## use same values as previous exercise
+pcs = 6
+res = 0.2 
 
-## Note - in the example code, we use the results from "fewer" but can swap to "more" instead
+## Set identities to clustering for selected resolution
 exso3 = SetIdent(exso3, value = paste0('int.sct.rpca.clusters', res))
 Idents(exso3) %>% head()
 
@@ -29,30 +32,31 @@ Idents(exso3) %>% head()
 ## ----------------------------------------------------------
 ## Generate cluster markers to see how that changes with new parameters 
 exso3 = PrepSCTFindMarkers(exso3, assay = "SCT") # NOTE - this step will take some time to run
-geo2_markers = FindAllMarkers(exso3, only.pos = TRUE)
+exso3_markers = FindAllMarkers(exso3, only.pos = TRUE)
+head(exso3)
 
 # Create table of top 5 markers per cluster (using default ranking)
-top_5 = geo2_markers %>% filter(p_val_adj < 0.01) %>% group_by(cluster) %>% slice_head(n = 5)
+top_5 = exso3_markers %>% filter(p_val_adj < 0.01) %>% group_by(cluster) %>% slice_head(n = 5)
 head(top_5, n = 10) # look at results
-write_csv(top_5, file = paste0('results/tables/top5_marker_genes_fewer.csv'))
+write_csv(top_5, file = paste0('results/tables/top5_marker_genes_exercise.csv'))
 
-  
+
+#### Day 3 Exercise 2 - Generate predictions for alternative clustering 
 ## ----------------------------------------------------
 ## Next - run scCATCH predictions for alternative clustering results
-geo2_catch = createscCATCH(data = exso3@assays$SCT@counts, cluster = as.character(Idents(exso3)))
-catch_markers = geo2_markers %>% rename('logfc' = 'avg_log2FC')
-geo2_catch@markergene = geo2_markers
-geo2_catch@marker = cellmatch[cellmatch$species == 'Mouse' & cellmatch$tissue %in% c('Blood', 'Peripheral Blood', 'Muscle', 'Skeletal muscle', 'Epidermis', 'Skin'), ]
-geo2_catch = findcelltype(geo2_catch)
+exso3_catch = createscCATCH(data = exso3@assays$SCT@counts, cluster = as.character(Idents(exso3)))
+catch_markers = exso3_markers %>% rename('logfc' = 'avg_log2FC')
+exso3_catch@markergene = exso3_markers
+exso3_catch@marker = cellmatch[cellmatch$species == 'Mouse' & cellmatch$tissue %in% c('Blood', 'Peripheral Blood', 'Muscle', 'Skeletal muscle', 'Epidermis', 'Skin'), ]
+exso3_catch = findcelltype(exso3_catch)
 
 # Check predictions
-geo2_catch@celltype %>% select(cluster, cell_type, celltype_score)
+exso3_catch@celltype %>% select(cluster, cell_type, celltype_score)
 
 
 ## ------------------------------------------------------
 ## Use predictions to label clusters and UMAP plot
-
-catch_celltypes = geo2_catch@celltype %>% select(cluster, cell_type)
+catch_celltypes = exso3_catch@celltype %>% select(cluster, cell_type)
 colnames(catch_celltypes)[2] = paste0('cell_type.',pcs,'PC.',res,'res')
 new_metadata = exso3@meta.data %>% 
   left_join(catch_celltypes, 
@@ -63,7 +67,7 @@ head(exso3@meta.data)
 
 # Create UMAP plot with new cluster labels
 catch_umap_plot = DimPlot(exso3, group.by = paste0('cell_type.',pcs,'PC.',res,'res'), 
-                          label = TRUE, reduction = paste0('umap.integrated.sct.rpca_',pcs,'PC'))
+                          label = TRUE, reduction = paste0('umap.integrated.sct.rpca_alt', res))
 catch_umap_plot
 #### Question: How did the number of pcs and/or resolution change the predictions? Do you think the predictions correspond better or worse to the cluster structure we see in the UMAP?
 
@@ -76,11 +80,13 @@ ggsave(filename = paste0('results/figures/umap_int_catch-labeled_',
 
 ## Clean up session 
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
-rm(catch_celltypes, catch_markers, geo2_catch, geo2_markers, new_metadata, top_5); 
+rm(catch_celltypes, catch_markers, exso3_catch, exso3_markers, new_metadata, top_5); 
 gc()
 
 ## (Optional) - Save copy of exso3
 saveRDS(exso3, file = paste0('results/rdata/geo_so_sct_integrated_with_markers_alt3.rds'))
+rm(exso3)
+gc()
 
 ## BEFORE PROCEEDING TO THE NEXT SECTION or closing window - POWER DOWN AND RESTART R SESSION
 
