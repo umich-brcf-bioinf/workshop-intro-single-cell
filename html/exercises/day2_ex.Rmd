@@ -20,6 +20,7 @@ exso2 # check that object loaded
 
 ## NOTE - BEFORE STOPPING WORK ON THE EXERCISES REMEMBER TO POWER DOWN AND RESTART R SESSION !!!!
 ```
+<br/>
 
 ### Day 2 Exercise 1 - Clustering with reduced number of PCs
 
@@ -38,7 +39,7 @@ pcs = # Your value here #
 # generate nearest neighbor (graph), using selected number of PCs
 exso2 = FindNeighbors(exso2, dims = 1:pcs, reduction = 'integrated.sct.rpca')
 ```
-
+<br/>
 
 After generating clustering, set resolution parameter - remember this only impacts the how the boundaries of the neighbors are drawn, not the underlying NN graph/structure. 
 
@@ -68,6 +69,7 @@ exso2
 
 **Challenge 1**: How could we generate clusters for multiple alternative resolutions (e.g. 0.4, 0.8, & 1.0)? *Hint* - [`for` loops](https://r4ds.had.co.nz/iteration.html) can be useful for iteration in many programming languages, including R. 
 
+<br/>
 
 ### Day 2 Exercise 2 - Plotting alternative clustering results
 
@@ -77,13 +79,19 @@ After generating our clustering results it's time to visualize them - create a U
 
 *Hint 2* - For a reminder of how to generate a UMAP plot, look at the [Visualizing and evaluating clustering](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/main/html/05-ProjectionAndClustering.html#Visualizing_and_evaluating_clustering) from the Clustering and Projection module.
 
+<br/>
+
 **Challenge 2**: Create UMAP plots for the alternative resolutions (e.g. 0.4, 0.8, & 1.0) generated in the previous challenge.
 
-> Check-in Questions - UMAP for alternative PCs
+<br/>
+
+**Check-in Questions - UMAP for alternative PCs**
+
 > How does the UMAP plot look when fewer or more PCs are used? Do you notice any relationship between the PC parameter and resolution parameter?
 
+<br/>
 
-#### Clean up session 
+### Clean up session 
 
 Before closing out the window, **make sure to clear environment and restart R session to manage the memory usage**
 

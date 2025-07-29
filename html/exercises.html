@@ -636,6 +636,7 @@ exso2 = readRDS(&#39;inputs/prepared_data/rdata/geo_so_sct_integrated.rds&#39;)
 exso2 # check that object loaded
 
 ## NOTE - BEFORE STOPPING WORK ON THE EXERCISES REMEMBER TO POWER DOWN AND RESTART R SESSION !!!!</code></pre>
+<p><br/></p>
 <div id="day-2-exercise-1---clustering-with-reduced-number-of-pcs"
 class="section level3">
 <h3>Day 2 Exercise 1 - Clustering with reduced number of PCs</h3>
@@ -652,6 +653,7 @@ pcs = # Your value here #
 
 # generate nearest neighbor (graph), using selected number of PCs
 exso2 = FindNeighbors(exso2, dims = 1:pcs, reduction = &#39;integrated.sct.rpca&#39;)</code></pre>
+<p><br/></p>
 <p>After generating clustering, set resolution parameter - remember this
 only impacts the how the boundaries of the neighbors are drawn, not the
 underlying NN graph/structure.</p>
@@ -681,6 +683,7 @@ multiple alternative resolutions (e.g. 0.4, 0.8, &amp; 1.0)?
 href="https://r4ds.had.co.nz/iteration.html"><code>for</code> loops</a>
 can be useful for iteration in many programming languages, including
 R.</p>
+<p><br/></p>
 </div>
 <div id="day-2-exercise-2---plotting-alternative-clustering-results"
 class="section level3">
@@ -696,16 +699,21 @@ at the <a
 href="https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/main/html/05-ProjectionAndClustering.html#Visualizing_and_evaluating_clustering">Visualizing
 and evaluating clustering</a> from the Clustering and Projection
 module.</p>
+<p><br/></p>
 <p><strong>Challenge 2</strong>: Create UMAP plots for the alternative
 resolutions (e.g. 0.4, 0.8, &amp; 1.0) generated in the previous
 challenge.</p>
+<p><br/></p>
+<p><strong>Check-in Questions - UMAP for alternative PCs</strong></p>
 <blockquote>
-<p>Check-in Questions - UMAP for alternative PCs How does the UMAP plot
-look when fewer or more PCs are used? Do you notice any relationship
-between the PC parameter and resolution parameter?</p>
+<p>How does the UMAP plot look when fewer or more PCs are used? Do you
+notice any relationship between the PC parameter and resolution
+parameter?</p>
 </blockquote>
-<div id="clean-up-session" class="section level4">
-<h4>Clean up session</h4>
+<p><br/></p>
+</div>
+<div id="clean-up-session" class="section level3">
+<h3>Clean up session</h3>
 <p>Before closing out the window, <strong>make sure to clear environment
 and restart R session to manage the memory usage</strong></p>
 <pre class="r"><code>## ----------------------------------------------------------
@@ -838,7 +846,6 @@ gc()</code></pre>
 <p><br></p>
 </div>
 </div>
-</div>
 <div id="day-3" class="section level2">
 <h2>Day 3</h2>
 <!-- Add Rmd version of exercises with smaller code blocks -->
@@ -878,9 +885,9 @@ exso3 = SetIdent(exso3, value = paste0(&#39;int.sct.rpca.clusters&#39;, res))
 Idents(exso3) %&gt;% head()</code></pre>
 <div
 id="day-3-exercise-1---examine-marker-genes-for-alternative-clusters"
-class="section level4">
-<h4>Day 3 Exercise 1 - examine marker genes for alternative
-clusters</h4>
+class="section level3">
+<h3>Day 3 Exercise 1 - examine marker genes for alternative
+clusters</h3>
 <p>Using the approach from the <a
 href="https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/main/html/06-MarkerVisualization.html#Marker_identification">marker
 identification</a> module, run <code>PrepSCTFindMarkers</code> and
@@ -897,9 +904,9 @@ the “more” results?</p>
 </div>
 <div
 id="day-3-exercise-2---generate-predictions-for-alternative-clustering"
-class="section level4">
-<h4>Day 3 Exercise 2 - Generate predictions for alternative
-clustering</h4>
+class="section level3">
+<h3>Day 3 Exercise 2 - Generate predictions for alternative
+clustering</h3>
 <p>Using <a
 href="https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/main/html/07-CellTypeAnnos.html#Refine_annotations_and_label_clusters">scCATCH
 like we did for our annotation process</a>, generate predictions for the
@@ -907,31 +914,34 @@ alternative clustering results.</p>
 <p><br/></p>
 </div>
 <div id="day-3-exercise-3---add-predictions-to-seurat-object"
-class="section level4">
-<h4>Day 3 Exercise 3 - Add predictions to Seurat object</h4>
+class="section level3">
+<h3>Day 3 Exercise 3 - Add predictions to Seurat object</h3>
 <p>Skipping the refinement step, add the cell-type predictions to the
 Seurat object using the numeric labels as a key, similarly to the our <a
 href="file:///Users/damki/Desktop/ActiveProjectsMount/damki/repos/workshop-intro-single-cell/html/07-CellTypeAnnos.html#Refine_annotations_and_label_clusters">annotation
-step</a></p>
+step</a>.</p>
+<p><br/></p>
 </div>
 <div id="day-3-exercise-4---plot-umap-with-new-cluster-labels"
-class="section level4">
-<h4>Day 3 Exercise 4 - Plot UMAP with new cluster labels</h4>
+class="section level3">
+<h3>Day 3 Exercise 4 - Plot UMAP with new cluster labels</h3>
 <p>Using a similar approach used to <a
 href="https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/main/html/07-CellTypeAnnos.html">visualize
 the annotations in the workshop</a>, generate a UMAP plot</p>
 <p><em>Hint</em> - use the same reduction name as yesterday’s exercise
 and make sure the <code>group_by</code> parameter matches the column
 name added to the metadata that stores the predicted cell-types.</p>
+<p><br/></p>
+<p><strong>Check-in Question</strong></p>
 <blockquote>
-<p>Check-in Question: How did the number of pcs and/or resolution change
-the predictions? Do you think the predictions correspond better or worse
-to the cluster structure we see in the UMAP?</p>
+<p>How did the number of pcs and/or resolution change the predictions?
+Do you think the predictions correspond better or worse to the cluster
+structure we see in the UMAP?</p>
 </blockquote>
 <p></br></p>
 </div>
-<div id="clean-up-session-1" class="section level4">
-<h4>Clean up session</h4>
+<div id="clean-up-session-1" class="section level3">
+<h3>Clean up session</h3>
 <p>Before closing out the window, <strong>make sure to clear environment
 and restart R session to manage the memory usage</strong></p>
 <pre class="r"><code>## ----------------------------------------------------------
@@ -943,15 +953,14 @@ gc()
 ## (Optional) - Save copy of exso3
 saveRDS(exso3, file = paste0(&#39;results/rdata/geo_so_sct_integrated_with_markers_exercise.rds&#39;))
 
-## BEFORE PROCEEDING TO THE NEXT SECTION or closing window - POWER DOWN AND RESTART R SESSION</code></pre>
+## BEFORE CLOSING WINDOW - POWER DOWN AND RESTART R SESSION</code></pre>
 <p><br/></p>
-</div>
-<div
-id="day-3-challenge---run-additional-de-comparisons-using-session-results"
-class="section level3">
-<h3>Day 3 Challenge - Run additional DE comparisons using session
-results</h3>
-<pre class="r"><code>## BEFORE PROCEEDING, MAKE SURE SESSION HAS BEEN restarted and environment is clear
+<!--- hidden for now - additional DE comparisons
+### Day 3 Challenge - Run additional DE comparisons using session results
+
+
+``` r
+## BEFORE PROCEEDING, MAKE SURE SESSION HAS BEEN restarted and environment is clear
 
 # After restarting our R session, load the required libraries
 library(Seurat)
@@ -959,17 +968,17 @@ library(BPCells)
 library(tidyverse)
 
 # load a copy of the final Seurat object (from end of Day 3)
-exso3 = readRDS(&#39;/home/workshop/damki/ISC_R/results/rdata/exso3_sct_integrated_final.rds&#39;)
+exso3 = readRDS('/home/workshop/damki/ISC_R/results/rdata/exso3_sct_integrated_final.rds')
 
 # check what identities are set for the loaded Seurat object
 Idents(exso3) # expect to see Day + Cluster labels; if different identities are set, how would you change them?
-## add code to change identities if needed</code></pre>
-<p>Once the cluster identities are set to the combined Day + Cluster
-labels, generate additional DE comparisons using the provided
-“psuedocode” which are comments that outline what steps are
-expected/needed to guide adding code to complete those outlined
-steps.</p>
-<pre class="r"><code>## ---------------------------------------------------
+## add code to change identities if needed
+```
+
+Once the cluster identities are set to the combined Day + Cluster labels, generate additional DE comparisons using the provided "psuedocode" which are comments that outline what steps are expected/needed to guide adding code to complete those outlined steps.
+
+``` r
+## ---------------------------------------------------
 ## Further extension - how might you generate DE comparisons between D21 and D7 for all annotated clusters?
 
 # check the unique cluster labels - how many clusters are present?
@@ -984,14 +993,16 @@ unique(exso3$cell_type)
 # Use list of comparisons and cluster identities to loop through comparisons of interest (for standard DE comparisons) and save results to files
 # Try to use an outer `for` loop step though the comparisons listed in previous step and an inner `for` loop to cycle through all the clusters
 
-# Bonus - summarize the DE results for the comparison, choosing a reasonable set of thresholds to call the number of DE genes, &amp; save summary to file
+# Bonus - summarize the DE results for the comparison, choosing a reasonable set of thresholds to call the number of DE genes, & save summary to file
 
 # Clean up session. Caution - this next command clears your environment of all objects
 rm(list = ls())
 gc()
 
-## BEFORE CLOSING WINDOW - POWER DOWN AND RESTART R SESSION !!!!</code></pre>
-<p></br></p>
+## BEFORE CLOSING WINDOW - POWER DOWN AND RESTART R SESSION !!!!
+```
+-->
+<p></br> <br/></p>
 <!-- Use R script as key in hidden dropdown -->
 <details>
 <summary>

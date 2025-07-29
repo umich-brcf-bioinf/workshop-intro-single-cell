@@ -36,7 +36,7 @@ exso3 = SetIdent(exso3, value = paste0('int.sct.rpca.clusters', res))
 Idents(exso3) %>% head()
 ```
 
-#### Day 3 Exercise 1 - examine marker genes for alternative clusters
+### Day 3 Exercise 1 - examine marker genes for alternative clusters
 
 Using the approach from the [marker identification](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/main/html/06-MarkerVisualization.html#Marker_identification) module, run `PrepSCTFindMarkers` and generate markers for the alternative clustering results. Bonus to generate a table of the top 5 markers and outputing that to file. 
 
@@ -47,29 +47,35 @@ Using the approach from the [marker identification](https://umich-brcf-bioinf.gi
 <br/>
 
 
-#### Day 3 Exercise 2 - Generate predictions for alternative clustering 
+### Day 3 Exercise 2 - Generate predictions for alternative clustering 
 
 Using [scCATCH like we did for our annotation process](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/main/html/07-CellTypeAnnos.html#Refine_annotations_and_label_clusters), generate predictions for the alternative clustering results.
 
 <br/>
 
 
-#### Day 3 Exercise 3 - Add predictions to Seurat object
+### Day 3 Exercise 3 - Add predictions to Seurat object
 
-Skipping the refinement step, add the cell-type predictions to the Seurat object using the numeric labels as a key, similarly to the our [annotation step](file:///Users/damki/Desktop/ActiveProjectsMount/damki/repos/workshop-intro-single-cell/html/07-CellTypeAnnos.html#Refine_annotations_and_label_clusters)
+Skipping the refinement step, add the cell-type predictions to the Seurat object using the numeric labels as a key, similarly to the our [annotation step](file:///Users/damki/Desktop/ActiveProjectsMount/damki/repos/workshop-intro-single-cell/html/07-CellTypeAnnos.html#Refine_annotations_and_label_clusters).
 
-#### Day 3 Exercise 4 - Plot UMAP with new cluster labels
+<br/>
+
+### Day 3 Exercise 4 - Plot UMAP with new cluster labels
 
 Using a similar approach used to [visualize the annotations in the workshop](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/main/html/07-CellTypeAnnos.html), generate a UMAP plot 
 
 *Hint* - use the same reduction name as yesterday's exercise and make sure the `group_by` parameter matches the column name added to the metadata that stores the predicted cell-types.
 
-> Check-in Question: How did the number of pcs and/or resolution change the predictions? Do you think the predictions correspond better or worse to the cluster structure we see in the UMAP?
+<br/>
+
+**Check-in Question**
+
+> How did the number of pcs and/or resolution change the predictions? Do you think the predictions correspond better or worse to the cluster structure we see in the UMAP?
 
 </br>
 
 
-#### Clean up session 
+### Clean up session 
 
 Before closing out the window, **make sure to clear environment and restart R session to manage the memory usage**
 
@@ -83,11 +89,12 @@ gc()
 ## (Optional) - Save copy of exso3
 saveRDS(exso3, file = paste0('results/rdata/geo_so_sct_integrated_with_markers_exercise.rds'))
 
-## BEFORE PROCEEDING TO THE NEXT SECTION or closing window - POWER DOWN AND RESTART R SESSION
+## BEFORE CLOSING WINDOW - POWER DOWN AND RESTART R SESSION
 
 ```
 <br/>
 
+<!--- hidden for now - additional DE comparisons
 ### Day 3 Challenge - Run additional DE comparisons using session results
 
 ```{r, eval=FALSE}
@@ -132,5 +139,7 @@ gc()
 ## BEFORE CLOSING WINDOW - POWER DOWN AND RESTART R SESSION !!!!
 
 ```
+-->
 
 </br>
+<br/>
