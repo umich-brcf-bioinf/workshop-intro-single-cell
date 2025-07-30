@@ -800,9 +800,9 @@ Queued Operations:
 # to free up unused memory
 rm(geo_mat)
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
-Ncells   9164150  489.5   17682058  944.4   17682058  944.4
-Vcells 423621112 3232.0 1199892293 9154.5 1163947516 8880.3</code></pre>
+<pre><code>           used  (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells  6300819 336.6   12129297  647.8   8022064  428.5
+Vcells 11758118  89.8  564619816 4307.8 673035795 5134.9</code></pre>
 </div>
 <div id="read-bpcells" class="section level2">
 <h2>Read BPCells</h2>
@@ -1013,6 +1013,8 @@ library(Seurat)
 library(BPCells)
 library(tidyverse)
 options(future.globals.maxSize = 1e9)
+
+setwd(&quot;~/ISC_R/&quot;)
 
 # -------------------------------------------------------------------------
 # Load the Seurat object
