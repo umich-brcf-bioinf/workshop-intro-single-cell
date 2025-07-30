@@ -808,26 +808,25 @@ that looks something like this:
 <li><p>Paste the following block into the Terminal prompt: and hit
 <em>Enter/Return</em>. This will take a minute or two to download and
 unpack the inputs.</p>
-<pre><code># download Seurat inputs --------------------------------------------------
+<pre class="bash"><code># download Seurat inputs --------------------------------------------------
 mkdir -p intro_scrnaseq_workshop/ISC_R
 cd intro_scrnaseq_workshop/ISC_R
 
-# Use curl to download a ~2 Gb tarball
+# Use curl to download a ~3 Gb tarball
 # We&#39;ll use evironment variables to avoid extremely long command lines
-source_url=&quot;https://umich-brcf-bioinf-workshop-intro-single-cell.s3.us-east-1.amazonaws.com&quot;
-source_file=&quot;workshop_isc_inputs-20250730.tgz&quot;
+source_url=&quot;https://umich-brcf-bioinf-workshop.s3.us-east-1.amazonaws.com&quot;
+source_file=&quot;ISC/workshop_isc_inputs-20250730.tgz&quot;
 curl -o workshop_isc_inputs.tgz ${source_url}/${source_file}
 
 # tar unpacks the tarball into directories
 tar xzvf workshop_isc_inputs.tgz
 
 # Since we have unpacked the tarball, we can remove it
-rm workshop_isc_inputs.tgz
-
-ls inputs
-</code></pre>
-<p>The last line should show two directories:</p>
-<pre><code>10x_cellranger_filtered_triples
+rm workshop_isc_inputs.tgz</code></pre>
+<p>If you ls the downloaded inputs directory, you should see two
+subdirectories:</p>
+<pre><code>ls inputs
+10x_cellranger_filtered_triples
 prepared_data</code></pre></li>
 <li><p>Now you can review the <a href="01-GettingStarted.html"
 target="_blank">workshop lessons</a> and execute the Seurat analyses on
