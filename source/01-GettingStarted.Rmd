@@ -474,6 +474,8 @@ library(BPCells)
 library(tidyverse)
 options(future.globals.maxSize = 1e9)
 
+setwd("~/ISC_R/")
+
 # -------------------------------------------------------------------------
 # Load the Seurat object
 geo_so = readRDS('results/rdata/geo_so_unfiltered.rds')
