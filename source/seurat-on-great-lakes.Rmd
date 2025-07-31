@@ -34,6 +34,7 @@ klippy::klippy(lang = c("r", "markdown", "bash"), position = c("top", "right"))
 ```
 
 ```{r, include = FALSE}
+library(stringr)
 source("../bin/chunk-options.R")
 source("../bin/set_values.R")
 ```
@@ -97,8 +98,9 @@ A few key ideas:
 
 1. You need a UM core-imaged workstation and a web browser.
 
-2. You need to be on UM campus or connected to the UM VPN or Michigan Medicine 
-   VPN using Cisco Secure Client. (This will require Duo 2-factor authentication.)
+2. You need to be on UM campus or connected to the [UM VPN](https://its.umich.edu/enterprise/wifi-networks/vpn/getting-started){target="_blank"} 
+   or [Michigan Medicine VPN](https://hits.medicine.umich.edu/accounts-access/wifi-networks/vpn-remote-network-access){target="_blank"} using 
+   Cisco Secure Client. (Setting this up will also require Duo 2-factor authentication.)
 
 3. You need a user account on Great Lakes. The first time, you need to request 
    this from ARC; it can take 1-2 days to get set up:
@@ -578,6 +580,26 @@ common jobs.
   common jobs.  
 
 ---
+
+## References/Links
+
+- [UM CoderSpaces "office hours"](https://datascience.isr.umich.edu/events/coderspaces/){target="_blank"} and UM CoderSpaces Slack workspace. _(See "Useful Resources" section in CoderSpaces page for instructions on how to join and access the CoderSpaces Slack workspace.)_
+- [Advanced Research Computing](https://its.umich.edu/advanced-research-computing){target="_blank"}
+  - [Research Computing Package](https://its.umich.edu/advanced-research-computing/research-computing-package){target="_blank"}
+  - Upcoming [UM Advanced Research Computing workshops](https://ttc.iss.lsa.umich.edu/ttc/sessions/tag/hpc/){target="_blank"}
+- [Great Lakes HPC](https://its.umich.edu/advanced-research-computing/high-performance-computing/great-lakes/getting-started){target="_blank"}
+  - [Great Lakes User Guide](https://documentation.its.umich.edu./node/4975)
+  - [Great Lakes Concepts](https://docs.google.com/document/d/1ew_LIFmQnEu95B5mkGsKeMGxKbvbHTbEAMIpRBgJp7c/edit?tab=t.0){target="_blank"} and  [SLURM cheatsheet](https://docs.google.com/document/d/e/2PACX-1vSGaQfRZswv3kQBGzJZRIimOqtDmUOuQBrCdMwiptIK6g9FOT5OW1t1H40eByiTbEcxZ3udfOMQGvMr/pub){target="_blank"}
+  - Videos on [getting started with Great Lakes](https://www.mivideo.it.umich.edu/playlist/dedicated/1_rmm5rnp1/){target="_blank"}
+  - [HPC Software Catalog](https://umich-arc.github.io/arc-software-catalog/){target="_blank"}
+  - [Using Software Modules](https://docs.support.arc.umich.edu/modules/)
+- Globus 
+  - [ARC Globus page](https://documentation.its.umich.edu/node/5019){target="_blank"}
+  - [ARC Video on using Globus](https://www.mivideo.it.umich.edu/media/t/1_uk9nmxsw/181860561?st=2980){target="_blank"}
+  - [Globus tutorial from Reproducible Computing workshop](https://umich-brcf-bioinf.github.io/workshop-reproducible-computing/main/html/Module_transferring_data_globus.html){target="_blank"}
+
+  
+
 
 
 
