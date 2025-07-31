@@ -31,6 +31,7 @@ pre {
 </style>
 
 ```{r, include = FALSE}
+library(stringr)
 source("../bin/set_values.R")
 ```
 
