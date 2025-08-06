@@ -44,7 +44,7 @@ render_site('source/02-QCandFiltering.Rmd');
 render_site('source/03-Normalization.Rmd');
 
 render_site('source/04-PCAandIntegration.Rmd');
-render_site('source/05-ProjectionAndClustering.Rmd');
+render_site('source/05-ProjectionAndClustcd souring.Rmd');
 render_site('source/clusters_faq.Rmd');
 
 render_site('source/06-MarkerVisualization.Rmd');
