@@ -75,13 +75,14 @@ Before making any comparisons between experimental conditions, its important to 
 - Visualize our clustering results with `DimPlot()`
 
 <br/>
-Like other steps in our analysis, multiple parameters may need to be tested and evaluated while we would expect that only the final would be reported. Clustering is considered part of data exploration so an iterative approach is common ([source](https://bioconductor.org/books/3.15/OSCA.basic/clustering.html)). 
+Like other steps in our analysis, multiple parameters may need to be tested and evaluated while we would expect that only the final would be reported. Clustering is considered part of data exploration so an iterative approach is common ([OSCA](https://bioconductor.org/books/3.15/OSCA.basic/clustering.html){target="_blank"}). 
 <br/>
 
 ---
 
 ```{r, read_rds_hidden, echo = FALSE, warning = FALSE, message = FALSE}
-if(!exists('geo_so')) {
+ready = exists('geo_so') && 'unintegrated.sct.pca' %in% geo_so@reductions
+if (!ready) {
   library(Seurat)
   library(BPCells)
   library(tidyverse)
@@ -101,7 +102,7 @@ Now that we generated a PCA reduction of our data and integrated across samples/
 - Is answering your biological question dependent on identifying rarer cell types or specific subtypes?   
 - Or are broader cell-types more relevant to address your biological question?   
 
-The OSCA book has a [helpful analogy comparing clustering to microscopy](https://bioconductor.org/books/3.15/OSCA.basic/clustering.html#overview-1) and points out that "asking for an unqualified 'best' clustering is akin to asking for the best magnification on a microscope without any context". 
+The OSCA book has a [helpful analogy comparing clustering to microscopy](https://bioconductor.org/books/3.15/OSCA.basic/clustering.html#overview-1){target="_blank"} and points out that "asking for an unqualified 'best' clustering is akin to asking for the best magnification on a microscope without any context". 
 
 To generate clusters, we will select a subset of the PCs and then generate "communities" of cells from that reduction before choosing a resolution parameter to divide those communities into discrete clusters. So how do we determine how many PCs represent the "resolution" of biological variation we are interested in?
 
@@ -134,7 +135,7 @@ In this plot, we could arbitrarily choose a number along the x-axis that looks l
 
 ### An algorithmic approach
 
-Instead of choosing based on the elbow plot by sight alone, we can try to  quantify our choice algorithmically. Here we create a function to return a recommended PC based on two possible metrics ( (A) cumulative variation or (B) above a minimum step size). We can apply a version of this function that was borrowed from [HBC](https://hbctraining.github.io/scRNA-seq/lessons/elbow_plot_metric.html) to our data to help select a good starting point for the number of PCs to include for clustering.
+Instead of choosing based on the elbow plot by sight alone, we can try to  quantify our choice algorithmically. Here we create a function to return a recommended PC based on two possible metrics ( (A) cumulative variation or (B) above a minimum step size). We can apply a version of this function that was borrowed from [HBC training materials](https://hbctraining.github.io/scRNA-seq/lessons/elbow_plot_metric.html){target="_blank"} to our data to help select a good starting point for the number of PCs to include for clustering.
 <!--- revised function name per discussion with Raymond --->
 
 ```{r, check_pcs}
@@ -264,9 +265,9 @@ While outside the scope of this workshop, there are community efforts to develop
 more sophisticated methods to select an appropriate number of PCs; here are a 
 few popular approaches:
 
-- [chooseR package](https://github.com/rbpatt2019/chooseR)
-- [findPC package](https://academic.oup.com/bioinformatics/article/38/10/2949/6565314)
-- [using clustering trees](https://lazappi.id.au/posts/2017-07-19-building-a-clustering-tree/)
+- [chooseR package](https://github.com/rbpatt2019/chooseR){target="_blank"}
+- [findPC package](https://academic.oup.com/bioinformatics/article/38/10/2949/6565314){target="_blank"}
+- [using clustering trees](https://lazappi.id.au/posts/2017-07-19-building-a-clustering-tree/){target="_blank"}
 
 <br/>
 <hr/>
@@ -291,28 +292,28 @@ Again, in a full analysis workflow, our selection at this step can be more of a 
 
 ## Clustering
 
-Seurat uses a graph-based clustering approach to assign cells to clusters using a distance metric based on the previously generated PCs, with improvements based on work by ([Xu and Su 2015](https://academic.oup.com/bioinformatics/article/31/12/1974/214505)) and CyTOF data ([Levine et al. 2015](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4508757/)) implemented in Seurat v3 and v5 and building on the initial strategies for droplet-based single-cell technology ([Macosko et al. 2015](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4481139/))  ([source](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html)). A key aspect of this process is that while the clusters are based on similarity of expression between the cells, the clustering is based on the selected PCs and not the full data set. 
+Seurat uses a graph-based clustering approach to assign cells to clusters using a distance metric based on the previously generated PCs, with improvements based on work by ([Xu and Su 2015](https://academic.oup.com/bioinformatics/article/31/12/1974/214505){target="_blank"}) and CyTOF data ([Levine et al. 2015](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4508757/){target="_blank"}) implemented in Seurat v3 and v5 and building on the initial strategies for droplet-based single-cell technology ([Macosko et al. 2015](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC4481139/){target="_blank"})  ([Satija Lab tutorial](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html){target="_blank"}). A key aspect of this process is that while the clusters are based on similarity of expression between the cells, the clustering is based on the selected PCs and not the full data set. 
 
 <center>
 ![Image: kNN example - section on graph based clustering (from Cambridge Bioinformatics course)](./images/curriculum/05-ProjectionAndClustering/BioCellGene-NearestNeighborNetworks.png)
 </center>
 
-To briefly summarize, cells are embedded in a k-nearest neighbors (kNN) graph (illustrated above) based on "the euclidean distance in PCA space" between the cells and the edge weights between any two cells (e.g. their "closeness") is refined based on Jaccard similarity ([source](https://hbctraining.github.io/scRNA-seq_online/lessons/07_SC_clustering_cells_SCT.html)).
+To briefly summarize, cells are embedded in a k-nearest neighbors (kNN) graph (illustrated above) based on "the euclidean distance in PCA space" between the cells and the edge weights between any two cells (e.g. their "closeness") is refined based on Jaccard similarity ([HBC training materials](https://hbctraining.github.io/Intro-to-scRNAseq/lessons/07_SC_clustering_cells_SCT.html){target="_blank"}).
 
 <details>
     <summary>*Additional context and sources for graph-based clustering*</summary>
-    [Cambridge Bioinformatics' Analysis of single cell RNA-seq data course materials](https://biocellgen-public.svi.edu.au/mig_2019_scrnaseq-workshop/clustering-and-cell-annotation.html), the source of the image above, delves into kNN and other graph based clustering methods in much greater detail, including outlining possible downsides for these methods. 
-     To described kNN, we have also drawn from the [Ho Lab's description of this process for Seurat v3](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction) as well as the [HBC materials on clustering](https://hbctraining.github.io/scRNA-seq_online/lessons/07_SC_clustering_cells_SCT.html) and the [OSCA book's more general overview of graph based clustering](https://bioconductor.org/books/3.15/OSCA.basic/clustering.html#clustering-graph), which also describes the drawbacks for these methods.
+    [Cambridge Bioinformatics' Analysis of single cell RNA-seq data course materials](https://biocellgen-public.svi.edu.au/mig_2019_scrnaseq-workshop/clustering-and-cell-annotation.html){target="_blank"}, the source of the image above, delves into kNN and other graph based clustering methods in much greater detail, including outlining possible downsides for these methods. 
+     To described kNN, we have also drawn from the [Ho Lab's description of this process for Seurat v3](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction){target="_blank"} as well as the [HBC materials on clustering](https://hbctraining.github.io/Intro-to-scRNAseq/lessons/07_SC_clustering_cells_SCT.html){target="_blank"} and the [OSCA book's more general overview of graph based clustering](https://bioconductor.org/books/3.15/OSCA.basic/clustering.html#clustering-graph){target="_blank"}, which also describes the drawbacks for these methods.
 </details>
 <br>
 
-This process is performed with the `FindNeighbors()` [command](https://satijalab.org/seurat/reference/findneighbors), using the number of principal components we selected in the previous section.
+This process is performed with the [FindNeighbors()](https://satijalab.org/seurat/reference/findneighbors){target="_blank"} command, using the number of principal components we selected in the previous section.
 
-The second step is to iteratively partition the kNN graph into "cliques" or clusters using the Louvain modularity optimization algorithm (for the default parameters), with the "granularity" of the clusters set by a `resolution` parameter ([source](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html)).
+The second step is to iteratively partition the kNN graph into "cliques" or clusters using the Louvain modularity optimization algorithm (for the default parameters), with the "granularity" of the clusters set by a `resolution` parameter ([Satija Lab tutorial](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html){target="_blank"}).
 
 ![Image: K-means clustering example (from Cambridge Bioinformatics course)](./images/curriculum/05-ProjectionAndClustering/HBC-07-k-meansFigure.png)
 
-We'll use the `FindClusters()` [function](https://satijalab.org/seurat/reference/findclusters), selecting a resolution of `0.4` to start, although we could also add other resolutions at this stage to look at in later steps. See [Waltman and Jan van Eck (2013)](https://link.springer.com/article/10.1140/epjb/e2013-40829-0) for the underlying algorithms.
+We'll use the [FindClusters()](https://satijalab.org/seurat/reference/findclusters){target="_blank"} function, selecting a resolution of `0.4` to start, although we could also add other resolutions at this stage to look at in later steps. See [Waltman and Jan van Eck (2013)](https://link.springer.com/article/10.1140/epjb/e2013-40829-0){target="_blank"} for the underlying algorithms.
 
 Again, how a “cell type” or “subtype” should be defined for your data is important to consider in selecting a resolution - we'd start with a higher resolution for smaller/more rare clusters and a lower resolution for larger/more general clusters.  
 
@@ -397,17 +398,17 @@ Generally it's preferable to err on the side of too many clusters, as they can b
 ### Resolution parameters recommendations
 <details>
     <summary>*More details on choosing a clustering resolution*</summary>
-    The [Seurat clustering tutorial](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction) recommends selecting a resolution between 0.4 - 1.2 for datasets of approximately 3k cells, while the [HBC course](https://hbctraining.github.io/scRNA-seq_online/lessons/07_SC_clustering_cells_SCT.html) recommends 0.4-1.4 for 3k-5k cells. However, in our experience reasonable starting resolutions can be very dataset dependent.
+    The [Seurat clustering tutorial](https://holab-hku.github.io/Fundamental-scRNA/downstream.html#perform-linear-dimensional-reduction){target="_blank"} recommends selecting a resolution between 0.4 - 1.2 for datasets of approximately 3k cells, while the [HBC training materials](https://hbctraining.github.io/Intro-to-scRNAseq/lessons/07_SC_clustering_cells_SCT.html){target="_blank"} recommends 0.4-1.4 for 3k-5k cells. However, in our experience reasonable starting resolutions can be very dataset dependent.
 </details>
 <br>
 
 # Cluster plots 
 
-To visualize the cell clusters, we can use dimensionality reduction techniques to visualize and explore our large, high-dimensional dataset. Two popular methods that are supported by Seurat are t-distributed stochastic neighbor embedding (t-SNE) and Uniform Manifold Approximation and Projection (UMAP) techniques. These techniques allow us to visualize our high-dimensional single-cell data in 2D space and see if cells grouped together within graph-based clusters co-localize in these representations ([source](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#run-non-linear-dimensional-reduction-umaptsne)).
+To visualize the cell clusters, we can use dimensionality reduction techniques to visualize and explore our large, high-dimensional dataset. Two popular methods that are supported by Seurat are t-distributed stochastic neighbor embedding (t-SNE) and Uniform Manifold Approximation and Projection (UMAP) techniques. These techniques allow us to visualize our high-dimensional single-cell data in 2D space and see if cells grouped together within graph-based clusters co-localize in these representations ([Satija Lab tutorial](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#run-non-linear-dimensional-reduction-umaptsne){target="_blank"}).
 
-While we unfortunately don't have time to compare and contrast tSNE, and UMAP, we would highly recommend [this blog post contrasting tSNE and UMAP](https://pair-code.github.io/understanding-umap/) for illustrative examples. The Seurat authors additionally caution that while these methods are useful for data exploration, to avoid drawing biological conclusions solely based on these visualizations ([source](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#run-non-linear-dimensional-reduction-umaptsne)).
+While we unfortunately don't have time to compare and contrast tSNE, and UMAP, we would highly recommend [this blog post contrasting tSNE and UMAP](https://pair-code.github.io/understanding-umap/){target="_blank"} for illustrative examples. The Seurat authors additionally caution that while these methods are useful for data exploration, to avoid drawing biological conclusions solely based on these visualizations ([source](https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#run-non-linear-dimensional-reduction-umaptsne)).
 
-To start this process, we'll use the `RunUMAP()` [function](https://satijalab.org/seurat/reference/runumap) to calculate the UMAP reduction for our data. Notice how the previous dimensionality choices carry through the downstream analysis and that the number of PCs selected in the previous steps are included as an argument.
+To start this process, we'll use the [RunUMAP()](https://satijalab.org/seurat/reference/runumap){target="_blank"} function to calculate the UMAP reduction for our data. Notice how the previous dimensionality choices carry through the downstream analysis and that the number of PCs selected in the previous steps are included as an argument.
 
 ```{r, run_umap, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
 # -------------------------------------------------------------------------
@@ -435,7 +436,7 @@ Refering back to the schematic, the resulting Seurat object now has an additiona
 
 <!--- Add example of changing resolution?--->
 
-After we generate the UMAP reduction, we can then visualize the results using the `DimPlot()` [function](https://satijalab.org/seurat/reference/dimplot), labeling our plot by the auto generated `seurat_clusters` that correspond to the most recent clustering results generated.
+After we generate the UMAP reduction, we can then visualize the results using the [DimPlot()](https://satijalab.org/seurat/reference/dimplot){target="_blank"} function, labeling our plot by the auto generated `seurat_clusters` that correspond to the most recent clustering results generated.
 
 At this stage, we want to determine if the clusters look fairly well separated, if they seem to correspond to how cells are grouped in the UMAP, and if the number of clusters is generally aligned with the resolution of our biological question. Again, if there are "too many" clusters that's not necessarily a problem.
 
@@ -716,7 +717,8 @@ Next steps: Marker genes
 - https://duhaime.s3.amazonaws.com/apps/umap-zoo/index.html
 
 
-These materials have been adapted and extended from materials listed above. These are open access materials distributed under the terms of the [Creative Commons Attribution license (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/), which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.
+These materials have been adapted and extended from materials listed above. These are open access materials distributed under the terms of the [Creative Commons Attribution license (CC BY 4.0)](http://creativecommons.org/licenses/by/4.0/){target="_blank"}
+, which permits unrestricted use, distribution, and reproduction in any medium, provided the original author and source are credited.
 
 <br/>
 <br/>

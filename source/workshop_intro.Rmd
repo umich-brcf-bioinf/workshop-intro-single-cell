@@ -254,7 +254,7 @@ It is important that you can see:
 * Sections of the workshop were extended/adapted from or inspired by sources
 below. These and other specific references are cited throughout the text and/or
 in the __References__ section of each lesson.
-  * [Harvard Chan Bioinformatics Core Single-cell RNA-seq data analysis workshop](https://hbctraining.github.io/scRNA-seq_online/){target="_blank"}
+  * [Harvard Chan Bioinformatics Core Single-cell RNA-seq data analysis workshop](https://hbctraining.github.io/Intro-to-scRNAseq/){target="_blank"}
   * [Orchestrating Single-Cell Analysis with Bioconductor](https://bioconductor.org/books/3.15/OSCA/){target="_blank"}
   * [Satija lab @ New York Genome Center](https://satijalab.org/){target="_blank"}
   * [10x Genomics](https://www.10xgenomics.com/support/single-cell-gene-expression/documentation){target="_blank"}

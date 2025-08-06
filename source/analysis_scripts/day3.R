@@ -31,20 +31,16 @@ geo_so
 # Marker identification and visualization
 # =========================================================================
 
-# -------------------------------------------------------------------------
-# Find empirical markers
-
-# Prep for cluster comparisons
-head(geo_so@meta.data) ## added to look at data (not needed to run)
+# Prep for cluster comparisons to find empirical markers
 geo_so = SetIdent(geo_so, value = 'integrated.sct.rpca.clusters')
+?PrepSCTFindMarkers
 geo_so = PrepSCTFindMarkers(geo_so)
-gc() # added garbage collect step to help free up memory
 
 # Run comparisons for each cluster to generate markers
 geo_markers = FindAllMarkers(geo_so, only.pos = TRUE, min.pct = 0.05)
 
 # Write out full cluster marker results to file
-write_csv(geo_markers, file = 'results/tables/marker_genes_0.4res.csv')
+write_csv(geo_markers, file = 'results/tables/marker_genes_PC10-0.4res.csv')
 
 # Take a look at the first few rows of the result
 head(geo_markers)
@@ -56,7 +52,6 @@ top_5 = geo_markers %>% filter(p_val_adj < 0.01) %>% group_by(cluster) %>% slice
 
 # Look at results
 head(top_5, n = 10)
-gc()
 
 # -------------------------------------------------------------------------
 # Visualize top marker genes as dot plot
@@ -74,13 +69,18 @@ ggsave(filename = 'results/figures/markers_top_5_sct_dot_plot.png',
 # -------------------------------------------------------------------------
 # Check mitochondrial gene expression
 percent_mito_plot = FeaturePlot(geo_so, features='percent.mt')
+percent_mito_plot
+
+
+# ---------------------------
+# ADDED - check an example marker gene
+FeaturePlot(geo_so, features='Acod1')
+
 
 # save to file
 ggsave(filename = 'results/figures/percent_umap_mito_plot.png', 
        plot = percent_mito_plot, 
        width = 6, height = 6, units = 'in')
-
-percent_mito_plot
 
 # -------------------------------------------------------------------------
 # Remove the plot variables from the environment to avoid excessive memory usage
@@ -101,13 +101,11 @@ saveRDS(geo_markers, file = 'results/rdata/geo_markers.rds')
 # Cell Type Annotation
 # =========================================================================
 
-# -------------------------------------------------------------------------
 # Load scCATCH
 library(scCATCH)
 
 # check that cell identities are set to expected resolution 
 all(Idents(geo_so) == geo_so$integrated.sct.rpca.clusters)
-
 
 # -------------------------------------------------------------------------
 # Annotate clusters using scCATCH
@@ -124,7 +122,10 @@ species_tissue_mask = cellmatch$species == 'Mouse' & cellmatch$tissue %in% tissu
 geo_catch@marker = cellmatch[species_tissue_mask, ]
 
 # run scCATCH to generate predictions
+?findcelltype
 geo_catch = findcelltype(geo_catch)
+head(geo_catch) # whole object
+head(geo_catch@celltype) # cell type prediction slot
 
 # look at the predictions
 sc_pred_tbl = geo_catch@celltype %>% 
@@ -132,14 +133,9 @@ sc_pred_tbl = geo_catch@celltype %>%
   rename(cell_type_prediction = cell_type)
 sc_pred_tbl
 
-# added - looking at more parts of the scCATCH predictions
-head(geo_catch@celltype)
-colnames(geo_catch@celltype)
-
 # -------------------------------------------------------------------------
 # Write scCATCH predictions to file
 write_csv(sc_pred_tbl, file = 'results/tables/scCATCH_cluster_predictions.csv')
-
 
 # -------------------------------------------------------------------------
 # Create lists of immune cells and associated gene markers
@@ -151,6 +147,7 @@ immune_markers[['NK cells']] = c('Nkg7', 'Klrd1')
 immune_markers[['B-cell']] = c( 'Ly6d', 'Cd19', 'Cd79b', 'Ms4a1')
 immune_markers[['T-cell']] = c( 'Cd3d','Cd3e','Cd3g') # also Thy1
 
+
 # -------------------------------------------------------------------------
 # Plot other immune to assist with cluster identification
 immune_markers_plot = DotPlot(geo_so, features = immune_markers, assay = 'SCT')  +
@@ -160,6 +157,7 @@ immune_markers_plot
 # save to file
 ggsave(filename = 'results/figures/immune_markers_sct_dot_plot.png', 
        plot = immune_markers_plot, width = 10, height = 5, units = 'in')
+
 
 # -------------------------------------------------------------------------
 # Create lists of other cells and associated gene markers
@@ -183,12 +181,19 @@ other_markers_dot_plot
 ggsave(filename = 'results/figures/other_markers_sct_dot_plot.png', 
        plot = other_markers_dot_plot, width = 12, height = 5, units = 'in')
 
+# NOT IN SHOWNOTES - how to add labels for long version of DotPlot()
+immune_markers_plot + coord_flip() +
+  facet_grid(rows = vars(feature.groups),
+             scales = 'free', space = 'free', switch ='y') +
+  theme(strip.placement = 'outside',
+        strip.text.y.left = element_text(angle = 0))
+
 # -------------------------------------------------------------------------
 # Load the revised annotations from prepared file
 celltype_annos = read_csv('inputs/prepared_data/revised_cluster_annotations.csv') %>%
   mutate(cluster=factor(cluster))
 head(celltype_annos)
-tail(celltype_annos) # added to try to show clusters to be merged
+View(celltype_annos)
 
 # -------------------------------------------------------------------------
 # Merge cell types in but as a new table to slide into @meta.data
@@ -197,6 +202,7 @@ new_metadata = copy_metadata %>%
   left_join(celltype_annos, by = c('integrated.sct.rpca.clusters' = 'cluster'))
 #  We are implicitly relying on the same row order!
 rownames(new_metadata) = rownames(geo_so@meta.data)
+head(new_metadata)
 
 # Replace the meta.data
 geo_so@meta.data = new_metadata 
@@ -205,27 +211,27 @@ head(geo_so@meta.data)
 
 # -------------------------------------------------------------------------
 # Make a labeled UMAP plot of clusters
-catch_umap_plot = 
+annos_umap_plot = 
   DimPlot(geo_so, group.by = 'cell_type', label = TRUE, reduction = 'umap.integrated.sct.rpca')
-catch_umap_plot
+annos_umap_plot
 
-ggsave(filename = 'results/figures/umap_integrated_catch.png', 
-       plot = catch_umap_plot,
-       width = 10, height = 8, units = 'in')
+ggsave(filename = 'results/figures/umap_integrated_annotated.png', 
+       plot =  annos_umap_plot,
+       width = 8, height = 6, units = 'in')
 
-catch_umap_condition_plot = 
+# -------------------------------------------------------------------------
+# Repeat, splitting by day
+annos_umap_condition_plot = 
   DimPlot(geo_so,
           group.by = 'cell_type',
           split.by = 'time',
-          label = TRUE,
+          label = FALSE,
           reduction = 'umap.integrated.sct.rpca')
+annos_umap_condition_plot
 
-ggsave(filename = 'results/figures/umap_integrated_catch_byCondition.png', 
-       plot = catch_umap_condition_plot,
-       width = 10, height = 8, units = 'in')
-
-catch_umap_condition_plot
-
+ggsave(filename = 'results/figures/umap_integrated_annotated_byCondition.png', 
+       plot = annos_umap_condition_plot,
+       width = 14, height = 5, units = 'in')
 
 # -------------------------------------------------------------------------
 # Discard all ggplot objects currently in environment
@@ -236,29 +242,25 @@ gc()
 
 # -------------------------------------------------------------------------
 # Save Seurat object and annotations
-saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated_with_catch.rds')
+saveRDS(geo_so, file = 'results/rdata/geo_so_sct_integrated_with_annos.rds')
 saveRDS(geo_catch, file = 'results/rdata/geo_catch.rds')
-
 
 # =========================================================================
 # Differential Expression Analysis
 # =========================================================================
 
-# -------------------------------------------------------------------------
-# Make a day-celltype contrast
-
-# set up combined label of day + celltype & assign as identities
+# Create combined label of day + celltype to use for DE contrasts
 geo_so$day.celltype = paste(geo_so$time, geo_so$cell_type, sep = '_')
 # check labels
 unique(geo_so$day.celltype)
 
-# -------------------------------------------------------------------------
-# Consider pericyte cluster D21 v D7
-
-# Reset cell identities to the combined condition + cluster label
+# Reset cell identities to the combined condition + celltype label
+head(Idents(geo_so))
 Idents(geo_so) = 'day.celltype'
+head(Idents(geo_so))
 
-# run comparison for D21 vs D7, using wilcoxon test
+# -------------------------------------------------------------------------
+# Consider pericyte cluster D21 v D7 & run DE comparison using wilcoxon test
 de_cell_pericyte_D21_vs_D7 = FindMarkers(
   object = geo_so,
   slot = 'data', test = 'wilcox',
@@ -272,7 +274,7 @@ head(de_cell_pericyte_D21_vs_D7)
 # Add rownames as a column for output
 de_cell_pericyte_D21_vs_D7$gene = rownames(de_cell_pericyte_D21_vs_D7)
 
-# save
+# save to file
 write_csv(de_cell_pericyte_D21_vs_D7, 
           file = 'results/tables/de_standard_pericyte_D21_vs_D7.csv')
 
@@ -281,13 +283,30 @@ table(de_cell_pericyte_D21_vs_D7$p_val_adj < 0.05 &
         abs(de_cell_pericyte_D21_vs_D7$avg_log2FC) > 1.5)
 
 # -------------------------------------------------------------------------
+# Compare pericyte cluster D7 v D0
+de_cell_pericyte_D7_vs_D0 = FindMarkers(
+  object = geo_so,
+  slot = 'data', test = 'wilcox',
+  ident.1 = 'Day7_Pericyte', ident.2 = 'Day0_Pericyte')
+
+head(de_cell_pericyte_D7_vs_D0)
+
+# -------------------------------------------------------------------------
+# Add rownames for D7 v D0 results
+de_cell_pericyte_D7_vs_D0$gene = rownames(de_cell_pericyte_D7_vs_D0)
+
+# summarize results
+table(de_cell_pericyte_D7_vs_D0$p_val_adj < 0.05 & 
+        abs(de_cell_pericyte_D7_vs_D0$avg_log2FC) > 1.5)
+
+
+# -------------------------------------------------------------------------
 # Create pseudobulk object
 pseudo_catch_so = 
   AggregateExpression(geo_so, 
                       assays = 'RNA',
                       return.seurat = TRUE,
                       group.by = c('cell_type', 'time', 'replicate'))
-head(pseudo_catch_so@meta.data) ## ADDED to check input
 
 # Set up labels to use for comparisons & assign as cell identities
 pseudo_catch_so$day.celltype = paste(pseudo_catch_so$time, pseudo_catch_so$cell_type, sep = '_')
@@ -304,34 +323,33 @@ de_pseudo_pericyte_D21_vs_D7 = FindMarkers(
 head(de_pseudo_pericyte_D21_vs_D7)
 
 # -------------------------------------------------------------------------
-# Add genes and review pseudobulk results
-
-# Add rownames as a column for output
+# add genes rownames as a column for output
 de_pseudo_pericyte_D21_vs_D7$gene = rownames(de_pseudo_pericyte_D21_vs_D7)
 
 # save results
 write_csv(de_pseudo_pericyte_D21_vs_D7,
           file = 'results/tables/de_pseudo_pericyte_D21_vs_D7.csv')
 
-# look at results, using the same thresholds
+# review pseudobulk results, using the same thresholds
 table(de_pseudo_pericyte_D21_vs_D7$p_val_adj < 0.05 & 
         abs(de_pseudo_pericyte_D21_vs_D7$avg_log2FC) > 1.5)
 
+# DEMO - volcano plot
 # -------------------------------------------------------------------------
 # Make a volcano plot of pseudobulk diffex results
 pseudo_pericyte_D21_vs_D7_volcano = 
-  ggplot(de_pseudo_pericyte_D21_vs_D7, aes(x = avg_log2FC, y = -log10(p_val))) + 
+  ggplot(de_pseudo_pericyte_D21_vs_D7, aes(x = avg_log2FC, y = -log10(p_val_adj))) + 
   geom_point()
+pseudo_pericyte_D21_vs_D7_volcano
 
 ggsave(filename = 'results/figures/volcano_de_pseudo_pericyte_D21_vs_D0.png', 
        plot = pseudo_pericyte_D21_vs_D7_volcano,
        width = 7, height = 7, units = 'in')
 
-pseudo_pericyte_D21_vs_D7_volcano
-
 # -------------------------------------------------------------------------
 # UMAP feature plot of Cd55 gene
 FeaturePlot(geo_so, features = "Cd55", split.by = "time")
+
 
 # -------------------------------------------------------------------------
 # Discard all ggplot objects currently in environment

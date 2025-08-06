@@ -104,7 +104,7 @@ connect to enable single-cell gene expression analysis from RNA-Seq data.
 # and we don't really want that.
 file_content <- readLines("download_script_template.txt")
 file_string = paste(file_content, collapse = "\n")
-writeLines(str_glue(file_string), "download_script.txt") 
+writeLines(stringr::str_glue(file_string), "download_script.txt") 
 ```
 
   - The Seurat inputs (cellranger triples and dbcells files) used in this 

@@ -61,9 +61,3 @@ rm(list=ls(all.names = TRUE))
 gc(verbose=TRUE, full=TRUE)
 #clean_site(preview=TRUE)
 
-
-
-
-
-
-

@@ -1,16 +1,31 @@
-# Create project directories
-dir.create('scripts', showWarnings = FALSE, recursive = TRUE)
-dir.create('results/figures', showWarnings = FALSE, recursive = TRUE)
-dir.create('results/tables', showWarnings = FALSE, recursive = TRUE)
-dir.create('results/rdata', showWarnings = FALSE, recursive = TRUE)
+3 + 2
+
+2^3
+
+# =========================================================================
+# Getting Started with Seurat
+# =========================================================================
 
 # -------------------------------------------------------------------------
-# Load libraries
+# Get current working directory
+getwd()
+
+# Set working directory to ISC_R
+setwd('~/ISC_R')
+
+# -------------------------------------------------------------------------
+# Create directory structure
+
+dir.create('scripts', recursive = TRUE, showWarnings = FALSE)
+dir.create('results/figures', recursive = TRUE, showWarnings = FALSE)
+dir.create('results/tables', recursive = TRUE, showWarnings = FALSE)
+dir.create('results/rdata', recursive = TRUE, showWarnings = FALSE)
+
+# Load the necessary libraries
 library(Seurat)
 library(BPCells)
 library(tidyverse)
 
-# Modifies the size an R object can be in the session
 options(future.globals.maxSize = 1e9)
 
 # -------------------------------------------------------------------------
@@ -21,59 +36,45 @@ options(future.globals.maxSize = 1e9)
 #   Naming the sample_dirs vector makes Seurat name the
 #     samples in the corresponding manner, which is nice for us.
 sample_dirs = list(
-  HODay0replicate1  = "inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate1", 
-  HODay0replicate2  = "inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate2",
-  HODay0replicate3  = "inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate3",
-  HODay0replicate4  = "inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate4",
-  HODay7replicate1  = "inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate1",
-  HODay7replicate2  = "inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate2",
-  HODay7replicate3  = "inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate3",
-  HODay7replicate4  = "inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate4",
-  HODay21replicate1 = "inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate1",
-  HODay21replicate2 = "inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate2",
-  HODay21replicate3 = "inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate3",
-  HODay21replicate4 = "inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate4")
+  HODay0replicate1  = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate1", 
+  HODay0replicate2  = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate2",
+  HODay0replicate3  = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate3",
+  HODay0replicate4  = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay0replicate4",
+  HODay7replicate1  = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate1",
+  HODay7replicate2  = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate2",
+  HODay7replicate3  = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate3",
+  HODay7replicate4  = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay7replicate4",
+  HODay21replicate1 = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate1",
+  HODay21replicate2 = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate2",
+  HODay21replicate3 = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate3",
+  HODay21replicate4 = "~/ISC_R/inputs/10x_cellranger_filtered_triples/count_run_HODay21replicate4")
 
 # Create the expression matrix from sample dirs
 #   Read10X needs a *vector* instead of a *list*, so we use *unlist* to convert
 geo_mat = Read10X(data.dir = unlist(sample_dirs))
 
-# -------------------------------------------------------------------------
-# Build BPCells input dir
-# To use BPCells (to save some memory), you can transform 
-# the expression matrix data structure above into BPCells files.
-# BPCells uses these files for processing, but you typically never look at 
-# their contents directly
+# Build the BPCells input directory and write the sparse matrix to disk
 write_matrix_dir(mat = geo_mat, dir = '~/ISC_R/bpcells', overwrite = TRUE)
 
-# -------------------------------------------------------------------------
-# Cleanup
-# WORKSHOP SPECIFIC
-# Since we'll now be reading in from BPCells files, we will remove geo_mat
-# from the environment and then prompt RStudio to run a "garbage collection"
-# to free up unused memory
+# Cleanup and garbage collection
 rm(geo_mat)
 gc()
 
-# -------------------------------------------------------------------------
-# Create expression matrix and Seurat object from BPCells files
+# Read BPCells version of the count matrix
 geo_mat = open_matrix_dir(dir = '~/ISC_R/bpcells')
 
-# -------------------------------------------------------------------------
-# Create seurat object
-geo_so = CreateSeuratObject(counts = geo_mat, min.cells = 1, min.features = 50)
+# Create the Seurat object from geo_mat
+geo_so = CreateSeuratObject(count = geo_mat, min.cells = 1, min.features = 50)
 geo_so
 
-# -------------------------------------------------------------------------
-# Examine Seurat object
+# Examine the meta.data slot of the Seurat
 head(geo_so@meta.data)
 
-# -------------------------------------------------------------------------
 # Save the Seurat object
 saveRDS(geo_so, file = 'results/rdata/geo_so_unfiltered.rds')
 
-# Practice shutting down session and reloading the R object
-# WORKSHOP SPECIFIC
+# We practiced powering down the session to clear our memory usage, now restart
+# Let's load everything again
 # -------------------------------------------------------------------------
 # Load libraries
 library(Seurat)
@@ -81,29 +82,18 @@ library(BPCells)
 library(tidyverse)
 options(future.globals.maxSize = 1e9)
 
+setwd("~/ISC_R/")
+
 # -------------------------------------------------------------------------
 # Load the Seurat object
 geo_so = readRDS('results/rdata/geo_so_unfiltered.rds')
 
-
-# -------------------------------------------------------------------------
-# Read sample attributes
-# Load the expanded phenotype columns (condition, day, and replicate)
-phenos = read.csv('inputs/prepared_data/phenos.csv')
-head(phenos, 3)
-
-# =========================================================================
-# Secondary QC and filtering
-# =========================================================================
-
-# -------------------------------------------------------------------------
-# Examine Seurat metdata
-
-# We could do this to show metadata in the console pane:
+# Peek at the first few rows of meta.data
 head(geo_so@meta.data)
 
-# For readability, we'll use View() to open the result in a scrollable tab
-View(head(geo_so@meta.data))
+# Read in the prepared phenotype file and add it to meta.data
+phenos = read.csv('inputs/prepared_data/phenos.csv')
+phenos
 
 # -------------------------------------------------------------------------
 # Make a temp table that joins Seurat loaded metadata with expanded phenotype columns
@@ -115,16 +105,20 @@ tmp_meta = geo_so@meta.data %>%
   mutate(time = factor(time, unique(phenos$time))) %>%
   column_to_rownames('tmp_rowname')
 
-View(head(tmp_meta))
+head(tmp_meta)
 
-# -------------------------------------------------------------------------
-# Assign tmp_meta back to geo_so@meta.data and 
-# reset the default identity cell name
+# Check that the number of rows is the same
+dim(tmp_meta)
+dim(geo_so@meta.data)
+
+# Reassign meta.data to be tmp_meta
 geo_so@meta.data = tmp_meta
 Idents(geo_so) = 'orig.ident'
+
+# Verify that the substitution worked
 head(geo_so@meta.data)
 
-# -------------------------------------------------------------------------
+# Let's take a look at the number of cells per sample
 cell_counts_pre_tbl = geo_so@meta.data %>% count(orig.ident, name = 'prefilter_cells')
 cell_counts_pre_tbl
 
@@ -136,13 +130,15 @@ VlnPlot(geo_so, features = 'nFeature_RNA', assay = 'RNA', layer = 'counts') +
   geom_hline(yintercept = 400) + 
   geom_hline(yintercept = 300) + 
   geom_hline(yintercept = 200)
-ggsave(filename = 'results/figures/qc_nFeature_violin.png', width = 12, height = 6, units = 'in')
+ggsave(filename = 'results/figures/qc_nFeature_violin.png',
+       width = 12, height = 6, units = 'in')
 
 # -------------------------------------------------------------------------
 # Review count violin plots
 VlnPlot(geo_so, features = 'nCount_RNA', assay = 'RNA', layer = 'counts') + 
   NoLegend()
-ggsave(filename = 'results/figures/qc_nCount_violin.png', width = 12, height = 6, units = 'in')
+ggsave(filename = 'results/figures/qc_nCount_violin.png',
+       width = 12, height = 6, units = 'in')
 
 # -------------------------------------------------------------------------
 # Consider mitochondrial transcripts
@@ -152,8 +148,6 @@ geo_so$percent.mt = PercentageFeatureSet(geo_so, pattern = '^mt-')
 # Use summary() to quickly check the range of values
 summary(geo_so$percent.mt)
 
-head(geo_so)
-
 # -------------------------------------------------------------------------
 # Review mitochondrial violin plots
 VlnPlot(geo_so, features = 'percent.mt', assay = 'RNA', layer = 'counts') + 
@@ -162,15 +156,19 @@ VlnPlot(geo_so, features = 'percent.mt', assay = 'RNA', layer = 'counts') +
   geom_hline(yintercept = 20) + 
   geom_hline(yintercept = 15) + 
   geom_hline(yintercept = 10)
-ggsave(filename = 'results/figures/qc_mito_violin.png', width = 12, height = 6, units = 'in')
+ggsave(filename = 'results/figures/qc_mito_violin.png',
+       width = 12, height = 6, units = 'in')
 
-# -------------------------------------------------------------------------
-# Filter to exclude suspect cells and assign to new Seurat object
+# Based on the filtering in the paper how many cells would remain?
+# nFeature_RNA > 500 and percent.mt < 25
+geo_so@meta.data %>% filter(nFeature_RNA > 500 & percent.mt < 25) %>% count(orig.ident)
+
+cell_counts_pre_tbl
+
+# Let's subset our geo_so so that nFeature_RNA > 300 & percent.mt < 15
 geo_so = subset(geo_so, subset = nFeature_RNA > 300 & percent.mt < 15)
 geo_so
 
-# -------------------------------------------------------------------------
-# Examine remaining cell counts
 cell_counts_post_tbl = geo_so@meta.data %>% count(orig.ident, name = 'postfilter_cells')
 cell_counts_post_tbl
 
@@ -178,9 +176,6 @@ cell_counts_post_tbl
 # Show cell counts before and after filtering
 cell_counts_tbl = cell_counts_pre_tbl %>% left_join(cell_counts_post_tbl, by = 'orig.ident')
 cell_counts_tbl
-
-# -------------------------------------------------------------------------
-write_csv(cell_counts_tbl, file = 'results/tables/cell_filtering_counts.csv')
 
 # -------------------------------------------------------------------------
 # Save the current Seurat object
