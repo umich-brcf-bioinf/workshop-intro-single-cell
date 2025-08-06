@@ -211,7 +211,7 @@ immune_markers[['T-cell']] = c( 'Cd3d','Cd3e','Cd3g') # also Thy1
 ```
 
 
-```{r, imm_marker_gene_check, fig.show='hold', messages=FALSE, warnings=FALSE}
+```{r, imm_marker_gene_check, fig.show='hold', message=FALSE, warning=FALSE}
 # -------------------------------------------------------------------------
 # Plot other immune to assist with cluster identification
 immune_markers_plot = DotPlot(geo_so, features = immune_markers, assay = 'SCT')  +
