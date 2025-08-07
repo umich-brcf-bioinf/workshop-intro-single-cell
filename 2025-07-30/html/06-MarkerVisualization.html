@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-07-29" />
+<meta name="date" content="2025-08-06" />
 
 <title>Marker identification and visualization</title>
 
@@ -424,7 +424,7 @@ div.tocify {
 <h1 class="title toc-ignore">Marker identification and
 visualization</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-07-29</h4>
+<h4 class="date">2025-08-06</h4>
 
 </div>
 
@@ -504,7 +504,7 @@ analysis to identify the genes that distinguish those clusters (<a
 href="https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes">source</a>).
 This should allow us to get visibility on some key questions for our
 clusters, as <a
-href="https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html">highlighted
+href="https://hbctraining.github.io/Intro-to-scRNAseq/lessons/09_merged_SC_marker_identification.html">highlighted
 by the HBC materials</a>, namely:</p>
 <ul>
 <li>Are there are biologically meaningful gene expression differences
@@ -529,7 +529,7 @@ Smyth 2010</a>) is recommended by the <a
 href="%5BOuyang%5D(https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes)">Ouyang
 Lab</a> for more complex comparison designs, such as those that include
 covariates.</p>
-<!-- Additional context from [Ouyang](https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes) regarding tool options and [HBC materials](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html) regarding FindMarkers vs FindConservedMarkers, etc. -->
+<!-- Additional context from [Ouyang](https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes) regarding tool options and [HBC materials](https://hbctraining.github.io/Intro-to-scRNAseq/lessons/09_merged_SC_marker_identification.html) regarding FindMarkers vs FindConservedMarkers, etc. -->
 <div class="float">
 <img
 src="images/curriculum/06-MarkerVisualization/Ouyang_clust-deCompare.png"
@@ -550,7 +550,7 @@ differential expression including some highlighted in the figure below,
 as well as a more extensive section on <a
 href="https://ouyanglab.com/singlecell/clust.html#sec:diffexpr">threshold
 considerations</a>, while the <a
-href="https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html">HBC
+href="https://hbctraining.github.io/Intro-to-scRNAseq/lessons/09_merged_SC_marker_identification.html">HBC
 section on marker genes identification</a> highlights the different
 types of marker identification options available via Seurat.
 </details>
@@ -632,7 +632,7 @@ href="https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#finding-differe
 since each cell is used as a replicate in these comparisons which can
 lead to inflated (e.g. very low) p-values, the top markers are more
 likely to be trustworthy (<a
-href="https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html">source</a>).</p>
+href="https://hbctraining.github.io/Intro-to-scRNAseq/lessons/09_merged_SC_marker_identification.html">source</a>).</p>
 <p>Therefore, it’s useful to filter the results to highlight the top
 positive markers (since a positive fold-change would mean that gene is
 more highly expressed in the cluster compared to all other cells),
@@ -704,7 +704,7 @@ genes with both larger fold-change differences and larger difference
 between pct.1 and pct.2, particularly if pct.1 is high (e.g. if 80% of
 cells in the cluster evaluated express the gene that more reliable than
 if only 20% of cells express that gene) (<a
-href="https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html">source</a>).</p>
+href="https://hbctraining.github.io/Intro-to-scRNAseq/lessons/09_merged_SC_marker_identification.html">source</a>).</p>
 </div>
 <div id="marker-visualization" class="section level2">
 <h2>Marker visualization</h2>
@@ -797,9 +797,9 @@ plots = c(&quot;top_5_sct_dot_plot&quot;,
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
-Ncells  10045440  536.5   17682058  944.4   17682058   944.4
-Vcells 425207275 3244.1 1174666813 8962.0 1468329871 11202.5</code></pre>
+<pre><code>            used (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells   7414310  396   11389825  608.3  11389825  608.3
+Vcells 336586403 2568  840059114 6409.2 797522530 6084.7</code></pre>
 </div>
 </div>
 </div>
