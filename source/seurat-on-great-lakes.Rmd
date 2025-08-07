@@ -152,8 +152,10 @@ Once you've got everything you need from above, you're going to use **Open OnDem
 4. The previous step will display a _launch configuration page_ with several fields, e.g.
        ![partial screen shot](images/seurat-on-great-lakes/ood-launch-config.png)
     ...
-  
-    Enter values below in the corresponding fields:
+    
+    <a id="launch_config_values"></a>
+    
+    Enter launch configuration values below in the corresponding fields:
   
     | Field | Value |
     |-------|-------|
@@ -282,7 +284,7 @@ Any of the following actions will end your session:
 # and we don't really want that.
 file_content <- readLines("download_script_template.txt")
 file_string = paste(file_content, collapse = "\n")
-writeLines(str_glue(file_string), "download_script.txt") 
+writeLines(stringr::str_glue(file_string), "download_script.txt") 
 ```
 
     ```{bash download_script, file='download_script.txt', eval=FALSE}

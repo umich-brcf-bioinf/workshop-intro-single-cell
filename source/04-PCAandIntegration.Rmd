@@ -479,7 +479,6 @@ In this section, we:
 
 - Discussed how PCA is used in scRNA-seq analysis.
 - Demonstrated some visualizations after computing PCA.
-- Discussed how to decide how many PCs to use in downstream analysis.
 - Integrated the data.
 
 Next steps: Clustering and projection

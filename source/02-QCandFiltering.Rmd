@@ -243,7 +243,7 @@ head(geo_so@meta.data) %>%
 
 Cell Ranger is a first-pass filter to determine what is a "cell" and what is not. It only considers one sample at a time, and does not consider the cells relative to one another. 
 
-Let's dig deeper to determine when a droplet might contain two cells, a very stressed cell, or some technical issue in the library preparation. We will use three metrics to determine low-quality cells based on their expression profiles ([reference](https://bioconductor.org/books/3.12/OSCA/quality-control.html#choice-of-qc-metrics)).
+Let's dig deeper to determine when a droplet might contain two cells, a very stressed cell, or some technical issue in the library preparation. We will use three metrics to determine low-quality cells based on their expression profiles ([OSCA reference](https://bioconductor.org/books/3.12/OSCA/quality-control.html#choice-of-qc-metrics){target="_blank"}).
 
 1. The total number of UMIs detected. Cells with a small number of UMIs detected may indicate loss of RNA during library preparation via cell lysis or inefficient cDNA capture / amplification. Cells with relatively high number of UMIs detected may indicate a doublet.
 2. The number of expressed features, defined as number of genes with non-zero counts. Cells with very few measured genes are likely to be of low-quality, and may distort downstream variance estimation or dimension reduction steps.
@@ -281,7 +281,7 @@ It appears that the Day 7 samples have systematically more cells than the other 
 
 A violin plot shows the distribution of a quantity among the cells in a single sample, or across many samples. Seurat has a built-in function, `VlnPlot()` for this purpose. Let's orient with a violin plot of `nFeature_RNA` for only one sample, `HODay21replicate1`:
 
-```{r, single_violin_plot, echo = FALSE}
+```{r, single_violin_plot, echo = FALSE, warning=FALSE, message=FALSE}
 VlnPlot(subset(geo_so, orig.ident == 'HODay21replicate1'), features = 'nFeature_RNA', assay = 'RNA', layer = 'counts') + NoLegend()
 ```
 
@@ -362,9 +362,9 @@ Generally, many tutorials use a cutoff of 5 - 10% mitochondrial reads. However, 
 
 ## Fixed thresholds
 
-Fixed thresholds for any combination of `nFeature_RNA`, `nCount_RNA`, and `percent.mt` can be selected to remove low quality cells. In general, selecting very stringent thresholds for each of the metrics may lead to removing informative cells. As per the HBC training materials ([link](https://hbctraining.github.io/scRNA-seq_online/lessons/04_SC_quality_control.html)), we recommend setting individual thresholds to err on the permissive side.
+Fixed thresholds for any combination of `nFeature_RNA`, `nCount_RNA`, and `percent.mt` can be selected to remove low quality cells. In general, selecting very stringent thresholds for each of the metrics may lead to removing informative cells. As per the [HBC training materials](https://hbctraining.github.io/Intro-to-scRNAseq/lessons/04_SC_quality_control.html){target="_blank"}, we recommend setting individual thresholds to err on the permissive side.
 
-[Sorkin et al.](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7002453/) chose these thresholds:
+[Sorkin et al.](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7002453/){target="_blank"} chose these thresholds:
 
 > We filtered out cells with less than 500 genes per cell and with more than 25% mitochondrial read content.
 
@@ -379,7 +379,7 @@ subset(geo_so, subset = nFeature_RNA > 500 & percent.mt < 25)@meta.data %>%
 
 ## Adaptive thresholds
 
-For this workshop we will use fixed thresholds, but another option is to remove low-quality cells adaptively. This approach assumes that most of the cells are of acceptable quality. For more information see the relevant section in Bioconductor's online book: Orchestrating Single-Cell Analysis ([link](https://bioconductor.org/books/3.12/OSCA/quality-control.html#quality-control-outlier)).
+For this workshop we will use fixed thresholds, but another option is to remove low-quality cells adaptively. This approach assumes that most of the cells are of acceptable quality. For more information see the relevant section in Bioconductor's online book: [Orchestrating Single-Cell Analysis](https://bioconductor.org/books/3.12/OSCA/quality-control.html#quality-control-outlier){target="_blank"}.
 
 # Removing low-quality cells
 

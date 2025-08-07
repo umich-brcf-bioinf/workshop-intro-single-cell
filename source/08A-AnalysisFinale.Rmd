@@ -189,7 +189,7 @@ Although outside the scope of the workshop, there are many other possible avenue
 
 -   Integration with other modalities (e.g. ATAC-seq, VDJ, etc.)
 
--   Subclustering clusters of interest - see [HBC's summary on subclustering](https://hbctraining.github.io/scRNA-seq_online/lessons/seurat_subclustering.html), [Seurat's findSubcCluster documentation](https://satijalab.org/seurat/reference/findsubcluster) and [this related issue thread](https://github.com/satijalab/seurat/issues/1883)
+-   Subclustering clusters of interest - see [HBC's summary on subclustering](https://hbctraining.github.io/Intro-to-scRNAseq/lessons/seurat_subclustering.html), [Seurat's findSubcCluster documentation](https://satijalab.org/seurat/reference/findsubcluster) and [this related issue thread](https://github.com/satijalab/seurat/issues/1883)
 
 -   Trajectory or Pseudotime analysis - see [the Ouyang Lab's trajectory analysis](https://ouyanglab.com/singlecell/dimrd.html) or [Broad Institute's materials on trajectory analysis](https://broadinstitute.github.io/2020_scWorkshop/trajectory-analysis.html)
 
