@@ -93,7 +93,7 @@ for (pc in included_pcs) {
     # Generate a single "blank" umap for each PC
     if (res == min(resolutions)) {
         res = 0
-        name_suffix = sprintf('res=%s_pcs=%s', res, pc)
+        name_suffix = sprintf('res=%s_pcs=%02d', res, pc)
         umap_file = sprintf('umaps/%s.png', name_suffix)
 
         blank_umap = DimPlot(geo_so,
