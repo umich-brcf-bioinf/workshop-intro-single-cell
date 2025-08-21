@@ -16,9 +16,6 @@ library(rmarkdown)
 library(klippy)
 library(kableExtra)
 
-# IF KNITTING ON AWS:
-setwd("~/workshop-intro-single-cell")
-
 # The html from the files below don't have the nav bar
 render('source/workshop_setup/preregistration_info.md', output_dir='html/workshop_setup/')
 render('source/workshop_setup/preworkshop_checklist.md', output_dir='html/workshop_setup/')
@@ -44,7 +41,7 @@ render_site('source/02-QCandFiltering.Rmd');
 render_site('source/03-Normalization.Rmd');
 
 render_site('source/04-PCAandIntegration.Rmd');
-render_site('source/05-ProjectionAndClustcd souring.Rmd');
+render_site('source/05-ProjectionAndClustering.Rmd');
 render_site('source/clusters_faq.Rmd');
 
 render_site('source/06-MarkerVisualization.Rmd');

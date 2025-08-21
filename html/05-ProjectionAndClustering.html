@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-08-06" />
+<meta name="date" content="2025-08-21" />
 
 <title>Clustering and Projection</title>
 
@@ -425,7 +425,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Clustering and Projection</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-08-06</h4>
+<h4 class="date">2025-08-21</h4>
 
 </div>
 
@@ -687,9 +687,9 @@ ggsave(filename = &#39;results/figures/optimal_pcs.png&#39;,
 
 rm(alt_pcs)
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   7182416  383.6   11389824  608.3  11389824  608.3
-Vcells 375637080 2865.9  538972552 4112.1 378126379 2884.9</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
+Ncells   9522375  508.6   18327584  978.8   18327584  978.8
+Vcells 380510137 2903.1  579119017 4418.4 1131091741 8629.6</code></pre>
 <p>Again, this number is likely a starting point and may need to be
 revised depending on the outcome of the downstream steps.</p>
 <p>While outside the scope of this workshop, there are community efforts
@@ -794,8 +794,8 @@ principal components we selected in the previous section.</p>
 “cliques” or clusters using the Louvain modularity optimization
 algorithm (for the default parameters), with the “granularity” of the
 clusters set by a <code>resolution</code> parameter (<a
-href="https://satijalab.org/seurat/articles/pbmc3k_tutorial.html">Satija
-Lab tutorial</a>).</p>
+href="https://satijalab.org/seurat/articles/pbmc3k_tutorial.html"
+target="_blank">Satija Lab tutorial</a>).</p>
 <div class="float">
 <img
 src="images/curriculum/05-ProjectionAndClustering/HBC-07-k-meansFigure.png"
@@ -803,11 +803,11 @@ alt="Image: K-means clustering example (from Cambridge Bioinformatics course)" /
 <div class="figcaption">Image: K-means clustering example (from
 Cambridge Bioinformatics course)</div>
 </div>
-<p>We’ll use the <code>FindClusters()</code> <a
+<p>We’ll use the <a
 href="https://satijalab.org/seurat/reference/findclusters"
-target="_blank">function</a>, selecting a resolution of <code>0.4</code>
-to start, although we could also add other resolutions at this stage to
-look at in later steps. See <a
+target="_blank">FindClusters()</a> function, selecting a resolution of
+<code>0.4</code> to start, although we could also add other resolutions
+at this stage to look at in later steps. See <a
 href="https://link.springer.com/article/10.1140/epjb/e2013-40829-0"
 target="_blank">Waltman and Jan van Eck (2013)</a> for the underlying
 algorithms.</p>
@@ -1117,17 +1117,21 @@ replicate1
 <p>The result of <code>FindNeighbors()</code> adds graph information to
 the <code>graphs</code> slot:</p>
 <div class="float">
-<img src="images/seurat_schematic/Slide8.png"
-alt="Image: Schematic after FindNeighbors()." />
-<div class="figcaption">Image: Schematic after FindNeighbors().</div>
+<img src="images/seurat-schematic/seurat-find-neighbors.png"
+alt="Seurat after FindNeighbors" />
+<div class="figcaption">Seurat after FindNeighbors</div>
 </div>
 <p><br></p>
 <p>The result of <code>FindClusters()</code> adds two columns to the
 <code>meta.data</code> table and changes the <code>active.ident</code>
 to the “seurat_clusters” column. In other words, the cells now belong to
 clusters rather than to their <code>orig.ident</code>.</p>
-<p><img src="images/seurat_schematic/Slide9.png"
-alt="Image: Schematic after FindClusters()." /> <br></p>
+<div class="float">
+<img src="images/seurat-schematic/seurat-find-clusters.png"
+alt="Seurat after FindClusters" />
+<div class="figcaption">Seurat after FindClusters</div>
+</div>
+<p><br></p>
 <p>Generally it’s preferable to err on the side of too many clusters, as
 they can be combined manually in later steps.</p>
 <div id="resolution-parameters-recommendations" class="section level3">
@@ -1195,9 +1199,9 @@ Active assay: SCT (20468 features, 3000 variable features)
 an additional <code>umap.integrated.sct.rpca</code> in the
 <code>reduction</code> slot:</p>
 <div class="float">
-<img src="images/seurat_schematic/Slide10.png"
-alt="Image: Schematic after RunUMAP()." />
-<div class="figcaption">Image: Schematic after RunUMAP().</div>
+<img src="images/seurat-schematic/seurat-run-umap.png"
+alt="Seurat after RunUMAP" />
+<div class="figcaption">Seurat after RunUMAP</div>
 </div>
 <p><br/> <br/></p>
 </div>
@@ -2535,9 +2539,9 @@ plots = c(&quot;pre_integration_umap_plot_day&quot;,
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   7330355  391.5   11389825  608.3  11389825  608.3
-Vcells 384486589 2933.4  646847062 4935.1 434825262 3317.5</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
+Ncells   9524191  508.7   18327584  978.8   18327584  978.8
+Vcells 750899413 5729.0 1137981218 8682.2 1137969429 8682.1</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">

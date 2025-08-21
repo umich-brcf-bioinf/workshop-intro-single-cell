@@ -125,7 +125,7 @@ geo_so
 
 We see the 12 layers containing the count data for each of the samples. Our running schematic has now changed:
 
-![Image: Schematic splitting the counts layer of the RNA assay by sample.](images/seurat_schematic/Slide4.png)
+![Seurat splitting the counts layer of the RNA assay by sample.](images/seurat-schematic/seurat-split-layers.png)
 
 Next, run `SCTransform()`:
 
@@ -195,7 +195,7 @@ geo_so
 
 We now observe changes to our running schematic:
 
-![Image: Schematic after SCTransform().](images/seurat_schematic/Slide5.png)
+![Seurat after SCTransform](images/seurat-schematic/seurat-sctransform.png)
 
 Note that we have a new assay, `SCT` which has three layers: `counts`, `data`, and `scale.data`. Also note additional columns in `meta.data` and the change of the `active.assay` to `SCT`. `SCTransform()` has also determined the common variable features across the cells to be used in our downstream analysis. Viewed in our running schematic:
 

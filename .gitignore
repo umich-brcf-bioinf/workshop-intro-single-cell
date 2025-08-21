@@ -8,6 +8,7 @@ html/analysis_scripts/
 html/data/
 html/figures/
 html/images/source
+html/images/clusters_faq/*.gz
 html/rdata/
 html/server_setup/
 html/tables/

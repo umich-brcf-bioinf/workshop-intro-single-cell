@@ -167,22 +167,48 @@ geo_catch = createscCATCH(data = geo_so@assays$SCT@counts, cluster = as.characte
 
 # add marker genes to use for predictions
 geo_catch@markergene = geo_markers
+```
 
+```{r, sccatch_tissues, message = FALSE, warning = FALSE}
+# -------------------------------------------------------------------------
 # specify tissues/cell-types from the scCATCH reference
 tissues_of_interest = c('Blood', 'Peripheral Blood', 'Muscle', 'Skeletal muscle', 'Epidermis', 'Skin')
 species_tissue_mask = cellmatch$species == 'Mouse' & cellmatch$tissue %in% tissues_of_interest
 geo_catch@marker = cellmatch[species_tissue_mask, ]
+```
 
+```{r, sccatch_run, message = FALSE, warning = FALSE}
+# -------------------------------------------------------------------------
 # run scCATCH to generate predictions
 geo_catch = findcelltype(geo_catch)
 
 # look at the predictions
+View(head(geo_catch@celltype))
+```
+
+
+```{r, sccatch_cleanup, message = FALSE, warning = FALSE, eval=FALSE}
+# -------------------------------------------------------------------------
+# cleanup predictions
 sc_pred_tbl = geo_catch@celltype %>% 
   select(cluster, cell_type, celltype_score) %>%
   rename(cell_type_prediction = cell_type)
 sc_pred_tbl
-
 ```
+
+```{r, sccatch_cleanup_table, warning = FALSE, message = FALSE, echo=FALSE}
+sc_pred_tbl = geo_catch@celltype %>% 
+  select(cluster, cell_type, celltype_score) %>%
+  rename(cell_type_prediction = cell_type)
+
+sc_pred_tbl %>%
+  kable("html") %>%
+  kable_styling(font_size = 12,
+                bootstrap_options='condensed',
+                html_font = '"Arial Narrow", arial, helvetica, sans-serif') %>%
+  scroll_box(height='100%', width='1000px')
+```
+
 
 When we look at our results we can see the cell type score, which gives us an idea of the confidence of that prediction. Not shown here but the full `celltype` table also includes marker genes and PMIDs for relevant literature for each prediction.
 
