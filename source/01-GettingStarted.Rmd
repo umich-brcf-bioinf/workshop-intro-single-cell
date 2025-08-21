@@ -416,7 +416,7 @@ and review how to [install hdf5](https://github.com/hhoeflin/hdf5r){target="_bla
 
 The `Seurat` object is a complex data type, so let's get a birds eye view with an image from [this tutorial](https://swbioinf.github.io/scRNAseqInR_Doco/seuratobject.html#discussion-the-seurat-object-in-r) on single-cell analysis.
 
-![Image: Schematic of `Seurat` object.](images/seurat_schematic/Slide1.png)
+![Seurat object](images/seurat-schematic/seurat-empty.png)
 
 The three main "slots" in the object are:
 
@@ -428,7 +428,7 @@ There are other slots which store information that becomes relevant as we progre
 
 After reading the data in and creating the Seurat object above, we can imagine the following schematic representing our object:
 
-![Image: Schematic after creating the Seurat object.](images/seurat_schematic/Slide2.png)
+![Initial Seurat object](images/seurat-schematic/seurat-create-seurat-object.png)
 
 Note the RNA assay contains a `count` layer consisting of a raw count matrix where the rows are genes (features, more generically), and the columns are all cells across all samples. Note also the presence of a `meta.data` table giving information about each cell. We'll pay close attention to this as we proceed. The other slots include information about the `active.assay` and `active.ident` which tell Seurat which expression data to use and how the cells are to be identified.
 

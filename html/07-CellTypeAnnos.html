@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-08-12" />
+<meta name="date" content="2025-08-21" />
 
 <title>Cell Type Annotation</title>
 
@@ -425,7 +425,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Cell Type Annotation</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-08-12</h4>
+<h4 class="date">2025-08-21</h4>
 
 </div>
 
@@ -1434,9 +1434,9 @@ code)</strong>
 the level of specificity that’s relevant to <em>your</em> biological
 question or use the same labels for clusters that don’t seems to share
 similar expression programs</p>
-<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   8258465  441.1   12266148  655.1  12266148  655.1
-Vcells 345437705 2635.5  781210331 5960.2 766870241 5850.8</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
+Ncells   7037387  375.9   12067562  644.5   12067562  644.5
+Vcells 340743177 2599.7  904873463 6903.7 1131091741 8629.6</code></pre>
 <img src="images/curriculum/07-CellTypeAnnotation/07-catch_umap_plots-1.png" width="1152" style="display: block; margin: auto;" />
 </details>
 <p><br> <br/></p>
@@ -1450,9 +1450,9 @@ Vcells 345437705 2635.5  781210331 5960.2 766870241 5850.8</code></pre>
 # (Ok since we saved the plots as we went along)
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   8193818  437.6   12266148  655.1  12266148  655.1
-Vcells 341795441 2607.7  781210331 5960.2 766870241 5850.8</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
+Ncells   6959813  371.7   12067562  644.5   12067562  644.5
+Vcells 337166855 2572.4  904873463 6903.7 1131091741 8629.6</code></pre>
 <p>We’ll save the scCATCH object and our updated Seurat object with cell
 type annotations.</p>
 <pre class="r"><code># -------------------------------------------------------------------------

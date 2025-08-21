@@ -219,7 +219,9 @@ geo_so@meta.data = tmp_meta
 Idents(geo_so) = 'orig.ident'
 ```
 
-The `orig.ident` column looks the same, but is now a factor with ordering we prefer. We also have `day` and `replicate` columns that will be useful downstream.
+![Seurat after adding extended phenotype info](images/seurat-schematic/seurat-add-phenotype-meta-data.png)
+
+The `orig.ident` column looks the same, but is now a factor with ordering we prefer. We also have `condition`, `time`, and `replicate` columns that will be useful downstream.
 
 ```{r, preview_metadata3A, eval = FALSE}
 # -------------------------------------------------------------------------
@@ -335,18 +337,19 @@ geo_so$percent.mt = PercentageFeatureSet(geo_so, pattern = '^mt-')
 summary(geo_so$percent.mt)
 ```
 
-Just looking at the summary, we can see that there are some cells with a high percentage of mitochondrial reads. Our Seurat object has changed by adding the `percent.mt` column to the meta data.
+Just looking at the summary, we can see that there are some cells with a high percentage of mitochondrial reads.
 
-![Image: Schematic after altering some meta data columns.](images/seurat_schematic/Slide3.png)
+![Seurat after adding percent mt](images/seurat-schematic/seurat-add-percent-mt.png)
 
-Finally, lets plot the percent mitochondrial reads, `percent.mt`.
+Our Seurat object has changed by adding the `percent.mt` column to the meta data.
+
+Finally, we will plot the percent mitochondrial reads, `percent.mt`.
 
 ```{r, mito_plot, warning=FALSE, fig.show = 'hold'}
 # -------------------------------------------------------------------------
 # Review mitochondrial violin plots
 VlnPlot(geo_so, features = 'percent.mt', assay = 'RNA', layer = 'counts') + 
   NoLegend() + 
-  geom_hline(yintercept = 25) + 
   geom_hline(yintercept = 20) + 
   geom_hline(yintercept = 15) + 
   geom_hline(yintercept = 10)

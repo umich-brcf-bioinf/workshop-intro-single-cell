@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-08-06" />
+<meta name="date" content="2025-08-21" />
 
 <title>Secondary Quality Control and Filtering</title>
 
@@ -426,7 +426,7 @@ div.tocify {
 <h1 class="title toc-ignore">Secondary Quality Control and
 Filtering</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-08-06</h4>
+<h4 class="date">2025-08-21</h4>
 
 </div>
 
@@ -870,9 +870,16 @@ replicate1
 # reset the default identity cell name
 geo_so@meta.data = tmp_meta
 Idents(geo_so) = &#39;orig.ident&#39;</code></pre>
+<div class="float">
+<img src="images/seurat-schematic/seurat-add-phenotype-meta-data.png"
+alt="Seurat after adding extended phenotype info" />
+<div class="figcaption">Seurat after adding extended phenotype
+info</div>
+</div>
 <p>The <code>orig.ident</code> column looks the same, but is now a
-factor with ordering we prefer. We also have <code>day</code> and
-<code>replicate</code> columns that will be useful downstream.</p>
+factor with ordering we prefer. We also have <code>condition</code>,
+<code>time</code>, and <code>replicate</code> columns that will be
+useful downstream.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Re-examine Seurat metdata
 View(head(geo_so@meta.data))</code></pre>
@@ -1194,22 +1201,20 @@ summary(geo_so$percent.mt)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
   0.000   1.817   2.582   5.282   3.865  98.244 </code></pre>
 <p>Just looking at the summary, we can see that there are some cells
-with a high percentage of mitochondrial reads. Our Seurat object has
-changed by adding the <code>percent.mt</code> column to the meta
-data.</p>
+with a high percentage of mitochondrial reads.</p>
 <div class="float">
-<img src="images/seurat_schematic/Slide3.png"
-alt="Image: Schematic after altering some meta data columns." />
-<div class="figcaption">Image: Schematic after altering some meta data
-columns.</div>
+<img src="images/seurat-schematic/seurat-add-percent-mt.png"
+alt="Seurat after adding percent mt" />
+<div class="figcaption">Seurat after adding percent mt</div>
 </div>
-<p>Finally, lets plot the percent mitochondrial reads,
+<p>Our Seurat object has changed by adding the <code>percent.mt</code>
+column to the meta data.</p>
+<p>Finally, we will plot the percent mitochondrial reads,
 <code>percent.mt</code>.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Review mitochondrial violin plots
 VlnPlot(geo_so, features = &#39;percent.mt&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + 
   NoLegend() + 
-  geom_hline(yintercept = 25) + 
   geom_hline(yintercept = 20) + 
   geom_hline(yintercept = 15) + 
   geom_hline(yintercept = 10)

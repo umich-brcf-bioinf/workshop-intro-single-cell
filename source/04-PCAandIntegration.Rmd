@@ -201,7 +201,7 @@ geo_so
 
 After running the command in the console, we should see that `geo_so` has a new reduction added to that slot in the Seurat object as shown in the schematic:
 
-![Image: Schematic after RunPCA().](images/seurat_schematic/Slide6.png)
+![Seurat after RunPCA](images/seurat-schematic/seurat-run-pca.png)
 
 We can then visualize the first several PCs using the `DimHeatmp()` function, which orders both cells and features (genes) according to their PCA scores and allows us to see some general patterns in the data. Here we will specify that the first 24 PCs be included in the figure and that 500 cells are randomly subsetted for the plot. _Note - you may need to increase your plot window size to resolve errors regarding figure margins._  <!-- revise to be hidden executed block plus shown non-executed block to ensure displayed code is a single block instead of being split up -->
 
@@ -393,7 +393,7 @@ geo_so
 
 And in in our running schematic, we can now see `integrated.sct.rpca` added to the dimensional reduction slot:
 
-![Image: Schematic after IntegrateLayers().](images/seurat_schematic/Slide7.png)
+![Seurat after IntegrateLayers](images/seurat-schematic/seurat-integrate-layers.png)
 
 We can also confirm that our integration method has helped to correct the `Day` effects we saw in the initial PCA plots by generating a similar plot for our integrated data.
 
