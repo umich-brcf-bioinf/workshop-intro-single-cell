@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-08-06" />
+<meta name="date" content="2025-08-21" />
 
 <title>Cell Type Annotation</title>
 
@@ -425,7 +425,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Cell Type Annotation</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-08-06</h4>
+<h4 class="date">2025-08-21</h4>
 
 </div>
 
@@ -622,40 +622,242 @@ all(Idents(geo_so) == geo_so$integrated.sct.rpca.clusters)</code></pre>
 geo_catch = createscCATCH(data = geo_so@assays$SCT@counts, cluster = as.character(Idents(geo_so)))
 
 # add marker genes to use for predictions
-geo_catch@markergene = geo_markers
-
+geo_catch@markergene = geo_markers</code></pre>
+<pre class="r"><code># -------------------------------------------------------------------------
 # specify tissues/cell-types from the scCATCH reference
 tissues_of_interest = c(&#39;Blood&#39;, &#39;Peripheral Blood&#39;, &#39;Muscle&#39;, &#39;Skeletal muscle&#39;, &#39;Epidermis&#39;, &#39;Skin&#39;)
 species_tissue_mask = cellmatch$species == &#39;Mouse&#39; &amp; cellmatch$tissue %in% tissues_of_interest
-geo_catch@marker = cellmatch[species_tissue_mask, ]
-
+geo_catch@marker = cellmatch[species_tissue_mask, ]</code></pre>
+<pre class="r"><code># -------------------------------------------------------------------------
 # run scCATCH to generate predictions
 geo_catch = findcelltype(geo_catch)
 
 # look at the predictions
+View(head(geo_catch@celltype))</code></pre>
+<pre class="r"><code># -------------------------------------------------------------------------
+# cleanup predictions
 sc_pred_tbl = geo_catch@celltype %&gt;% 
   select(cluster, cell_type, celltype_score) %&gt;%
   rename(cell_type_prediction = cell_type)
 sc_pred_tbl</code></pre>
-<pre><code>   cluster                      cell_type_prediction   celltype_score
-1        0                   Hematopoietic Stem Cell             0.87
-2        1                                  Pericyte             0.75
-3        2                                Macrophage             0.82
-4        3                            Dendritic Cell             0.86
-5        4                                  Monocyte             0.82
-6        5                   Hematopoietic Stem Cell             0.92
-7        6                    Muscle Progenitor Cell             0.71
-8        7                   Hematopoietic Stem Cell             0.87
-9        8                    Muscle Progenitor Cell             0.75
-10       9                     Muscle Satellite Cell             0.93
-11      10                   Hematopoietic Stem Cell              0.9
-12      11                            Dendritic Cell             0.85
-13      12                         Regulatory T Cell              0.9
-14      13                            Dendritic Cell             0.85
-15      14 Dendritic Cell, Monocyte, Progenitor Cell 0.71, 0.71, 0.71
-16      15                               CD8+ T Cell             0.88
-17      16                                 Stem Cell             0.84
-18      17                               Muscle Cell             0.69</code></pre>
+<div
+style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:100%; overflow-x: scroll; width:1000px; ">
+<table class="table table-condensed" style="font-size: 12px; font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+cluster
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+cell_type_prediction
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+celltype_score
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+0
+</td>
+<td style="text-align:left;">
+Hematopoietic Stem Cell
+</td>
+<td style="text-align:left;">
+0.87
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+1
+</td>
+<td style="text-align:left;">
+Pericyte
+</td>
+<td style="text-align:left;">
+0.75
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+2
+</td>
+<td style="text-align:left;">
+Macrophage
+</td>
+<td style="text-align:left;">
+0.82
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+3
+</td>
+<td style="text-align:left;">
+Dendritic Cell
+</td>
+<td style="text-align:left;">
+0.86
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+4
+</td>
+<td style="text-align:left;">
+Monocyte
+</td>
+<td style="text-align:left;">
+0.82
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+5
+</td>
+<td style="text-align:left;">
+Hematopoietic Stem Cell
+</td>
+<td style="text-align:left;">
+0.92
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+6
+</td>
+<td style="text-align:left;">
+Muscle Progenitor Cell
+</td>
+<td style="text-align:left;">
+0.71
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+7
+</td>
+<td style="text-align:left;">
+Hematopoietic Stem Cell
+</td>
+<td style="text-align:left;">
+0.87
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+8
+</td>
+<td style="text-align:left;">
+Muscle Progenitor Cell
+</td>
+<td style="text-align:left;">
+0.75
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+9
+</td>
+<td style="text-align:left;">
+Muscle Satellite Cell
+</td>
+<td style="text-align:left;">
+0.93
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+10
+</td>
+<td style="text-align:left;">
+Hematopoietic Stem Cell
+</td>
+<td style="text-align:left;">
+0.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+11
+</td>
+<td style="text-align:left;">
+Dendritic Cell
+</td>
+<td style="text-align:left;">
+0.85
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+12
+</td>
+<td style="text-align:left;">
+Regulatory T Cell
+</td>
+<td style="text-align:left;">
+0.9
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+13
+</td>
+<td style="text-align:left;">
+Dendritic Cell
+</td>
+<td style="text-align:left;">
+0.85
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+14
+</td>
+<td style="text-align:left;">
+Dendritic Cell, Monocyte, Progenitor Cell
+</td>
+<td style="text-align:left;">
+0.71, 0.71, 0.71
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+15
+</td>
+<td style="text-align:left;">
+CD8+ T Cell
+</td>
+<td style="text-align:left;">
+0.88
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+16
+</td>
+<td style="text-align:left;">
+Stem Cell
+</td>
+<td style="text-align:left;">
+0.84
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+17
+</td>
+<td style="text-align:left;">
+Muscle Cell
+</td>
+<td style="text-align:left;">
+0.69
+</td>
+</tr>
+</tbody>
+</table>
+</div>
 <p>When we look at our results we can see the cell type score, which
 gives us an idea of the confidence of that prediction. Not shown here
 but the full <code>celltype</code> table also includes marker genes and
@@ -1232,9 +1434,9 @@ code)</strong>
 the level of specificity that’s relevant to <em>your</em> biological
 question or use the same labels for clusters that don’t seems to share
 similar expression programs</p>
-<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells  10205879  545.1   20087555 1072.8  20087555 1072.8
-Vcells 346566153 2644.1  840059114 6409.2 832517444 6351.7</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
+Ncells   7037387  375.9   12067562  644.5   12067562  644.5
+Vcells 340743177 2599.7  904873463 6903.7 1131091741 8629.6</code></pre>
 <img src="images/curriculum/07-CellTypeAnnotation/07-catch_umap_plots-1.png" width="1152" style="display: block; margin: auto;" />
 </details>
 <p><br> <br/></p>
@@ -1248,9 +1450,9 @@ Vcells 346566153 2644.1  840059114 6409.2 832517444 6351.7</code></pre>
 # (Ok since we saved the plots as we went along)
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells  10128303  541.0   20087555 1072.8  20087555 1072.8
-Vcells 342989858 2616.9  840059114 6409.2 832517444 6351.7</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
+Ncells   6959813  371.7   12067562  644.5   12067562  644.5
+Vcells 337166855 2572.4  904873463 6903.7 1131091741 8629.6</code></pre>
 <p>We’ll save the scCATCH object and our updated Seurat object with cell
 type annotations.</p>
 <pre class="r"><code># -------------------------------------------------------------------------

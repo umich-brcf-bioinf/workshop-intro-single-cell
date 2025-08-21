@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-08-06" />
+<meta name="date" content="2025-08-21" />
 
 <title>Marker identification and visualization</title>
 
@@ -424,7 +424,7 @@ div.tocify {
 <h1 class="title toc-ignore">Marker identification and
 visualization</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-08-06</h4>
+<h4 class="date">2025-08-21</h4>
 
 </div>
 
@@ -609,9 +609,9 @@ identified by the numeric cluster they belong to, instead of the unique
 identifiers that are the default identities after reading in the
 data.</p>
 <div class="float">
-<img src="images/seurat_schematic/Slide11.png"
-alt="Image: Schematic after SetIdent()." />
-<div class="figcaption">Image: Schematic after SetIdent().</div>
+<img src="images/seurat-schematic/seurat-prep-sct-find-markers.png"
+alt="Seurat after PrepSCTFindMarkers." />
+<div class="figcaption">Seurat after PrepSCTFindMarkers.</div>
 </div>
 <!--- Consider how to represent the result of PrepSCTFindMarkers() in the schematic. It's a little too subtle... -->
 <!--- Consider adding figure showing example of what's being compared (circle cluster 1 and then circle all other cells for example) -->
@@ -797,9 +797,9 @@ plots = c(&quot;top_5_sct_dot_plot&quot;,
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   7414310  396   11389825  608.3  11389825  608.3
-Vcells 336586403 2568  840059114 6409.2 797522530 6084.7</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
+Ncells   6878518  367.4   12067562  644.5   12067562  644.5
+Vcells 335441919 2559.3  904873463 6903.7 1131091741 8629.6</code></pre>
 </div>
 </div>
 </div>
