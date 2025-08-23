@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-08-22" />
+<meta name="date" content="2025-08-23" />
 
 <title>Cell Type Annotation</title>
 
@@ -425,7 +425,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Cell Type Annotation</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-08-22</h4>
+<h4 class="date">2025-08-23</h4>
 
 </div>
 
@@ -603,8 +603,8 @@ our marker genes to the scCATCCH object.</p>
 <p>To increase the speed and accuracy of our predictions, we’ll create
 query of relevant tissues (which requires some prior knowledge of the
 experiment and using the <a
-href="https://github.com/ZJUFanLab/scCATCH/wiki">scCATCH wiki</a> to
-select tissues from the species) before we run the tool:</p>
+href="https://github.com/ZJUFanLab/scCATCH/wiki" target="_blank">scCATCH
+wiki</a> to select tissues from the species) before we run the tool:</p>
 <pre class="r"><code># =========================================================================
 # Cell Type Annotation
 # =========================================================================
@@ -876,8 +876,8 @@ editor.</p>
 # Write scCATCH predictions to file
 write_csv(sc_pred_tbl, file = &#39;results/tables/scCATCH_cluster_predictions.csv&#39;)</code></pre>
 </div>
-<div id="using-known-cell-type-markers" class="section level1">
-<h1>Using known cell-type markers</h1>
+<div id="known-cell-type-markers" class="section level1">
+<h1>Known cell-type markers</h1>
 <p>To confirm and/or refine the scCATCH predictions, we’ll spot check
 some known markers for immune populations. Then we’ll look look at some
 other key marker genes from some other relevant resources like <a
@@ -895,7 +895,7 @@ scCATCH predictions:</p>
 <div id="immune-marker-genes" class="section level2">
 <h2>Immune marker genes</h2>
 <pre class="r"><code># -------------------------------------------------------------------------
-# Create a named list of immune cells and associated gene markers
+# Create a **named list** of immune cells and associated gene markers
 
 immune_markers = list(
   &#39;Inflam. Macrophage&#39; = c(&#39;Cd14&#39;, &#39;Cxcl2&#39;),
@@ -949,12 +949,18 @@ immune_markers_plot_better = immune_markers_plot_basic +
 immune_markers_plot_better</code></pre>
 <p><img src="images/curriculum/07-CellTypeAnnotation/07-imm_marker_plot_better-1.png" width="816" style="display: block; margin: auto;" /></p>
 <p>More readable than before - but with a few more ggplot functions, we
-can make it even better.</p>
+can make it even better:</p>
+<ul>
+<li><a href="https://ggplot2.tidyverse.org/reference/coord_flip.html"
+target="_blank">coord_flip()</a> rotates the plot</li>
+<li><a href="https://ggplot2.tidyverse.org/reference/facet_grid.html"
+target="_blank">facet_grid()</a> adds space between the cell types</li>
+<li><a href="https://ggplot2.tidyverse.org/reference/theme.html"
+target="_blank">theme()</a> paramaters makes the cell type labels
+horizontal and to right the gene symbols</li>
+</ul>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Continuing adjustments to plot above
-# - coord_flip() rotates the plot
-# - facet_grid() adds space between the cell types
-# - theme() slides the cell type labels be right of the gene symbols
 
 immune_markers_plot_best = immune_markers_plot_better +
   coord_flip() +
@@ -968,6 +974,7 @@ immune_markers_plot_best</code></pre>
 <p><img src="images/curriculum/07-CellTypeAnnotation/07-imm_marker_plot_best-1.png" width="816" style="display: block; margin: auto;" /></p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # save dot plot to file
+
 ggsave(filename = &#39;results/figures/immune_markers_sct_dot_plot.png&#39;, 
        plot = immune_markers_plot_best,
        width = 10, height = 5, units = &#39;in&#39;)</code></pre>
@@ -1083,9 +1090,8 @@ want to test other clustering parameters and discuss the results with a
 researcher familiar with the expected cell types. However, we can notice
 some patterns that we can use to refine our cluster annotations.</p>
 </div>
-<div id="utilizing-genes-of-interest-from-the-original-paper"
-class="section level2">
-<h2>Utilizing genes of interest from the original paper</h2>
+<div id="markers-from-source-paper" class="section level2">
+<h2>Markers from source paper</h2>
 <details>
 <summary>
 <em>Plotting the expression of genes of interest from Sorkin, Huber et
@@ -1164,45 +1170,71 @@ we work with is invaluable.</p>
 <em>Using raw RNA values for genes of interest from Sorkin, Huber et
 al</em>
 </summary>
-<p>We can also generate the same plots, but using the unintegrated data
-by specifying the <code>RNA</code> assay:</p>
+<p>Typically, dot plots are built from normalized, integrated data but
+you can also show dot plots from unintegrated data. The prior
+integration step (sctransform) overwrites the normalized data values
+with normalized and integrated values. To get around this, you can
+re-load the saved data prior to the integration step.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Visualize manually selected marker genes (from unintegrated data)
 
-# Dotplot will use the data layer and will complain if the data layer is absent,
-# so we simply assign the count layer to the data layer.
-geo_so@assays$RNA$data = geo_so@assays$RNA$counts
-fig1g_rna_dot_plot = DotPlot(geo_so, 
+# Re-load RNA seq count data
+unintegrated_geo_so = readRDS(&#39;results/rdata/geo_so_filtered.rds&#39;)
+
+# Since there&#39;s only one assay, you don&#39;t need to specify the *assay* parameter 
+# in commands below. That said, I prefer making it explicit.
+Assays(unintegrated_geo_so)</code></pre>
+<pre><code>[1] &quot;RNA&quot;</code></pre>
+<pre class="r"><code>Layers(unintegrated_geo_so, assay=&#39;RNA&#39;)</code></pre>
+<pre><code>[1] &quot;counts&quot;</code></pre>
+<pre class="r"><code># Dot plots are typically based on normalized data layer. In prior steps, the 
+# data were normalized as a part of running the sctransform() function. We&#39;ll 
+# do the normalization explicitly.
+unintegrated_geo_so = NormalizeData(unintegrated_geo_so)</code></pre>
+<pre><code>Normalizing layer: counts</code></pre>
+<pre class="r"><code># The new **data** layer is the normalized count data.
+Layers(unintegrated_geo_so, assay=&#39;RNA&#39;)</code></pre>
+<pre><code>[1] &quot;counts&quot; &quot;data&quot;  </code></pre>
+<pre class="r"><code># We&#39;ll emphasize that these are unintegrated by adding a title and also
+# choose a distinct color ramp.
+fig1g_unintegrated_dot_plot = DotPlot(unintegrated_geo_so, 
                              features = fig1g_markers,
                              assay = &#39;RNA&#39;,
-                             cols = c(&quot;lightgrey&quot;, &quot;darkgreen&quot;))
-fig1h_rna_dot_plot = DotPlot(geo_so,
+                             cols = c(&quot;lightgrey&quot;, &quot;darkgreen&quot;)) +
+  labs(title=&quot;Dot plot from normalized, unintegrated counts&quot;, 
+       subtitle=&quot;Fig1G markers Sorkin, Huber et al&quot;)</code></pre>
+<pre><code>Warning: Converting to a dense matrix may use excessive memory
+This message is displayed once every 8 hours.</code></pre>
+<pre class="r"><code>fig1h_unintegrated_dot_plot = DotPlot(unintegrated_geo_so,
                              features = fig1h_markers,
                              assay = &#39;RNA&#39;,
-                             cols = c(&quot;lightgrey&quot;, &quot;darkgreen&quot;))
+                             cols = c(&quot;lightgrey&quot;, &quot;darkgreen&quot;)) +
+  labs(title=&quot;Dot plot from normalized, unintegrated counts&quot;, 
+       subtitle=&quot;Fig1H markers Sorkin, Huber et al&quot;)
 
-ggsave(filename = &#39;results/figures/markers_fig1g_rna_dot_plot.png&#39;,
-       plot = fig1g_rna_dot_plot,
+fig1g_unintegrated_dot_plot</code></pre>
+<p><img src="images/curriculum/07-CellTypeAnnotation/07-known_dot_plot_rna-1.png" width="816" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>fig1h_unintegrated_dot_plot</code></pre>
+<p><img src="images/curriculum/07-CellTypeAnnotation/07-known_dot_plot_rna-2.png" width="816" style="display: block; margin: auto;" /></p>
+<pre class="r"><code>ggsave(filename = &#39;results/figures/markers_fig1g_unintegrated_dot_plot.png&#39;,
+       plot = fig1g_unintegrated_dot_plot,
        width = 8, height = 6, units = &#39;in&#39;)
-ggsave(filename = &#39;results/figures/markers_fig1h_rna_dot_plot.png&#39;,
-       plot = fig1h_rna_dot_plot,
+ggsave(filename = &#39;results/figures/markers_fig1h_unintegrated_dot_plot.png&#39;,
+       plot = fig1h_unintegrated_dot_plot,
        width = 8, height = 6, units = &#39;in&#39;)
 
-fig1g_rna_dot_plot
-fig1h_rna_dot_plot
-
-ggsave(filename = &#39;results/figures/markers_fig1g_rna_dot_plot.png&#39;,
-       plot = fig1g_rna_dot_plot,
-       width = 8, height = 6, units = &#39;in&#39;)
-ggsave(filename = &#39;results/figures/markers_fig1h_rna_dot_plot.png&#39;,
-       plot = fig1h_rna_dot_plot,
-       width = 8, height = 6, units = &#39;in&#39;)</code></pre>
+# Clean up memory
+rm(unintegrated_geo_so, fig1g_unintegrated_dot_plot, fig1h_unintegrated_dot_plot)
+gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells   6978578  372.7   12255471  654.6  12255471  654.6
+Vcells 339764769 2592.2  565302660 4313.0 455820324 3477.7</code></pre>
 </details>
 <p><br></p>
 </div>
 </div>
-<div id="refine-annotations-and-label-clusters" class="section level1">
-<h1>Refine annotations and label clusters</h1>
+<div id="refine-and-label-clusters" class="section level1">
+<h1>Refine and label clusters</h1>
 <p>Next, we’ll use a revised version of the cell type predictions from a
 file that we prepared by refining the scCATCH predictions. How is a
 table like this created?</p>
@@ -1616,8 +1648,8 @@ the level of specificity that’s relevant to <em>your</em> biological
 question or use the same labels for clusters that don’t seems to share
 similar expression programs</p>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   6924761  369.9   12262208  654.9  12262208  654.9
-Vcells 340319123 2596.5  565303907 4313.0 465710278 3553.1</code></pre>
+Ncells   6956652  371.6   12255471  654.6  12255471  654.6
+Vcells 340398723 2597.1  565302660 4313.0 455820324 3477.7</code></pre>
 <img src="images/curriculum/07-CellTypeAnnotation/07-catch_umap_plots-1.png" width="1152" style="display: block; margin: auto;" />
 </details>
 <p><br> <br/></p>
@@ -1632,8 +1664,8 @@ Vcells 340319123 2596.5  565303907 4313.0 465710278 3553.1</code></pre>
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   6845972  365.7   12262208  654.9  12262208  654.9
-Vcells 336630459 2568.3  565303907 4313.0 465710278 3553.1</code></pre>
+Ncells   6877875  367.4   12255471  654.6  12255471  654.6
+Vcells 336710079 2568.9  565302660 4313.0 455820324 3477.7</code></pre>
 <p>We’ll save the scCATCH object and our updated Seurat object with cell
 type annotations.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
