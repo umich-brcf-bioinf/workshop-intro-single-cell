@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-07-21" />
+<meta name="date" content="2025-08-21" />
 
 <title>Normalization</title>
 
@@ -423,7 +423,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Normalization</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-07-21</h4>
+<h4 class="date">2025-08-21</h4>
 
 </div>
 
@@ -544,10 +544,10 @@ Active assay: RNA (26489 features, 0 variable features)
 <p>We see the 12 layers containing the count data for each of the
 samples. Our running schematic has now changed:</p>
 <div class="float">
-<img src="images/seurat_schematic/Slide4.png"
-alt="Image: Schematic splitting the counts layer of the RNA assay by sample." />
-<div class="figcaption">Image: Schematic splitting the counts layer of
-the RNA assay by sample.</div>
+<img src="images/seurat-schematic/seurat-split-layers.png"
+alt="Seurat splitting the counts layer of the RNA assay by sample." />
+<div class="figcaption">Seurat splitting the counts layer of the RNA
+assay by sample.</div>
 </div>
 <p>Next, run <code>SCTransform()</code>:</p>
 <pre class="r"><code># -------------------------------------------------------------------------
@@ -644,9 +644,9 @@ Active assay: SCT (20468 features, 3000 variable features)
  1 other assay present: RNA</code></pre>
 <p>We now observe changes to our running schematic:</p>
 <div class="float">
-<img src="images/seurat_schematic/Slide5.png"
-alt="Image: Schematic after SCTransform()." />
-<div class="figcaption">Image: Schematic after SCTransform().</div>
+<img src="images/seurat-schematic/seurat-sctransform.png"
+alt="Seurat after SCTransform" />
+<div class="figcaption">Seurat after SCTransform</div>
 </div>
 <p>Note that we have a new assay, <code>SCT</code> which has three
 layers: <code>counts</code>, <code>data</code>, and

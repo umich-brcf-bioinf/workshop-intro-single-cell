@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-07-21" />
+<meta name="date" content="2025-08-21" />
 
 <title>Secondary Quality Control and Filtering</title>
 
@@ -426,7 +426,7 @@ div.tocify {
 <h1 class="title toc-ignore">Secondary Quality Control and
 Filtering</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-07-21</h4>
+<h4 class="date">2025-08-21</h4>
 
 </div>
 
@@ -870,9 +870,16 @@ replicate1
 # reset the default identity cell name
 geo_so@meta.data = tmp_meta
 Idents(geo_so) = &#39;orig.ident&#39;</code></pre>
+<div class="float">
+<img src="images/seurat-schematic/seurat-add-phenotype-meta-data.png"
+alt="Seurat after adding extended phenotype info" />
+<div class="figcaption">Seurat after adding extended phenotype
+info</div>
+</div>
 <p>The <code>orig.ident</code> column looks the same, but is now a
-factor with ordering we prefer. We also have <code>day</code> and
-<code>replicate</code> columns that will be useful downstream.</p>
+factor with ordering we prefer. We also have <code>condition</code>,
+<code>time</code>, and <code>replicate</code> columns that will be
+useful downstream.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Re-examine Seurat metdata
 View(head(geo_so@meta.data))</code></pre>
@@ -1056,7 +1063,8 @@ consider the cells relative to one another.</p>
 a very stressed cell, or some technical issue in the library
 preparation. We will use three metrics to determine low-quality cells
 based on their expression profiles (<a
-href="https://bioconductor.org/books/3.12/OSCA/quality-control.html#choice-of-qc-metrics">reference</a>).</p>
+href="https://bioconductor.org/books/3.12/OSCA/quality-control.html#choice-of-qc-metrics"
+target="_blank">OSCA reference</a>).</p>
 <ol style="list-style-type: decimal">
 <li>The total number of UMIs detected. Cells with a small number of UMIs
 detected may indicate loss of RNA during library preparation via cell
@@ -1133,18 +1141,6 @@ a single sample, or across many samples. Seurat has a built-in function,
 <code>VlnPlot()</code> for this purpose. Let’s orient with a violin plot
 of <code>nFeature_RNA</code> for only one sample,
 <code>HODay21replicate1</code>:</p>
-<pre><code>Warning: The `slot` argument of `FetchData()` is deprecated as of SeuratObject 5.0.0.
-ℹ Please use the `layer` argument instead.
-ℹ The deprecated feature was likely used in the Seurat package.
-  Please report the issue at &lt;https://github.com/satijalab/seurat/issues&gt;.
-This warning is displayed once every 8 hours.
-Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
-<pre><code>Warning: `PackageCheck()` was deprecated in SeuratObject 5.0.0.
-ℹ Please use `rlang::check_installed()` instead.
-ℹ The deprecated feature was likely used in the Seurat package.
-  Please report the issue at &lt;https://github.com/satijalab/seurat/issues&gt;.
-This warning is displayed once every 8 hours.
-Call `lifecycle::last_lifecycle_warnings()` to see where this warning was generated.</code></pre>
 <p><img src="images/curriculum/02-QCandFiltering/02-single_violin_plot-1.png" width="816" style="display: block; margin: auto;" /></p>
 <p>A violin plot is similar to a box plot, but it shows the density of
 the data at different values. Here the individual points are the cells
@@ -1205,22 +1201,20 @@ summary(geo_so$percent.mt)</code></pre>
 <pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
   0.000   1.817   2.582   5.282   3.865  98.244 </code></pre>
 <p>Just looking at the summary, we can see that there are some cells
-with a high percentage of mitochondrial reads. Our Seurat object has
-changed by adding the <code>percent.mt</code> column to the meta
-data.</p>
+with a high percentage of mitochondrial reads.</p>
 <div class="float">
-<img src="images/seurat_schematic/Slide3.png"
-alt="Image: Schematic after altering some meta data columns." />
-<div class="figcaption">Image: Schematic after altering some meta data
-columns.</div>
+<img src="images/seurat-schematic/seurat-add-percent-mt.png"
+alt="Seurat after adding percent mt" />
+<div class="figcaption">Seurat after adding percent mt</div>
 </div>
-<p>Finally, lets plot the percent mitochondrial reads,
+<p>Our Seurat object has changed by adding the <code>percent.mt</code>
+column to the meta data.</p>
+<p>Finally, we will plot the percent mitochondrial reads,
 <code>percent.mt</code>.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Review mitochondrial violin plots
 VlnPlot(geo_so, features = &#39;percent.mt&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + 
   NoLegend() + 
-  geom_hline(yintercept = 25) + 
   geom_hline(yintercept = 20) + 
   geom_hline(yintercept = 15) + 
   geom_hline(yintercept = 10)
@@ -1248,13 +1242,12 @@ percent mitochondrial read filter.</p>
 <code>nCount_RNA</code>, and <code>percent.mt</code> can be selected to
 remove low quality cells. In general, selecting very stringent
 thresholds for each of the metrics may lead to removing informative
-cells. As per the HBC training materials (<a
-href="https://hbctraining.github.io/scRNA-seq_online/lessons/04_SC_quality_control.html">link</a>),
-we recommend setting individual thresholds to err on the permissive
-side.</p>
-<p><a
-href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7002453/">Sorkin et
-al.</a> chose these thresholds:</p>
+cells. As per the <a
+href="https://hbctraining.github.io/Intro-to-scRNAseq/lessons/04_SC_quality_control.html"
+target="_blank">HBC training materials</a>, we recommend setting
+individual thresholds to err on the permissive side.</p>
+<p><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7002453/"
+target="_blank">Sorkin et al.</a> chose these thresholds:</p>
 <blockquote>
 <p>We filtered out cells with less than 500 genes per cell and with more
 than 25% mitochondrial read content.</p>
@@ -1286,9 +1279,9 @@ subset(geo_so, subset = nFeature_RNA &gt; 500 &amp; percent.mt &lt; 25)@meta.dat
 <p>For this workshop we will use fixed thresholds, but another option is
 to remove low-quality cells adaptively. This approach assumes that most
 of the cells are of acceptable quality. For more information see the
-relevant section in Bioconductor’s online book: Orchestrating
-Single-Cell Analysis (<a
-href="https://bioconductor.org/books/3.12/OSCA/quality-control.html#quality-control-outlier">link</a>).</p>
+relevant section in Bioconductor’s online book: <a
+href="https://bioconductor.org/books/3.12/OSCA/quality-control.html#quality-control-outlier"
+target="_blank">Orchestrating Single-Cell Analysis</a>.</p>
 </div>
 </div>
 <div id="removing-low-quality-cells" class="section level1">

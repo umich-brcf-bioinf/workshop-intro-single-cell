@@ -91,7 +91,7 @@ if(!exists('geo_so')) {
 
 # Cluster markers and characterization
 
-After generating clusters, we need to perform differential expression analysis to identify the genes that distinguish those clusters ([source](https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes)).  This should allow us to get visibility on some key questions for our clusters, as [highlighted by the HBC materials](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html), namely:
+After generating clusters, we need to perform differential expression analysis to identify the genes that distinguish those clusters ([source](https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes)).  This should allow us to get visibility on some key questions for our clusters, as [highlighted by the HBC materials](https://hbctraining.github.io/Intro-to-scRNAseq/lessons/09_merged_SC_marker_identification.html), namely:
 
 - Are there are biologically meaningful gene expression differences between the clusters? 
 - Does the gene expression of the generated clusters correspond to expected cell-types or sub-types? 
@@ -99,13 +99,13 @@ After generating clusters, we need to perform differential expression analysis t
 
 Many of the differential expression (DE) tools designed for bulk RNA-seq samples have been benchmarked for performance on scRNA-seq in [Soneson and Robinson (2018)](https://pubmed.ncbi.nlm.nih.gov/29481549/) and there are also dedicated DE tools for scRNA-seq, like [MAST](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0844-5), that use models that account for the expected sparse structure of scRNA-seq data. However in our and others' experience, the default Wilcoxon test is often sufficient for simple pairwise DE comparisons, while edgeR ([Robinson, McCarthy, and Smyth 2010](https://pubmed.ncbi.nlm.nih.gov/19910308/)) is recommended by the [Ouyang Lab]([Ouyang](https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes)) for more complex comparison designs, such as those that include covariates.
 
-<!-- Additional context from [Ouyang](https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes) regarding tool options and [HBC materials](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html) regarding FindMarkers vs FindConservedMarkers, etc. -->
+<!-- Additional context from [Ouyang](https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes) regarding tool options and [HBC materials](https://hbctraining.github.io/Intro-to-scRNAseq/lessons/09_merged_SC_marker_identification.html) regarding FindMarkers vs FindConservedMarkers, etc. -->
 
 ![Image: Comparison of the performance of DE methods applied to scRNA-seq datasets. Methods are ranked by their average performance across all the listed criteria. Image taken from Soneson and Robinson (2018).](./images/curriculum/06-MarkerVisualization/Ouyang_clust-deCompare.png)
 
 <details>
     <summary>*Additional considerations for differential expression*</summary>
-    The Ouyang Lab has a [section of their tutorial](https://ouyanglab.com/singlecell/clust.html#sec:diffexpr) that discusses the methods available for differential expression including some highlighted in the figure below, as well as a more extensive section on [threshold considerations](https://ouyanglab.com/singlecell/clust.html#sec:diffexpr), while the [HBC section on marker genes identification](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html) highlights the different types of marker identification options available via Seurat.
+    The Ouyang Lab has a [section of their tutorial](https://ouyanglab.com/singlecell/clust.html#sec:diffexpr) that discusses the methods available for differential expression including some highlighted in the figure below, as well as a more extensive section on [threshold considerations](https://ouyanglab.com/singlecell/clust.html#sec:diffexpr), while the [HBC section on marker genes identification](https://hbctraining.github.io/Intro-to-scRNAseq/lessons/09_merged_SC_marker_identification.html) highlights the different types of marker identification options available via Seurat.
 </details>
 <br>
 
@@ -139,7 +139,7 @@ head(geo_markers)
 
 After running `SetIdent()`, cells in our Seurat object are identified by the numeric cluster they belong to, instead of the unique identifiers that are the default identities after reading in the data.
 
-![Image: Schematic after SetIdent().](images/seurat_schematic/Slide11.png)
+![Seurat after PrepSCTFindMarkers.](images/seurat-schematic/seurat-prep-sct-find-markers.png)
 
 <!--- Consider how to represent the result of PrepSCTFindMarkers() in the schematic. It's a little too subtle... -->
 
@@ -151,7 +151,7 @@ After running `SetIdent()`, cells in our Seurat object are identified by the num
 </details>
 <br>
 
-Note that over-interpretation of these results should be avoided, since each cell is used as a replicate in these comparisons which can lead to inflated (e.g. very low) p-values, the top markers are more likely to be trustworthy ([source](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html)). 
+Note that over-interpretation of these results should be avoided, since each cell is used as a replicate in these comparisons which can lead to inflated (e.g. very low) p-values, the top markers are more likely to be trustworthy ([source](https://hbctraining.github.io/Intro-to-scRNAseq/lessons/09_merged_SC_marker_identification.html)). 
 
 Therefore, it's useful to filter the results to highlight the top positive markers (since a positive fold-change would mean that gene is more highly expressed in the cluster compared to all other cells), before looking at our results
 
@@ -190,7 +190,7 @@ We expect to see several columns:
 - `p_val_adj`: adjusted p-value based on bonferroni correction using all genes in the dataset, used to determine significance
 - `cluster`: cluster represented by `pct.1` and for which the statistics in the row are reported
 
-When looking at the output, it is important to prioritize marker genes with both larger fold-change differences and larger difference between pct.1 and pct.2, particularly if pct.1 is high (e.g. if 80% of cells in the cluster evaluated express the gene that more reliable than if only 20% of cells express that gene) ([source](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html)).
+When looking at the output, it is important to prioritize marker genes with both larger fold-change differences and larger difference between pct.1 and pct.2, particularly if pct.1 is high (e.g. if 80% of cells in the cluster evaluated express the gene that more reliable than if only 20% of cells express that gene) ([source](https://hbctraining.github.io/Intro-to-scRNAseq/lessons/09_merged_SC_marker_identification.html)).
 
 ## Marker visualization
 

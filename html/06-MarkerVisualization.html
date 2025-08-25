@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-07-10" />
+<meta name="date" content="2025-08-21" />
 
 <title>Marker identification and visualization</title>
 
@@ -424,7 +424,7 @@ div.tocify {
 <h1 class="title toc-ignore">Marker identification and
 visualization</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-07-10</h4>
+<h4 class="date">2025-08-21</h4>
 
 </div>
 
@@ -504,7 +504,7 @@ analysis to identify the genes that distinguish those clusters (<a
 href="https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes">source</a>).
 This should allow us to get visibility on some key questions for our
 clusters, as <a
-href="https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html">highlighted
+href="https://hbctraining.github.io/Intro-to-scRNAseq/lessons/09_merged_SC_marker_identification.html">highlighted
 by the HBC materials</a>, namely:</p>
 <ul>
 <li>Are there are biologically meaningful gene expression differences
@@ -529,7 +529,7 @@ Smyth 2010</a>) is recommended by the <a
 href="%5BOuyang%5D(https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes)">Ouyang
 Lab</a> for more complex comparison designs, such as those that include
 covariates.</p>
-<!-- Additional context from [Ouyang](https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes) regarding tool options and [HBC materials](https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html) regarding FindMarkers vs FindConservedMarkers, etc. -->
+<!-- Additional context from [Ouyang](https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes) regarding tool options and [HBC materials](https://hbctraining.github.io/Intro-to-scRNAseq/lessons/09_merged_SC_marker_identification.html) regarding FindMarkers vs FindConservedMarkers, etc. -->
 <div class="float">
 <img
 src="images/curriculum/06-MarkerVisualization/Ouyang_clust-deCompare.png"
@@ -550,7 +550,7 @@ differential expression including some highlighted in the figure below,
 as well as a more extensive section on <a
 href="https://ouyanglab.com/singlecell/clust.html#sec:diffexpr">threshold
 considerations</a>, while the <a
-href="https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html">HBC
+href="https://hbctraining.github.io/Intro-to-scRNAseq/lessons/09_merged_SC_marker_identification.html">HBC
 section on marker genes identification</a> highlights the different
 types of marker identification options available via Seurat.
 </details>
@@ -609,9 +609,9 @@ identified by the numeric cluster they belong to, instead of the unique
 identifiers that are the default identities after reading in the
 data.</p>
 <div class="float">
-<img src="images/seurat_schematic/Slide11.png"
-alt="Image: Schematic after SetIdent()." />
-<div class="figcaption">Image: Schematic after SetIdent().</div>
+<img src="images/seurat-schematic/seurat-prep-sct-find-markers.png"
+alt="Seurat after PrepSCTFindMarkers." />
+<div class="figcaption">Seurat after PrepSCTFindMarkers.</div>
 </div>
 <!--- Consider how to represent the result of PrepSCTFindMarkers() in the schematic. It's a little too subtle... -->
 <!--- Consider adding figure showing example of what's being compared (circle cluster 1 and then circle all other cells for example) -->
@@ -632,7 +632,7 @@ href="https://satijalab.org/seurat/articles/pbmc3k_tutorial.html#finding-differe
 since each cell is used as a replicate in these comparisons which can
 lead to inflated (e.g. very low) p-values, the top markers are more
 likely to be trustworthy (<a
-href="https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html">source</a>).</p>
+href="https://hbctraining.github.io/Intro-to-scRNAseq/lessons/09_merged_SC_marker_identification.html">source</a>).</p>
 <p>Therefore, it’s useful to filter the results to highlight the top
 positive markers (since a positive fold-change would mean that gene is
 more highly expressed in the cluster compared to all other cells),
@@ -704,7 +704,7 @@ genes with both larger fold-change differences and larger difference
 between pct.1 and pct.2, particularly if pct.1 is high (e.g. if 80% of
 cells in the cluster evaluated express the gene that more reliable than
 if only 20% of cells express that gene) (<a
-href="https://hbctraining.github.io/scRNA-seq_online/lessons/09_merged_SC_marker_identification.html">source</a>).</p>
+href="https://hbctraining.github.io/Intro-to-scRNAseq/lessons/09_merged_SC_marker_identification.html">source</a>).</p>
 </div>
 <div id="marker-visualization" class="section level2">
 <h2>Marker visualization</h2>
@@ -756,17 +756,51 @@ ggsave(filename = &#39;results/figures/markers_top_5_rna_dot_plot.png&#39;,
        width = 8, height = 18, units = &#39;in&#39;) </code></pre>
 </details>
 <p><br> <br></p>
+</div>
+<div id="check-mitochondrial-signal" class="section level2">
+<h2>Check mitochondrial signal</h2>
+<p>We can also visualize how individual - like specific genes - or
+collective features - like metrics in our metadata are expressed across
+our dataset. For example, we can use <code>FeaturePLot()</code> to
+visualize the percentage of mitochondrial genes expressed per cell to
+determine if there might be a pattern to where more cells are showing
+stress.</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Check mitochondrial gene expression
+percent_mito_plot = FeaturePlot(geo_so, features=&#39;percent.mt&#39;)
+percent_mito_plot</code></pre>
+<p><img src="images/curriculum/06-MarkerVisualization/06-check_mito_UMAP-1.png" width="816" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># save to file
+ggsave(filename = &#39;results/figures/percent_umap_mito_plot.png&#39;, 
+       plot = percent_mito_plot, 
+       width = 6, height = 6, units = &#39;in&#39;)</code></pre>
+<p>We see that a higher percentages seem to be somewhat concentrated in
+a few places, but if cell death might be of interest for the research
+question, we’d want to consider investigating this pattern further by
+splitting up the plots by day and/or waiting until after running initial
+differential expression analysis to determine if these cell populations
+are interesting biology or not.</p>
+<p>This approach can also be useful to apply to specific gene markers of
+interest, particularly if there are rarer cell types or subtypes that
+you want to ensure were segregated into their own cluster with the
+number of PCs used.</p>
+<div id="plot-object-clean-up" class="section level3">
+<h3>Plot object clean-up</h3>
+<p>Before moving on to the next section, we’ll clean up our environment
+to manage our memory usage:</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Remove the plot variables from the environment to avoid excessive memory usage
 plots = c(&quot;top_5_sct_dot_plot&quot;, 
-          &quot;top_5_rna_dot_plot&quot;)
+          &quot;top_5_rna_dot_plot&quot;, 
+          &quot;percent_mito_plot&quot;)
 
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
-Ncells   7111117  379.8   10892882  581.8   10892882  581.8
-Vcells 338108747 2579.6 1062606086 8107.1 1113653353 8496.6</code></pre>
+Ncells   6878518  367.4   12067562  644.5   12067562  644.5
+Vcells 335441919 2559.3  904873463 6903.7 1131091741 8629.6</code></pre>
+</div>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">

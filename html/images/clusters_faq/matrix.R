@@ -9,6 +9,7 @@
 #
 # cgates 7/3/2025
 
+here::i_am('source/images/clusters_faq/matrix.R')
 library(Seurat)
 library(tidyverse)
 
@@ -35,16 +36,20 @@ get_data = function (object, group.by, reduction, dims = c(1,2)) {
   orig.groups <- group.by
   group.by <- group.by %||% 'ident'
   data <- FetchData(
-    object = object,
-    vars = c(dims, group.by),
-    cells = cells,
-    clean = 'project')
+      object = object,
+      vars = c(dims, group.by),
+      cells = cells,
+      clean = 'project') %>% 
+    rownames_to_column('cell') %>%
+    rename(cluster = group.by)
   return (data)
 }
 
 
+
 # -------------------------------------------------------------------------
 # Run through the combination of PCs and res and generate the UMAPs
+
 for (pc in included_pcs) { 
   for(res in resolutions) {
     name_suffix = sprintf('res=%s_pcs=%02d', res, pc)
@@ -76,20 +81,20 @@ for (pc in included_pcs) {
             axis.ticks=element_blank(),
             axis.line = element_blank())
     ggsave(plot = clustered_umap,
-           filename = sprintf('%s/%s', output_dir, umap_file),
-           width = 8, height = 7, units = 'in')
+           filename = here::here(output_dir, umap_file),
+           width = 8, height = 7, units = 'in', dpi='screen')
 
     data = get_data(geo_so,
                     group.by = cluster_column,
-                    reduction = 'umap.integrated.sct.rpca')
-    write_csv(data, file = sprintf('%s/%s.csv', output_dir, name_suffix))
-
+                    reduction = 'umap.integrated.sct.rpca') %>%
+              mutate(res_pc=name_suffix)
+    write_csv(data, file = here::here(output_dir, paste0(name_suffix,'.csv.tmp')))
 
     # Generate a single "blank" umap for each PC
     if (res == min(resolutions)) {
         res = 0
-        name_suffix = sprintf('res=%s_pcs=%s', res, pc)
-        umap_file = sprintf('%s.png', name_suffix)
+        name_suffix = sprintf('res=%s_pcs=%02d', res, pc)
+        umap_file = sprintf('umaps/%s.png', name_suffix)
 
         blank_umap = DimPlot(geo_so,
                          reduction = 'umap.integrated.sct.rpca',
@@ -101,22 +106,33 @@ for (pc in included_pcs) {
               axis.line = element_blank())
 
         ggsave(plot = blank_umap,
-               filename = sprintf('%s/%s', output_dir, umap_file),
-               width = 8, height = 7, units = 'in')
+               filename = here::here(output_dir, umap_file),
+               width = 8, height = 7, units = 'in', dpi='screen')
     }
   }
 }
 
-write_csv(pc_res_cluster, sprintf('%s/pc_res_cluster.csv', output_dir))
+files = list.files(path=here::here(output_dir), pattern = "*.csv.tmp", full.names = TRUE)
+data = read_csv(files) %>%
+  pivot_wider(
+    id_cols = "cell",
+    names_from = "res_pc",
+    values_from = c('umapintegratedsctrpca_1', 'umapintegratedsctrpca_2', 'cluster'),
+    names_glue = "{res_pc}|{.value}",
+    names_vary='slowest'
+  )
+write_csv(data, file = here::here(output_dir,'clusters.csv.gz'))
+unlink(files)
 
+write_csv(pc_res_cluster, here::here(output_dir, 'pc_res_cluster.csv'))
 
 # -------------------------------------------------------------------------
 # generate the line plot of clusters x resolution across PCs
 
 # I know we just wrote this file, but writing it and reading it in separate
-# steps makes it easier to tweak this with a new coordinates ore revise the 
+# steps makes it easier to tweak this with a new coordinates or revise the 
 # aesthetics without having to rerun the whole cross-product or res x PCs.
-pc_res_cluster = read_csv(sprintf('%s/pc_res_cluster.csv', output_dir))
+pc_res_cluster = read_csv(here::here(output_dir, 'pc_res_cluster.csv'))
 
 pc_res_cluster$included_pcs_f = factor(pc_res_cluster$included_pcs)
 pc_res_cluster$resolution_f = factor(pc_res_cluster$resolution)
@@ -133,24 +149,6 @@ pc_res_cluster_plt = pc_res_cluster %>%
 
 pc_res_cluster_plt
 
-ggsave(filename = sprintf('%s/pc_res_cluster.png', output_dir),
+ggsave(filename = here::here(output_dir, 'pc_res_cluster.png'),
        plot = pc_res_cluster_plt,
-       width = 12, height = 3, units = 'in')
-
-
-#----------------------------------------------------------
-# This is similar to above but switches PCs and resolution.
-# Nice, but *quite* as clear as above.
-#
-# res_pc_cluster_plt = pc_res_cluster %>% 
-#   ggplot(aes(x=resolution_f, y=cluster_count, group=included_pcs_f, color=included_pcs_f)) +
-#     geom_line() +
-#     geom_point(size=3) +
-#     theme_minimal(base_size=15) +
-#     labs(x='Resolution', y='Number of clusters', color = "Included PCs")
-
-#ggsave(filename = sprintf('%s/res_pc_cluster.png', output_dir),
-#       plot = pc_res_cluster_plt,
-#       width = 10, height = 3, units = 'in')
-
-
+       width = 12, height = 3, units = 'in', dpi='screen')

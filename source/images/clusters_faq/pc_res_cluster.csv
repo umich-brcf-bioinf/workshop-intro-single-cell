@@ -1,8 +1,8 @@
 included_pcs,resolution,cluster_count,umap_filename
-30,0,0,umaps/res=0_pcs=30.png
-10,0,0,umaps/res=0_pcs=10.png
 5,0,0,umaps/res=0_pcs=05.png
+10,0,0,umaps/res=0_pcs=10.png
 16,0,0,umaps/res=0_pcs=16.png
+30,0,0,umaps/res=0_pcs=30.png
 5,0.2,11,umaps/res=0.2_pcs=05.png
 5,0.4,17,umaps/res=0.4_pcs=05.png
 5,0.8,28,umaps/res=0.8_pcs=05.png

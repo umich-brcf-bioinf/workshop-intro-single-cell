@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-07-27" />
+<meta name="date" content="2025-08-21" />
 
 <title>Getting Started with Seurat</title>
 
@@ -423,7 +423,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Getting Started with Seurat</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-07-27</h4>
+<h4 class="date">2025-08-21</h4>
 
 </div>
 
@@ -667,7 +667,7 @@ right location. To print the current working directory:</p>
 # -------------------------------------------------------------------------
 # Get current working directory
 getwd()</code></pre>
-<pre><code>[1] &quot;/home/workshop/rcavalca/workshop-intro-single-cell/source&quot;</code></pre>
+<pre><code>[1] &quot;/home/workshop/cgates/workshop-intro-single-cell/source&quot;</code></pre>
 <p>This means that any references to files loaded or files saved
 <strong>is with respect to this location</strong>. This can simplify our
 code a bit by allowing us to use relative paths rather than full paths.
@@ -789,7 +789,7 @@ Data type: double
 Storage order: column major
 
 Queued Operations:
-1. Load compressed matrix from directory /home/workshop/rcavalca/ISC_R/bpcells</code></pre>
+1. Load compressed matrix from directory /home/workshop/cgates/ISC_R/bpcells</code></pre>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Cleanup
 # Since we&#39;ll now be reading in from BPCells files, we will remove geo_mat
@@ -798,8 +798,8 @@ Queued Operations:
 rm(geo_mat)
 gc()</code></pre>
 <pre><code>           used  (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells  6717009 358.8   10572127  564.7  10572127  564.7
-Vcells 13003785  99.3  521256963 3976.9 673950265 5141.9</code></pre>
+Ncells  6416315 342.7   12067561  644.5  12067561  644.5
+Vcells 12588479  96.1  520444237 3970.7 673529867 5138.7</code></pre>
 </div>
 <div id="read-bpcells" class="section level2">
 <h2>Read BPCells</h2>
@@ -924,10 +924,9 @@ birds eye view with an image from <a
 href="https://swbioinf.github.io/scRNAseqInR_Doco/seuratobject.html#discussion-the-seurat-object-in-r">this
 tutorial</a> on single-cell analysis.</p>
 <div class="float">
-<img src="images/seurat_schematic/Slide1.png"
-alt="Image: Schematic of Seurat object." />
-<div class="figcaption">Image: Schematic of <code>Seurat</code>
-object.</div>
+<img src="images/seurat-schematic/seurat-empty.png"
+alt="Seurat object" />
+<div class="figcaption">Seurat object</div>
 </div>
 <p>The three main “slots” in the object are:</p>
 <ol style="list-style-type: decimal">
@@ -944,10 +943,9 @@ as they come up.</p>
 <p>After reading the data in and creating the Seurat object above, we
 can imagine the following schematic representing our object:</p>
 <div class="float">
-<img src="images/seurat_schematic/Slide2.png"
-alt="Image: Schematic after creating the Seurat object." />
-<div class="figcaption">Image: Schematic after creating the Seurat
-object.</div>
+<img src="images/seurat-schematic/seurat-create-seurat-object.png"
+alt="Initial Seurat object" />
+<div class="figcaption">Initial Seurat object</div>
 </div>
 <p>Note the RNA assay contains a <code>count</code> layer consisting of
 a raw count matrix where the rows are genes (features, more
@@ -1010,6 +1008,8 @@ library(Seurat)
 library(BPCells)
 library(tidyverse)
 options(future.globals.maxSize = 1e9)
+
+setwd(&quot;~/ISC_R/&quot;)
 
 # -------------------------------------------------------------------------
 # Load the Seurat object

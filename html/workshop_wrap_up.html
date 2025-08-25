@@ -465,14 +465,14 @@ target="_blank">UM Bioinformatics Core Workshop Slack channel</a>
 content will be available for 90 days.</p></li>
 </ul>
 <hr />
-</div>
-<div id="looking-ahead" class="section level2">
-<h2>Looking ahead</h2>
-<div id="workshop-environment" class="section level3">
-<h3>Workshop environment</h3>
+<div
+id="can-i-continue-to-use-the-rstudio-environments-we-used-in-the-workshop"
+class="section level3">
+<h3>Can I continue to use the RStudio environments we used in the
+workshop?</h3>
 <ul>
-<li><p>RStudio workshop compute environment will be available until
-<strong>8/15/2025</strong>.</p>
+<li><p>The RStudio workshop compute environment will be available
+through 8/15/2025.</p>
 <ul>
 <li><em>Please save all your R scripts now</em> so that we can
 “right-size” the compute environment immediately following today’s
@@ -491,34 +491,46 @@ on your internet speeds it could take a while. (We do not recommend you
 download the full set of Cell Ranger outputs.)</li>
 </ul></li>
 </ul>
-<div id="installing-software-locally" class="section level4">
-<h4>Installing software locally</h4>
-<ul>
-<li>You can install necessary programs to run programs locally. Note
-that for typical data, Cell Ranger steps (reviewed Day 1) assume your
-computer has powerful compute (many CPUs and lots of RAM) and sizable
-storage capacity. (i.e. it’s impractical to run these on your laptop.)
-<ul>
-<li><a href="workshop_setup/setup_instructions_advanced.html">Setting up
-R/R-Studio</a></li>
-</ul></li>
-<li>Note that installing bioinformatics software is often
-non-trivial.</li>
-</ul>
+<hr />
 </div>
-<div id="downloading-seurat-inputs" class="section level4">
-<h4>Downloading Seurat inputs</h4>
+<div id="where-else-could-i-use-rstudio" class="section level3">
+<h3>Where else could I use RStudio?</h3>
+<ul>
+<li>See <a href="workshop_setup/setup_instructions_advanced.html"
+target="_blank">Advanced setup instructions</a> for details on how to
+install RStudio and required packages on your own computer. Please note:
+<ul>
+<li>Installing bioinformatics software is often non-trivial.</li>
+<li>For typical data, Cell Ranger steps (reviewed Day 1) assume your
+computer has powerful compute (many CPUs and lots of RAM) and sizable
+storage capacity. (i.e. it’s impractical to run these on your
+laptop.)</li>
+</ul></li>
+<li><a href="https://posit.cloud/" target="_blank">PositCloud</a> allows
+you to run R-Studio over the web for free. Click here to <a
+href="https://posit.cloud/content/10156998">login to PositCloud</a> and
+launch an R session. (UM users can login using their umich.edu Google
+account.) <em>Note: A full single-cell analysis will require you to
+upgrade beyond the free tier.</em></li>
+<li>UMich users can run RStudio on the <a
+href="seurat-on-great-lakes.html" target="_blank">UM Great Lakes
+HPC</a>.</li>
+</ul>
+<hr />
+<div id="could-i-download-seurat-inputs-used-in-the-workshop"
+class="section level4">
+<h4>Could I download Seurat inputs used in the workshop?</h4>
 <ul>
 <li><p>The Seurat inputs (cellranger triples and dbcells files) used in
 this workshop can be installed locally like so:</p>
-<pre><code># download Seurat inputs --------------------------------------------------
+<pre class="bash"><code># download Seurat inputs --------------------------------------------------
 mkdir -p intro_scrnaseq_workshop/ISC_R
 cd intro_scrnaseq_workshop/ISC_R
 
-# Use curl to download a ~2 Gb tarball
+# Use curl to download a ~3 Gb tarball
 # We&#39;ll use evironment variables to avoid extremely long command lines
-source_url=&quot;https://umich-brcf-bioinf-workshop-intro-single-cell.s3.us-east-1.amazonaws.com&quot;
-source_file=&quot;workshop_isc_inputs-20250730.tgz&quot;
+source_url=&quot;https://umich-brcf-bioinf-workshop.s3.us-east-1.amazonaws.com&quot;
+source_file=&quot;ISC/workshop_isc_inputs-20250730.tgz&quot;
 curl -o workshop_isc_inputs.tgz ${source_url}/${source_file}
 
 # tar unpacks the tarball into directories
@@ -528,38 +540,54 @@ tar xzvf workshop_isc_inputs.tgz
 rm workshop_isc_inputs.tgz</code></pre>
 <p><br/></p></li>
 </ul>
+<hr />
 </div>
 </div>
-<div id="an-independent-exercise" class="section level3">
-<h3><a href="09-IndependentExercise.html">An independent
-exercise</a></h3>
-<!-- when to introduce independent exercise if we don't get to breaking it into more modular pieces? -->
+<div id="can-you-recommend-other-relevant-workshops-or-tutorials"
+class="section level3">
+<h3>Can you recommend other relevant workshops or tutorials?</h3>
 <ul>
-<li>A variation on the workshop workflow that considers different
-clustering parameters and their downstream effects.</li>
+<li>The <a href="https://michmed.org/XYQwq" target="_blank">University
+of Michigan Bioinformatics Core</a> regularly hosts workshops.</li>
+<li>Intro lessons and workshops in Bash / Git / R / Python :
+<ul>
+<li><a href="https://software-carpentry.org/lessons/"
+target="_blank">Software Carpentry</a></li>
+<li><a href="https://umcarpentries.org/" target="_blank">The Carpentries
+at the University of Michigan</a> host several introductory workshops
+each year following curricula that are developed collaboratively and
+using the latest research into best practices for teaching computer
+science content. All workshops are offered for free to learners.</li>
+</ul></li>
 </ul>
-<p><br/></p>
+<hr />
 </div>
 </div>
-<div id="university-of-michigan-resources" class="section level2">
-<h2>University of Michigan Resources</h2>
+<div
+id="how-can-i-learn-more-about-computational-research-at-university-of-michigan"
+class="section level2">
+<h2>How can I learn more about computational research at University of
+Michigan?</h2>
 <ul>
 <li><a href="https://datascience.isr.umich.edu/events/coderspaces/"
 target="_blank">UM CoderSpaces “office hours”</a> and UM CoderSpaces
-Slack workspace. <em>(See “Useful Resources” section of the CoderSpaces
-page for instructions on how to join the CoderSpaces Slack
+Slack workspace. <em>(See “Useful Resources” section in CoderSpaces page
+for instructions on how to join and access the CoderSpaces Slack
 workspace.)</em></li>
 <li><a href="https://its.umich.edu/advanced-research-computing"
-target="_blank">Advanced Research Computing</a></li>
+target="_blank">Advanced Research Computing</a>
+<ul>
 <li><a
 href="https://its.umich.edu/advanced-research-computing/research-computing-package"
 target="_blank">Research Computing Package</a></li>
 <li>Upcoming <a
-href="https://ttc.iss.lsa.umich.edu/ttc/sessions/tag/arc/"
+href="https://ttc.iss.lsa.umich.edu/ttc/sessions/tag/hpc/"
 target="_blank">UM Advanced Research Computing workshops</a></li>
 <li>Videos on <a
-href="https://www.mivideo.it.umich.edu/channel/ARC-TS%2BTraining/181860561/"
-target="_blank">getting started with Great Lakes</a></li>
+href="https://www.mivideo.it.umich.edu/playlist/dedicated/1_rmm5rnp1/"
+target="_blank">getting started with Great Lakes</a> (Requires UM
+login)</li>
+</ul></li>
 </ul>
 <hr />
 </div>
