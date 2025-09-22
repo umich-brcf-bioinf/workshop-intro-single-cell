@@ -8,9 +8,9 @@ This is the custom curriculum for the UM Bioinformatics Core Intro to Single Cel
   
   - [Main](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/main/html/)
   - [Most recent dated branch](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/release/html/) 
+  - [10/15/2025](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/2025-10-15/html/)
   - [7/30/2025](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/2025-07-30/html/)
-  - [4/16/2025](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/2025-04-16/html/)
-  
+
 * Input data for learners:
    - Copies of files pushed to learner's home directories are located in `/efs/workshop/isc/workshop_setup/shared_sample_data` on the AWS server
 
