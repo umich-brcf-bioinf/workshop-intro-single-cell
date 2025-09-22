@@ -18,9 +18,9 @@ body{ /* Normal  */
   }
 </style>
 
-### Intro to R & RStudio (July 16-17, 9am-12pm ET)
+### Intro to R & RStudio (September 29-30, 9am-1pm ET)
 
-### Intro to Single Cell Analysis (July 30 - August 1, 9am-1pm ET)
+### Intro to Single Cell Analysis (October 15-17, 9am-1pm ET)
 
 <hr/>
 

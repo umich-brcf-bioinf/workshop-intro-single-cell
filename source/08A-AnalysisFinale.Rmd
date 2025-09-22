@@ -140,9 +140,9 @@ This info is generally not included in main body of a paper, but you will get se
 # Print out details about this R install, session, and loaded libraries
 # 
 # You can use the built-in command sessionInfo(); we prefer 
-# devtools::session_info() for the nicer formatting. 
-# Note, you'll have to have the devtools package installed:
-# install.packages('devtools');
+# sessioninfo::session_info() for the nicer formatting. 
+# Note, you'll have to have the sessioninfo package installed:
+# install.packages('sessioninfo');
 
 sessioninfo::session_info()
 ```

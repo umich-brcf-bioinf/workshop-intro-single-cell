@@ -10,7 +10,7 @@ workshop_vars = list(
   rstudio_server_enddate = "10/24/2025",
   ssh_download_dns = "bfx-workshop01.med.umich.edu",
   aws_s3_bucket = "https://umich-brcf-bioinf-workshop.s3.us-east-1.amazonaws.com",
-  aws_s3_file = "ISC/workshop_isc_inputs-20250730.tgz",
+  aws_s3_file = "ISC/workshop_isc_inputs-20251015.tgz",
   satija_scgd = "https://satijalab.org/scgd25/"
 )
 
