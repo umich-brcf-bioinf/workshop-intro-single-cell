@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+
+<html lang="en" xml:lang="en">
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core Workshop Team" />
+
+
+<title>Intro to Single Cell RNA-Seq Workshop</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<!--
+Favicon dervied from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<link rel="manifest" href="site.webmanifest">
+<link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+    </li>
+    <li>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+    </li>
+    <li>
+      <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
+    </li>
+    <li>
+      <a href="03-Normalization.html">Normalization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
+    </li>
+    <li>
+      <a href="05-ProjectionAndClustering.html">Clustering &amp; Projection</a>
+    </li>
+    <li>
+      <a href="clusters_faq.html">Clusters, PCs, and Resolutions: FAQ</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="06-MarkerVisualization.html">Marker identification and visualization</a>
+    </li>
+    <li>
+      <a href="07-CellTypeAnnos.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="08-DifferentialExpression.html">Differential expression analysis</a>
+    </li>
+    <li>
+      <a href="08A-AnalysisFinale.html">Analysis summary and next steps</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="exercises.html">Exercises</a>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Intro to Single Cell RNA-Seq Workshop</h1>
+<h4 class="author">UM Bioinformatics Core Workshop Team</h4>
+
+</div>
+
+
+<style type="text/css">
+
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+
+</style>
+<script>
+  addClassKlippyTo("pre.r, pre.markdown, pre.bash");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<div id="wrapping-up" class="section level2">
+<h2>Wrapping up</h2>
+<p>We hope you now have more familiarity with key concepts, data types,
+tools, and how they all connect to enable single-cell gene expression
+analysis from RNA-Seq data.</p>
+<p><img src="images/wayfinder/00-FullWayfinder.png"
+title="Wayfinder: Wrap-up" /></p>
+<hr />
+</div>
+<div id="housekeeping" class="section level2">
+<h2>Housekeeping</h2>
+<ul>
+<li><p>Please take our optional <a href="https://michmed.org/7k9Zr"
+target="_blank">post-workshop survey</a> (5-10 minutes).</p></li>
+<li><p>We will email you a link to the final session recordings next
+week.</p></li>
+<li><p>The website/notes for this workshop will be available.</p></li>
+<li><p>The <a href="https://umbioinfcoreworkshops.slack.com"
+target="_blank">UM Bioinformatics Core Workshop Slack channel</a>
+content will be available for 90 days.</p></li>
+</ul>
+<hr />
+<div
+id="can-i-continue-to-use-the-rstudio-environments-we-used-in-the-workshop"
+class="section level3">
+<h3>Can I continue to use the RStudio environments we used in the
+workshop?</h3>
+<ul>
+<li><p>The RStudio workshop compute environment will be available
+through 10/25/2025.</p>
+<ul>
+<li><em>Please save all your R scripts now</em> so that we can
+“right-size” the compute environment immediately following today’s
+workshop session.</li>
+</ul></li>
+<li><p>You can download files from the workshop environment from your
+terminal/command line window as below. (You will need to substitute your
+actual workshop username and type workshop password when prompted.)</p>
+<pre><code># download workshop files -------------------------------------------------
+mkdir intro_scrnaseq_workshop
+cd intro_scrnaseq_workshop
+scp -r YOUR_USERNAME@bfx-workshop01.med.umich.edu:&quot;ISC_R*&quot; .</code></pre>
+<ul>
+<li>Note that the full download of the R data is about 8Gb, so depending
+on your internet speeds it could take a while. (We do not recommend you
+download the full set of Cell Ranger outputs.)</li>
+</ul></li>
+</ul>
+<hr />
+</div>
+<div id="where-else-could-i-use-rstudio" class="section level3">
+<h3>Where else could I use RStudio?</h3>
+<ul>
+<li>See <a href="workshop_setup/setup_instructions_advanced.html"
+target="_blank">Advanced setup instructions</a> for details on how to
+install RStudio and required packages on your own computer. Please note:
+<ul>
+<li>Installing bioinformatics software is often non-trivial.</li>
+<li>For typical data, Cell Ranger steps (reviewed Day 1) assume your
+computer has powerful compute (many CPUs and lots of RAM) and sizable
+storage capacity. (i.e. it’s impractical to run these on your
+laptop.)</li>
+</ul></li>
+<li><a href="https://posit.cloud/" target="_blank">PositCloud</a> allows
+you to run R-Studio over the web for free. Click here to <a
+href="https://posit.cloud/content/10156998">login to PositCloud</a> and
+launch an R session. (UM users can login using their umich.edu Google
+account.) <em>Note: A full single-cell analysis will require you to
+upgrade beyond the free tier.</em></li>
+<li>UMich users can run RStudio on the <a
+href="seurat-on-great-lakes.html" target="_blank">UM Great Lakes
+HPC</a>.</li>
+</ul>
+<hr />
+<div id="could-i-download-seurat-inputs-used-in-the-workshop"
+class="section level4">
+<h4>Could I download Seurat inputs used in the workshop?</h4>
+<ul>
+<li><p>The Seurat inputs (cellranger triples and dbcells files) used in
+this workshop can be installed locally like so:</p>
+<pre class="bash"><code># download Seurat inputs --------------------------------------------------
+mkdir -p intro_scrnaseq_workshop/ISC_R
+cd intro_scrnaseq_workshop/ISC_R
+
+# Use curl to download a ~3 Gb tarball
+# We&#39;ll use evironment variables to avoid extremely long command lines
+source_url=&quot;https://umich-brcf-bioinf-workshop.s3.us-east-1.amazonaws.com&quot;
+source_file=&quot;ISC/workshop_isc_inputs-20251015.tgz&quot;
+curl -o workshop_isc_inputs.tgz ${source_url}/${source_file}
+
+# tar unpacks the tarball into directories
+tar xzvf workshop_isc_inputs.tgz
+
+# Since we have unpacked the tarball, we can remove it
+rm workshop_isc_inputs.tgz</code></pre>
+<p><br/></p></li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="can-you-recommend-other-relevant-workshops-or-tutorials"
+class="section level3">
+<h3>Can you recommend other relevant workshops or tutorials?</h3>
+<ul>
+<li>The <a href="https://michmed.org/XYQwq" target="_blank">University
+of Michigan Bioinformatics Core</a> regularly hosts workshops.</li>
+<li>Intro lessons and workshops in Bash / Git / R / Python :
+<ul>
+<li><a href="https://software-carpentry.org/lessons/"
+target="_blank">Software Carpentry</a></li>
+<li><a href="https://umcarpentries.org/" target="_blank">The Carpentries
+at the University of Michigan</a> host several introductory workshops
+each year following curricula that are developed collaboratively and
+using the latest research into best practices for teaching computer
+science content. All workshops are offered for free to learners.</li>
+</ul></li>
+</ul>
+<hr />
+</div>
+</div>
+<div
+id="how-can-i-learn-more-about-computational-research-at-university-of-michigan"
+class="section level2">
+<h2>How can I learn more about computational research at University of
+Michigan?</h2>
+<ul>
+<li><a href="https://datascience.isr.umich.edu/events/coderspaces/"
+target="_blank">UM CoderSpaces “office hours”</a> and UM CoderSpaces
+Slack workspace. <em>(See “Useful Resources” section in CoderSpaces page
+for instructions on how to join and access the CoderSpaces Slack
+workspace.)</em></li>
+<li><a href="https://its.umich.edu/advanced-research-computing"
+target="_blank">Advanced Research Computing</a>
+<ul>
+<li><a
+href="https://its.umich.edu/advanced-research-computing/research-computing-package"
+target="_blank">Research Computing Package</a></li>
+<li>Upcoming <a
+href="https://ttc.iss.lsa.umich.edu/ttc/sessions/tag/hpc/"
+target="_blank">UM Advanced Research Computing workshops</a></li>
+<li>Videos on <a
+href="https://www.mivideo.it.umich.edu/playlist/dedicated/1_rmm5rnp1/"
+target="_blank">getting started with Great Lakes</a> (Requires UM
+login)</li>
+</ul></li>
+</ul>
+<hr />
+</div>
+<div id="thank-you-to-our-sponsors" class="section level2">
+<h2>Thank you to our sponsors</h2>
+<p><img src="images/workshop_intro/sponsor_logos.png" /></p>
+<p><br/></p>
+</div>
+<div id="thank-you-tofrom-the-workshop-team" class="section level2">
+<h2>Thank you to/from the workshop team</h2>
+<table>
+<colgroup>
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center"><img
+src="images/headshots/headshot_cgates.jpg" /></th>
+<th align="center"><img
+src="images/headshots/headshot_mbradenb.jpg" /></th>
+<th align="center"><img
+src="images/headshots/headshot_rcavalca.jpg" /></th>
+<th align="center"><img
+src="images/headshots/headshot_damki.jpg" /></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center"><strong>Chris</strong></td>
+<td align="center"><strong>Marci</strong></td>
+<td align="center"><strong>Raymond</strong></td>
+<td align="center"><strong>Dana</strong></td>
+</tr>
+<tr class="even">
+<td align="center"><img
+src="images/headshots/headshot_weishwu.jpg" /></td>
+<td align="center"><img
+src="images/headshots/headshot_dfhannum.jpg" /></td>
+<td align="center"><img
+src="images/headshots/headshot_phillipa.jpg" /></td>
+<td align="center"></td>
+</tr>
+<tr class="odd">
+<td align="center"><strong>Weisheng</strong></td>
+<td align="center"><strong>Ford</strong></td>
+<td align="center"><strong>Tricia</strong></td>
+<td align="center"></td>
+</tr>
+</tbody>
+</table>
+<p><br/></p>
+<p>Thank you for participating in our workshop. We welcome your
+questions and feedback now and in the future.</p>
+<p>Bioinformatics Workshop Team</p>
+<p><a
+href="mailto:bioinformatics-workshops@umich.edu">bioinformatics-workshops@umich.edu</a>
+<br/> <a
+href="https://medresearch.umich.edu/office-research/about-office-research/biomedical-research-core-facilities/bioinformatics-core"
+target="_blank">UM BRCF Bioinformatics Core</a></p>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

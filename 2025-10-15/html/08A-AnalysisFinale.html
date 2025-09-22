@@ -1,0 +1,1217 @@
+<!DOCTYPE html>
+
+<html lang="en" xml:lang="en">
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core Workshop Team" />
+
+<meta name="date" content="2025-08-06" />
+
+<title>Analysis summary and next steps</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<!--
+Favicon dervied from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<link rel="manifest" href="site.webmanifest">
+<link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+    </li>
+    <li>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+    </li>
+    <li>
+      <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
+    </li>
+    <li>
+      <a href="03-Normalization.html">Normalization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
+    </li>
+    <li>
+      <a href="05-ProjectionAndClustering.html">Clustering &amp; Projection</a>
+    </li>
+    <li>
+      <a href="clusters_faq.html">Clusters, PCs, and Resolutions: FAQ</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="06-MarkerVisualization.html">Marker identification and visualization</a>
+    </li>
+    <li>
+      <a href="07-CellTypeAnnos.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="08-DifferentialExpression.html">Differential expression analysis</a>
+    </li>
+    <li>
+      <a href="08A-AnalysisFinale.html">Analysis summary and next steps</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="exercises.html">Exercises</a>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Analysis summary and next steps</h1>
+<h4 class="author">UM Bioinformatics Core Workshop Team</h4>
+<h4 class="date">2025-08-06</h4>
+
+</div>
+
+
+<style type="text/css">
+body {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+
+table.fig, th.fig, td.fig {
+  border: 1px solid lightgray;
+  border-collapse: collapse;
+  padding: 12px;
+}
+</style>
+<script>
+  addClassKlippyTo("pre.r, pre.markdown, pre.bash");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<div id="workflow-overview" class="section level1 unlisted unnumbered">
+<h1 class="unlisted unnumbered">Workflow Overview</h1>
+<p><br/> <img src="images/wayfinder/00-FullWayfinder.png" /> <br/>
+<br/></p>
+</div>
+<div id="key-decision-points-in-analysis-and-methodology"
+class="section level1">
+<h1>Key decision points in analysis and methodology</h1>
+<p><br/> We’ve successfully analyzed our single-cell RNA-seq data,
+running the follow steps:</p>
+<!--- revise into table format to list steps and related parameters/tools used -->
+<table>
+<colgroup>
+<col width="26%" />
+<col width="36%" />
+<col width="36%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Step</th>
+<th align="left">Goal</th>
+<th align="left">Parameters/tools used in workshop      </th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Secondary QC filtering</td>
+<td align="left">Identify healthy, single-cells for downstream
+analysis</td>
+<td align="left"><code>nFeature_RNA &lt; 300</code> (genes per cell),
+max <code>percent.mt</code> (% mitochondrial genes per cell)</td>
+</tr>
+<tr class="even">
+<td align="left">Normalization</td>
+<td align="left">Separate biological effects from technical effects</td>
+<td align="left"><code>SCTransform</code> with default parameters</td>
+</tr>
+<tr class="odd">
+<td align="left">Integration</td>
+<td align="left">Remove batch effects between individual or groups of
+samples</td>
+<td align="left"><code>IntegrateLayers</code> function, using
+<code>RPCAIntegration</code> as the method</td>
+</tr>
+<tr class="even">
+<td align="left">Clustering</td>
+<td align="left">Group populations of cells with similar expression
+programs that correspond to cell-types and/or sub-types of interest</td>
+<td align="left"><code>FindNeighbors</code> and
+<code>FindClusters</code> using default Louvain algorithm with 10 PCs
+and 0.4 resolution</td>
+</tr>
+<tr class="odd">
+<td align="left">Annotation</td>
+<td align="left">Identify cell-types present in data</td>
+<td align="left"><code>scCATCH</code> to generate predicted cell-types
+and expression plots of marker genes manually pulled from the literature
+to finalize the annotations</td>
+</tr>
+<tr class="even">
+<td align="left">Differential expression comparisons</td>
+<td align="left">Identify genes that are impacted by the experimental
+groups/condition within a given cell-type</td>
+<td align="left"><code>FindMarkers</code> with <code>wilcox</code> as
+the statistical test used for the standard comparisons and
+<code>DESeq</code> used for the psuedobulk comparisons</td>
+</tr>
+</tbody>
+</table>
+<p>Organizing the tools and parameters used in our analysis can also be
+helpful for creating a more descriptive methods summary, like what would
+be included in a paper.</p>
+<!--- then show descriptive methods (moved form wrap-up section) -->
+</div>
+<div id="example-publication-style-methods" class="section level1">
+<h1>Example publication style methods</h1>
+<details>
+<summary>
+<strong>Data analysis</strong>
+</summary>
+<p>University of Michigan Biomedical Research Core Facilities Advanced
+Genomics Core executed 10x Genomics Cell Ranger (v9.0.0) to perform
+sample de-multiplexing, barcode processing, and single cell gene
+counting (Alignment, Barcoding and UMI Count); alignments were against
+mm10-2020-A and included intronic sequence. The Cell Ranger filtered
+barcode feature matrix was used as input to downstream analysis.</p>
+<p>All analysis and graphics were generated in R (v4.4.1) [1]. Analysis
+was performed primarily using the Seurat package (v5.0.1) [2]. Cells
+with extreme values (which indicate low complexity, doublets, or
+apoptotic cells) were excluded by filtering to include only cells where
+Genes/cell &gt;300 and % mitochondrial &lt; 15% resulting in
+approximately 600-5,600 cells per sample after filtering. Counts were
+then normalized using the SCTransform method with default parameters
+[3].</p>
+<p>Normalized data were integrated using the RPCA method
+(IntegrateLayers function with “SCT” as normalization method. Principal
+Component Analysis (PCA) was then performed and the first 10 significant
+components were used for finding nearest neighbors followed by
+graph-based, semi-unsupervised Louvain clustering into distinct
+populations (resolution = 0.4). All uniform manifold approximation and
+projection (UMAP) plots were generated using default settings [4]. To
+identify marker genes, the clusters in the integrated data were compared
+pairwise for differential gene expression using Wilcoxon rank-sum test
+for single-cell gene expression (FindAllMarkers function; default
+parameters) [5]. Additional marker genes and cell-type predictions were
+generated with scCATCH (3.2.2) [6].</p>
+<p>To identify differentially expressed (DE) genes within the total
+population, Case and Control samples were compared pairwise for
+differential expression expression (FindAllMarkers function; log2FC =
+1.5; test.use = “Wilcoxon”). For each cluster, the results were further
+limited to significantly different genes (Benjamini-Hochberg adjusted
+p-value &lt;= 0.05). Intra-cluster case-vs-control pseudo bulk
+comparisons were analyzed using DESeq2 (v1.44.0) [7].</p>
+<p><strong>References</strong></p>
+<ol style="list-style-type: decimal">
+<li>R Core Team (2019). R: A language and environment for statistical
+computing. R Foundation for Statistical Computing, Vienna, Austria. <a
+href="https://www.R-project.org/"
+class="uri">https://www.R-project.org/</a>.</li>
+<li>Stuart T, Butler A, Hoffman P, Hafemeister C, Papalexi E, III WMM,
+Stoeckius M, Smibert P, Satija R (2018). “Comprehensive integration of
+single cell data.” bioRxiv. doi: 10.1101/460147, <a
+href="https://www.biorxiv.org/content/10.1101/460147v1"
+class="uri">https://www.biorxiv.org/content/10.1101/460147v1</a></li>
+<li>Hafemeister, C., Satija, R (2019). Normalization and variance
+stabilization of single-cell RNA-seq data using regularized negative
+binomial regression. Genome Biol 20, 296. <a
+href="https://doi.org/10.1186/s13059-019-1874-1"
+class="uri">https://doi.org/10.1186/s13059-019-1874-1</a></li>
+<li>Becht, E. et al (2018). Dimensionality reduction for visualizing
+single-cell data using UMAP. Nat. Biotechnol. 37, 38–44 .</li>
+<li>Myles Hollander and Douglas A. Wolfe (1973). Nonparametric
+Statistical Methods. New York: John Wiley &amp; Sons. Pages 68–75.</li>
+<li>Shao et al (2020), scCATCH:Automatic Annotation on Cell Types of
+Clusters from Single-Cell RNA Sequencing Data, iScience, Volume 23,
+Issue 3. doi: 10.1016/j.isci.2020.100882.</li>
+<li>Love MI, Huber W, Anders S (2014). “Moderated estimation of fold
+change and dispersion for RNA-seq data with DESeq2.” Genome Biology, 15,
+550. <a href="doi:10.1186/s13059-014-0550-8"
+class="uri">doi:10.1186/s13059-014-0550-8</a>.</li>
+</ol>
+</details>
+<p></br></p>
+<div id="methods-from-original-paper" class="section level2">
+<h2>Methods from original paper</h2>
+<p>The example dataset used in the workshop was inspired by Sorkin et
+al. so it can also be helpful to consider the methods section from the
+original <a
+href="https://pubmed.ncbi.nlm.nih.gov/32024825/">paper</a>.</p>
+<details>
+<summary>
+<strong>Sorkin et al. Methods</strong>
+</summary>
+<p>the experimental methods below were excerpted directly from:</p>
+<ul>
+<li>Sorkin, Michael et al. <strong>“Regulation of heterotopic
+ossification by monocytes in a mouse model of aberrant wound
+healing.”</strong> Nature communications vol. 11,1 722. 5
+Feb. 2020.<br/>
+<a class="external" href="https://pubmed.ncbi.nlm.nih.gov/32024825/" target="_blank">https://pubmed.ncbi.nlm.nih.gov/32024825/</a></li>
+</ul>
+<p>Tissues harvested from the extremity injury site were digested for
+45 min in 0.3% Type 1 Collagenase and 0.4% Dispase II (Gibco) in Roswell
+Park Memorial Institute (RPMI) medium at 37 °C under constant agitation
+at 120 rpm. Digestions were subsequently quenched with 10% FBS RPMI and
+filtered through 40μm sterile strainers. Cells were then washed in PBS
+with 0.04% BSA, counted and resuspended at a concentration of ~1000
+cells/μl. Cell viability was assessed with Trypan blue exclusion on a
+Countess II (Thermo Fisher Scientific) automated counter and only
+samples with &gt;85% viability were processed for further
+sequencing.</p>
+<p>University of Michigan Biomedical Research Core Facilities Advanced
+Genomics Core generated single-cell 3’ libraries on the 10× Genomics
+Chromium Controller following the manufacturers protocol for the v2
+reagent kit (10× Genomics, Pleasanton, CA, USA). Cell suspensions were
+loaded onto a Chromium Single-Cell A chip along with reverse
+transcription (RT) master mix and single cell 3’ gel beads, aiming for
+2000–6000 cells per channel. In this experiment, 8700 cells were
+encapsulated into emulsion droplets at a concentration of 700–1200
+cells/ul which targets 5000 single cells with an expected multiplet rate
+of 3.9%. Following generation of single-cell gel bead-in-emulsions
+(GEMs), reverse transcription was performed and the resulting Post
+GEM-RT product was cleaned up using DynaBeads MyOne Silane beads (Thermo
+Fisher Scientific, Waltham, MA, USA). The cDNA was amplified, SPRIselect
+(Beckman Coulter, Brea, CA, USA) cleaned and quantified then
+enzymatically fragmented and size selected using SPRIselect beads to
+optimize the cDNA amplicon size prior to library construction. An
+additional round of double-sided SPRI bead cleanup is performed after
+end repair and A-tailing. Another single-sided cleanup is done after
+adapter ligation. Indexes were added during PCR amplification and a
+final double-sided SPRI cleanup was performed. Libraries were quantified
+by Kapa qPCR for Illumina Adapters (Roche) and size was determined by
+Agilent tapestation D1000 tapes. Read 1 primer sequence are added to the
+molecules during GEM incubation. P5, P7 and sample index and read 2
+primer sequence are added during library construction via end repair,
+A-tailing, adaptor ligation and PCR. Libraries were generated with
+unique sample indices (SI) for each sample. Libraries were sequenced on
+a HiSeq 4000, (Illumina, San Diego, CA, USA) using a HiSeq 4000 PE
+Cluster Kit (PN PE-410-1001) with HiSeq 4000 SBS Kit (100 cycles, PN
+FC-410-1002) reagents, loaded at 200 pM following Illumina’s denaturing
+and dilution recommendations. The run configuration was 26 × 8 × 98
+cycles for Read 1, Index and Read 2, respectively.</p>
+</details>
+<p><br/></p>
+<p>Additionally, the <code>sessionInfo</code> function produces a list
+of the relevant versions of R and all the libraries that were loaded in
+the analysis. While this level of detail is usually most useful for
+troubleshooting, it’s helpful to preserve this information for your
+records and to include the output when asking for help, particularly in
+public forums.</p>
+<details>
+<summary>
+<strong>Session Info</strong>
+</summary>
+<p>This info is generally not included in main body of a paper, but you
+will get serious <em>reproducibility street-cred</em> if it shows up in
+supplemental. 😎<br/></p>
+<pre class="r"><code>################################################################################
+# Print out details about this R install, session, and loaded libraries
+# 
+# You can use the built-in command sessionInfo(); we prefer 
+# devtools::session_info() for the nicer formatting. 
+# Note, you&#39;ll have to have the devtools package installed:
+# install.packages(&#39;devtools&#39;);
+
+devtools::session_info()</code></pre>
+<pre class="default"><code>─ Session info ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ setting  value
+ version  R version 4.5.0 (2025-04-11)
+ os       Ubuntu 22.04.5 LTS
+ system   x86_64, linux-gnu
+ ui       RStudio
+ language (EN)
+ collate  C.UTF-8
+ ctype    C.UTF-8
+ tz       America/Detroit
+ date     2025-08-06
+ rstudio  2024.12.1+563 Kousa Dogwood (server)
+ pandoc   3.2 @ /usr/lib/rstudio-server/bin/quarto/bin/tools/x86_64/ (via rmarkdown)
+ quarto   1.5.57 @ /usr/lib/rstudio-server/bin/quarto/bin/quarto
+
+─ Packages ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+ package          * version    date (UTC) lib source
+ abind              1.4-8      2024-09-12 [2] CRAN (R 4.5.0)
+ assertthat         0.2.1      2019-03-21 [2] CRAN (R 4.5.0)
+ beeswarm           0.4.0      2021-06-01 [2] CRAN (R 4.5.0)
+ BiocGenerics       0.54.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ bit                4.6.0      2025-03-06 [2] CRAN (R 4.5.0)
+ bit64              4.6.0-1    2025-01-16 [2] CRAN (R 4.5.0)
+ BPCells          * 0.2.0      2024-07-18 [2] Github (bnprks/BPCells@5677cf1)
+ bslib              0.9.0      2025-01-30 [2] CRAN (R 4.5.0)
+ cachem             1.1.0      2024-05-16 [2] CRAN (R 4.5.0)
+ cli                3.6.5      2025-04-23 [2] CRAN (R 4.5.0)
+ cluster            2.1.8.1    2025-03-12 [2] CRAN (R 4.5.0)
+ codetools          0.2-20     2024-03-31 [2] CRAN (R 4.5.0)
+ cowplot            1.2.0      2025-07-07 [2] CRAN (R 4.5.0)
+ crayon             1.5.3      2024-06-20 [2] CRAN (R 4.5.0)
+ data.table         1.17.8     2025-07-10 [2] CRAN (R 4.5.0)
+ deldir             2.0-4      2024-02-28 [2] CRAN (R 4.5.0)
+ devtools           2.4.5      2022-10-11 [2] CRAN (R 4.5.0)
+ digest             0.6.37     2024-08-19 [2] CRAN (R 4.5.0)
+ dotCall64          1.2        2024-10-04 [2] CRAN (R 4.5.0)
+ dplyr            * 1.1.4      2023-11-17 [2] CRAN (R 4.5.0)
+ ellipsis           0.3.2      2021-04-29 [2] CRAN (R 4.5.0)
+ evaluate           1.0.4      2025-06-18 [2] CRAN (R 4.5.0)
+ farver             2.1.2      2024-05-13 [2] CRAN (R 4.5.0)
+ fastDummies        1.7.5      2025-01-20 [2] CRAN (R 4.5.0)
+ fastmap            1.2.0      2024-05-15 [2] CRAN (R 4.5.0)
+ fitdistrplus       1.2-4      2025-07-03 [2] CRAN (R 4.5.0)
+ forcats          * 1.0.0      2023-01-29 [2] CRAN (R 4.5.0)
+ fs                 1.6.6      2025-04-12 [2] CRAN (R 4.5.0)
+ future           * 1.58.0     2025-06-05 [2] CRAN (R 4.5.0)
+ future.apply       1.20.0     2025-06-06 [2] CRAN (R 4.5.0)
+ generics           0.1.4      2025-05-09 [2] CRAN (R 4.5.0)
+ GenomeInfoDb       1.44.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ GenomeInfoDbData   1.2.14     2025-06-12 [2] Bioconductor
+ GenomicRanges      1.60.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ ggbeeswarm         0.7.2      2023-04-29 [2] CRAN (R 4.5.0)
+ ggplot2          * 3.5.2      2025-04-09 [2] CRAN (R 4.5.0)
+ ggrastr            1.0.2      2023-06-01 [2] CRAN (R 4.5.0)
+ ggrepel            0.9.6      2024-09-07 [2] CRAN (R 4.5.0)
+ ggridges           0.5.6      2024-01-23 [2] CRAN (R 4.5.0)
+ globals            0.18.0     2025-05-08 [2] CRAN (R 4.5.0)
+ glue               1.8.0      2024-09-30 [2] CRAN (R 4.5.0)
+ goftest            1.2-3      2021-10-07 [2] CRAN (R 4.5.0)
+ gridExtra          2.3        2017-09-09 [2] CRAN (R 4.5.0)
+ gtable             0.3.6      2024-10-25 [2] CRAN (R 4.5.0)
+ hms                1.1.3      2023-03-21 [2] CRAN (R 4.5.0)
+ htmltools          0.5.8.1    2024-04-04 [2] CRAN (R 4.5.0)
+ htmlwidgets        1.6.4      2023-12-06 [2] CRAN (R 4.5.0)
+ httpuv             1.6.16     2025-04-16 [2] CRAN (R 4.5.0)
+ httr               1.4.7      2023-08-15 [2] CRAN (R 4.5.0)
+ ica                1.0-3      2022-07-08 [2] CRAN (R 4.5.0)
+ igraph             2.1.4      2025-01-23 [2] CRAN (R 4.5.0)
+ IRanges            2.42.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ irlba              2.3.5.1    2022-10-03 [2] CRAN (R 4.5.0)
+ jquerylib          0.1.4      2021-04-26 [2] CRAN (R 4.5.0)
+ jsonlite           2.0.0      2025-03-27 [2] CRAN (R 4.5.0)
+ kableExtra       * 1.4.0.15   2025-06-12 [3] Github (haozhu233/kableExtra@2f58f89)
+ KernSmooth         2.23-26    2025-01-01 [2] CRAN (R 4.5.0)
+ klippy           * 0.0.0.9500 2025-06-12 [3] Github (umich-brcf-bioinf/workshop-klippy@a1be090)
+ knitr            * 1.50       2025-03-16 [2] CRAN (R 4.5.0)
+ labeling           0.4.3      2023-08-29 [2] CRAN (R 4.5.0)
+ later              1.4.2      2025-04-08 [2] CRAN (R 4.5.0)
+ lattice            0.22-7     2025-04-02 [2] CRAN (R 4.5.0)
+ lazyeval           0.2.2      2019-03-15 [2] CRAN (R 4.5.0)
+ leiden             0.4.3.1    2023-11-17 [2] CRAN (R 4.5.0)
+ lifecycle          1.0.4      2023-11-07 [2] CRAN (R 4.5.0)
+ listenv            0.9.1      2024-01-29 [2] CRAN (R 4.5.0)
+ lmtest             0.9-40     2022-03-21 [2] CRAN (R 4.5.0)
+ lubridate        * 1.9.4      2024-12-08 [2] CRAN (R 4.5.0)
+ magrittr           2.0.3      2022-03-30 [2] CRAN (R 4.5.0)
+ MASS               7.3-65     2025-02-28 [2] CRAN (R 4.5.0)
+ Matrix             1.7-3      2025-03-11 [2] CRAN (R 4.5.0)
+ MatrixGenerics     1.20.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ matrixStats        1.5.0      2025-01-07 [2] CRAN (R 4.5.0)
+ memoise            2.0.1      2021-11-26 [2] CRAN (R 4.5.0)
+ mime               0.13       2025-03-17 [2] CRAN (R 4.5.0)
+ miniUI             0.1.2      2025-04-17 [2] CRAN (R 4.5.0)
+ nlme               3.1-168    2025-03-31 [2] CRAN (R 4.5.0)
+ parallelly         1.45.0     2025-06-02 [2] CRAN (R 4.5.0)
+ patchwork          1.3.1      2025-06-21 [2] CRAN (R 4.5.0)
+ pbapply            1.7-2      2023-06-27 [2] CRAN (R 4.5.0)
+ pillar             1.11.0     2025-07-04 [2] CRAN (R 4.5.0)
+ pkgbuild           1.4.8      2025-05-26 [2] CRAN (R 4.5.0)
+ pkgconfig          2.0.3      2019-09-22 [2] CRAN (R 4.5.0)
+ pkgload            1.4.0      2024-06-28 [2] CRAN (R 4.5.0)
+ plotly             4.11.0     2025-06-19 [2] CRAN (R 4.5.0)
+ plyr               1.8.9      2023-10-02 [2] CRAN (R 4.5.0)
+ png                0.1-8      2022-11-29 [2] CRAN (R 4.5.0)
+ polyclip           1.10-7     2024-07-23 [2] CRAN (R 4.5.0)
+ profvis            0.4.0      2024-09-20 [2] CRAN (R 4.5.0)
+ progressr          0.15.1     2024-11-22 [2] CRAN (R 4.5.0)
+ promises           1.3.3      2025-05-29 [2] CRAN (R 4.5.0)
+ purrr            * 1.1.0      2025-07-10 [2] CRAN (R 4.5.0)
+ R6                 2.6.1      2025-02-15 [2] CRAN (R 4.5.0)
+ ragg               1.4.0      2025-04-10 [2] CRAN (R 4.5.0)
+ RANN               2.6.2      2024-08-25 [2] CRAN (R 4.5.0)
+ RColorBrewer       1.1-3      2022-04-03 [2] CRAN (R 4.5.0)
+ Rcpp               1.1.0      2025-07-02 [2] CRAN (R 4.5.0)
+ RcppAnnoy          0.0.22     2024-01-23 [2] CRAN (R 4.5.0)
+ RcppHNSW           0.6.0      2024-02-04 [2] CRAN (R 4.5.0)
+ readr            * 2.1.5      2024-01-10 [2] CRAN (R 4.5.0)
+ remotes            2.5.0      2024-03-17 [2] CRAN (R 4.5.0)
+ reshape2           1.4.4      2020-04-09 [2] CRAN (R 4.5.0)
+ reticulate         1.42.0     2025-03-25 [2] CRAN (R 4.5.0)
+ rlang              1.1.6      2025-04-11 [2] CRAN (R 4.5.0)
+ rmarkdown        * 2.29       2024-11-04 [2] CRAN (R 4.5.0)
+ ROCR               1.0-11     2020-05-02 [2] CRAN (R 4.5.0)
+ RSpectra           0.16-2     2024-07-18 [2] CRAN (R 4.5.0)
+ rstudioapi         0.17.1     2024-10-22 [2] CRAN (R 4.5.0)
+ Rtsne              0.17       2023-12-07 [2] CRAN (R 4.5.0)
+ S4Vectors          0.46.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ sass               0.4.10     2025-04-11 [2] CRAN (R 4.5.0)
+ scales             1.4.0      2025-04-24 [2] CRAN (R 4.5.0)
+ scattermore        1.2        2023-06-12 [2] CRAN (R 4.5.0)
+ sctransform        0.4.2      2025-04-30 [2] CRAN (R 4.5.0)
+ sessioninfo        1.2.3      2025-02-05 [2] CRAN (R 4.5.0)
+ Seurat           * 5.1.0      2024-05-10 [2] CRAN (R 4.5.0)
+ SeuratObject     * 5.1.0      2025-04-22 [2] CRAN (R 4.5.0)
+ shiny              1.11.1     2025-07-03 [2] CRAN (R 4.5.0)
+ sp               * 2.2-0      2025-02-01 [2] CRAN (R 4.5.0)
+ spam               2.11-1     2025-01-20 [2] CRAN (R 4.5.0)
+ spatstat.data      3.1-6      2025-03-17 [2] CRAN (R 4.5.0)
+ spatstat.explore   3.4-3      2025-05-21 [2] CRAN (R 4.5.0)
+ spatstat.geom      3.4-1      2025-05-20 [2] CRAN (R 4.5.0)
+ spatstat.random    3.4-1      2025-05-20 [2] CRAN (R 4.5.0)
+ spatstat.sparse    3.1-0      2024-06-21 [2] CRAN (R 4.5.0)
+ spatstat.univar    3.1-3      2025-05-08 [2] CRAN (R 4.5.0)
+ spatstat.utils     3.1-4      2025-05-15 [2] CRAN (R 4.5.0)
+ stringi            1.8.7      2025-03-27 [2] CRAN (R 4.5.0)
+ stringr          * 1.5.1      2023-11-14 [2] CRAN (R 4.5.0)
+ survival           3.8-3      2024-12-17 [2] CRAN (R 4.5.0)
+ svglite            2.2.1      2025-05-12 [3] CRAN (R 4.5.0)
+ systemfonts        1.2.3      2025-04-30 [2] CRAN (R 4.5.0)
+ tensor             1.5.1      2025-06-17 [2] CRAN (R 4.5.0)
+ textshaping        1.0.1      2025-05-01 [2] CRAN (R 4.5.0)
+ tibble           * 3.3.0      2025-06-08 [2] CRAN (R 4.5.0)
+ tidyr            * 1.3.1      2024-01-24 [2] CRAN (R 4.5.0)
+ tidyselect         1.2.1      2024-03-11 [2] CRAN (R 4.5.0)
+ tidyverse        * 2.0.0      2023-02-22 [2] CRAN (R 4.5.0)
+ timechange         0.3.0      2024-01-18 [2] CRAN (R 4.5.0)
+ tzdb               0.5.0      2025-03-15 [2] CRAN (R 4.5.0)
+ UCSC.utils         1.4.0      2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ urlchecker         1.0.1      2021-11-30 [2] CRAN (R 4.5.0)
+ usethis            3.1.0      2024-11-26 [2] CRAN (R 4.5.0)
+ utf8               1.2.6      2025-06-08 [2] CRAN (R 4.5.0)
+ uwot               0.2.3      2025-02-24 [2] CRAN (R 4.5.0)
+ vctrs              0.6.5      2023-12-01 [2] CRAN (R 4.5.0)
+ vipor              0.4.7      2023-12-18 [2] CRAN (R 4.5.0)
+ viridisLite        0.4.2      2023-05-02 [2] CRAN (R 4.5.0)
+ vroom              1.6.5      2023-12-05 [2] CRAN (R 4.5.0)
+ withr              3.0.2      2024-10-28 [2] CRAN (R 4.5.0)
+ xfun               0.52       2025-04-02 [2] CRAN (R 4.5.0)
+ xml2               1.3.8      2025-03-14 [2] CRAN (R 4.5.0)
+ xtable             1.8-4      2019-04-21 [2] CRAN (R 4.5.0)
+ XVector            0.48.0     2025-04-15 [2] Bioconductor 3.21 (R 4.5.0)
+ yaml               2.3.10     2024-07-26 [2] CRAN (R 4.5.0)
+ zoo                1.8-14     2025-04-10 [2] CRAN (R 4.5.0)
+
+ [1] /home/workshop/cgates/R/x86_64-pc-linux-gnu-library/4.5
+ [2] /efs/workshop/R/library
+ [3] /efs/workshop/R/workshop-dev-libs
+ [4] /usr/local/lib/R/site-library
+ [5] /usr/lib/R/site-library
+ [6] /usr/lib/R/library
+ * ── Packages attached to the search path.
+
+─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────</code></pre>
+</details>
+<p><br/> <br/></p>
+<hr />
+</div>
+</div>
+<div id="troubleshooting-and-alternative-approaches"
+class="section level1">
+<h1>Troubleshooting and alternative approaches</h1>
+<p>As we discussed in the workshop, single-cell analysis can be very
+iterative with the impact of choices made earlier in the analysis might
+not being apparent until later in the analysis and often we can only
+evaluate how well those choices reflect the biological context and/or
+the granularity of our biological question until the end of the analysis
+(ask me how I know).</p>
+<p>To help with future troubleshooting - here’s a reiteration the key
+analysis steps, what we might see that would indicate a need to go back
+to and revise the choices made at that step, and some non-exhaustive
+alternative approaches or tools:</p>
+<!-- List for now but expect would be better as a table e.g.| Step :: What we did :: Alternative(s) |-->
+<table>
+<colgroup>
+<col width="28%" />
+<col width="71%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Step</th>
+<th align="left">Issue &amp; potential alternative(s)                  
+       </th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Secondary QC filtering</td>
+<td align="left">If you see <strong>poor clustering (one big blob) or
+clusters that seem be driven by quality metrics</strong> like total
+counts or correspond to stress/debris instead of biological relevant
+cell-types, then <strong>re-filtering with more stringent
+thresholds</strong> might help, including adding a threshold for
+<code>nCount_RNA</code> (total counts per cell)</td>
+</tr>
+<tr class="even">
+<td align="left">Secondary QC filtering</td>
+<td align="left">If you are <strong>missing expected cell type(s) after
+clustering</strong> that might have a different average number of genes
+expressed or total counts (like blood cells or T-cells) or with a higher
+expected % mitochondrial genes, then <strong>re-filtering with more
+relaxed thresholds</strong> could help to recover those cells and allow
+them to be included in the downstream analysis</td>
+</tr>
+<tr class="odd">
+<td align="left">Normalization</td>
+<td align="left">If <strong>clusters correspond more to technical
+factors</strong> than biologically relevant cell-types, then
+<strong>covariates for those technical factors</strong> may need to
+added to the normalization model or a different normalization approach
+might be needed</td>
+</tr>
+<tr class="even">
+<td align="left">Normalization</td>
+<td align="left">If there is a <strong>low total % variance
+explained</strong> when looking at the PCs and covariates for one or
+more technical factor was included in the normalization step, then
+<strong>the normalization step may have overcorrected and some of the
+biological variation that corresponds to cell-types was also
+removed</strong>. Check to see if any of the known technical covariates
+have evidence of skewing the data and limit the model to a minimal
+number of covariates.</td>
+</tr>
+<tr class="odd">
+<td align="left">Integration</td>
+<td align="left">We chose to use <code>RPCA</code> for our integration
+but there are other integration options. If <strong><code>RPCA</code> is
+not sufficient to correct observed batch effects</strong> and all
+samples/conditions are expected to share the same cell-types, a
+<strong><code>CCA</code> might be worth trying</strong>. If
+<strong>neither <code>RPCA</code> or <code>CCA</code> work
+well</strong>, another option might be <strong>Harmony, which uses a
+different approach and parameters</strong> to correct for batch while
+preserving unique cell populations.
+<!--- Is there a benchmarking paper for integration methods that's worth linking here?---></td>
+</tr>
+<tr class="even">
+<td align="left">Clustering</td>
+<td align="left">If the <strong>clustering looks too blobby (e.g. few or
+no distinct clusters)</strong>, then you may have <strong>over corrected
+by including the wrong or too many covariates in the normalization step
+and/or used too few PCs to define distinct celltypes</strong>.
+Additionally, while we used the default Louvain algorithm for cluster
+determination, alternative algorithms are supported including Leiden
+clustering.</td>
+</tr>
+<tr class="odd">
+<td align="left">Cell type annotation</td>
+<td align="left">While we used <code>scCATCH</code>, if more specific
+example data and annotations are available for your tissue (e.g. brain
+or blood/immune) or if the predictions from <code>scCATCH</code> don’t
+seem relevant to your tissue and/or experimental question, there are
+other sources and tools available that might be worth trying like
+<code>CellMatch_2.0</code> or <code>Azimuth</code> or a label transfer
+using a similar dataset.</td>
+</tr>
+<tr class="even">
+<td align="left">Differential expression</td>
+<td align="left">While we used <code>Wilcoxin</code> and
+<code>DESeq2</code> for our differential expression testing, other tools
+like <code>MAST</code> or <code>EdgeR</code> can also be used and/or
+more complex models with covariates could be used.</td>
+</tr>
+<tr class="odd">
+<td align="left">Differential expression</td>
+<td align="left">We choose a general cutoff
+(<code>p_val_adj &lt; 0.05</code> &amp;
+<code>abs(avg_log2FC) &gt; 1.5</code>)) to call DE genes but if
+<strong>there are not enough DE genes</strong>, then it might make sense
+to <strong>relax those cutoff for some clusters</strong>.</td>
+</tr>
+<tr class="even">
+<td align="left">Differential expression</td>
+<td align="left">Conversely if there are <strong>too many DE genes to
+use for downstream steps</strong> like functional enrichments, then it
+might be necessary to <strong>make the cutoffs more stringent</strong>
+for those specific comparisons.</td>
+</tr>
+<tr class="odd">
+<td align="left">Subclustering</td>
+<td align="left">While we weren’t able to cover this topic, if you
+wanted to know what general cell-types present but are more interested
+in comparing the proportions or gene expression between subtypes of a
+more general cell population (e.g. it’s helpful to know how many B-cell,
+T-cells, etc are generally in your PBMC samples but you are most
+interested in of subtypes of effector T-cells), it might be worth
+considering running subclustering after initial clustering and
+annotation.</td>
+</tr>
+</tbody>
+</table>
+<!--- Does that cover the main decision points? -->
+<p><br/></p>
+<hr />
+</div>
+<div id="downstream-approaches" class="section level1">
+<h1>Downstream approaches</h1>
+<p>Although outside the scope of the workshop, there are many other
+possible avenues of exploration and analysis for scRNA-seq data beyond
+differential expression within clusters, either with each cell as a
+replicate or using a pseudobulk approach. This includes but is not
+limited to:</p>
+<ul>
+<li><p>Integration with other modalities (e.g. ATAC-seq, VDJ,
+etc.)</p></li>
+<li><p>Subclustering clusters of interest - see <a
+href="https://hbctraining.github.io/Intro-to-scRNAseq/lessons/seurat_subclustering.html">HBC’s
+summary on subclustering</a>, <a
+href="https://satijalab.org/seurat/reference/findsubcluster">Seurat’s
+findSubcCluster documentation</a> and <a
+href="https://github.com/satijalab/seurat/issues/1883">this related
+issue thread</a></p></li>
+<li><p>Trajectory or Pseudotime analysis - see <a
+href="https://ouyanglab.com/singlecell/dimrd.html">the Ouyang Lab’s
+trajectory analysis</a> or <a
+href="https://broadinstitute.github.io/2020_scWorkshop/trajectory-analysis.html">Broad
+Institute’s materials on trajectory analysis</a></p></li>
+<li><p>Cell - Cell communication network inference, see <a
+href="https://www.nature.com/articles/s41587-023-01782-z">review by Wilk
+et al (2023)</a></p></li>
+<li><p>Velocity analysis (note: not compatible with the flex probe based
+kits), see <a
+href="https://www.sc-best-practices.org/trajectories/rna_velocity.html">the
+chapter from the single-cells best practices book</a> for detailed
+theory/modeling or the <a
+href="https://pklab.med.harvard.edu/velocyto/notebooks/R/SCG71.nb.html">10x
+data vignette for velocyto</a> for a practical example in R</p></li>
+</ul>
+<p>We would recommend looking for studies in similar tissues or with
+similar experimental questions to see what kind of approaches and tools
+were used to help guide your own analysis plans. <br/></p>
+<hr />
+<p><br/></p>
+</div>
+<div id="resources-for-continued-learning." class="section level1">
+<h1>Resources for continued learning.</h1>
+<ul>
+<li>Learning bioinformatic analyses is more like a process than a task.
+Resources to consider:
+<ul>
+<li>A CZI NDCN curated list of resources for <a
+href="https://ndcn.github.io/self-guided-learning/"
+target="_blank">self-guided learning</a></li>
+<li>UM Bioinformatics Core links to <a
+href="https://brcf.medicine.umich.edu/cores/bioinformatics-core/training/"
+target="_blank">training resources/workshops</a>.</li>
+<li><strong>Techniques in Bash and R</strong>
+<ul>
+<li>Lesson plans from the UM Bioinformatics Core’s recent <a
+href="https://umich-brcf-bioinf.github.io/workshop-computational-foundations/main/html/"
+target="_blank">Computational Foundations Workshop</a>.</li>
+<li>Lessons and workshops in Bash / Git / R / Python :
+<a href="https://software-carpentry.org/lessons/" target="_blank">
+Software Carpentry</a></li>
+</ul></li>
+<li><strong>More info on NGS analysis</strong> (A decidedly
+non-exhaustive list in no discernible order.)
+<ul>
+<li>Lesson plans from UM Bioinformatics Core’s recent <a
+href="https://umich-brcf-bioinf.github.io/workshop-rnaseq-demystified/main/html/"
+target="_blank">RNA-Seq Demystified Workshop</a>. (Note this is for bulk
+RNA-Seq.)</li>
+<li>Training materials from <a
+href="https://hbctraining.github.io/main/#advanced-topics-analysis-of-high-throughput-sequencing-ngs-data"
+target="_blank">Harvard Chan Bioinformatics Core</a>.</li>
+<li><a href="https://bioconductor.org/books/3.12/OSCA/index.html"
+target="_blank">Orchestrating Single-Cell Analysis with
+Bioconductor</a>.</li>
+<li>Welcome Sanger Instutute’s <a
+href="https://www.singlecellcourse.org/index.html"
+target="_blank">Analysis of single cell RNA-seq data</a>.</li>
+<li>In addition to maintaining the Seurat analysis platform, New York
+Genome Center’s <a href="https://satijalab.org/" target="_blank">Satija
+lab</a> publishes many excellent step-by-step tutorials on single-cell
+analysis, e.g. <a
+href="https://satijalab.org/seurat/articles/pbmc3k_tutorial"
+target="_blank">Seurat - Guided Clustering Tutorial</a>. The Satija lab
+also hosts <a href="%60r%20workshop_vars$satija_scgd%60"
+target="_blank">Single Cell Genomics Day</a>, a live-streamed annual
+symposium on emerging techniques in single-cell analysis.</li>
+<li>Nayak, Richa, and Yasha Hasija. <strong>“A hitchhiker’s guide to
+single-cell transcriptomics and data analysis pipelines.”</strong>
+Genomics vol. 113,2 (2021): 606-619.<br/> <a
+href="https://pubmed.ncbi.nlm.nih.gov/33485955/"
+class="uri">https://pubmed.ncbi.nlm.nih.gov/33485955/</a></li>
+<li>Luecken, Malte D, and Fabian J Theis. <strong>“Current best
+practices in single-cell RNA-seq analysis: a tutorial.”</strong>
+Molecular systems biology vol. 15,6 e8746. 19 Jun. 2019.<br/> <a
+href="https://pubmed.ncbi.nlm.nih.gov/31217225/"
+class="uri">https://pubmed.ncbi.nlm.nih.gov/31217225/</a></li>
+<li>He, Jiangping et al. <strong>“Practical bioinformatics pipelines for
+single-cell RNA-seq data analysis.”</strong> Biophysics reports vol. 8,3
+(2022): 158-169.<br/> <a
+href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10189648/"
+class="uri">https://www.ncbi.nlm.nih.gov/pmc/articles/PMC10189648/</a></li>
+</ul></li>
+<li>For more context on the experiments and data we referenced during
+the workshop, see the source paper: <br/> Sorkin, Michael et
+al. <strong>“Regulation of heterotopic ossification by monocytes in a
+mouse model of aberrant wound healing.”</strong> Nature communications
+vol. 11,1 722. 5 Feb. 2020.<br/>
+<a class="external" href="https://pubmed.ncbi.nlm.nih.gov/32024825/" target="_blank">https://pubmed.ncbi.nlm.nih.gov/32024825/</a></li>
+</ul></li>
+</ul>
+<hr />
+<p>These materials have been adapted and extended from materials listed
+above. These are open access materials distributed under the terms of
+the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
+Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
+use, distribution, and reproduction in any medium, provided the original
+author and source are credited.</p>
+<p><br/> <br/></p>
+<hr/>
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="08-DifferentialExpression.html">Previous
+lesson</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="workshop_wrap_up.html">Workshop Wrap
+Up</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

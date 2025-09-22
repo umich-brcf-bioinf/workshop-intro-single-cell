@@ -1,0 +1,1493 @@
+<!DOCTYPE html>
+
+<html lang="en" xml:lang="en">
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core Workshop Team" />
+
+<meta name="date" content="2025-08-21" />
+
+<title>Secondary Quality Control and Filtering</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<script src="site_libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="site_libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<!--
+Favicon dervied from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<link rel="manifest" href="site.webmanifest">
+<link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+    </li>
+    <li>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+    </li>
+    <li>
+      <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
+    </li>
+    <li>
+      <a href="03-Normalization.html">Normalization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
+    </li>
+    <li>
+      <a href="05-ProjectionAndClustering.html">Clustering &amp; Projection</a>
+    </li>
+    <li>
+      <a href="clusters_faq.html">Clusters, PCs, and Resolutions: FAQ</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="06-MarkerVisualization.html">Marker identification and visualization</a>
+    </li>
+    <li>
+      <a href="07-CellTypeAnnos.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="08-DifferentialExpression.html">Differential expression analysis</a>
+    </li>
+    <li>
+      <a href="08A-AnalysisFinale.html">Analysis summary and next steps</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="exercises.html">Exercises</a>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Secondary Quality Control and
+Filtering</h1>
+<h4 class="author">UM Bioinformatics Core Workshop Team</h4>
+<h4 class="date">2025-08-21</h4>
+
+</div>
+
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+
+table.fig, th.fig, td.fig {
+  border: 1px solid lightgray;
+  border-collapse: collapse;
+  padding: 12px;
+}
+
+table{
+   width:100%;
+}
+
+.prepared_content {
+  border-radius: 10px;
+  padding: 5px 5px 5px 95px;
+  background: #FFF8DC left 10px top 10px / 65px no-repeat;
+}
+
+.cooking_show {
+  background-image: url("images/curriculum/cooking_show-1.png");
+}
+
+</style>
+<script>
+  addClassKlippyTo("pre.r, pre.markdown, pre.bash");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<p><br/> <img src="images/wayfinder/02-QCandFiltering-Wayfinder.png" />
+<br/> <br/></p>
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<br/>
+<table class="fig">
+<tr>
+<td class="fig">
+<img src="images/graphical_abstracts/02-QCandFiltering-Abstract.png" />
+</td>
+</tr>
+<tr>
+<td class="fig">
+The filtered Cell Ranger barcode feature matrix consists of cells that
+range in quality. We can use different metrics to visualize and filter
+to a subset of putative healthy cells to improve downstream analysis.
+</td>
+</tr>
+</table>
+<p><br/></p>
+<p>Single-cell experiments using the 10x Chromium instrument are
+expected to have one cell and one bead in one droplet. However this is
+an imperfect process and there are other important considerations like
+how healthy or intact the cell was at the time of measurement. In this
+section, we will use filtering thresholds to remove “cells” that were
+poorly measured, aren’t actually cells, or had more than one cell. <br/>
+<br/></p>
+<div id="objectives" class="section level2">
+<h2>Objectives</h2>
+<ul>
+<li>Discuss QC measures and learn how to calculate and plot them.</li>
+<li>Discuss cell-filtering approaches and apply them to our
+dataset.</li>
+</ul>
+<p>Similar to many other areas of research, there are often gaps between
+how single-cell data is presented versus the reality of running an
+analysis. For example, only the final filtering thresholds might be
+reported in a paper but our process for choosing those is likely to be
+more iterative and include some trial and error. <br/> <br/></p>
+<!-- Challenge for instructors: Every vignette uses different filters, how to harmonize/give guidance? Related, how much to discuss arbitrary cutoffs and continued maturation of field?-->
+<!-- Add links to relevant resources throughout -->
+<!-- General guidance - likely to be moved to earlier section:
+- Note with each function call what gets added to the Seurat object.
+- Adding checks to ensure object is updated by learners since want to avoid generating copied objects
+- Note what layers should be used for what, for example, counts used for FeaturePlots. RNA vs SCT assay. -->
+<hr />
+</div>
+</div>
+<div id="adding-metadata" class="section level1">
+<h1>Adding metadata</h1>
+<p>We’re going to alter and add some columns to <code>meta.data</code>
+to ease some downstream analysis and plotting steps. This will often be
+necessary, as sample names contain combined information about
+phenotypes. Let’s take a look at the first few rows again, to reacquaint
+ourselves.</p>
+<pre class="r"><code># =========================================================================
+# Secondary QC and filtering
+# =========================================================================
+
+# -------------------------------------------------------------------------
+# Examine Seurat metdata
+
+# We could do this to show metadata in the console pane:
+head(geo_so@meta.data)
+
+# For readability, we&#39;ll use View() to open the result in a scrollable tab
+View(head(geo_so@meta.data))</code></pre>
+<div
+style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:100%; overflow-x: scroll; width:1000px; ">
+<table class="table table-condensed" style="font-size: 12px; font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+orig.ident
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+nCount_RNA
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+nFeature_RNA
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACCTGAGAGAACAG-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+10234
+</td>
+<td style="text-align:right;">
+3226
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACCTGGTCATGCAT-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+3158
+</td>
+<td style="text-align:right;">
+1499
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACCTGTCAGAGCTT-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+13464
+</td>
+<td style="text-align:right;">
+4102
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACGGGAGAGACTTA-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+577
+</td>
+<td style="text-align:right;">
+346
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACGGGAGGCCCGTT-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+1189
+</td>
+<td style="text-align:right;">
+629
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACGGGCAACTGGCC-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+7726
+</td>
+<td style="text-align:right;">
+2602
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><br/></p>
+<p>We can add arbitrary per-cell information to this table such as:</p>
+<ul>
+<li>Summary statistics, such as percent mitochondrial reads for each
+cell.</li>
+<li>Batch, condition, etc. for each cell.</li>
+<li>Cluster membership for each cell.</li>
+<li>Cell cycle phase for each cell.</li>
+<li>Other custom annotations for each cell.</li>
+</ul>
+<!--- cooking show moment - phenotype table --->
+<p>Each sample has a few interesting attributes like “condition”, “day”,
+and “replicate”. The sample attributes are actually part of the
+directory name for each sample:</p>
+<ul>
+<li>Sample directory = count_run_<span style="color:red">HO</span><span
+style="color:blue">Day0</span><span
+style="color:green">replicate1</span>
+<ul>
+<li><span style="color:red">Condition = HO</span></li>
+<li><span style="color:blue">Day = Day0</span></li>
+<li><span style="color:green">Replicate = 1</span></li>
+</ul></li>
+</ul>
+<p>We could make a fancy script to pull the file names apart into
+attributes, but instead we’ll keep things simple and read the sample
+attributes from a table in the file <code>phenos.csv</code>:</p>
+<div class="prepared_content cooking_show">
+<p><strong>Load a pre-prepared file:</strong></p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Read sample attributes
+# Load the expanded phenotype columns (condition, day, and replicate)
+phenos = read.csv(&#39;inputs/prepared_data/phenos.csv&#39;)
+head(phenos, 3)</code></pre>
+<pre><code>        orig.ident condition time  replicate
+1 HODay0replicate1        HO Day0 replicate1
+2 HODay0replicate2        HO Day0 replicate2
+3 HODay0replicate3        HO Day0 replicate3</code></pre>
+</div>
+<p>The following code chunk will annotated a copy of the metadata with
+columns for <code>day</code> and <code>replicate</code> and ensure that
+certain categorical data appears in correct order, e.g. Day0, Day7, and
+Day21 instead of Day0, Day21, and Day7.
+<!--- updated pheos table to use "time" as column name instead of day to resolve mutate reference error --></p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Make a temp table that joins Seurat loaded metadata with expanded phenotype columns
+# Preserve the rownames and order samples based on order in phenos.csv.
+tmp_meta = geo_so@meta.data %&gt;% 
+  rownames_to_column(&#39;tmp_rowname&#39;) %&gt;%
+  left_join(phenos, by = &#39;orig.ident&#39;) %&gt;%
+  mutate(orig.ident = factor(orig.ident, phenos$orig.ident)) %&gt;%
+  mutate(time = factor(time, unique(phenos$time))) %&gt;%
+  column_to_rownames(&#39;tmp_rowname&#39;)
+
+View(head(tmp_meta))</code></pre>
+<div
+style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:100%; overflow-x: scroll; width:1000px; ">
+<table class="table table-condensed" style="font-size: 12px; font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+orig.ident
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+nCount_RNA
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+nFeature_RNA
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+condition
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+time
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+replicate
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACCTGAGAGAACAG-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+10234
+</td>
+<td style="text-align:right;">
+3226
+</td>
+<td style="text-align:left;">
+HO
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACCTGGTCATGCAT-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+3158
+</td>
+<td style="text-align:right;">
+1499
+</td>
+<td style="text-align:left;">
+HO
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACCTGTCAGAGCTT-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+13464
+</td>
+<td style="text-align:right;">
+4102
+</td>
+<td style="text-align:left;">
+HO
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACGGGAGAGACTTA-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+577
+</td>
+<td style="text-align:right;">
+346
+</td>
+<td style="text-align:left;">
+HO
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACGGGAGGCCCGTT-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+1189
+</td>
+<td style="text-align:right;">
+629
+</td>
+<td style="text-align:left;">
+HO
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACGGGCAACTGGCC-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+7726
+</td>
+<td style="text-align:right;">
+2602
+</td>
+<td style="text-align:left;">
+HO
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><br/></p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Assign tmp_meta back to geo_so@meta.data and 
+# reset the default identity cell name
+geo_so@meta.data = tmp_meta
+Idents(geo_so) = &#39;orig.ident&#39;</code></pre>
+<div class="float">
+<img src="images/seurat-schematic/seurat-add-phenotype-meta-data.png"
+alt="Seurat after adding extended phenotype info" />
+<div class="figcaption">Seurat after adding extended phenotype
+info</div>
+</div>
+<p>The <code>orig.ident</code> column looks the same, but is now a
+factor with ordering we prefer. We also have <code>condition</code>,
+<code>time</code>, and <code>replicate</code> columns that will be
+useful downstream.</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Re-examine Seurat metdata
+View(head(geo_so@meta.data))</code></pre>
+<div
+style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:100%; overflow-x: scroll; width:1000px; ">
+<table class="table table-condensed" style="font-size: 12px; font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
+<thead>
+<tr>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+orig.ident
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+nCount_RNA
+</th>
+<th style="text-align:right;position: sticky; top:0; background-color: #FFFFFF;">
+nFeature_RNA
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+condition
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+time
+</th>
+<th style="text-align:left;position: sticky; top:0; background-color: #FFFFFF;">
+replicate
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACCTGAGAGAACAG-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+10234
+</td>
+<td style="text-align:right;">
+3226
+</td>
+<td style="text-align:left;">
+HO
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACCTGGTCATGCAT-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+3158
+</td>
+<td style="text-align:right;">
+1499
+</td>
+<td style="text-align:left;">
+HO
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACCTGTCAGAGCTT-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+13464
+</td>
+<td style="text-align:right;">
+4102
+</td>
+<td style="text-align:left;">
+HO
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACGGGAGAGACTTA-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+577
+</td>
+<td style="text-align:right;">
+346
+</td>
+<td style="text-align:left;">
+HO
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACGGGAGGCCCGTT-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+1189
+</td>
+<td style="text-align:right;">
+629
+</td>
+<td style="text-align:left;">
+HO
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+</tr>
+<tr>
+<td style="text-align:left;">
+HODay0replicate1_AAACGGGCAACTGGCC-1
+</td>
+<td style="text-align:left;">
+HODay0replicate1
+</td>
+<td style="text-align:right;">
+7726
+</td>
+<td style="text-align:right;">
+2602
+</td>
+<td style="text-align:left;">
+HO
+</td>
+<td style="text-align:left;">
+Day0
+</td>
+<td style="text-align:left;">
+replicate1
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><br/></p>
+</div>
+<div id="quality-metrics" class="section level1">
+<h1>Quality Metrics</h1>
+<p>Cell Ranger is a first-pass filter to determine what is a “cell” and
+what is not. It only considers one sample at a time, and does not
+consider the cells relative to one another.</p>
+<p>Let’s dig deeper to determine when a droplet might contain two cells,
+a very stressed cell, or some technical issue in the library
+preparation. We will use three metrics to determine low-quality cells
+based on their expression profiles (<a
+href="https://bioconductor.org/books/3.12/OSCA/quality-control.html#choice-of-qc-metrics"
+target="_blank">OSCA reference</a>).</p>
+<ol style="list-style-type: decimal">
+<li>The total number of UMIs detected. Cells with a small number of UMIs
+detected may indicate loss of RNA during library preparation via cell
+lysis or inefficient cDNA capture / amplification. Cells with relatively
+high number of UMIs detected may indicate a doublet.</li>
+<li>The number of expressed features, defined as number of genes with
+non-zero counts. Cells with very few measured genes are likely to be of
+low-quality, and may distort downstream variance estimation or dimension
+reduction steps.</li>
+<li>The proportion of reads mapped to the mitochondrial genome. High
+proportions of mitochondrial transcripts may indicate a damaged cell,
+the measure of which may also distort downstream analysis steps.</li>
+</ol>
+<p>The number of UMIs detected (<code>nCount</code>) and number of
+expressed features (<code>nFeature</code>) are already given in the meta
+data table. We will demonstrate how to add the mitochondrial fraction
+shortly.</p>
+<blockquote>
+<p><strong>Why total UMIs instead of total reads?</strong></p>
+<p>Since a single-cell inherently contains a limited amount of RNA
+molecules, a higher amount of PCR amplification is required to generate
+the final sequencing library.</p>
+<p>Since PCR can skew proportions of initial input materials, specific
+sequences are included in the initial capture probes called unique
+molecule identifiers (UMIs). As each initial probe has a different UMI
+sequence, each RNA captured will be tagged with a different UMI, which
+allows those initial RNAs and subsequent PCR duplicates to be identified
+and duplicates collapsed as part of the initial processing by
+CellRanger.</p>
+</blockquote>
+<blockquote>
+<p><strong>Other meanings of <code>nFeatures</code></strong></p>
+<p>For other single-cell data types, <code>nFeatures</code> would
+represent what’s being measured in that experiment. For single-cell
+ATAC-seq, <code>nFeatures</code> would represents the total number of
+peaks (e.g. accessible areas of DNA) per cell.</p>
+</blockquote>
+<!-- Matt may have discussed UMIs as part of CellRanger processing and Liv/Tricia may touch on as part of library generation at end of Day 2 -->
+<div id="cell-counts" class="section level2">
+<h2>Cell counts</h2>
+<p>Cell counts per sample (based on the number of unique cellular
+barcodes detected by Cell Ranger) can indicate if an entire sample was
+of poor quality. The table below is the number of cells called by Cell
+Ranger, with the added filter from <code>CreateSeurateObject()</code> in
+the previous lesson: <code>min.cells = 1, min.features = 50</code>.
+Recall, this means a gene is removed if it is expressed in 1 or fewer
+cells, and a cell is removed if it contains reads for 50 or fewer
+genes.</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+cell_counts_pre_tbl = geo_so@meta.data %&gt;% count(orig.ident, name = &#39;prefilter_cells&#39;)
+cell_counts_pre_tbl</code></pre>
+<pre><code>          orig.ident prefilter_cells
+1   HODay0replicate1            1183
+2   HODay0replicate2             689
+3   HODay0replicate3            1310
+4   HODay0replicate4            1052
+5   HODay7replicate1            5762
+6   HODay7replicate2            6020
+7   HODay7replicate3            6286
+8   HODay7replicate4            5167
+9  HODay21replicate1            2321
+10 HODay21replicate2            1322
+11 HODay21replicate3            1275
+12 HODay21replicate4            2829</code></pre>
+<p>It appears that the Day 7 samples have systematically more cells than
+the other days. If you had an idea of how many cells you expected to see
+per sample, this table can help you check that expectation and determine
+if a sample failed and should be dropped.</p>
+</div>
+<div id="visualizing-quality-metrics" class="section level2">
+<h2>Visualizing quality metrics</h2>
+<p>A violin plot shows the distribution of a quantity among the cells in
+a single sample, or across many samples. Seurat has a built-in function,
+<code>VlnPlot()</code> for this purpose. Let’s orient with a violin plot
+of <code>nFeature_RNA</code> for only one sample,
+<code>HODay21replicate1</code>:</p>
+<p><img src="images/curriculum/02-QCandFiltering/02-single_violin_plot-1.png" width="816" style="display: block; margin: auto;" /></p>
+<p>A violin plot is similar to a box plot, but it shows the density of
+the data at different values. Here the individual points are the cells
+from <code>HODay21replicate1</code> and the y-axis is the value of
+<code>nFeature_RNA</code> for that cell. The violin part of the function
+is essentially showing the density of the cells at different values of
+<code>nFeature_RNA</code>.</p>
+<div id="genes-per-cell" class="section level3">
+<h3>Genes per cell</h3>
+<p>Let’s look at the <code>nFeature_RNA</code> violin plot across all
+the samples. Again, this is the number of genes detected per cell.</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Review feature violin plots
+VlnPlot(geo_so, features = &#39;nFeature_RNA&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + 
+  NoLegend() + 
+  geom_hline(yintercept = 500) + 
+  geom_hline(yintercept = 400) + 
+  geom_hline(yintercept = 300) + 
+  geom_hline(yintercept = 200)
+ggsave(filename = &#39;results/figures/qc_nFeature_violin.png&#39;,
+       width = 12, height = 6, units = &#39;in&#39;)</code></pre>
+<p><img src="images/curriculum/02-QCandFiltering/02-feature_plot-1.png" width="816" style="display: block; margin: auto;" /></p>
+<p>We observe that samples behave similarly within a day, but have
+different distributions across days. We also note that many cells appear
+to have a low number of genes detected (&lt; 500).</p>
+</div>
+<div id="umi-counts-per-cell" class="section level3">
+<h3>UMI counts per cell</h3>
+<p>Now let’s look at <code>nCount_RNA</code> plot, the total number of
+UMIs detected.</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Review count violin plots
+VlnPlot(geo_so, features = &#39;nCount_RNA&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + 
+  NoLegend()
+ggsave(filename = &#39;results/figures/qc_nCount_violin.png&#39;,
+       width = 12, height = 6, units = &#39;in&#39;)</code></pre>
+<p><img src="images/curriculum/02-QCandFiltering/02-count_plot-1.png" width="816" style="display: block; margin: auto;" /></p>
+<p>We observe a similar within-and-across day behavior among the
+samples. Overall it appears that the Day 0 samples have fewer UMIs
+detected per cell than Day 7 and Day 21. Also of note is the outlier
+cell in HO.Day0.replicate1, with around 100K UMIs detected. This cell
+might be a doublet.</p>
+</div>
+<div id="percent-mitochondrial-reads" class="section level3">
+<h3>Percent mitochondrial reads</h3>
+<p>The <code>PercentageFeatureSet()</code> function enables us to
+quickly determine the counts belonging to a subset of the possible
+features for each cell. Since mitochondrial transcripts in mouse begin
+with “mt”, we will use that pattern to count the percentage of reads
+coming from mitochondrial transcripts.</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Consider mitochondrial transcripts
+# We use &quot;mt&quot; because this is mouse, depending on the organism, this might need to be changed
+geo_so$percent.mt = PercentageFeatureSet(geo_so, pattern = &#39;^mt-&#39;)
+
+# Use summary() to quickly check the range of values
+summary(geo_so$percent.mt)</code></pre>
+<pre><code>   Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+  0.000   1.817   2.582   5.282   3.865  98.244 </code></pre>
+<p>Just looking at the summary, we can see that there are some cells
+with a high percentage of mitochondrial reads.</p>
+<div class="float">
+<img src="images/seurat-schematic/seurat-add-percent-mt.png"
+alt="Seurat after adding percent mt" />
+<div class="figcaption">Seurat after adding percent mt</div>
+</div>
+<p>Our Seurat object has changed by adding the <code>percent.mt</code>
+column to the meta data.</p>
+<p>Finally, we will plot the percent mitochondrial reads,
+<code>percent.mt</code>.</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Review mitochondrial violin plots
+VlnPlot(geo_so, features = &#39;percent.mt&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + 
+  NoLegend() + 
+  geom_hline(yintercept = 20) + 
+  geom_hline(yintercept = 15) + 
+  geom_hline(yintercept = 10)
+ggsave(filename = &#39;results/figures/qc_mito_violin.png&#39;,
+       width = 12, height = 6, units = &#39;in&#39;)</code></pre>
+<p><img src="images/curriculum/02-QCandFiltering/02-mito_plot-1.png" width="816" style="display: block; margin: auto;" /></p>
+<p>We observe the majority of cells seem to have &lt; 25% mitochondrial
+reads, but there are many cells with &gt; 25% that we may want to
+remove.</p>
+<p>Generally, many tutorials use a cutoff of 5 - 10% mitochondrial
+reads. However, for some experiments, high mitochondrial reads would be
+expected (such as in cases where the condition/treatment or genotype
+increases cell death). In this case, a relaxed threshold would help
+preserve biologically relevant cells. In our case, the cells were
+collected as part of an injury model, perhaps justifying a more lenient
+percent mitochondrial read filter.</p>
+</div>
+</div>
+</div>
+<div id="filtering-approaches" class="section level1">
+<h1>Filtering approaches</h1>
+<div id="fixed-thresholds" class="section level2">
+<h2>Fixed thresholds</h2>
+<p>Fixed thresholds for any combination of <code>nFeature_RNA</code>,
+<code>nCount_RNA</code>, and <code>percent.mt</code> can be selected to
+remove low quality cells. In general, selecting very stringent
+thresholds for each of the metrics may lead to removing informative
+cells. As per the <a
+href="https://hbctraining.github.io/Intro-to-scRNAseq/lessons/04_SC_quality_control.html"
+target="_blank">HBC training materials</a>, we recommend setting
+individual thresholds to err on the permissive side.</p>
+<p><a href="https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7002453/"
+target="_blank">Sorkin et al.</a> chose these thresholds:</p>
+<blockquote>
+<p>We filtered out cells with less than 500 genes per cell and with more
+than 25% mitochondrial read content.</p>
+</blockquote>
+<p>In other words, cells with &gt; 500 <code>nFeature_RNA</code> and
+&lt; 25% <code>percent.mt</code> were retained by the authors. We could
+preview what the resulting cell counts would be with these
+thresholds:</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Consider excluding suspect cells
+subset(geo_so, subset = nFeature_RNA &gt; 500 &amp; percent.mt &lt; 25)@meta.data %&gt;% 
+    count(orig.ident, name = &#39;postfilter_cells&#39;)</code></pre>
+<pre><code>          orig.ident postfilter_cells
+1   HODay0replicate1             1049
+2   HODay0replicate2              615
+3   HODay0replicate3             1191
+4   HODay0replicate4              943
+5   HODay7replicate1             4928
+6   HODay7replicate2             4933
+7   HODay7replicate3             4897
+8   HODay7replicate4             4243
+9  HODay21replicate1             2000
+10 HODay21replicate2             1182
+11 HODay21replicate3             1166
+12 HODay21replicate4             2471</code></pre>
+</div>
+<div id="adaptive-thresholds" class="section level2">
+<h2>Adaptive thresholds</h2>
+<p>For this workshop we will use fixed thresholds, but another option is
+to remove low-quality cells adaptively. This approach assumes that most
+of the cells are of acceptable quality. For more information see the
+relevant section in Bioconductor’s online book: <a
+href="https://bioconductor.org/books/3.12/OSCA/quality-control.html#quality-control-outlier"
+target="_blank">Orchestrating Single-Cell Analysis</a>.</p>
+</div>
+</div>
+<div id="removing-low-quality-cells" class="section level1">
+<h1>Removing low-quality cells</h1>
+<p>We will deviate from the publication slightly and retain the cells
+with <code>nFeature_RNA &gt; 300</code> and
+<code>percent.mt &lt; 15</code>. Noting that the
+<code>nFeature_RNA</code> plot had a gap around 300, and that we want to
+be more lenient than the usual 5-10% cutoff for mitochondrial reads.</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Filter to exclude suspect cells and assign to new Seurat object
+geo_so = subset(geo_so, subset = nFeature_RNA &gt; 300 &amp; percent.mt &lt; 15)
+geo_so</code></pre>
+<pre><code>An object of class Seurat 
+26489 features across 31559 samples within 1 assay 
+Active assay: RNA (26489 features, 0 variable features)
+ 1 layer present: counts</code></pre>
+<p>And let’s record the number of cells remaining after filtering:</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Examine remaining cell counts
+cell_counts_post_tbl = geo_so@meta.data %&gt;% count(orig.ident, name = &#39;postfilter_cells&#39;)
+cell_counts_post_tbl</code></pre>
+<pre><code>          orig.ident postfilter_cells
+1   HODay0replicate1             1053
+2   HODay0replicate2              629
+3   HODay0replicate3             1222
+4   HODay0replicate4              970
+5   HODay7replicate1             5213
+6   HODay7replicate2             5324
+7   HODay7replicate3             5626
+8   HODay7replicate4             4691
+9  HODay21replicate1             2004
+10 HODay21replicate2             1186
+11 HODay21replicate3             1178
+12 HODay21replicate4             2463</code></pre>
+<p>Let’s combine the pre and post tables:</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Show cell counts before and after filtering
+cell_counts_tbl = cell_counts_pre_tbl %&gt;% left_join(cell_counts_post_tbl, by = &#39;orig.ident&#39;)
+cell_counts_tbl</code></pre>
+<pre><code>          orig.ident prefilter_cells postfilter_cells
+1   HODay0replicate1            1183             1053
+2   HODay0replicate2             689              629
+3   HODay0replicate3            1310             1222
+4   HODay0replicate4            1052              970
+5   HODay7replicate1            5762             5213
+6   HODay7replicate2            6020             5324
+7   HODay7replicate3            6286             5626
+8   HODay7replicate4            5167             4691
+9  HODay21replicate1            2321             2004
+10 HODay21replicate2            1322             1186
+11 HODay21replicate3            1275             1178
+12 HODay21replicate4            2829             2463</code></pre>
+<p>We can now easily see how many cells we started with, and how many we
+retained for downstream analysis. Let’s write this table to a file.</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+write_csv(cell_counts_tbl, file = &#39;results/tables/cell_filtering_counts.csv&#39;)</code></pre>
+<!--What thresholds would we start with based on the plots alone? How does that compare to the thresholds reported in paper?-->
+<!--Other “advanced” methods: out of scope for this workshop but there are packages  specifically developed to detect "doublets", e.g. droplets that contained more than one cell, such as DoubleFinder-->
+<!--Additional aside - For single-nuclei experiments removing background/ambient RNA with CellBlender OR DecontX is an important additional step since nuclei are both sticky and porous-->
+</div>
+<div id="revising-thresholds" class="section level1">
+<h1>Revising thresholds</h1>
+<p>It is important to recognize that thresholds for retaining cells are
+not set in stone. It may happen that the downstream analysis suggests
+that thresholds should be more or less stringent. In which case, you may
+experiment with the thresholds and observe the downstream effects.</p>
+</div>
+<div id="save-our-progress" class="section level1">
+<h1>Save our progress</h1>
+<p>Let’s save this filtered form of our Seurat object. It will also
+include our changes to the <code>meta.data</code>:</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Save the current Seurat object
+saveRDS(geo_so, file = &#39;results/rdata/geo_so_filtered.rds&#39;)</code></pre>
+<p><br/> <br/></p>
+</div>
+<div id="summary" class="section level1">
+<h1>Summary</h1>
+<table class="fig">
+<tr>
+<td class="fig">
+<img src="images/graphical_abstracts/02-QCandFiltering-Abstract.png" />
+</td>
+</tr>
+<tr>
+<td class="fig">
+The filtered Cell Ranger barcode feature matrix consists of cells that
+range in quality. We can use different metrics to visualize and filter
+to a subset of putative healthy cells to improve downstream analysis.
+</td>
+</tr>
+</table>
+<p><br/></p>
+<p>In this section we:</p>
+<ul>
+<li>Discussed the big three quality metrics: <code>nFeature</code>s,
+<code>nCount</code>s, and <code>percent.mt</code>.</li>
+<li>Visualized these metrics across cells / samples to help identify
+low-quality cells.</li>
+<li>Filtered low-quality cells using fixed thresholds.</li>
+</ul>
+<p>Next steps: Normalization</p>
+<hr />
+<p>These materials have been adapted and extended from materials listed
+above. These are open access materials distributed under the terms of
+the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
+Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
+use, distribution, and reproduction in any medium, provided the original
+author and source are credited.</p>
+<p><br/> <br/></p>
+<hr />
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="00B-CellRangerInAction.html">Previous
+lesson</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="03-Normalization.html">Next lesson</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

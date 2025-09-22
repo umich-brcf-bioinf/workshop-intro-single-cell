@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+
+<html lang="en" xml:lang="en">
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="UM Bioinformatics Core Workshop Team" />
+
+<meta name="date" content="2025-07-10" />
+
+<title>Independent Exercises</title>
+
+<script src="site_libs/header-attrs-2.29/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/paper.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/highlightjs-9.12.0/default.css" rel="stylesheet" />
+<script src="site_libs/highlightjs-9.12.0/highlight.js"></script>
+<script src="site_libs/clipboard-1.7.1/clipboard.min.js"></script>
+<link href="site_libs/primer-tooltips-1.4.0/build.css" rel="stylesheet" />
+<link href="site_libs/klippy-0.0.0.9500/css/klippy.min.css" rel="stylesheet" />
+<script src="site_libs/klippy-0.0.0.9500/js/klippy.min.js"></script>
+<!--
+Favicon dervied from
+https://twemoji.twitter.com/
+https://favicon.io/emoji-favicons/dna/
+-->
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+<link rel="shortcut icon" href="favicon-16x16.png" />
+<link rel="manifest" href="site.webmanifest">
+<link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
+<meta name="msapplication-TileColor" content="#da532c">
+<meta name="theme-color" content="#ffffff">
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+<style type="text/css">code{white-space: pre;}</style>
+<script type="text/javascript">
+if (window.hljs) {
+  hljs.configure({languages: []});
+  hljs.initHighlightingOnLoad();
+  if (document.readyState && document.readyState === "complete") {
+    window.setTimeout(function() { hljs.initHighlighting(); }, 0);
+  }
+}
+</script>
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Intro to scRNA-Seq</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="workshop_intro.html">Intro</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 1
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="00A-OrientingOnScRNASeq.html">Orienting on scRNA-Seq</a>
+    </li>
+    <li>
+      <a href="01-GettingStarted.html">Getting Started with Seurat</a>
+    </li>
+    <li>
+      <a href="00B-CellRangerInAction.html">Cell Ranger in Action</a>
+    </li>
+    <li>
+      <a href="02-QCandFiltering.html">Secondary QC &amp; Filtering</a>
+    </li>
+    <li>
+      <a href="03-Normalization.html">Normalization</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 2
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="04-PCAandIntegration.html">PCA &amp; Integration</a>
+    </li>
+    <li>
+      <a href="05-ProjectionAndClustering.html">Clustering &amp; Projection</a>
+    </li>
+    <li>
+      <a href="clusters_faq.html">Clusters, PCs, and Resolutions: FAQ</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Day 3
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="06-MarkerVisualization.html">Marker identification and visualization</a>
+    </li>
+    <li>
+      <a href="07-CellTypeAnnos.html">Cell type annotation</a>
+    </li>
+    <li>
+      <a href="08-DifferentialExpression.html">Differential expression analysis</a>
+    </li>
+    <li>
+      <a href="08A-AnalysisFinale.html">Analysis summary and next steps</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="exercises.html">Exercises</a>
+</li>
+<li>
+  <a href="workshop_wrap_up.html">Wrap up</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Independent Exercises</h1>
+<h4 class="author">UM Bioinformatics Core Workshop Team</h4>
+<h4 class="date">2025-07-10</h4>
+
+</div>
+
+
+<style type="text/css">
+body, td {
+   font-size: 18px;
+}
+code.r{
+  font-size: 12px;
+}
+pre {
+  font-size: 12px
+}
+</style>
+<script>
+  addClassKlippyTo("pre.r, pre.markdown, pre.bash");
+  addKlippy('right', 'top', 'auto', '1', 'Copy code', 'Copied!');
+</script>
+<p><br/> <img
+src="images/wayfinder/09-IndependentExercise-Wayfinder.png"
+title="Wayfinder: Independent Exercise" /> <br/>
+<!-- Revise wayfinder image if Day 1 exercises are included --></p>
+<p>Build on the content and analysis steps covered in the workshop
+sessions by working through these independent exercises. <strong>Note -
+if you work on the exercises make sure to restart R session to clear out
+environment before closing the window (like we have at the end of each
+session) to avoid lags when logging in the next day</strong> <br/></p>
+<div id="day-1-exercises" class="section level1">
+<h1>Day 1 Exercises</h1>
+<pre class="r"><code># =========================================================================
+# Independent Exercise - Day 1 Startup
+# =========================================================================
+
+# After restarting our R session, load the required libraries &amp; input data
+library(Seurat)
+library(BPCells)
+library(tidyverse)
+
+# TO ADD - loading corresponding R object for Day 1 exercises
+
+## NOTE - BEFORE STOPPING WORK ON THE EXERCISES REMEMBER TO POWER DOWN AND RESTART R SESSION !!!!</code></pre>
+<p><br/></p>
+</div>
+<div id="day-2-exercises" class="section level1">
+<h1>Day 2 Exercises</h1>
+<pre class="r"><code># =========================================================================
+# Independent Exercise - Day 2 Startup
+# =========================================================================
+
+# After restarting our R session, load the required libraries &amp; input data
+library(Seurat)
+library(BPCells)
+library(tidyverse)
+
+# Use provided copy of integrated data
+geo2_so = readRDS(&#39;inputs/prepared_data/rdata/geo_so_sct_integrated.rds&#39;)
+
+## NOTE - BEFORE STOPPING WORK ON THE EXERCISES REMEMBER TO POWER DOWN AND RESTART R SESSION !!!!</code></pre>
+<div id="day-2-exercise-1---clustering-with-reduced-number-of-pcs"
+class="section level2">
+<h2>Day 2 Exercise 1 - Clustering with reduced number of PCs</h2>
+<!--- expect to shift clustering testing to same code that Chris used to generate examples of alt clustering --->
+<pre class="r"><code>## -----------------------------------------
+## Round 1: try with fewer PCs included
+
+# look at elbow plot to check PCs and alternatives to the number selected today
+ElbowPlot(geo2_so, ndims = 50, reduction = &#39;unintegrated.sct.pca&#39;)
+
+# select smaller value to try (we used 6)
+pcs = 6
+
+# generate nearest neighbor (graph), using selected number of PCs
+geo2_so = FindNeighbors(geo2_so, dims = 1:pcs, reduction = &#39;integrated.sct.rpca&#39;)
+
+# Round 2: adjust resolution after testing PCs (remember this only impacts the how the boundaries of the neighbors are drawn, not the underlying NN graph/structure)
+# start with one resolution, but can see impact of changing this parameter by changing which commands are commented out/run
+res = 0.2
+# res = 0.4
+# res = 1.0
+
+# generate clusters, using `pcs` and `res` to make a custom cluster name that will be added to the metadata
+geo2_so = FindClusters(geo2_so, resolution = res, 
+                       cluster.name = paste0(&#39;int.sct.rpca.clusters_fewer&#39;))
+
+# look at meta.data to see cluster labels
+head(geo2_so@meta.data)
+
+# Prep for UMAP plots by creating reduction (using the reduction name we assigned in the last step)
+# Note - only want to include the `pcs` in the reduction name since `res` changes the cluster divisions but not reduction run at this step
+geo2_so = RunUMAP(geo2_so, dims = 1:pcs, 
+                  reduction = &#39;integrated.sct.rpca&#39;, 
+                  reduction.name = paste0(&#39;umap.integrated.sct.rpca_fewer&#39;))
+# check object ot see if named reduction was added
+geo2_so
+
+# plot clustering results
+post_integration_umap_clusters_testing = 
+  DimPlot(geo2_so, group.by = &#39;seurat_clusters&#39;, label = TRUE, 
+          reduction = paste0(&#39;umap.integrated.sct.rpca_fewer&#39;)) + NoLegend()
+post_integration_umap_clusters_testing # look at plot
+
+# output to file, including the number of PCs and resolution used to generate results
+ggsave(filename = paste0(&#39;results/figures/umap_int_sct_clusters_&#39;, 
+                         pcs,&#39;PC.&#39;,res,&#39;res&#39;,&#39;.png&#39;),
+       plot = post_integration_umap_clusters_testing, 
+       width = 8, height = 6, units = &#39;in&#39;)
+
+## Discard all ggplot objects currently in environment to manage memory usage
+# Ok since we saved the plots as we went along
+rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
+gc()
+
+## Save a copy of the Seurat object in its current state
+saveRDS(geo2_so, file = paste0(&#39;results/rdata/geo_so_sct_integrated_alt.rds&#39;))</code></pre>
+<div id="check-in-questions---umap-with-fewer-pcs"
+class="section level4">
+<h4>Check-in Questions - UMAP with fewer PCs</h4>
+<p>How does the UMAP plot look when fewer PCs are used? How is the plot
+impacted if different resolution parameters are used?</p>
+</div>
+<div id="clean-up-session" class="section level3">
+<h3>Clean up session</h3>
+<pre class="r"><code>## -------------------
+## Clean up session 
+
+rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
+rm(catch_celltypes, catch_markers, geo2_catch, geo2_markers, new_metadata, top_5); 
+gc()
+
+## Save copy of geo2_seo in current state to use for future exercises
+saveRDS(geo2_so, file = paste0(&#39;results/rdata/geo_so_sct_integrated_alt.rds&#39;))</code></pre>
+<p><br/></p>
+<p><strong>If stopping here - make sure to clear environement and
+restart R session!!!</strong> <br/></p>
+</div>
+</div>
+<div id="day-2-exercise-2---clustering-with-increased-number-of-pcs"
+class="section level2">
+<h2>Day 2 Exercise 2 - Clustering with increased number of PCs</h2>
+<pre class="r"><code>## -----------------------------------------
+## Round 2 - choose a larger number of PCs
+
+pcs = 20 # can use this provided value or select a different value
+res = 0.8 # Set resolution (may need to test other values)
+
+# Run code (copied from above) - outputs will use pcs and res parameters set above
+# Reductions and metadata labels for clusters will be added to the existing geo2_so, with the set pcs and res values. Objects with the same name will be overwritten if code is adjusted and re-run
+
+# generate nearest neighbor (graph) &amp; clusters, with custom naming for metasata
+geo2_so = FindNeighbors(geo2_so, dims = 1:pcs, reduction = &#39;integrated.sct.rpca&#39;)
+geo2_so = FindClusters(geo2_so, resolution = res, 
+                       cluster.name = paste0(&#39;int.sct.rpca.clusters_more&#39;))
+head(geo2_so@meta.data)
+
+# Prep for UMAP plots by creating reduction (using the reduction name we assigned in the last step)
+geo2_so = RunUMAP(geo2_so, dims = 1:pcs, 
+                  reduction = &#39;integrated.sct.rpca&#39;, 
+                  reduction.name = paste0(&#39;umap.integrated.sct.rpca_more&#39;))
+geo2_so</code></pre>
+<p><br/></p>
+<div id="extension-challenge" class="section level4">
+<h4>Extension Challenge</h4>
+<p>Using the code from above, how would you generate a new ggplot named
+<code>post_integration_umap_clusters_testing</code> that uses the larger
+number of PCs and the clusters defined with the resolution you defined
+in the previous code block?</p>
+<pre class="r"><code># plot clustering results for new parameters
+post_integration_umap_clusters_testing = {add your own code here}
+
+## Remove ggplots and clean up environment 
+rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
+gc()
+
+## Save a copy of the Seurat object in its current state to use for future exercises
+saveRDS(geo2_so, file = paste0(&#39;results/rdata/geo_so_sct_integrated_alt.Rmd&#39;))</code></pre>
+<p><br/></p>
+</div>
+<div id="check-in-question---umap-with-more-pcs" class="section level4">
+<h4>Check-in question - UMAP with more PCs</h4>
+<p>How does the UMAP plot look when more PCs are used? Was a higher or
+lower resolution needed to better align the cluster divisions to the
+structure observed in the UMAP plot compared to the resolution used in
+the workshop session?</p>
+<p><br/></p>
+</div>
+</div>
+</div>
+<div id="day-3-exercises" class="section level1">
+<h1>Day 3 Exercises</h1>
+<pre class="r"><code># =========================================================================
+# Independent Exercise - Day 3 Startup
+# =========================================================================
+
+# After restarting our R session, load the required libraries
+library(Seurat)
+library(BPCells)
+library(tidyverse)
+
+## NOTE - BEFORE STOPPING WORK ON THE EXERCISES REMEMBER TO POWER DOWN AND RESTART R SESSION !!!!</code></pre>
+<p><br/></p>
+<div
+id="day-3-exercise-1---examine-impact-of-more-or-fewer-pcs-on-marker-genes-and-cell-type-predictions"
+class="section level2">
+<h2>Day 3 Exercise 1 - examine impact of more or fewer PCs on marker
+genes and cell type predictions</h2>
+<p>Now that we’ve covered how to generate emperical marker genes and use
+a prediction tool to identify possible cell-type labels, let’s start by
+extending the exercise from yesterday to check what our results would
+look like if we had proceed with fewer or more PCs.</p>
+<pre class="r"><code># Load in seurat object with your alternative clustering results from yesterday&#39;s exercises
+geo2_so = readRDS(&#39;results/rdata/geo_so_sct_integrated_alt.Rmd&#39;)
+
+# If you didn&#39;t generate your own, load the provided copy which uses XX and XX parameters
+## TO ADD - copy of seurat object with &quot;fewer&quot; and &quot;more&quot; PC results added
+
+# Check loaded object and what identities are set
+geo_so
+Idents(geo2_so)
+
+## Note - in the example code, we use the results from &quot;fewer&quot; but can swap to &quot;more&quot; instead
+geo2_so = SetIdent(geo2_so, value = paste0(&#39;int.sct.rpca.clusters_fewer&#39;))</code></pre>
+<pre class="r"><code>## Generate cluster markers to see how that changes with new parameters 
+geo2_so = PrepSCTFindMarkers(geo2_so, assay = &quot;SCT&quot;) # NOTE - this step will take some time to run
+geo2_markers = FindAllMarkers(geo2_so, only.pos = TRUE)
+
+# Create table of top 5 markers per cluster (using default ranking)
+top_5 = geo2_markers %&gt;% filter(p_val_adj &lt; 0.01) %&gt;% group_by(cluster) %&gt;% slice_head(n = 5)
+head(top_5, n = 10) # look at results
+write_csv(top_5, file = paste0(&#39;results/tables/top5_marker_genes_fewer.csv&#39;))</code></pre>
+<p><br/></p>
+<div id="check-in-question---clustering-impact-on-marker-genes"
+class="section level4">
+<h4>Check-in Question - clustering impact on marker genes</h4>
+<p>After you generate markers for the “fewer” <code>pcs</code> option,
+how do the results differ from the markers found for <code>pcs=10</code>
+in the workshop session? What do you think would happen if you tried
+this with the “more” results?</p>
+<p><br/></p>
+<pre class="r"><code>## ----------------------------------------------------
+## Next - run scCATCH predictions for alternative clustering results
+geo2_catch = createscCATCH(data = geo2_so@assays$SCT@counts, cluster = as.character(Idents(geo2_so)))
+catch_markers = geo2_markers %&gt;% rename(&#39;logfc&#39; = &#39;avg_log2FC&#39;)
+geo2_catch@markergene = geo2_markers
+geo2_catch@marker = cellmatch[cellmatch$species == &#39;Mouse&#39; &amp; cellmatch$tissue %in% c(&#39;Blood&#39;, &#39;Peripheral Blood&#39;, &#39;Muscle&#39;, &#39;Skeletal muscle&#39;, &#39;Epidermis&#39;, &#39;Skin&#39;), ]
+geo2_catch = findcelltype(geo2_catch)
+
+# Check predictions
+geo2_catch@celltype %&gt;% select(cluster, cell_type, celltype_score)</code></pre>
+<pre class="r"><code>## ------------------------------------------------------
+## Use predictions to label clusters and UMAP plot
+
+catch_celltypes = geo2_catch@celltype %&gt;% select(cluster, cell_type)
+colnames(catch_celltypes)[2] = paste0(&#39;cell_type.&#39;,pcs,&#39;PC.&#39;,res,&#39;res&#39;)
+new_metadata = geo2_so@meta.data %&gt;% 
+  left_join(catch_celltypes, 
+            by = c(&#39;seurat_clusters&#39; = &#39;cluster&#39;)) # using `seurat_clusters`, which will store the most recently generated cluster labels for each cell
+rownames(new_metadata) = rownames(geo2_so@meta.data) #  We are implicitly relying on the same row order!
+geo2_so@meta.data = new_metadata # Replace the meta.data
+head(geo2_so@meta.data)
+
+# Create UMAP plot with new cluster labels
+catch_umap_plot = DimPlot(geo2_so, group.by = paste0(&#39;cell_type.&#39;,pcs,&#39;PC.&#39;,res,&#39;res&#39;), 
+                          label = TRUE, reduction = paste0(&#39;umap.integrated.sct.rpca_&#39;,pcs,&#39;PC&#39;))
+catch_umap_plot
+#### Question: How did the number of pcs and/or resolution change the predictions? Do you think the predictions correspond better or worse to the cluster structure we see in the UMAP?
+
+# Save the plot to file
+# output to file, including the number of PCs and resolution used to generate results
+ggsave(filename = paste0(&#39;results/figures/umap_int_catch-labeled_&#39;, 
+                         pcs,&#39;PC.&#39;,res,&#39;res&#39;,&#39;.png&#39;),
+       plot = catch_umap_plot, 
+       width = 8, height = 6, units = &#39;in&#39;)
+
+## Clean up session 
+rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
+rm(catch_celltypes, catch_markers, geo2_catch, geo2_markers, new_metadata, top_5); 
+gc()
+
+## (Optional) - Save copy of geo2_so
+saveRDS(geo2_so, file = paste0(&#39;results/rdata/geo_so_sct_integrated_alt.rds&#39;))
+
+## BEFORE PROCEEDING TO THE NEXT SECTION or closing window - POWER DOWN AND RESTART R SESSION</code></pre>
+<p><br/></p>
+</div>
+</div>
+<div
+id="day-3-challenge---run-additional-de-comparisons-using-session-results"
+class="section level2">
+<h2>Day 3 Challenge - Run additional DE comparisons using session
+results</h2>
+<pre class="r"><code>## BEFORE PROCEEDING, MAKE SURE SESSION HAS BEEN restarted and environment is clear
+
+# After restarting our R session, load the required libraries
+library(Seurat)
+library(BPCells)
+library(tidyverse)
+
+# load a copy of the final Seurat object (from end of Day 3)
+geo_so = readRDS(&#39;/home/workshop/damki/ISC_R/results/rdata/geo_so_sct_integrated_final.rds&#39;)
+
+# check what identities are set for the loaded Seurat object
+Idents(geo_so) # expect to see Day + Cluster labels; if different identities are set, how would you change them?
+## add code to change identities if needed</code></pre>
+<p>Once the cluster identities are set to the combined Day + Cluster
+labels, generate additional DE comparisons using the provided
+“psuedocode” which are comments that outline what steps are
+expected/needed to guide adding code to complete those outlined
+steps.</p>
+<pre class="r"><code>## ---------------------------------------------------
+## Further extension - how might you generate DE comparisons between D21 and D7 for all annotated clusters?
+
+# check the unique cluster labels - how many clusters are present?
+unique(geo_so$cell_type)
+
+## Below is comments to help guide you though the process of looping through all the comparisons of interest, for all labeled clusters
+## This section from the HBC materials could be a helpful reference to aid in filling in the code: https://hbctraining.github.io/scRNA-seq_online/lessons/pseudobulk_DESeq2_scrnaseq.html
+
+# Create list(s) of pair-wise comparisons of interest between conditions, ideally specifying Case and Control 
+# (e.g. Day 7 vs Day 0, Day 21 vs Day 7, Day 21 vs Day 0)
+
+# Use list of comparisons and cluster identities to loop through comparisons of interest (for standard DE comparisons) and save results to files
+# Try to use an outer `for` loop step though the comparisons listed in previous step and an inner `for` loop to cycle through all the clusters
+
+# Bonus - summarize the DE results for the comparison, choosing a reasonable set of thresholds to call the number of DE genes, &amp; save summary to file
+
+# Clean up session. Caution - this next command clears your environment of all objects
+rm(list = ls())
+gc()
+
+## BEFORE CLOSING WINDOW - POWER DOWN AND RESTART R SESSION !!!!</code></pre>
+<hr />
+<p>These materials have been adapted and extended from materials listed
+above. These are open access materials distributed under the terms of
+the <a href="http://creativecommons.org/licenses/by/4.0/">Creative
+Commons Attribution license (CC BY 4.0)</a>, which permits unrestricted
+use, distribution, and reproduction in any medium, provided the original
+author and source are credited.</p>
+<br/> <br/>
+<hr/>
+<table style="width:100%;">
+<colgroup>
+<col width="28%" />
+<col width="42%" />
+<col width="28%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left"><a href="08-DifferentialExpression.html">Previous
+lesson</a></th>
+<th align="center"><a href="#top">Top of this lesson</a></th>
+<th align="right"><a href="workshop_wrap_up.html">Workshop
+Wrap-up</a></th>
+</tr>
+</thead>
+<tbody>
+</tbody>
+</table>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

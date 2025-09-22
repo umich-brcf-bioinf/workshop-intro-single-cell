@@ -1,0 +1,145 @@
+Since we are working with larger object sizes, it's best to start with a fresh session. All variable names will be different from the lessons. Load the libraries (it's okay if they're already loaded) and a Seurat object with alternative clustering using the following code:
+<!-- add copy of alt clustering to share with learners -->
+
+```{r, Day3_startup, eval = FALSE}
+# =========================================================================
+# Independent Exercise - Day 3 Startup
+# =========================================================================
+
+# After restarting our R session, load the required libraries
+library(Seurat)
+library(BPCells)
+library(tidyverse)
+library(scCATCH)
+
+# Load in seurat object with alternative clustering results from yesterday's exercises
+exso3 = readRDS('results/rdata/geo_so_sct_integrated_exercise.rds')
+exso3 # check that object loaded
+
+## NOTE - BEFORE STOPPING WORK ON THE EXERCISES REMEMBER TO POWER DOWN AND RESTART R SESSION !!!!
+```
+
+<br/>
+
+Before testing what marker genes and cell-type predictions are generated for an alternative clustering, start by ensuring the Seurat object is set up and has an expected identity set. 
+
+```{r, eval=FALSE}
+## ----------------------------------------------------------
+# Check what identities are set
+Idents(exso3) %>% head()
+
+pcs = ## use same values as yesterday
+res = ## use same values as yesterday
+
+## Set identities to clustering for selected resolution
+exso3 = SetIdent(exso3, value = paste0('int.sct.rpca.clusters', res))
+Idents(exso3) %>% head()
+```
+
+### Day 3 Exercise 1 - examine marker genes for alternative clusters
+
+Using the approach from the [marker identification](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/main/html/06-MarkerVisualization.html#Marker_identification) module, run `PrepSCTFindMarkers` and generate markers for the alternative clustering results. Bonus to generate a table of the top 5 markers and outputing that to file. 
+
+
+> Check-in Question - clustering impact on marker genes
+> After you generate markers for the "fewer" `pcs` option, how do the results differ from the markers found for `pcs=10` in the workshop session? What do you think would happen if you tried this with the "more" results?
+
+<br/>
+
+
+### Day 3 Exercise 2 - Generate predictions for alternative clustering 
+
+Using [scCATCH like we did for our annotation process](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/main/html/07-CellTypeAnnos.html#Refine_annotations_and_label_clusters), generate predictions for the alternative clustering results.
+
+<br/>
+
+
+### Day 3 Exercise 3 - Add predictions to Seurat object
+
+Skipping the refinement step, add the cell-type predictions to the Seurat object using the numeric labels as a key, similarly to the our [annotation step](file:///Users/damki/Desktop/ActiveProjectsMount/damki/repos/workshop-intro-single-cell/html/07-CellTypeAnnos.html#Refine_annotations_and_label_clusters).
+
+<br/>
+
+### Day 3 Exercise 4 - Plot UMAP with new cluster labels
+
+Using a similar approach used to [visualize the annotations in the workshop](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/main/html/07-CellTypeAnnos.html), generate a UMAP plot 
+
+*Hint* - use the same reduction name as yesterday's exercise and make sure the `group_by` parameter matches the column name added to the metadata that stores the predicted cell-types.
+
+<br/>
+
+**Check-in Question**
+
+> How did the number of pcs and/or resolution change the predictions? Do you think the predictions correspond better or worse to the cluster structure we see in the UMAP?
+
+</br>
+
+
+### Clean up session 
+
+Before closing out the window, **make sure to clear environment and restart R session to manage the memory usage**
+
+```{r, cleanup_day3, eval=FALSE}
+## ----------------------------------------------------------
+## Clean up session 
+rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
+rm(catch_celltypes, catch_markers, geo2_catch, geo2_markers, new_metadata, top_5); 
+gc()
+
+## (Optional) - Save copy of exso3
+saveRDS(exso3, file = paste0('results/rdata/geo_so_sct_integrated_with_markers_exercise.rds'))
+
+## BEFORE CLOSING WINDOW - POWER DOWN AND RESTART R SESSION
+
+```
+<br/>
+
+<!--- hidden for now - additional DE comparisons
+### Day 3 Challenge - Run additional DE comparisons using session results
+
+```{r, eval=FALSE}
+## BEFORE PROCEEDING, MAKE SURE SESSION HAS BEEN restarted and environment is clear
+
+# After restarting our R session, load the required libraries
+library(Seurat)
+library(BPCells)
+library(tidyverse)
+
+# load a copy of the final Seurat object (from end of Day 3)
+exso3 = readRDS('/home/workshop/damki/ISC_R/results/rdata/exso3_sct_integrated_final.rds')
+
+# check what identities are set for the loaded Seurat object
+Idents(exso3) # expect to see Day + Cluster labels; if different identities are set, how would you change them?
+## add code to change identities if needed
+```
+
+Once the cluster identities are set to the combined Day + Cluster labels, generate additional DE comparisons using the provided "psuedocode" which are comments that outline what steps are expected/needed to guide adding code to complete those outlined steps.
+```{r, eval = FALSE}
+## ---------------------------------------------------
+## Further extension - how might you generate DE comparisons between D21 and D7 for all annotated clusters?
+
+# check the unique cluster labels - how many clusters are present?
+unique(exso3$cell_type)
+
+## Below is comments to help guide you though the process of looping through all the comparisons of interest, for all labeled clusters
+## This section from the HBC materials could be a helpful reference to aid in filling in the code: https://hbctraining.github.io/Intro-to-scRNAseq/lessons/pseudobulk_DESeq2_scrnaseq.html
+
+# Create list(s) of pair-wise comparisons of interest between conditions, ideally specifying Case and Control 
+# (e.g. Day 7 vs Day 0, Day 21 vs Day 7, Day 21 vs Day 0)
+
+# Use list of comparisons and cluster identities to loop through comparisons of interest (for standard DE comparisons) and save results to files
+# Try to use an outer `for` loop step though the comparisons listed in previous step and an inner `for` loop to cycle through all the clusters
+
+# Bonus - summarize the DE results for the comparison, choosing a reasonable set of thresholds to call the number of DE genes, & save summary to file
+
+# Clean up session. Caution - this next command clears your environment of all objects
+rm(list = ls())
+gc()
+
+## BEFORE CLOSING WINDOW - POWER DOWN AND RESTART R SESSION !!!!
+
+```
+-->
+
+</br>
+<br/>
