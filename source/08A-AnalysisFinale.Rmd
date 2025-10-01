@@ -129,7 +129,7 @@ Additionally, the `sessionInfo` function produces a list of the relevant version
 # The on_aws var is initialized in bin/set_values.R
 
 sink('session_info.txt')
-devtools::session_info()
+sessioninfo::session_info()
 sink()
 ```
 
@@ -140,11 +140,11 @@ This info is generally not included in main body of a paper, but you will get se
 # Print out details about this R install, session, and loaded libraries
 # 
 # You can use the built-in command sessionInfo(); we prefer 
-# devtools::session_info() for the nicer formatting. 
-# Note, you'll have to have the devtools package installed:
-# install.packages('devtools');
+# sessioninfo::session_info() for the nicer formatting. 
+# Note, you'll have to have the sessioninfo package installed:
+# install.packages('sessioninfo');
 
-devtools::session_info()
+sessioninfo::session_info()
 ```
 
 ```{verbatim session_info_txt, file='session_info.txt', eval=FALSE}

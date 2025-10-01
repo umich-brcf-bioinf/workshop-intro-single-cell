@@ -5,7 +5,7 @@ cd intro_scrnaseq_workshop/ISC_R
 # Use curl to download a ~3 Gb tarball
 # We'll use evironment variables to avoid extremely long command lines
 source_url="https://umich-brcf-bioinf-workshop.s3.us-east-1.amazonaws.com"
-source_file="ISC/workshop_isc_inputs-20250730.tgz"
+source_file="ISC/workshop_isc_inputs-20251015.tgz"
 curl -o workshop_isc_inputs.tgz ${source_url}/${source_file}
 
 # tar unpacks the tarball into directories
