@@ -83,9 +83,6 @@ Cell Ranger outputs can be read into R via the triple of files directly, or via 
 </td></tr></table>
 <br/>
 
-One of the goals of this workshop is to work through an example from start to end, and to highlight some of the decision points and rationales behind the decisions. The first step of any single-cell project will be to get the data into R for analysis.
-<br/>
-
 ## Objectives
 
 - Orient on RStudio.
@@ -96,9 +93,9 @@ One of the goals of this workshop is to work through an example from start to en
 
 ---
 
-# Orienting on RStudio
+# Server login
 
-To get started, let's log in to the workshop server by going here: [`r workshop_vars$rstudio_server_url`](`r workshop_vars$rstudio_server_url`){target="blank"}
+Let's log in to the workshop server: [`r workshop_vars$rstudio_server_url`](`r workshop_vars$rstudio_server_url`){target="blank"}
 
 The login page for the server looks like:
 
@@ -109,6 +106,18 @@ Enter your user credentials and click <kbd>Sign In</kbd>. The RStudio interface 
 <img src="images/02_rstudio_session_default.png" alt="rstudio default session" style="width:1000px;"/>
 
 **Checkpoint**
+
+# Create a project
+
+We will create an RStudio Project to easily keep track of our working directory. See the [Projects](https://r4ds.hadley.nz/workflow-scripts.html#projects) section of [R for Data Science](https://r4ds.hadley.nz/) for a more in-depth description of what a project is and how it's helpful.
+
+To create a Project, click <kbd>File</kbd> then <kbd>New Project...</kbd>. In the New Project Wizard window that opens, select <kbd>Existing Directory</kbd>, then <kbd>Browse...</kbd>. In the Choose Directory window, select the `ISC_R` folder by clicking it once, and then click the <kbd>Choose</kbd> button. Finally, click <kbd>Create Project</kbd>.
+
+Once we do this, RStudio will restart and the Files pane (lower right) should put us in the `~/ISC_R` folder where there is an `inputs/` folder and an `ISC_R.Rproj` file.
+
+**Checkpoint**
+
+# The RStudio interface
 
 RStudio is an integrated development environment where you can write, execute, and see the results of your code. The interface is arranged in different panes:
 
@@ -121,7 +130,7 @@ RStudio is an integrated development environment where you can write, execute, a
 
 ## Commands in the Console
 
-Commands can be run in the Console directly. Press <KBD>Enter</KBD> to execute them:
+Working directly in the console is working directly with R. Commands can be entered and run with the <KBD>Enter</KBD> key:
 
 ~~~
 > 2+2
@@ -132,41 +141,41 @@ Commands can be run in the Console directly. Press <KBD>Enter</KBD> to execute t
 
 **Checkpoint**
 
-## Commands in the Script
+## Commands in a Script
 
-Commands can also be run in a script. Some beenefits to using a script rather than relying on the Console pane:
+Instead of entering commands directly into the Console, we'll record them in and run them from a script. Some benefits to using a script rather than using the Console pane:
 
-- Scripts are files that can be shared.
 - Scripts record the steps taken to analyze the data.
 - Scripts can be re-run, allowing for reproducibility.
+- Scripts are can be shared.
 
-When first opening RStudio, a script file is not automatically opened. We'll create our script file by clicking on the icon in the upper-left of the interface (a blank piece of paper with a + sign), and selecting <KBD>R Script</KBD>.
+We'll create a script file by clicking on the icon in the upper-left of the interface (a blank piece of paper with a + sign), and selecting <KBD>R Script</KBD>.
 
 <img src="images/04_rstudio_create_script.png" alt="rstudio create script" style="width:1000px;"/>
 
- The new pane that opens is the **Source pane**:
+ The new pane that opens is the **Source pane**, and you can think of it as a text editor:
 
 <img src="images/05_rstudio_script_pane.png" alt="rstudio script pane" style="width:1000px;"/>
 
-You can think of this as a simple text editor. In the Script pane, enter:
+Code entered in a script file **must explicitly be sent to the Console for execution** with the <KBD>Ctrl + Enter</KBD> command. Enter the following command into the script file and execute it with <KBD>Ctrl + Enter</KBD>:
 
 ~~~
 3+2
 ~~~
 
-Notice that if we press <KBD>Enter</KBD> in the Source pane, we get a new line instead of running the code. In order to execute the code, we press <KBD>Ctrl + Enter</KBD> either on the single line we want to run, or on a highlighted block of code. We then see that code executed, along with its result in in the Console pane.
+Looking in the Console we see the executed line and its result. Note that pressing <KBD>Enter</KBD> in the script creates a new line and does not execute the code as in the Console.
 
 <img src="images/06_rstudio_script_execution.png" alt="rstudio script execution" style="width:1000px;"/>
 
-## Summary: Console vs Script
+## Console vs Script
 
-Here are some of the key differences between the Console and Script panes in RStudio:
+The key differences between the Console and Script panes in RStudio:
 
 | Console          | Script            |
 |:-----------------|:------------------|
-| Ephemeral code        | Preserved code         |
-| Run with <KBD>Enter</KBD> | Run with <KBD>Ctrl + Enter</KBD> |                  |
-| Hard to share    | Easy to share     |
+| Reset across sessions | Preserved acros sessions |
+| Run with <KBD>Enter</KBD> | Run with <KBD>Ctrl + Enter</KBD> |
+| Inconvenient to share    | Convenient to share     |
 
 ## Configuring RStudio
 
@@ -178,49 +187,27 @@ We can enable soft-wrapping of code by selecting <KBD>Code</KBD> and then <KBD>S
 
 # Workshop flow
 
-To accomodate learning styles and to keep us moving along, we'll provide code in three different ways, and you can get that code into RStudio in corresponding ways:
+To accommodate different learning styles and to keep us moving along, we'll provide code in three different ways, and you can get that code into RStudio in corresponding ways:
 
 | Source of Code   | Execution of Code |
 |:-----------------|:------------------|
 | Zoom screen share            | Type the code yourself.                            |
-| Slack            | Copy and paste code into RStudio.                  |
-| Website          | Use code block copy button and paste into RStudio. |
+| Slack            | Copy and paste into RStudio.                  |
+| Website          | Copy with code block button and paste into RStudio. |
 
 **Questions?**
 
-# Setting up
+# Directory structure
 
-Before we begin, the folder structure of a working directory / project organizes all the relevant files. Typically we make directories for the following types of files:
+Before we begin, the folder structure of a project organizes all the relevant files. Typically we make directories for the following types of files:
 
 - Raw data, called `data`, `input`, etc,
 - Results, often `results` or `output` with subfolders for `tables`, `figures`, and `rdata`, and
 - Scripts, often `scripts`.
 
-We've already provided the raw data in the `data/` folder, but you'd otherwise want to move the starting, unaltered, data into this folder.
+We've already provided the raw data in the `data/` folder, and it's generally a good idea to keep raw data in its own folder.
 
-## Creating directory stucture
-
-Before we start creating directories, let's make sure we're in the right location. To print the current working directory:
-
-```{r getwd}
-# =========================================================================
-# Getting Started with Seurat
-# =========================================================================
-
-# -------------------------------------------------------------------------
-# Get current working directory
-getwd()
-```
-
-This means that any references to files loaded or files saved **is with respect to this location**. This can simplify our code a bit by allowing us to use relative paths rather than full paths. Let's set our working directory to the ISC folder in our respective home directories.
-
-```{r setwd, eval = FALSE}
-# -------------------------------------------------------------------------
-# Set current working directory
-setwd('~/ISC_R')
-```
-
-Now that we're sure of our working directory, let's create some folders for our analysis scripts and results thereof.
+Let's create some folders for our analysis scripts and results thereof.
 
 ```{r create_structure}
 # -------------------------------------------------------------------------
@@ -232,9 +219,9 @@ dir.create('results/tables', recursive = TRUE, showWarnings = FALSE)
 dir.create('results/rdata', recursive = TRUE, showWarnings = FALSE)
 ```
 
-## Saving scripts
+# Saving scripts
 
-Let's save our currently open script in the `scripts/` folder as `ISC_day1.R` by clicking <KBD>File</KBD> and then <KBD>Save</KBD>.
+Let's save our currently open script by clicking <KBD>File</KBD> and then <KBD>Save</KBD>. Double click the `scripts/` folder and enter the file name `ISC_day1.R`.
 
 **Checkpoint**
 
@@ -473,8 +460,6 @@ library(Seurat)
 library(BPCells)
 library(tidyverse)
 options(future.globals.maxSize = 1e9)
-
-setwd("~/ISC_R/")
 
 # -------------------------------------------------------------------------
 # Load the Seurat object

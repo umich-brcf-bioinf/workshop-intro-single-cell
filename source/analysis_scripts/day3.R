@@ -3,13 +3,6 @@
 # =========================================================================
 
 # -------------------------------------------------------------------------
-# Set working directory
-# Confirm you are in the right working directory; should be ~/ISC_R
-getwd()
-# Reset if necessary
-setwd("~/ISC_R")
-
-# -------------------------------------------------------------------------
 # Load libraries
 library(Seurat)
 library(BPCells)

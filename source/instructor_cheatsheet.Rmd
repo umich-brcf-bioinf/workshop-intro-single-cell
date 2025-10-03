@@ -77,13 +77,6 @@ If it shows **Project: (None)**, you can either:
 # =========================================================================
 
 # -------------------------------------------------------------------------
-# Set working directory
-# Confirm you are in the right working directory; should be ~/ISC_R
-getwd()
-# Reset if necessary
-setwd("~/ISC_R")
-
-# -------------------------------------------------------------------------
 # Load libraries
 library(Seurat)
 library(BPCells)
@@ -113,13 +106,6 @@ If it shows **Project: (None)**, you can either;
 
 
 ```{r day_3_setup, eval = FALSE}
-#### Day 3 setup -----------------
-# Confirm you are in the right working directory
-# Should be ~/ISC_R
-getwd()
-# Reset if necessary
-setwd("~/ISC_R")
-
 # Load libraries  ----------------------------------------------
 library(Seurat)
 library(BPCells)

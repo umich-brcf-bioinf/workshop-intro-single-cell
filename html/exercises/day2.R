@@ -7,8 +7,6 @@ library(Seurat)
 library(BPCells)
 library(tidyverse)
 
-setwd('~/ISC_R')
-
 # Use provided copy of integrated data
 exso2 = readRDS('inputs/prepared_data/rdata/geo_so_sct_integrated.rds')
 exso2 # check that object loaded
