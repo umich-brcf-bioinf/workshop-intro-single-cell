@@ -7,13 +7,6 @@
 # =========================================================================
 
 # -------------------------------------------------------------------------
-# Get current working directory
-getwd()
-
-# Set working directory to ISC_R
-setwd('~/ISC_R')
-
-# -------------------------------------------------------------------------
 # Create directory structure
 
 dir.create('scripts', recursive = TRUE, showWarnings = FALSE)
