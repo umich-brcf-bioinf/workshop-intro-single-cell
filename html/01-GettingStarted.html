@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-10-01" />
+<meta name="date" content="2025-10-05" />
 
 <title>Getting Started with Seurat</title>
 
@@ -423,7 +423,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Getting Started with Seurat</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-10-01</h4>
+<h4 class="date">2025-10-05</h4>
 
 </div>
 
@@ -778,6 +778,9 @@ memory:</p>
 # BPCells uses these files for processing, but you typically never look at 
 # their contents directly
 write_matrix_dir(mat = geo_mat, dir = &#39;~/ISC_R/bpcells&#39;, overwrite = TRUE)</code></pre>
+<pre><code>Warning: Matrix compression performs poorly with non-integers.
+• Consider calling convert_matrix_type if a compressed integer matrix is intended.
+This message is displayed once every 8 hours.</code></pre>
 <pre><code>32285 x 35269 IterableMatrix object with class MatrixDir
 
 Row names: Xkr4, Gm1992 ... AC149090.1
@@ -787,7 +790,7 @@ Data type: double
 Storage order: column major
 
 Queued Operations:
-1. Load compressed matrix from directory /home/workshop/rcavalca/ISC_R/bpcells</code></pre>
+1. Load compressed matrix from directory /home/workshop/cgates/ISC_R/bpcells</code></pre>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Cleanup
 # Since we&#39;ll now be reading in from BPCells files, we will remove geo_mat
@@ -796,8 +799,8 @@ Queued Operations:
 rm(geo_mat)
 gc()</code></pre>
 <pre><code>           used  (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells  6429606 343.4   12172824  650.1  11196210  598.0
-Vcells 12633684  96.4  520593216 3971.9 673597774 5139.2</code></pre>
+Ncells  6368089 340.1   10798397  576.7   8736627  466.6
+Vcells 11849975  90.5  561992792 4287.7 673127568 5135.6</code></pre>
 </div>
 <div id="read-bpcells" class="section level2">
 <h2>Read BPCells</h2>
@@ -928,11 +931,11 @@ alt="Seurat object" />
 </div>
 <p>The three main “slots” in the object are:</p>
 <ol style="list-style-type: decimal">
-<li>The <code>assays</code> slot stores the expression data as
+<li>The <strong>assays</strong> slot stores the expression data as
 <code>Assay</code> objects.</li>
-<li>The <code>meta.data</code> slot which stores cell-level information,
-including technical and phenotypic data.</li>
-<li>The <code>reductions</code> slot stores the results of dimension
+<li>The <strong>meta.data</strong> slot which stores cell-level
+information, including technical and phenotypic data.</li>
+<li>The <strong>reductions</strong> slot stores the results of dimension
 reduction applied to the <code>assays</code>.</li>
 </ol>
 <p>There are other slots which store information that becomes relevant
@@ -977,6 +980,29 @@ well as the barcode for that cell. As we continue the workshop, we will
 check in on the <code>meta.data</code> slot and observe changes we want
 to make, and that other functions will make. We’ll also observe the
 other assays and layers and note their changes.</p>
+<div id="splitting-samples" class="section level2">
+<h2>Splitting samples</h2>
+<p>The <strong>assays</strong> in a Seurat v5 object can store data in
+<strong>layers</strong>; a layer is the data for a single sample.
+Initially there is only a single layer, can separate the sample-wise
+data into layers like so:</p>
+<pre class="r"><code># -------------------------------------------------------------------------
+# Separate sample data into layers
+geo_so[[&#39;RNA&#39;]] = split(geo_so[[&#39;RNA&#39;]], f = geo_so$orig.ident)
+geo_so</code></pre>
+<pre><code>An object of class Seurat 
+26489 features across 35216 samples within 1 assay 
+Active assay: RNA (26489 features, 0 variable features)
+ 12 layers present: counts.HODay0replicate1, counts.HODay0replicate2, counts.HODay0replicate3, counts.HODay0replicate4, counts.HODay7replicate1, counts.HODay7replicate2, counts.HODay7replicate3, counts.HODay7replicate4, counts.HODay21replicate1, counts.HODay21replicate2, counts.HODay21replicate3, counts.HODay21replicate4</code></pre>
+<p>We see the 12 layers containing the count data for each of the
+samples. Our Seurat object now looks like this:</p>
+<div class="float">
+<img src="images/seurat-schematic/seurat-split-layers.png"
+alt="Seurat splitting the counts layer of the RNA assay by sample." />
+<div class="figcaption">Seurat splitting the counts layer of the RNA
+assay by sample.</div>
+</div>
+</div>
 </div>
 <div id="save-our-progress" class="section level1">
 <h1>Save our progress</h1>

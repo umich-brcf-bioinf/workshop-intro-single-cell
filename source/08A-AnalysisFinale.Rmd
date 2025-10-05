@@ -52,8 +52,16 @@ knitr_fig_path("08A-DifferentialExpression/08A-")
 
 <br/> 
 ![](images/wayfinder/00-FullWayfinder.png) 
-<br/> 
 <br/>
+<br/>
+
+---
+
+Our final Seurat object:
+
+![Final Seurat](images/seurat-schematic/seurat-done.png)
+
+---
 
 # Key decision points in analysis and methodology
 
