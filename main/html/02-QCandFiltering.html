@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-08-21" />
+<meta name="date" content="2025-10-05" />
 
 <title>Secondary Quality Control and Filtering</title>
 
@@ -426,7 +426,7 @@ div.tocify {
 <h1 class="title toc-ignore">Secondary Quality Control and
 Filtering</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-08-21</h4>
+<h4 class="date">2025-10-05</h4>
 
 </div>
 
@@ -1156,10 +1156,7 @@ the samples. Again, this is the number of genes detected per cell.</p>
 # Review feature violin plots
 VlnPlot(geo_so, features = &#39;nFeature_RNA&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + 
   NoLegend() + 
-  geom_hline(yintercept = 500) + 
-  geom_hline(yintercept = 400) + 
-  geom_hline(yintercept = 300) + 
-  geom_hline(yintercept = 200)
+  geom_hline(yintercept = c(500, 400, 300, 200))
 ggsave(filename = &#39;results/figures/qc_nFeature_violin.png&#39;,
        width = 12, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/02-QCandFiltering/02-feature_plot-1.png" width="816" style="display: block; margin: auto;" /></p>
@@ -1173,7 +1170,9 @@ to have a low number of genes detected (&lt; 500).</p>
 UMIs detected.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Review count violin plots
-VlnPlot(geo_so, features = &#39;nCount_RNA&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + 
+# Note: To make it easier to see the distributions, we set the alpha to 0.4;
+# this makes opacity of the dots 40% (i.e. 60% transparent).
+VlnPlot(geo_so, features = &#39;nCount_RNA&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;, alpha=0.4) + 
   NoLegend()
 ggsave(filename = &#39;results/figures/qc_nCount_violin.png&#39;,
        width = 12, height = 6, units = &#39;in&#39;)</code></pre>
@@ -1213,11 +1212,9 @@ column to the meta data.</p>
 <code>percent.mt</code>.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Review mitochondrial violin plots
-VlnPlot(geo_so, features = &#39;percent.mt&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + 
+VlnPlot(geo_so, features = &#39;percent.mt&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;, alpha=0.3) + 
   NoLegend() + 
-  geom_hline(yintercept = 20) + 
-  geom_hline(yintercept = 15) + 
-  geom_hline(yintercept = 10)
+  geom_hline(yintercept = c(20, 15, 10))
 ggsave(filename = &#39;results/figures/qc_mito_violin.png&#39;,
        width = 12, height = 6, units = &#39;in&#39;)</code></pre>
 <p><img src="images/curriculum/02-QCandFiltering/02-mito_plot-1.png" width="816" style="display: block; margin: auto;" /></p>
@@ -1298,7 +1295,7 @@ geo_so</code></pre>
 <pre><code>An object of class Seurat 
 26489 features across 31559 samples within 1 assay 
 Active assay: RNA (26489 features, 0 variable features)
- 1 layer present: counts</code></pre>
+ 12 layers present: counts.HODay0replicate1, counts.HODay0replicate2, counts.HODay0replicate3, counts.HODay0replicate4, counts.HODay7replicate1, counts.HODay7replicate2, counts.HODay7replicate3, counts.HODay7replicate4, counts.HODay21replicate1, counts.HODay21replicate2, counts.HODay21replicate3, counts.HODay21replicate4</code></pre>
 <p>And let’s record the number of cells remaining after filtering:</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Examine remaining cell counts
