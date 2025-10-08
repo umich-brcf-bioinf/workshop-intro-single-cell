@@ -127,7 +127,9 @@ University of Michigan Biomedical Research Core Facilities Advanced Genomics Cor
 </details>
 <br/>
 
-Additionally, the `sessionInfo` function produces a list of the relevant versions of R and all the libraries that were loaded in the analysis. While this level of detail is usually most useful for troubleshooting, it's helpful to preserve this information for your records and to include the output when asking for help, particularly in public forums.
+## Session Info
+
+Additionally, the `sessioninfo::session_info` function (or its predecessor base function `sessionInfo`) produces a list of the relevant versions of R and all the libraries that were loaded in the analysis. While this level of detail is usually most useful for troubleshooting, it's helpful to preserve this information for your records and to include the output when asking for help, particularly in public forums.
 
 <details>
 <summary>**Session Info**</summary>
@@ -149,7 +151,7 @@ This info is generally not included in main body of a paper, but you will get se
 # 
 # You can use the built-in command sessionInfo(); we prefer 
 # sessioninfo::session_info() for the nicer formatting. 
-# Note, you'll have to have the sessioninfo package installed:
+# Note, you may have to install the sessioninfo package:
 # install.packages('sessioninfo');
 
 sessioninfo::session_info()

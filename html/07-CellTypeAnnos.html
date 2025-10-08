@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-10-05" />
+<meta name="date" content="2025-10-08" />
 
 <title>Cell Type Annotation</title>
 
@@ -425,7 +425,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Cell Type Annotation</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-10-05</h4>
+<h4 class="date">2025-10-08</h4>
 
 </div>
 
@@ -981,51 +981,19 @@ ggsave(filename = &#39;results/figures/immune_markers_sct_dot_plot.png&#39;,
 </div>
 <div id="other-marker-genes" class="section level2">
 <h2>Other marker genes</h2>
-<p>For immune markers (above) we created a <strong>named list</strong>
-of cell types and gene markers. Here’s another way to create a named
-list by building it from a table. It’s a few more steps, but it’s a
-handy alternative and can sometimes make the data clearer.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
-# Create lists of other cells and associated gene markers
+# Create a nested list of other cells and associated gene markers
 
-other_markers_string = &quot;
-cell_type      | gene_markers         | comment
-Pericyte       | Acan, Sox9           | 
-SMC            | Acta2, Myh11         | mesenchymal smooth-muscle cell/mesenchymal lineage
-Keratinocytes  | Thy1, Dlk1           | fibro progenitors
-Myofibroblasts | Tmem100, Cd34, Ly6c1 | hematopoetic stem/activated fibroblast
-Fibroblast     | Dpt, Fn1, Col3a1     | activated fib
-Endothelial    | Pecam1, Cd38         | from wound healing; Pecam1 also exp in endothelial
-HSC            | Ltb, Cd74            | less well defined/conflicting definitions
-Erythroid      | Hba-a1               |
-&quot;
-other_marker_tbl = read_delim(other_markers_string,
-                              delim=&quot;|&quot;,
-                              trim_ws=TRUE,
-                              show_col_types = FALSE)
-other_marker_tbl</code></pre>
-<pre><code># A tibble: 8 × 3
-  cell_type      gene_markers         comment                                           
-  &lt;chr&gt;          &lt;chr&gt;                &lt;chr&gt;                                             
-1 Pericyte       Acan, Sox9           &lt;NA&gt;                                              
-2 SMC            Acta2, Myh11         mesenchymal smooth-muscle cell/mesenchymal lineage
-3 Keratinocytes  Thy1, Dlk1           fibro progenitors                                 
-4 Myofibroblasts Tmem100, Cd34, Ly6c1 hematopoetic stem/activated fibroblast            
-5 Fibroblast     Dpt, Fn1, Col3a1     activated fib                                     
-6 Endothelial    Pecam1, Cd38         from wound healing; Pecam1 also exp in endothelial
-7 HSC            Ltb, Cd74            less well defined/conflicting definitions         
-8 Erythroid      Hba-a1               &lt;NA&gt;                                              </code></pre>
-<pre class="r"><code># -------------------------------------------------------------------------
-# Make marker tibble into named list
-
-# Split comma seperated gene symbols into actual lists
-other_marker_tbl$gene_markers = str_split(other_marker_tbl$gene_markers, &quot;,&quot;)
-
-# Remove any stray whitespace before/after gene symbol
-other_marker_tbl$gene_markers = lapply(other_marker_tbl$gene_markers, str_trim)
-
-# Make a named list of cell_type -&gt; marker gene symmbols
-other_markers = setNames(other_marker_tbl$gene_markers, other_marker_tbl$cell_type)
+other_markers = list(
+    &#39;Pericyte&#39;       = c(&#39;Acan&#39;, &#39;Sox9&#39;),
+    &#39;SMC&#39;            = c(&#39;Acta2&#39;, &#39;Myh11&#39;), #mesenchymal smooth-muscle cell/mesenchymal lineage
+    &#39;Keratinocytes&#39;  = c(&#39;Thy1&#39;, &#39;Dlk1&#39;), #fibro progenitors
+    &#39;Myofibroblasts&#39; = c(&#39;Tmem100&#39;, &#39;Cd34&#39;, &#39;Ly6c1&#39;), #hematopoetic stem/activated fibroblast
+    &#39;Fibroblast&#39;     = c(&#39;Dpt&#39;,&#39;Fn1&#39;,&#39;Col3a1&#39;), #activated fib
+    &#39;Endothelial&#39;    = c(&#39;Pecam1&#39;,&#39;Cd38&#39;), #from wound healing; Pecam1 also exp in endothelial
+    &#39;HSC&#39;            = c(&#39;Ltb&#39;,&#39;Cd74&#39;), #less well defined/conflicting definitions
+    &#39;Erythroid&#39;      = c(&#39;Hba-a1&#39;)
+  )
 
 other_markers</code></pre>
 <pre><code>$Pericyte
@@ -1582,9 +1550,9 @@ the level of specificity that’s relevant to <em>your</em> biological
 question or use the same labels for clusters that don’t seems to share
 similar expression programs
 <img src="images/curriculum/07-CellTypeAnnotation/07-catch_umap_plots-1.png" width="1152" style="display: block; margin: auto;" /></p>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
-Ncells   9768273  521.7   18242232  974.3   18242232  974.3
-Vcells 344856810 2631.1  985378641 7517.9 1231723272 9397.4</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells   7089556  378.7   10314907  550.9  10314907  550.9
+Vcells 339911455 2593.4  500168916 3816.0 440487123 3360.7</code></pre>
 </details>
 <p><br> <br/></p>
 <hr />
@@ -1598,9 +1566,9 @@ Vcells 344856810 2631.1  985378641 7517.9 1231723272 9397.4</code></pre>
 # (Ok since we saved the plots as we went along)
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
-Ncells   9724495  519.4   18242232  974.3   18242232  974.3
-Vcells 342163670 2610.6  985378641 7517.9 1231723272 9397.4</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells   7045813  376.3   10314907  550.9  10314907  550.9
+Vcells 337218377 2572.8  500168916 3816.0 440487123 3360.7</code></pre>
 <p>We’ll save the scCATCH object and our updated Seurat object with cell
 type annotations.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
