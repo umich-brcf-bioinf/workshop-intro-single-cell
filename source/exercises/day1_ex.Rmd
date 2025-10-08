@@ -10,8 +10,6 @@ library(Seurat)
 library(BPCells)
 library(tidyverse)
 
-setwd('~/ISC_R')
-
 # Use provided copy of integrated data
 exso = readRDS('./inputs/prepared_data/rdata/geo_so_unfiltered.rds')
 

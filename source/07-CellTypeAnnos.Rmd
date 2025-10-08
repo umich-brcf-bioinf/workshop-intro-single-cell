@@ -307,45 +307,20 @@ ggsave(filename = 'results/figures/immune_markers_sct_dot_plot.png',
 
 ## Other marker genes
 
-For immune markers (above) we created a **named list** of cell types and gene 
-markers. Here's another way to create a named list by building it from a
-table. It's a few more steps, but it's a handy alternative and can sometimes
-make the data clearer.
-
 ```{r, marker_genes_as_tibble, fig.show='hold'}
 # -------------------------------------------------------------------------
-# Create lists of other cells and associated gene markers
+# Create a nested list of other cells and associated gene markers
 
-other_markers_string = "
-cell_type      | gene_markers         | comment
-Pericyte       | Acan, Sox9           | 
-SMC            | Acta2, Myh11         | mesenchymal smooth-muscle cell/mesenchymal lineage
-Keratinocytes  | Thy1, Dlk1           | fibro progenitors
-Myofibroblasts | Tmem100, Cd34, Ly6c1 | hematopoetic stem/activated fibroblast
-Fibroblast     | Dpt, Fn1, Col3a1     | activated fib
-Endothelial    | Pecam1, Cd38         | from wound healing; Pecam1 also exp in endothelial
-HSC            | Ltb, Cd74            | less well defined/conflicting definitions
-Erythroid      | Hba-a1               |
-"
-other_marker_tbl = read_delim(other_markers_string,
-                              delim="|",
-                              trim_ws=TRUE,
-                              show_col_types = FALSE)
-other_marker_tbl
-```
-
-```{r, marker_genes_as_list, fig.show='hold'}
-# -------------------------------------------------------------------------
-# Make marker tibble into named list
-
-# Split comma seperated gene symbols into actual lists
-other_marker_tbl$gene_markers = str_split(other_marker_tbl$gene_markers, ",")
-
-# Remove any stray whitespace before/after gene symbol
-other_marker_tbl$gene_markers = lapply(other_marker_tbl$gene_markers, str_trim)
-
-# Make a named list of cell_type -> marker gene symmbols
-other_markers = setNames(other_marker_tbl$gene_markers, other_marker_tbl$cell_type)
+other_markers = list(
+    'Pericyte'       = c('Acan', 'Sox9'),
+    'SMC'            = c('Acta2', 'Myh11'), #mesenchymal smooth-muscle cell/mesenchymal lineage
+    'Keratinocytes'  = c('Thy1', 'Dlk1'), #fibro progenitors
+    'Myofibroblasts' = c('Tmem100', 'Cd34', 'Ly6c1'), #hematopoetic stem/activated fibroblast
+    'Fibroblast'     = c('Dpt','Fn1','Col3a1'), #activated fib
+    'Endothelial'    = c('Pecam1','Cd38'), #from wound healing; Pecam1 also exp in endothelial
+    'HSC'            = c('Ltb','Cd74'), #less well defined/conflicting definitions
+    'Erythroid'      = c('Hba-a1')
+  )
 
 other_markers
 ```
@@ -448,71 +423,6 @@ For known marker genes, it's important to note that since scRNA-seq is only meas
 </details>
 <br>
 
-<details>
-    <summary>*Using raw RNA values for genes of interest from Sorkin, Huber et al*</summary>
-    Typically, dot plots are built from normalized, integrated data but you can 
-    also show dot plots from unintegrated data. The prior integration step 
-    (sctransform) overwrites the normalized data values with normalized and 
-    integrated values. To get around this, you can re-load the saved data prior 
-    to the integration step.
-    
-```{r, known_dot_plot_rna, warning=FALSE}
-# -------------------------------------------------------------------------
-# Visualize manually selected marker genes (from unintegrated data)
-
-# Re-load RNA seq count data
-unintegrated_geo_so = readRDS('results/rdata/geo_so_filtered.rds')
-
-# Since there's only one assay, you don't need to specify the *assay* parameter 
-# in commands below. That said, I prefer making it explicit.
-Assays(unintegrated_geo_so)
-Layers(unintegrated_geo_so, assay='RNA')
-
-# Dot plots are typically based on normalized data layer. In prior steps, the 
-# data were normalized as a part of running the sctransform() function. We'll 
-# do the normalization explicitly.
-unintegrated_geo_so = NormalizeData(unintegrated_geo_so)
-
-# The new **data** layer is the normalized count data.
-Layers(unintegrated_geo_so, assay='RNA')
-
-
-# We'll emphasize that these are unintegrated by adding a title and also
-# choose a distinct color ramp.
-fig1g_unintegrated_dot_plot = DotPlot(unintegrated_geo_so, 
-                             features = fig1g_markers,
-                             assay = 'RNA',
-                             cols = c("lightgrey", "darkgreen")) +
-  labs(title="Dot plot from normalized, unintegrated counts", 
-       subtitle="Fig1G markers Sorkin, Huber et al")
-
-fig1h_unintegrated_dot_plot = DotPlot(unintegrated_geo_so,
-                             features = fig1h_markers,
-                             assay = 'RNA',
-                             cols = c("lightgrey", "darkgreen")) +
-  labs(title="Dot plot from normalized, unintegrated counts", 
-       subtitle="Fig1H markers Sorkin, Huber et al")
-
-fig1g_unintegrated_dot_plot
-
-fig1h_unintegrated_dot_plot
-
-ggsave(filename = 'results/figures/markers_fig1g_unintegrated_dot_plot.png',
-       plot = fig1g_unintegrated_dot_plot,
-       width = 8, height = 6, units = 'in')
-ggsave(filename = 'results/figures/markers_fig1h_unintegrated_dot_plot.png',
-       plot = fig1h_unintegrated_dot_plot,
-       width = 8, height = 6, units = 'in')
-
-# Clean up memory
-rm(unintegrated_geo_so, fig1g_unintegrated_dot_plot, fig1h_unintegrated_dot_plot)
-gc()
-
-```
-
-</details>
-<br>
-
 
 # Refine and label clusters
 
@@ -549,7 +459,7 @@ rownames(new_metadata) = rownames(geo_so@meta.data)
 # Replace the meta.data
 geo_so@meta.data = new_metadata 
 
-head(geo_so@meta.data)
+View(head(geo_so@meta.data))
 
 ```
 
@@ -643,7 +553,8 @@ ggsave(filename = 'results/figures/umap_integrated_scCatch-only.png',
 
 # show scCATCH labels compared to original clustering results
 org_umap_plot + catch_umap_plot
-
+```
+```{r, catch_umap_plots_hidden, echo = FALSE, warning = FALSE, message = FALSE}
 # -------------------------------------------------------------------------
 # Remove the plot variables from the environment to manage memory
 rm(catch_umap_plot) 
@@ -652,6 +563,8 @@ gc()
 </details>
 <br>
 <br/>
+
+---
 
 <!-- to add - number of cells per cluster and condition/replicate after annotation ?--->
 

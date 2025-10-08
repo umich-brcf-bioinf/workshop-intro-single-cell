@@ -7,8 +7,6 @@ library(Seurat)
 library(BPCells)
 library(tidyverse)
 
-setwd('~/ISC_R')
-
 # Load the unfiltered version and give it a new variable name
 exso = readRDS('./inputs/prepared_data/rdata/geo_so_unfiltered.rds')
 

@@ -108,31 +108,26 @@ A key driver of technical variation is cellular sequencing depth (that is, the n
 
 ![Image: Different sequencing depths can erroneously imply differential expression. Source: [HBC training materials](https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html).](images/curriculum/03-Normalization/normalization_depth.png)
 
-## Layers of a Seurat object
+## Here is our current Seurat object
 
-The `assays` in a Seurat v5 object store data in "layers". When we first read the data in, we saw there was only one layer in the RNA assay. In order to run `SCTransform()` in Seurat v5, we have to separate the sample-wise data into layers with the following command:
+![Seurat before normalization.](images/seurat-schematic/seurat-prenormalization.png)
 
-```{r, convert_to_layers}
+The command `SCTransform()` normalizes the data. It takes a long time to run, so 
+we'll start the command and while it executes, we can consider what it's doing.
+
+
+```{r, normalize, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
 # =========================================================================
 # Normalization
 # =========================================================================
 
 # -------------------------------------------------------------------------
-# Separate sample data into layers
-geo_so[['RNA']] = split(geo_so[['RNA']], f = geo_so$orig.ident)
-geo_so
-```
-
-We see the 12 layers containing the count data for each of the samples. Our running schematic has now changed:
-
-![Seurat splitting the counts layer of the RNA assay by sample.](images/seurat-schematic/seurat-split-layers.png)
-
-Next, run `SCTransform()`:
-
-```{r, normalize, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
-# -------------------------------------------------------------------------
 # Normalize the data with SCTransform
 geo_so = SCTransform(geo_so)
+
+# See the new SC
+Assays(geo_so)
+geo_so
 ```
 
 ## Normalization explained
@@ -189,11 +184,12 @@ By now, `SCTransform()` should have finished running, so let's take a look at th
 
 ```{r, preview_seurat}
 # -------------------------------------------------------------------------
-# Examine Seurat Object
+# Consider the new SCT layer and examine Seurat Object
+Assays(geo_so)
 geo_so
 ```
 
-We now observe changes to our running schematic:
+The Seurat object now looks like this:
 
 ![Seurat after SCTransform](images/seurat-schematic/seurat-sctransform.png)
 

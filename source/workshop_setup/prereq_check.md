@@ -45,7 +45,7 @@ If you can provide the syntax for at least 3 of the above tasks off the top of y
 ## How can I brush up?
 
 - **Work through a self-guided tutorial:**
-  - Checkout our [Intro to R and RStudio ](https://umich-brcf-bioinf.github.io/workshop-intro-r-rstudio/main/html/r-01-introduction.html){target="_blank"} workshop lesson.
+  - Checkout our [Intro to R and RStudio ](https://umich-brcf-bioinf.github.io/workshop-intro-r-rstudio/release/html/r-01-introduction.html){target="_blank"} workshop lesson.
   - Self-guided [R training from the Software Carpentry Institute](https://software-carpentry.org/lessons/){target="_blank"}
   - Peruse the first section of [R for Data Science](https://r4ds.hadley.nz/data-visualize){target="_blank"} (Hadley Wickham et al.).
 

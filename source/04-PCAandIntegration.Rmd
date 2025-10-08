@@ -43,6 +43,13 @@ table.fig, th.fig, td.fig {
 .cooking_show {
   background-image: url("images/curriculum/cooking_show-1.png");
 }
+
+table.fig, th.fig, td.fig {
+  border: 1px solid black;
+  border-collapse: collapse;
+  padding: 15px;
+}
+
 </style>
 
 ```{r klippy, echo=FALSE, include=TRUE}
@@ -233,7 +240,17 @@ ggsave(filename = 'results/figures/qc_pca_heatmap-pc1.png',
 ```
 
 
-In the plot of just the first PC, we see the rows are labeled with gene names and PC scores plotted with positive values in yellow, negative values in purple, and zero in black [by default](https://davetang.org/muse/2017/08/01/getting-started-seurat/), with each column representing a cell. Note that by using `fast=FALSE` our output is a `ggplot` object, which allows for customization like adding a more informative, formatted title. 
+<table class='fig'>
+<tr><th class='fig'>A heatmap of only the first PC
+</th></tr>
+<tr><td class='fig'>
+
+- a gene for each row 
+- a cell for each column
+- PC scores are plotted with positive values in yellow, negative values in purple, and zero in black 
+
+Note that by using `fast=FALSE` our output is a `ggplot` object, which allows for customization like adding a more informative, formatted title. Inspired from figures in [Dave-Tang's Blog: Getting started with Seurat](https://davetang.org/muse/2017/08/01/getting-started-seurat/).
+</td></tr></table>
 
 What about the other PCs that have been calculated for these data? We can look at additional dimensions using the same `DimHeatmap()` function. However, we'll use the default plotting where `fast=TRUE` so base plotting will be used instead of `ggplot`. <!-- revise to be hidden executed block plus shown non-executed block to ensure displayed code is a single block instead of being split up -->
 
@@ -489,7 +506,9 @@ These materials have been adapted and extended from materials listed above. Thes
 
 <br/>
 <br/>
-<hr/>
+
+---
+
 | [Previous lesson](03-Normalization.html) | [Top of this lesson](#top) | [Next lesson](05-ProjectionAndClustering.html) |
 | :--- | :----: | ---: |
 
