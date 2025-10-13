@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-10-05" />
+<meta name="date" content="2025-10-13" />
 
 <title>Marker identification and visualization</title>
 
@@ -54,6 +54,27 @@ https://favicon.io/emoji-favicons/dna/
 <link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
 <meta name="msapplication-TileColor" content="#da532c">
 <meta name="theme-color" content="#ffffff">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="dist/css/dbox.min.css">
+
+<script src="dist/js/dbox.min.js" defer></script>
+
+<style type="text/css">
+  .active,
+.demo:hover {
+  opacity: 1;
+}
+
+img.hover-shadow {
+  transition: 0.3s;
+}
+
+.hover-shadow:hover {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+</style>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -424,7 +445,7 @@ div.tocify {
 <h1 class="title toc-ignore">Marker identification and
 visualization</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-10-05</h4>
+<h4 class="date">2025-10-13</h4>
 
 </div>
 
@@ -515,6 +536,13 @@ expected cell-types or sub-types?</li>
 and/or clusters that might need to be sub-clustered into smaller
 populations?</li>
 </ul>
+The Wilcoxon test is often sufficient for simple pairwise DE
+comparisons. More complex models may require a more sophisticated tool
+(e.g. edgeR). Some alternative approaches are detailed below.
+<details>
+<summary>
+<em>Alternative tools for differential expression</em>
+</summary>
 <p>Many of the differential expression (DE) tools designed for bulk
 RNA-seq samples have been benchmarked for performance on scRNA-seq in <a
 href="https://pubmed.ncbi.nlm.nih.gov/29481549/">Soneson and Robinson
@@ -529,7 +557,6 @@ Smyth 2010</a>) is recommended by the <a
 href="%5BOuyang%5D(https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes)">Ouyang
 Lab</a> for more complex comparison designs, such as those that include
 covariates.</p>
-<!-- Additional context from [Ouyang](https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes) regarding tool options and [HBC materials](https://hbctraining.github.io/Intro-to-scRNAseq/lessons/09_merged_SC_marker_identification.html) regarding FindMarkers vs FindConservedMarkers, etc. -->
 <div class="float">
 <img
 src="images/curriculum/06-MarkerVisualization/Ouyang_clust-deCompare.png"
@@ -539,6 +566,7 @@ methods applied to scRNA-seq datasets. Methods are ranked by their
 average performance across all the listed criteria. Image taken from
 Soneson and Robinson (2018).</div>
 </div>
+</details>
 <details>
 <summary>
 <em>Additional considerations for differential expression</em>
@@ -560,36 +588,66 @@ types of marker identification options available via Seurat.
 <p>First, we’ll change identities of the cells to
 “integrated.sct.rpca.clusters” explicitly with <code>SetIdent()</code>.
 The “seurat_clusters” column is the default column for cell identities
-and changes each time a new clustering is performed. Then, we’ll ensure
-that the correct resolution is selected from our Seurat object and then
-we’ll use the <code>PrepSCTFindMarkers()</code> <a
-href="https://satijalab.org/seurat/reference/prepsctfindmarkers">function</a>
-in preparation for DE comaprisons to “reverse the individual SCT
-regression model using minimum of median UMI as the sequencing depth
-covariate” according to the <a
-href="https://satijalab.org/seurat/reference/prepsctfindmarkers">Seurat
-documentation</a>. Remember that we’ve performed integration and
-clustering to assign the cells to clusters regardless of their
-experimental condition but that we now want to ensure that the data is
-normalized but not with the SCTransformation scaling needed for the
-previous steps.</p>
-<!-- if we want to use the normalized RNA data (not the integrated data) `DefaultAssay(geo_so) <- "RNA"`, although need to check if that still makes sense for Seurat v5 -->
-<p>Then we’ll run the<code>FindAllMarkers()</code> <a
-href="https://satijalab.org/seurat/reference/findallmarkers">function</a>
-to generate comparisons between each cluster and all other cells,
-regardless of the experimental group. Note - the statistical test to
-perform can be specified in <code>FindAllMarkers()</code>, but the
-default is a Wilcoxon test.
-<!--- `PrepSCTFindMarkers` uses BPCell data on disk so requires that the integrated data loaded from the .rds file were generated with the updated directory structure (e.g. prepared_data/bpcells) ---></p>
+and changes each time a new clustering is performed. Recall that we’ve
+performed integration and clustering based on the
+<strong>scale.data</strong> layer. For the DE comparisons used in
+finding markers, we need to use the <strong>counts</strong> layer.</p>
+<p>Before we run DE on the counts layer - we need to run the
+<code>PrepSCTFindMarkers()</code> command. We’ll start that now and then
+explain what it’s doing below.</p>
 <pre class="r"><code># =========================================================================
 # Marker identification and visualization
 # =========================================================================
 
 # Prep for cluster comparisons to find empirical markers
 geo_so = SetIdent(geo_so, value = &#39;integrated.sct.rpca.clusters&#39;)
-geo_so = PrepSCTFindMarkers(geo_so)
-
-# Run comparisons for each cluster to generate markers
+geo_so = PrepSCTFindMarkers(geo_so)</code></pre>
+<p>Recall that in the <a href="03-Normalization.html">Normalization</a>
+lesson, we executed <code>SCTransform</code>. For each sample,
+SCTransform looped over all genes and built a model that normalized the
+cell-specific depths to a uniform depth for that sample. It then used
+that model “in reverse” to calculate the <strong>SCT counts</strong>
+layer. This would be sufficient if we had only one sample or only wanted
+to compare counts within a sample.</p>
+<p><a class='dbox' href='images/sct_figures/prep-sct-find-markers-schematic.png'>
+<img alt='PrepSCTFindMarkers' title='PrepSCTFindMarkers' src='images/sct_figures/prep-sct-find-markers-schematic.png' class='hover-shadow'/>
+</a></p>
+<dialog id="js-dbox" class="dbox-dialog">
+  <div class="dbox-dialog--content">
+    <div class="dbox-dialog--container">
+      <p class="dbox-dialog--caption" style="font-size:x-large"></p>
+        <button type="button"  class="dbox-dialog--close" style="font-size:x-large">&times;</button>
+    </div>
+    <img src="" alt="" class="dbox-dialog--image">
+  </div>
+</dialog>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let lightbox = new Dbox();
+        lightbox.run();
+    });
+</script>
+<p>A. Plot A shows the depth distributions of <strong>SCT
+counts</strong> across samples. Since we have many samples and the
+counts were recalculated on a sample-by-sample basis, any comparison
+<em>across samples</em> would be confounded by the inconsistent sample
+depths.</p>
+<p>B. The function <a
+href="https://satijalab.org/seurat/reference/prepsctfindmarkers">PrepSCTFindMarkers</a>
+uses the minimum median count (red line in plot A) as the new standard
+depth for all samples and re-corrects the <strong>SCT
+counts</strong>.</p>
+<p>C. Now the <strong>SCT counts</strong> are normalized to a uniform
+depth and counts can be compared across samples.</p>
+<p><br/></p>
+<p>Next we’ll run <a
+href="https://satijalab.org/seurat/reference/findallmarkers">FindAllMarkers()</a>
+to generate comparisons between each cluster and all other cells,
+regardless of the experimental group. Note - the statistical test to
+perform can be specified in <code>FindAllMarkers()</code>, but the
+default is a Wilcoxon test.
+<!--- `PrepSCTFindMarkers` uses BPCell data on disk so requires that the integrated data loaded from the .rds file were generated with the updated directory structure (e.g. prepared_data/bpcells) ---></p>
+<pre class="r"><code># Run comparisons for each cluster to generate markers
 geo_markers = FindAllMarkers(geo_so, only.pos = TRUE, min.pct = 0.05)
 
 # Write out full cluster marker results to file
@@ -798,8 +856,8 @@ plots = c(&quot;top_5_sct_dot_plot&quot;,
 rm(list=Filter(exists, plots))
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
-Ncells   9643701  515.1   18242232  974.3   18242232  974.3
-Vcells 340435388 2597.4  985378641 7517.9 1231723272 9397.4</code></pre>
+Ncells   6843501  365.5   12576900  671.7   12576900  671.7
+Vcells 335101419 2556.7 1109866478 8467.7 1109863500 8467.6</code></pre>
 </div>
 </div>
 </div>
