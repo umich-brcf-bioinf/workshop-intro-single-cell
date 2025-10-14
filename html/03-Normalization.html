@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-10-05" />
+<meta name="date" content="2025-10-13" />
 
 <title>Normalization</title>
 
@@ -54,6 +54,27 @@ https://favicon.io/emoji-favicons/dna/
 <link rel="mask-icon" href="safari-pinned-tab.svg" color="#5bbad5">
 <meta name="msapplication-TileColor" content="#da532c">
 <meta name="theme-color" content="#ffffff">
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="dist/css/dbox.css">
+
+<script src="dist/js/dbox.min.js" defer></script>
+
+<style type="text/css">
+  .active,
+.demo:hover {
+  opacity: 1;
+}
+
+img.hover-shadow {
+  transition: 0.3s;
+}
+
+.hover-shadow:hover {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+</style>
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -423,7 +444,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Normalization</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-10-05</h4>
+<h4 class="date">2025-10-13</h4>
 
 </div>
 
@@ -646,13 +667,98 @@ Active assay: SCT (20468 features, 3000 variable features)
 alt="Seurat after SCTransform" />
 <div class="figcaption">Seurat after SCTransform</div>
 </div>
-<p>Note that we have a new assay, <code>SCT</code> which has three
-layers: <code>counts</code>, <code>data</code>, and
-<code>scale.data</code>. Also note additional columns in
-<code>meta.data</code> and the change of the <code>active.assay</code>
-to <code>SCT</code>. <code>SCTransform()</code> has also determined the
-common variable features across the cells to be used in our downstream
-analysis. Viewed in our running schematic:</p>
+<ul>
+<li>Note additional columns in <code>meta.data</code> and the change of
+the <code>active.assay</code> to <strong>SCT</strong>.</li>
+</ul>
+<div id="sct-assay-layers" class="section level3">
+<h3>SCT Assay Layers</h3>
+<ul>
+<li>The new <strong>SCT</strong> assay has three layers:
+<strong>counts</strong>, <strong>data</strong>, and
+<strong>scale.data</strong>.</li>
+<li>Each of these layers is a matrix of cells (columns) x genes (rows) x
+values.</li>
+</ul>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="center"><img
+src="images/sct_figures/count_matrix.png" /></th>
+<th align="center"><img src="images/sct_figures/data_matrix.png" /></th>
+<th align="center"><img
+src="images/sct_figures/scale_data_matrix.png" /></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="center">Used for differential expression analysis (which
+generally require count data).</td>
+<td align="center">Log of counts; used for visualization.</td>
+<td align="center">Used by the downstream <strong>PCA</strong>,
+<strong>UMAP</strong>, and <strong>clustering</strong> analyses.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div id="how-sctransform-builds-each-layer" class="section level3">
+<h3>How SCTransform builds each layer</h3>
+<p>To understand how <code>SCTranform</code> derives the new SCT layers,
+it helps to consider a single gene (e.g. <em>C1qb</em>) of a single
+sample (<em>HODay0replicate1</em>).</p>
+<p><a class='dbox' href='images/sct_figures/sctranform-schematic.png'>
+<img alt='images/sct_figures/sctranform-schematic.png' title='sct cartoon' src='images/sct_figures/sctranform-schematic.png' class='hover-shadow'/>
+</a></p>
+<dialog id="js-dbox" class="dbox-dialog">
+  <div class="dbox-dialog--content">
+    <div class="dbox-dialog--container">
+      <p class="dbox-dialog--caption" style="font-size:x-large"></p>
+        <button type="button"  class="dbox-dialog--close" style="font-size:x-large">&times;</button>
+    </div>
+    <img src="" alt="" class="dbox-dialog--image">
+  </div>
+</dialog>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        let lightbox = new Dbox();
+        lightbox.run();
+    });
+</script>
+<p>A. <code>SCTransform()</code> begins with the observed RNA counts.
+This plot shows the cell UMI depth vs the counts for a single gene
+(C1qb). Each dot is a cell; the axes are log-log scaled.</p>
+<p>B. For each measured gene, <code>SCTransform()</code> fits a model to
+the observed RNA counts and determines the median cell depth (the light
+blue curve and red vertical line respectively in plot A above). The
+fitted model shows that cells with higher depth show higher expression
+for this gene; this is likely <em>not biological</em> and instead a
+technical effect due to the reaction efficiency of the cell in
+protocol.</p>
+<p>C. <strong>scale.data</strong> : Applying the model to the observed
+counts, the residuals (the difference between the model and observed)
+are stored in the <strong>scale.data</strong> matrix. These residuals
+are scaled so that the expression patterns from low-expressing genes can
+be compared with patterns from high-expressing genes.</p>
+<p>D. <strong>counts</strong> : Using the scale.data results and the
+median cell depth for this gene (highlighted in plot A),
+<code>SCTransform()</code> runs the model “in reverse” to create a set
+of corrected counts. The corrected counts effectively remve the
+cell-specific technical effect.</p>
+<p>E. <strong>data</strong> : The counts matrix is log transformed to
+become the <strong>data</strong> matrix. The fitted line (light green)
+is flat, indicating the cell-specific technical effects have been
+removed.</p>
+<p>Again, the plots above are focused on one gene and one sample
+(representing a subset of measured cells), so these results would
+represent the “first part” of a single row of these new SCT matrices.
+After fitting a model on all genes and all samples we get three full SCT
+matrices shown above.</p>
+</div>
 </div>
 <div id="save-our-progress" class="section level1">
 <h1>Save our progress</h1>

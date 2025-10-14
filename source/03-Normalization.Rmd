@@ -6,7 +6,7 @@ lang: "en"
 output:
         html_document:
             includes:
-                in_header: header.html
+                in_header: header-clusters_faq.html
             theme: paper
             toc: true
             toc_depth: 4
@@ -193,7 +193,75 @@ The Seurat object now looks like this:
 
 ![Seurat after SCTransform](images/seurat-schematic/seurat-sctransform.png)
 
-Note that we have a new assay, `SCT` which has three layers: `counts`, `data`, and `scale.data`. Also note additional columns in `meta.data` and the change of the `active.assay` to `SCT`. `SCTransform()` has also determined the common variable features across the cells to be used in our downstream analysis. Viewed in our running schematic:
+- Note additional columns in `meta.data` and the change of the `active.assay` to **SCT**. 
+
+### SCT Assay Layers
+
+- The new **SCT** assay has three layers: **counts**, **data**, and **scale.data**. 
+- Each of these layers is a matrix of cells (columns) x genes (rows) x values. 
+
+| ![](images/sct_figures/count_matrix.png) | ![](images/sct_figures/data_matrix.png) | ![](images/sct_figures/scale_data_matrix.png) |
+| :-: | :-: | :-: |
+|  Used for differential expression analysis (which generally require count data). | Log of counts; used for visualization. | Used by the downstream **PCA**, **UMAP**, and **clustering** analyses. |
+
+
+### How SCTransform builds each layer
+
+To understand how `SCTranform` derives the new SCT layers, it helps to consider a single gene (e.g. *C1qb*) of a single sample (*HODay0replicate1*). 
+
+<a class='dbox' href='images/sct_figures/sctranform-schematic.png'>
+<img alt='images/sct_figures/sctranform-schematic.png' title='sct cartoon' src='images/sct_figures/sctranform-schematic.png' class='hover-shadow'/>
+</a>
+
+```{=html}
+<dialog id="js-dbox" class="dbox-dialog">
+  <div class="dbox-dialog--content">
+    <div class="dbox-dialog--container">
+      <p class="dbox-dialog--caption" style="font-size:x-large"></p>
+        <button type="button"  class="dbox-dialog--close" style="font-size:x-large">&times;</button>
+    </div>
+    <img src="" alt="" class="dbox-dialog--image">
+  </div>
+</dialog>
+```
+
+```{js, echo=FALSE}
+    document.addEventListener("DOMContentLoaded", function() {
+        let lightbox = new Dbox();
+        lightbox.run();
+    });
+```
+
+A. `SCTransform()` begins with the observed RNA counts. 
+  This plot shows the cell UMI depth vs the counts for a single gene (C1qb). 
+  Each dot is a cell; the axes are log-log scaled. 
+
+B. For each measured gene, `SCTransform()` fits a model to the observed RNA 
+  counts and determines the median cell depth (the light blue curve and red 
+  vertical line respectively in plot A above). The fitted model shows that cells
+  with higher depth show higher expression for this gene; this is likely 
+  *not biological* and instead a technical effect due to the reaction efficiency 
+  of the cell in protocol. 
+
+C. **scale.data** : Applying the model to the observed counts, the residuals 
+  (the difference between the model and observed) are stored in the 
+  **scale.data** matrix. These residuals are scaled so that the expression 
+  patterns from low-expressing genes can be compared with patterns from 
+  high-expressing genes.
+
+D. **counts** : Using the scale.data results and the median cell depth for this 
+  gene (highlighted in plot A), `SCTransform()` runs the model "in reverse" to 
+  create a set of corrected counts. The corrected counts effectively remve the 
+  cell-specific technical effect.
+
+E. **data** : The counts matrix is log transformed to become the **data** 
+  matrix. The fitted line (light green) is 
+  flat, indicating the cell-specific technical effects have been removed. 
+
+Again, the plots above are focused on one gene and one sample (representing a 
+subset of measured cells), so these results would represent the "first part" of a 
+single row of these new SCT matrices. After fitting a model on all genes and all 
+samples we get three full SCT matrices shown above.
 
 # Save our progress
 
