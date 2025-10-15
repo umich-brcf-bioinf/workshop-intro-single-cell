@@ -38,7 +38,7 @@ body, td {
 |  9:30 | [Orienting on scRNA-Seq](00A-OrientingOnScRNASeq.html) (Chris) |
 |       | [Getting started with Seurat](01-GettingStarted.html) (Raymond) |
 | 11:00 | Break |
-| 11:15 | [Cell Ranger in Action](00B-CellRangerInAction.html) (Tricia) |
+| 11:15 | [Cell Ranger in Action](00B-CellRangerInAction.html) (Chris) |
 |      | [Secondary QC & Filtering](02-QCandFiltering.html) (Raymond) |
 |      | [Normalization](03-Normalization.html) |
 | 1:00 | Day 1 concludes |

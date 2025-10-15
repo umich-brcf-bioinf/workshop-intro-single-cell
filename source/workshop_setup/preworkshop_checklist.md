@@ -29,6 +29,8 @@ To help us better understand your collective background, we invite you to take a
 
 4. (optional) Brush up your [R/RStudio skills](prereq_check.html#Do_I_need_to_brush_up_on_RR-Studio){target="_blank"}!
 
+5. If you have not taken a workshop with us recently, we recommend you review a brief [orientation on how we will be using Zoom/Slack](https://www.mivideo.it.umich.edu/media/t/1_dqou12ko).
+
 We are looking forward to seeing you in the workshop. Please let us know if you have any questions.<br/><br/>
 
 The Bioinformatics Core Workshop Team<br/>

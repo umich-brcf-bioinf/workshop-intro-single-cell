@@ -517,8 +517,6 @@ library(Seurat)
 library(BPCells)
 library(tidyverse)
 
-setwd(&#39;~/ISC_R&#39;)
-
 # Use provided copy of integrated data
 exso = readRDS(&#39;./inputs/prepared_data/rdata/geo_so_unfiltered.rds&#39;)
 
@@ -569,8 +567,6 @@ conditions are satisfied. How many cells remain?</p>
 library(Seurat)
 library(BPCells)
 library(tidyverse)
-
-setwd(&#39;~/ISC_R&#39;)
 
 # Load the unfiltered version and give it a new variable name
 exso = readRDS(&#39;./inputs/prepared_data/rdata/geo_so_unfiltered.rds&#39;)
@@ -625,8 +621,6 @@ code:</p>
 library(Seurat)
 library(BPCells)
 library(tidyverse)
-
-setwd(&#39;~/ISC_R&#39;)
 
 # Use provided copy of integrated data
 exso2 = readRDS(&#39;inputs/prepared_data/rdata/geo_so_sct_integrated.rds&#39;)
@@ -737,8 +731,6 @@ gc()</code></pre>
 library(Seurat)
 library(BPCells)
 library(tidyverse)
-
-setwd(&#39;~/ISC_R&#39;)
 
 # Use provided copy of integrated data
 exso2 = readRDS(&#39;inputs/prepared_data/rdata/geo_so_sct_integrated.rds&#39;)
@@ -984,7 +976,7 @@ Once the cluster identities are set to the combined Day + Cluster labels, genera
 unique(exso3$cell_type)
 
 ## Below is comments to help guide you though the process of looping through all the comparisons of interest, for all labeled clusters
-## This section from the HBC materials could be a helpful reference to aid in filling in the code: https://hbctraining.github.io/scRNA-seq_online/lessons/pseudobulk_DESeq2_scrnaseq.html
+## This section from the HBC materials could be a helpful reference to aid in filling in the code: https://hbctraining.github.io/Intro-to-scRNAseq/lessons/pseudobulk_DESeq2_scrnaseq.html
 
 # Create list(s) of pair-wise comparisons of interest between conditions, ideally specifying Case and Control 
 # (e.g. Day 7 vs Day 0, Day 21 vs Day 7, Day 21 vs Day 0)

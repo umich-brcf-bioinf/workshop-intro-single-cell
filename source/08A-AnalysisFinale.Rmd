@@ -52,8 +52,16 @@ knitr_fig_path("08A-DifferentialExpression/08A-")
 
 <br/> 
 ![](images/wayfinder/00-FullWayfinder.png) 
-<br/> 
 <br/>
+<br/>
+
+---
+
+Our final Seurat object:
+
+![Final Seurat](images/seurat-schematic/seurat-done.png)
+
+---
 
 # Key decision points in analysis and methodology
 
@@ -119,7 +127,9 @@ University of Michigan Biomedical Research Core Facilities Advanced Genomics Cor
 </details>
 <br/>
 
-Additionally, the `sessionInfo` function produces a list of the relevant versions of R and all the libraries that were loaded in the analysis. While this level of detail is usually most useful for troubleshooting, it's helpful to preserve this information for your records and to include the output when asking for help, particularly in public forums.
+## Session Info
+
+Additionally, the `sessioninfo::session_info` function (or its predecessor base function `sessionInfo`) produces a list of the relevant versions of R and all the libraries that were loaded in the analysis. While this level of detail is usually most useful for troubleshooting, it's helpful to preserve this information for your records and to include the output when asking for help, particularly in public forums.
 
 <details>
 <summary>**Session Info**</summary>
@@ -129,7 +139,7 @@ Additionally, the `sessionInfo` function produces a list of the relevant version
 # The on_aws var is initialized in bin/set_values.R
 
 sink('session_info.txt')
-devtools::session_info()
+sessioninfo::session_info()
 sink()
 ```
 
@@ -140,11 +150,11 @@ This info is generally not included in main body of a paper, but you will get se
 # Print out details about this R install, session, and loaded libraries
 # 
 # You can use the built-in command sessionInfo(); we prefer 
-# devtools::session_info() for the nicer formatting. 
-# Note, you'll have to have the devtools package installed:
-# install.packages('devtools');
+# sessioninfo::session_info() for the nicer formatting. 
+# Note, you may have to install the sessioninfo package:
+# install.packages('sessioninfo');
 
-devtools::session_info()
+sessioninfo::session_info()
 ```
 
 ```{verbatim session_info_txt, file='session_info.txt', eval=FALSE}
@@ -189,7 +199,7 @@ Although outside the scope of the workshop, there are many other possible avenue
 
 -   Integration with other modalities (e.g. ATAC-seq, VDJ, etc.)
 
--   Subclustering clusters of interest - see [HBC's summary on subclustering](https://hbctraining.github.io/scRNA-seq_online/lessons/seurat_subclustering.html), [Seurat's findSubcCluster documentation](https://satijalab.org/seurat/reference/findsubcluster) and [this related issue thread](https://github.com/satijalab/seurat/issues/1883)
+-   Subclustering clusters of interest - see [HBC's summary on subclustering](https://hbctraining.github.io/Intro-to-scRNAseq/lessons/seurat_subclustering.html), [Seurat's findSubcCluster documentation](https://satijalab.org/seurat/reference/findsubcluster) and [this related issue thread](https://github.com/satijalab/seurat/issues/1883)
 
 -   Trajectory or Pseudotime analysis - see [the Ouyang Lab's trajectory analysis](https://ouyanglab.com/singlecell/dimrd.html) or [Broad Institute's materials on trajectory analysis](https://broadinstitute.github.io/2020_scWorkshop/trajectory-analysis.html)
 

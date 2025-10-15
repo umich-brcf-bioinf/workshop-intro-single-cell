@@ -122,7 +122,7 @@ Once the cluster identities are set to the combined Day + Cluster labels, genera
 unique(exso3$cell_type)
 
 ## Below is comments to help guide you though the process of looping through all the comparisons of interest, for all labeled clusters
-## This section from the HBC materials could be a helpful reference to aid in filling in the code: https://hbctraining.github.io/scRNA-seq_online/lessons/pseudobulk_DESeq2_scrnaseq.html
+## This section from the HBC materials could be a helpful reference to aid in filling in the code: https://hbctraining.github.io/Intro-to-scRNAseq/lessons/pseudobulk_DESeq2_scrnaseq.html
 
 # Create list(s) of pair-wise comparisons of interest between conditions, ideally specifying Case and Control 
 # (e.g. Day 7 vs Day 0, Day 21 vs Day 7, Day 21 vs Day 0)

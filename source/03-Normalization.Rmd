@@ -6,7 +6,7 @@ lang: "en"
 output:
         html_document:
             includes:
-                in_header: header.html
+                in_header: header-clusters_faq.html
             theme: paper
             toc: true
             toc_depth: 4
@@ -108,31 +108,26 @@ A key driver of technical variation is cellular sequencing depth (that is, the n
 
 ![Image: Different sequencing depths can erroneously imply differential expression. Source: [HBC training materials](https://hbctraining.github.io/DGE_workshop/lessons/02_DGE_count_normalization.html).](images/curriculum/03-Normalization/normalization_depth.png)
 
-## Layers of a Seurat object
+## Here is our current Seurat object
 
-The `assays` in a Seurat v5 object store data in "layers". When we first read the data in, we saw there was only one layer in the RNA assay. In order to run `SCTransform()` in Seurat v5, we have to separate the sample-wise data into layers with the following command:
+![Seurat before normalization.](images/seurat-schematic/seurat-prenormalization.png)
 
-```{r, convert_to_layers}
+The command `SCTransform()` normalizes the data. It takes a long time to run, so 
+we'll start the command and while it executes, we can consider what it's doing.
+
+
+```{r, normalize, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
 # =========================================================================
 # Normalization
 # =========================================================================
 
 # -------------------------------------------------------------------------
-# Separate sample data into layers
-geo_so[['RNA']] = split(geo_so[['RNA']], f = geo_so$orig.ident)
-geo_so
-```
-
-We see the 12 layers containing the count data for each of the samples. Our running schematic has now changed:
-
-![Image: Schematic splitting the counts layer of the RNA assay by sample.](images/seurat_schematic/Slide4.png)
-
-Next, run `SCTransform()`:
-
-```{r, normalize, cache = TRUE, cache.lazy = FALSE, warning = FALSE, message = FALSE}
-# -------------------------------------------------------------------------
 # Normalize the data with SCTransform
 geo_so = SCTransform(geo_so)
+
+# See the new SC
+Assays(geo_so)
+geo_so
 ```
 
 ## Normalization explained
@@ -189,15 +184,84 @@ By now, `SCTransform()` should have finished running, so let's take a look at th
 
 ```{r, preview_seurat}
 # -------------------------------------------------------------------------
-# Examine Seurat Object
+# Consider the new SCT layer and examine Seurat Object
+Assays(geo_so)
 geo_so
 ```
 
-We now observe changes to our running schematic:
+The Seurat object now looks like this:
 
-![Image: Schematic after SCTransform().](images/seurat_schematic/Slide5.png)
+![Seurat after SCTransform](images/seurat-schematic/seurat-sctransform.png)
 
-Note that we have a new assay, `SCT` which has three layers: `counts`, `data`, and `scale.data`. Also note additional columns in `meta.data` and the change of the `active.assay` to `SCT`. `SCTransform()` has also determined the common variable features across the cells to be used in our downstream analysis. Viewed in our running schematic:
+- Note additional columns in `meta.data` and the change of the `active.assay` to **SCT**. 
+
+### SCT Assay Layers
+
+- The new **SCT** assay has three layers: **counts**, **data**, and **scale.data**. 
+- Each of these layers is a matrix of cells (columns) x genes (rows) x values. 
+
+| ![](images/sct_figures/count_matrix.png) | ![](images/sct_figures/data_matrix.png) | ![](images/sct_figures/scale_data_matrix.png) |
+| :-: | :-: | :-: |
+|  Used for differential expression analysis (which generally require count data). | Log of counts; used for visualization. | Used by the downstream **PCA**, **UMAP**, and **clustering** analyses. |
+
+
+### How SCTransform builds each layer
+
+To understand how `SCTranform` derives the new SCT layers, it helps to consider a single gene (e.g. *C1qb*) of a single sample (*HODay0replicate1*). 
+
+<a class='dbox' href='images/sct_figures/sctranform-schematic.png'>
+<img alt='images/sct_figures/sctranform-schematic.png' title='sct cartoon' src='images/sct_figures/sctranform-schematic.png' class='hover-shadow'/>
+</a>
+
+```{=html}
+<dialog id="js-dbox" class="dbox-dialog">
+  <div class="dbox-dialog--content">
+    <div class="dbox-dialog--container">
+      <p class="dbox-dialog--caption" style="font-size:x-large"></p>
+        <button type="button"  class="dbox-dialog--close" style="font-size:x-large">&times;</button>
+    </div>
+    <img src="" alt="" class="dbox-dialog--image">
+  </div>
+</dialog>
+```
+
+```{js, echo=FALSE}
+    document.addEventListener("DOMContentLoaded", function() {
+        let lightbox = new Dbox();
+        lightbox.run();
+    });
+```
+
+A. `SCTransform()` begins with the observed RNA counts. 
+  This plot shows the cell UMI depth vs the counts for a single gene (C1qb). 
+  Each dot is a cell; the axes are log-log scaled. 
+
+B. For each measured gene, `SCTransform()` fits a model to the observed RNA 
+  counts and determines the median cell depth (the light blue curve and red 
+  vertical line respectively in plot A above). The fitted model shows that cells
+  with higher depth show higher expression for this gene; this is likely 
+  *not biological* and instead a technical effect due to the reaction efficiency 
+  of the cell in protocol. 
+
+C. **scale.data** : Applying the model to the observed counts, the residuals 
+  (the difference between the model and observed) are stored in the 
+  **scale.data** matrix. These residuals are scaled so that the expression 
+  patterns from low-expressing genes can be compared with patterns from 
+  high-expressing genes.
+
+D. **counts** : Using the scale.data results and the median cell depth for this 
+  gene (highlighted in plot A), `SCTransform()` runs the model "in reverse" to 
+  create a set of corrected counts. The corrected counts effectively remve the 
+  cell-specific technical effect.
+
+E. **data** : The counts matrix is log transformed to become the **data** 
+  matrix. The fitted line (light green) is 
+  flat, indicating the cell-specific technical effects have been removed. 
+
+Again, the plots above are focused on one gene and one sample (representing a 
+subset of measured cells), so these results would represent the "first part" of a 
+single row of these new SCT matrices. After fitting a model on all genes and all 
+samples we get three full SCT matrices shown above.
 
 # Save our progress
 

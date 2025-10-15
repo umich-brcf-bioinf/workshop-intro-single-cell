@@ -143,7 +143,7 @@ A tool we often use for both mouse and human data cell-type predictions is calle
 
 First, we need to load the scCATCH library. Then, we'll double check that we are using the expected resolution cluster results (this is particularly important if we generated multiple resolutions in our clustering steps), before creating a new object from our `counts` data with `createscCATCH()` and adding our marker genes to the scCATCCH object.
 
-To increase the speed and accuracy of our predictions, we'll create query of relevant tissues (which requires some prior knowledge of the experiment and using the [scCATCH wiki](https://github.com/ZJUFanLab/scCATCH/wiki) to select tissues from the species) before we run the tool:
+To increase the speed and accuracy of our predictions, we'll create query of relevant tissues (which requires some prior knowledge of the experiment and using the [scCATCH wiki](https://github.com/ZJUFanLab/scCATCH/wiki){target='_blank'} to select tissues from the species) before we run the tool:
 
 ```{r, sccatch, message = FALSE, warning = FALSE}
 # =========================================================================
@@ -167,22 +167,48 @@ geo_catch = createscCATCH(data = geo_so@assays$SCT@counts, cluster = as.characte
 
 # add marker genes to use for predictions
 geo_catch@markergene = geo_markers
+```
 
+```{r, sccatch_tissues, message = FALSE, warning = FALSE}
+# -------------------------------------------------------------------------
 # specify tissues/cell-types from the scCATCH reference
 tissues_of_interest = c('Blood', 'Peripheral Blood', 'Muscle', 'Skeletal muscle', 'Epidermis', 'Skin')
 species_tissue_mask = cellmatch$species == 'Mouse' & cellmatch$tissue %in% tissues_of_interest
 geo_catch@marker = cellmatch[species_tissue_mask, ]
+```
 
+```{r, sccatch_run, message = FALSE, warning = FALSE}
+# -------------------------------------------------------------------------
 # run scCATCH to generate predictions
 geo_catch = findcelltype(geo_catch)
 
 # look at the predictions
+View(head(geo_catch@celltype))
+```
+
+
+```{r, sccatch_cleanup, message = FALSE, warning = FALSE, eval=FALSE}
+# -------------------------------------------------------------------------
+# cleanup predictions
 sc_pred_tbl = geo_catch@celltype %>% 
   select(cluster, cell_type, celltype_score) %>%
   rename(cell_type_prediction = cell_type)
 sc_pred_tbl
-
 ```
+
+```{r, sccatch_cleanup_table, warning = FALSE, message = FALSE, echo=FALSE}
+sc_pred_tbl = geo_catch@celltype %>% 
+  select(cluster, cell_type, celltype_score) %>%
+  rename(cell_type_prediction = cell_type)
+
+sc_pred_tbl %>%
+  kable("html") %>%
+  kable_styling(font_size = 12,
+                bootstrap_options='condensed',
+                html_font = '"Arial Narrow", arial, helvetica, sans-serif') %>%
+  scroll_box(height='100%', width='1000px')
+```
+
 
 When we look at our results we can see the cell type score, which gives us an idea of the confidence of that prediction. Not shown here but the full `celltype` table also includes marker genes and PMIDs for relevant literature for each prediction.
 
@@ -195,120 +221,210 @@ To revise the cluster annotation from those predicted by scCATCH, it can be help
 write_csv(sc_pred_tbl, file = 'results/tables/scCATCH_cluster_predictions.csv')
 ```
 
-# Using known cell-type markers
+# Known cell-type markers
 
 To confirm and/or refine the scCATCH predictions, we'll spot check some known markers for immune populations. Then we'll look look at some other key marker genes from some other relevant resources like [Chen et al (2021)](https://www.nature.com/articles/s41467-021-27563-3), [Buechler et al (2021)](https://www.nature.com/articles/s41586-021-03549-5) [Roman (2023)](https://pmc.ncbi.nlm.nih.gov/articles/PMC10296409/#sec3-biomolecules-13-00945 ),  [Li et al (2022)](https://bmcbioinformatics.biomedcentral.com/articles/10.1186/s12859-022-04817-5/figures/2) and [Nestorowa et al (2016)](https://ashpublications.org/blood/article/128/8/e20/35749/A-single-cell-resolution-map-of-mouse) to see if other modifications should be made to the scCATCH predictions:
+
+## Immune marker genes
+
 ```{r, imm_marker_genes, fig.show='hold'}
 # -------------------------------------------------------------------------
-# Create lists of immune cells and associated gene markers
-immune_markers = list()
-immune_markers[['Inflam. Macrophage']] = c('Cd14', 'Cxcl2') # Cd14 a- monocyte/macrophage cells
-immune_markers[['Platelet']] = c('Pf4')
-immune_markers[['Mast cells']] = c('Gata2', 'Kit')
-immune_markers[['NK cells']] = c('Nkg7', 'Klrd1')
-immune_markers[['B-cell']] = c( 'Ly6d', 'Cd19', 'Cd79b', 'Ms4a1')
-immune_markers[['T-cell']] = c( 'Cd3d','Cd3e','Cd3g') # also Thy1
+# Create a **named list** of immune cells and associated gene markers
+
+immune_markers = list(
+  'Inflam. Macrophage' = c('Cd14', 'Cxcl2'),
+  'Platelet' = c('Pf4'),
+  'Mast cells' = c('Gata2', 'Kit'),
+  'NK cells' = c('Nkg7', 'Klrd1'),
+  'B-cell'= c( 'Ly6d', 'Cd19', 'Cd79b', 'Ms4a1'),
+  'T-cell' = c( 'Cd3d','Cd3e','Cd3g')
+  ) 
+immune_markers
 ```
 
 
-```{r, imm_marker_gene_check, fig.show='hold', messages=FALSE, warnings=FALSE}
+```{r, imm_marker_plot_basic, fig.show='hold', message=FALSE, warning=FALSE}
 # -------------------------------------------------------------------------
-# Plot other immune to assist with cluster identification
-immune_markers_plot = DotPlot(geo_so, features = immune_markers, assay = 'SCT')  +
-  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
-immune_markers_plot
+# Make a dot plot of immune markers to refine cluster identification
+# Since this dot plot is based on known markers instead of empirical markers,
+# we'll cue that by using red instead of the default blue. 
+immune_markers_plot_basic = DotPlot(geo_so,
+                              features = immune_markers,
+                              assay = 'SCT',
+                              cols = c("lightgrey", "darkred"))
 
-# save to file
+immune_markers_plot_basic
+```
+
+Dot plots show the gene expression patterns across clusters. This plot
+also groups the genes by their immune cell categories. It's very nice - but the 
+genes symbols (bottom) are overlapping and hard to read. Also the immune cell 
+categories (top) are truncated. Since this is a ggplot object, we can adjust it
+to create a better plot:
+
+```{r, imm_marker_plot_better, fig.show='hold', message=FALSE, warning=FALSE}
+# -------------------------------------------------------------------------
+# Start with the plot above but reduce the font size and rotate the gene labels 
+
+immune_markers_plot_better = immune_markers_plot_basic + 
+  theme(text=element_text(size=10),
+        axis.text.x = element_text(angle = 45, vjust = 0.5))
+
+immune_markers_plot_better
+```
+
+More readable than before - but with a few more ggplot functions, we can make 
+it even better:
+
+- [coord_flip()](https://ggplot2.tidyverse.org/reference/coord_flip.html){target='_blank'} rotates the plot
+- [facet_grid()](https://ggplot2.tidyverse.org/reference/facet_grid.html){target='_blank'} adds space between the cell types
+- [theme()](https://ggplot2.tidyverse.org/reference/theme.html){target='_blank'} paramaters makes the cell type labels horizontal and to right the gene symbols
+
+
+```{r, imm_marker_plot_best, fig.show='hold', message=FALSE, warning=FALSE}
+# -------------------------------------------------------------------------
+# Continuing adjustments to plot above
+
+immune_markers_plot_best = immune_markers_plot_better +
+  coord_flip() +
+  facet_grid(rows = vars(feature.groups),
+             scales = 'free',
+             space = 'free',
+             switch ='y') +
+  theme(strip.placement = 'outside',
+        strip.text.y.left = element_text(angle = 0))
+immune_markers_plot_best
+```
+
+```{r, imm_marker_plot_save, fig.show='hold', message=FALSE, warning=FALSE}
+# -------------------------------------------------------------------------
+# save dot plot to file
+
 ggsave(filename = 'results/figures/immune_markers_sct_dot_plot.png', 
-       plot = immune_markers_plot, width = 10, height = 5, units = 'in')
+       plot = immune_markers_plot_best,
+       width = 10, height = 5, units = 'in')
 ```
 
-```{r, marker_genes, fig.show='hold'}
+## Other marker genes
+
+```{r, marker_genes_as_tibble, fig.show='hold'}
 # -------------------------------------------------------------------------
-# Create lists of other cells and associated gene markers
-other_markers = list()
-other_markers[['Pericyte']] = c('Acan','Sox9')
-other_markers[['SMC']] = c('Acta2', 'Myh11') # SMC = mesenchymal smooth-muscle cell/mesenchymal lineage
-other_markers[['Keratinocytes']] = c('Thy1', 'Dlk1') # fibro progenitors aso=Thy1
-other_markers[['Myofibroblasts']] = c('Tmem100', 'Cd34', 'Ly6c1') # hematopoetic stem/activated fibroblast=Cd34
-other_markers[['Fibroblast']] = c('Dpt', 'Fn1', 'Col3a1')  # activated fib = Fn1
-other_markers[['Endothelial']] = c('Pecam1', 'Cd38') # from wound healing; Pecam1 also exp in endothelial
-other_markers[['HSC']] = c('Ltb', 'Cd74') # less well defined/conflicting definitions
-other_markers[['Erythroid']] = c('Hba-a1')
+# Create a nested list of other cells and associated gene markers
+
+other_markers = list(
+    'Pericyte'       = c('Acan', 'Sox9'),
+    'SMC'            = c('Acta2', 'Myh11'), #mesenchymal smooth-muscle cell/mesenchymal lineage
+    'Keratinocytes'  = c('Thy1', 'Dlk1'), #fibro progenitors
+    'Myofibroblasts' = c('Tmem100', 'Cd34', 'Ly6c1'), #hematopoetic stem/activated fibroblast
+    'Fibroblast'     = c('Dpt','Fn1','Col3a1'), #activated fib
+    'Endothelial'    = c('Pecam1','Cd38'), #from wound healing; Pecam1 also exp in endothelial
+    'HSC'            = c('Ltb','Cd74'), #less well defined/conflicting definitions
+    'Erythroid'      = c('Hba-a1')
+  )
+
+other_markers
 ```
 
-```{r, marker_gene_check, fig.show='hold', warning=FALSE}
+```{r, other_markers_dot_plot_basic, fig.show='hold', warning=FALSE}
 # -------------------------------------------------------------------------
 # Plot known cell-type markers
-other_markers_dot_plot = DotPlot(geo_so, features = other_markers, assay = 'SCT') +
-  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
-other_markers_dot_plot
 
-# save to file
+other_markers_dot_plot_basic = DotPlot(geo_so, 
+                                       features = other_markers,
+                                       assay = 'SCT',
+                                       cols = c("lightgrey", "darkred")) +
+  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
+other_markers_dot_plot_basic
+```
+
+```{r, other_markers_dot_plot_enhanced, fig.show='hold', warning=FALSE}
+# -------------------------------------------------------------------------
+# Enhance plot aesthetics as we did above
+
+other_markers_dot_plot = other_markers_dot_plot_basic + 
+  theme(text=element_text(size=10),
+        axis.text.x = element_text(angle = 45, vjust = 0.5)) +
+  coord_flip() +
+  facet_grid(rows = vars(feature.groups),
+             scales = 'free',
+             space = 'free',
+             switch ='y') +
+  theme(strip.placement = 'outside',
+        strip.text.y.left = element_text(angle = 0))
+other_markers_dot_plot
+```
+
+```{r, other_markers_dot_plot_save, fig.show='hold', warning=FALSE}
+# -------------------------------------------------------------------------
+# Save other markers dot plot to file
 ggsave(filename = 'results/figures/other_markers_sct_dot_plot.png', 
        plot = other_markers_dot_plot, width = 12, height = 5, units = 'in')
-
 ```
+
 In the first plot, B-cell and T-cell markers seem to line up with the predictions and are limited to single clusters. However, macrophage and dendrocyte markers match to multiple clusters including some annotated with different cell types, so we can consider modifying those cluster labels. 
 
 
 From the other marker genes, the patterns are less clear so we may want to test other clustering parameters and discuss the results with a researcher familiar with the expected cell types. However, we can notice some patterns that we can use to refine our cluster annotations. 
 
-## Utilizing genes of interest from the original paper 
+## Markers from source paper 
 
 <details>
     <summary>*Plotting the expression of genes of interest from Sorkin, Huber et al*</summary>
-    Often we have prior information about what cell types are expected in our samples and key marker genes for those populations. This can be an important part of evaluating our clusters, since if genes that are known markers for a specific cell type are found in too many or too few clusters as that can suggest that re-clustering is needed or that some of the clusters should be manually combined before annotating. We can create lists of markers used in figures from the [original paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7002453/) before using the same `DotPlot()` function to visualize the expression level and frequency of these genes in our current clusters:
+    Often we have prior information about what cell types are expected in our samples and key marker genes for those populations. This can be an important part of evaluating our clusters, since if genes that are known markers for a specific cell type are found in too many or too few clusters as that can suggest that re-clustering is needed or that some of the clusters should be manually combined before annotating. We can create lists of markers used in figures from the [original paper](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC7002453/Fig1){target='_blank'} before using the same `DotPlot()` function to visualize the expression level and frequency of these genes in our current clusters:
+
+```{r, known_dot_plots_sct_markers, fig.show='hold'}
+# -------------------------------------------------------------------------
+# Create lists of genes from paper
+# https://pmc.ncbi.nlm.nih.gov/articles/PMC7002453/#Fig1
+fig1g_markers = c('Cxcl1', 'Cxcl2', 'Ccl2', 'Ccl3', 'Ccl4', 'Il1b', 'Il6', 'Tnf', 'Tgfb1', 'Tgfb2', 'Tgfb3', 'Cxcl5')
+fig1h_markers = c('Cxcr2', 'Csf1r', 'Csf3r', 'Tgfbr1', 'Tgfbr3', 'Il1r1', 'Il6ra', 'Lifr', 'Tgfbr2')
+
+# It's diligent to verify genes from paper were measured in the data.
+markers_from_paper = unique(c(fig1g_markers, fig1h_markers))
+measured_genes = Features(geo_so[["SCT"]])
+
+# If everything worked, missing markers *should be* empty. If it's not empty, we
+# could examine the marker symbols to see if we mistyped a symbol or if the
+# marker was named something other than the canonical gene symbol in the paper.
+missing_markers = setdiff(markers_from_paper, measured_genes)
+cat(paste0(length(missing_markers),
+            ' gene(s) were listed as markers but not found in the data. Excerpt below:'))
+head(missing_markers)
+```
 
 ```{r, known_dot_plots_sct, fig.show='hold'}
 # -------------------------------------------------------------------------
-# Visualize manually selected marker genes
-
-# Create lists of genes from paper
-fig1g_markers = c('Cxcl1', 'Cxcl2', 'Ccl2', 'Ccl3', 'Ccl4', 'Il1b', 'Il6b', 'Tnf', 'Tgfb1', 'Tgfb2', 'Tgfb3', 'Cxcl5')
-fig1h_markers = c('Cxcr2', 'Csf1r', 'Csf3r', 'Tgfbr1', 'Tgfbr3', 'Il1r1', 'Il6ra', 'Lifr', 'Tgfbr2')
-
 # create DotPlots for genes from paper
-fig1g_sct_dot_plot = DotPlot(geo_so, features = fig1g_markers, assay = 'SCT')
-fig1h_sct_dot_plot = DotPlot(geo_so, features = fig1h_markers, assay = 'SCT')
+fig1g_sct_dot_plot = DotPlot(geo_so,
+                             features = fig1g_markers,
+                             assay = 'SCT',
+                             cols = c("lightgrey", "darkred"))
 
+fig1h_sct_dot_plot = DotPlot(geo_so,
+                             features = fig1h_markers,
+                             assay = 'SCT',
+                             cols = c("lightgrey", "darkred"))
+
+fig1g_sct_dot_plot
+fig1h_sct_dot_plot
+```
+
+```{r, known_dot_plots_sct_save, fig.show='hold'}
+# -------------------------------------------------------------------------
 # save plots to file
 ggsave(filename = 'results/figures/markers_fig1g_sct_dot_plot.png', 
        plot = fig1g_sct_dot_plot, width = 8, height = 6, units = 'in')
 ggsave(filename = 'results/figures/markers_fig1h_sct_dot_plot.png', 
        plot = fig1h_sct_dot_plot, width = 8, height = 6, units = 'in')
-
-fig1g_sct_dot_plot
-fig1h_sct_dot_plot
-
 ```
+
 For known marker genes, it's important to note that since scRNA-seq is only measuring transcriptional signals that markers at the protein level (e.g used for approaches like FACS) may be less effective. An alternative or complement to using marker genes could be methods like using gene set enrichment (GSEA) [as demonstrated in the OSCA book](https://bioconductor.org/books/3.15/OSCA.basic/cell-type-annotation.html#computing-gene-set-activities) to aid in annotations. However, the book ["Best practices for single-cell analysis across modalities" by Heumos, Schaar, Lance, et al. ](https://www.sc-best-practices.org/cellular_structure/annotation.html) points out that "it is often useful to work together with experts ... [like a] biologist who has more extensive knowledge of the tissue, the biology, the expected cell types and markers etc.". In our experience, we find that experience and knowledge of the researchers we work with is invaluable. 
 
 </details>
 <br>
 
-<details>
-    <summary>*Using raw RNA values for genes of interest from Sorkin, Huber et al*</summary>
-    We can also generate the same plots, but using the unintegrated data by specifying the `RNA` assay:
 
-```{r, known_dot_plot_rna, eval=FALSE}
-# -------------------------------------------------------------------------
-# Visualize manually selected marker genes (from unintegrated data)
-rna_dot_plot = DotPlot(geo_so, features = fig1g_markers, assay = 'RNA')
-fig1h_rna_dot_plot = DotPlot(geo_so, features = fig1h_markers, assay = 'RNA')
-
-ggsave(filename = 'results/figures/markers_fig1g_rna_dot_plot.png',
-       plot = fig1g_rna_dot_plot,
-       width = 8, height = 6, units = 'in')
-ggsave(filename = 'results/figures/markers_fig1h_rna_dot_plot.png',
-       plot = fig1h_rna_dot_plot,
-       width = 8, height = 6, units = 'in')
-```
-</details>
-<br>
-
-
-# Refine annotations and label clusters
+# Refine and label clusters
 
 Next, we'll use a revised version of the cell type predictions from a file that we prepared by refining the scCATCH predictions. How is a table like this created?
 
@@ -343,7 +459,7 @@ rownames(new_metadata) = rownames(geo_so@meta.data)
 # Replace the meta.data
 geo_so@meta.data = new_metadata 
 
-head(geo_so@meta.data)
+View(head(geo_so@meta.data))
 
 ```
 
@@ -437,7 +553,8 @@ ggsave(filename = 'results/figures/umap_integrated_scCatch-only.png',
 
 # show scCATCH labels compared to original clustering results
 org_umap_plot + catch_umap_plot
-
+```
+```{r, catch_umap_plots_hidden, echo = FALSE, warning = FALSE, message = FALSE}
 # -------------------------------------------------------------------------
 # Remove the plot variables from the environment to manage memory
 rm(catch_umap_plot) 
@@ -446,6 +563,8 @@ gc()
 </details>
 <br>
 <br/>
+
+---
 
 <!-- to add - number of cells per cluster and condition/replicate after annotation ?--->
 

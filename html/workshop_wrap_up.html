@@ -472,7 +472,8 @@ class="section level3">
 workshop?</h3>
 <ul>
 <li><p>The RStudio workshop compute environment will be available
-through 8/15/2025.</p>
+through 10/24/2025.</p>
+
 <ul>
 <li><em>Please save all your R scripts now</em> so that we can
 “right-size” the compute environment immediately following today’s
@@ -523,14 +524,14 @@ class="section level4">
 <ul>
 <li><p>The Seurat inputs (cellranger triples and dbcells files) used in
 this workshop can be installed locally like so:</p>
-<pre><code># download Seurat inputs --------------------------------------------------
+<pre class="bash"><code># download Seurat inputs --------------------------------------------------
 mkdir -p intro_scrnaseq_workshop/ISC_R
 cd intro_scrnaseq_workshop/ISC_R
 
-# Use curl to download a ~2 Gb tarball
+# Use curl to download a ~3 Gb tarball
 # We&#39;ll use evironment variables to avoid extremely long command lines
-source_url=&quot;https://umich-brcf-bioinf-workshop-intro-single-cell.s3.us-east-1.amazonaws.com&quot;
-source_file=&quot;workshop_isc_inputs-20250730.tgz&quot;
+source_url=&quot;https://umich-brcf-bioinf-workshop.s3.us-east-1.amazonaws.com&quot;
+source_file=&quot;ISC/workshop_isc_inputs-20251015.tgz&quot;
 curl -o workshop_isc_inputs.tgz ${source_url}/${source_file}
 
 # tar unpacks the tarball into directories
@@ -600,9 +601,10 @@ login)</li>
 <h2>Thank you to/from the workshop team</h2>
 <table>
 <colgroup>
-<col width="33%" />
-<col width="33%" />
-<col width="33%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
+<col width="25%" />
 </colgroup>
 <thead>
 <tr class="header">
@@ -611,40 +613,32 @@ src="images/headshots/headshot_cgates.jpg" /></th>
 <th align="center"><img
 src="images/headshots/headshot_mbradenb.jpg" /></th>
 <th align="center"><img
-src="images/headshots/headshot_trsaari.jpg" /></th>
+src="images/headshots/headshot_rcavalca.jpg" /></th>
+<th align="center"><img
+src="images/headshots/headshot_damki.jpg" /></th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="center"><strong>Chris</strong></td>
 <td align="center"><strong>Marci</strong></td>
-<td align="center"><strong>Travis</strong></td>
+<td align="center"><strong>Raymond</strong></td>
+<td align="center"><strong>Dana</strong></td>
 </tr>
 <tr class="even">
-<td align="center"><img
-src="images/headshots/headshot_daisyfu.jpg" /></td>
-<td align="center"><img
-src="images/headshots/headshot_damki.jpg" /></td>
 <td align="center"><img
 src="images/headshots/headshot_weishwu.jpg" /></td>
-</tr>
-<tr class="odd">
-<td align="center"><strong>Daisy</strong></td>
-<td align="center"><strong>Dana</strong></td>
-<td align="center"><strong>Weisheng</strong></td>
-</tr>
-<tr class="even">
 <td align="center"><img
 src="images/headshots/headshot_dfhannum.jpg" /></td>
 <td align="center"><img
 src="images/headshots/headshot_phillipa.jpg" /></td>
-<td align="center"><img
-src="images/headshots/headshot_rcavalca.jpg" /></td>
+<td align="center"></td>
 </tr>
 <tr class="odd">
+<td align="center"><strong>Weisheng</strong></td>
 <td align="center"><strong>Ford</strong></td>
 <td align="center"><strong>Tricia</strong></td>
-<td align="center"><strong>Raymond</strong></td>
+<td align="center"></td>
 </tr>
 </tbody>
 </table>
