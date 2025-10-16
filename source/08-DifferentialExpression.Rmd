@@ -169,7 +169,7 @@ write_csv(de_cell_pericyte_D21_vs_D7,
 
 # summarize diffex results
 table(de_cell_pericyte_D21_vs_D7$p_val_adj < 0.05 & 
-        abs(de_cell_pericyte_D21_vs_D7$avg_log2FC) > 1.5)
+        abs(de_cell_pericyte_D21_vs_D7$avg_log2FC) > log2(1.5))
 
 ```
 
@@ -198,9 +198,13 @@ head(de_cell_pericyte_D7_vs_D0)
 # Add rownames for D7 v D0 results
 de_cell_pericyte_D7_vs_D0$gene = rownames(de_cell_pericyte_D7_vs_D0)
 
+# save to file
+write_csv(de_cell_pericyte_D7_vs_D0, 
+          file = 'results/tables/de_standard_pericyte_D7_vs_D0.csv')
+
 # summarize results
 table(de_cell_pericyte_D7_vs_D0$p_val_adj < 0.05 & 
-        abs(de_cell_pericyte_D7_vs_D0$avg_log2FC) > 1.5)
+        abs(de_cell_pericyte_D7_vs_D0$avg_log2FC) > log2(1.5))
 ```
 
 This same approach can be extended to run pairwise comparisons between conditions for each annotated cluster of interest.
@@ -258,12 +262,12 @@ write_csv(de_pseudo_pericyte_D21_vs_D7,
 
 # review pseudobulk results, using the same thresholds
 table(de_pseudo_pericyte_D21_vs_D7$p_val_adj < 0.05 & 
-        abs(de_pseudo_pericyte_D21_vs_D7$avg_log2FC) > 1.5)
+        abs(de_pseudo_pericyte_D21_vs_D7$avg_log2FC) > log2(1.5))
 
 ```
 
 
-Since we're working with pseudobulk data, unlike in the marker identification section, there is no percentage of cells expressing to need to represent so we can summarize our DE results with a volcano plot:
+Since we're working with pseudobulk data, unlike in the marker identification section, there is no percentage of cells expressing that needs to be represented, so we can summarize our DE results with a volcano plot:
 
 ```{r, de_pseudobulk_volcano, warning = FALSE, message = FALSE}
 # -------------------------------------------------------------------------

@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-10-05" />
+<meta name="date" content="2025-10-16" />
 
 <title>Getting Started with Seurat</title>
 
@@ -423,7 +423,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Getting Started with Seurat</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-10-05</h4>
+<h4 class="date">2025-10-16</h4>
 
 </div>
 
@@ -790,7 +790,7 @@ Data type: double
 Storage order: column major
 
 Queued Operations:
-1. Load compressed matrix from directory /home/workshop/cgates/ISC_R/bpcells</code></pre>
+1. Load compressed matrix from directory /home/workshop/damki/ISC_R/bpcells</code></pre>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Cleanup
 # Since we&#39;ll now be reading in from BPCells files, we will remove geo_mat
@@ -799,8 +799,8 @@ Queued Operations:
 rm(geo_mat)
 gc()</code></pre>
 <pre><code>           used  (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells  6368089 340.1   10798397  576.7   8736627  466.6
-Vcells 11849975  90.5  561992792 4287.7 673127568 5135.6</code></pre>
+Ncells  6342912 338.8   11330051  605.1   8186707  437.3
+Vcells 11857303  90.5  564817080 4309.3 673134891 5135.7</code></pre>
 </div>
 <div id="read-bpcells" class="section level2">
 <h2>Read BPCells</h2>
@@ -966,13 +966,20 @@ slots are accessed with the <code>@</code> symbol, as in:</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Examine Seurat object
 head(geo_so@meta.data)</code></pre>
-<pre><code>                                          orig.ident nCount_RNA nFeature_RNA
-HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1      10234         3226
-HODay0replicate1_AAACCTGGTCATGCAT-1 HODay0replicate1       3158         1499
-HODay0replicate1_AAACCTGTCAGAGCTT-1 HODay0replicate1      13464         4102
-HODay0replicate1_AAACGGGAGAGACTTA-1 HODay0replicate1        577          346
-HODay0replicate1_AAACGGGAGGCCCGTT-1 HODay0replicate1       1189          629
-HODay0replicate1_AAACGGGCAACTGGCC-1 HODay0replicate1       7726         2602</code></pre>
+<pre><code>                                          orig.ident nCount_RNA
+HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1      10234
+HODay0replicate1_AAACCTGGTCATGCAT-1 HODay0replicate1       3158
+HODay0replicate1_AAACCTGTCAGAGCTT-1 HODay0replicate1      13464
+HODay0replicate1_AAACGGGAGAGACTTA-1 HODay0replicate1        577
+HODay0replicate1_AAACGGGAGGCCCGTT-1 HODay0replicate1       1189
+HODay0replicate1_AAACGGGCAACTGGCC-1 HODay0replicate1       7726
+                                    nFeature_RNA
+HODay0replicate1_AAACCTGAGAGAACAG-1         3226
+HODay0replicate1_AAACCTGGTCATGCAT-1         1499
+HODay0replicate1_AAACCTGTCAGAGCTT-1         4102
+HODay0replicate1_AAACGGGAGAGACTTA-1          346
+HODay0replicate1_AAACGGGAGGCCCGTT-1          629
+HODay0replicate1_AAACGGGCAACTGGCC-1         2602</code></pre>
 <p>Here, each row is a cell, and each column is information about that
 cell. The rows of the table are named according to the uniquely
 identifiable name for the cell. In this case, the day and replicate, as
