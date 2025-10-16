@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-10-05" />
+<meta name="date" content="2025-10-16" />
 
 <title>Differential Expression Analysis</title>
 
@@ -425,7 +425,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Differential Expression Analysis</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-10-05</h4>
+<h4 class="date">2025-10-16</h4>
 
 </div>
 
@@ -547,12 +547,18 @@ and condition identities before running our comparison using
 geo_so$day.celltype = paste(geo_so$time, geo_so$cell_type, sep = &#39;_&#39;)
 # check labels
 unique(geo_so$day.celltype)</code></pre>
-<pre><code> [1] &quot;Day0_Myofibroblast&quot;            &quot;Day0_Hematopoietic Stem Cell&quot;  &quot;Day0_Dendritic Cell&quot;           &quot;Day0_Monocyte&quot;                 &quot;Day0_B cell&quot;                   &quot;Day0_Platelet&quot;                
- [7] &quot;Day0_Smooth muscle cell&quot;       &quot;Day0_Stem Cell&quot;                &quot;Day0_Pericyte&quot;                 &quot;Day0_Fibroblast&quot;               &quot;Day0_Unknown&quot;                  &quot;Day0_T Cell&quot;                  
-[13] &quot;Day0_Infl. Macrophage&quot;         &quot;Day7_Hematopoietic Stem Cell&quot;  &quot;Day7_Dendritic Cell&quot;           &quot;Day7_Monocyte&quot;                 &quot;Day7_Pericyte&quot;                 &quot;Day7_Myofibroblast&quot;           
-[19] &quot;Day7_Platelet&quot;                 &quot;Day7_Infl. Macrophage&quot;         &quot;Day7_Smooth muscle cell&quot;       &quot;Day7_Stem Cell&quot;                &quot;Day7_Fibroblast&quot;               &quot;Day7_B cell&quot;                  
-[25] &quot;Day7_T Cell&quot;                   &quot;Day7_Unknown&quot;                  &quot;Day21_Smooth muscle cell&quot;      &quot;Day21_Dendritic Cell&quot;          &quot;Day21_Monocyte&quot;                &quot;Day21_Myofibroblast&quot;          
-[31] &quot;Day21_Pericyte&quot;                &quot;Day21_Hematopoietic Stem Cell&quot; &quot;Day21_Fibroblast&quot;              &quot;Day21_Platelet&quot;                &quot;Day21_T Cell&quot;                  &quot;Day21_Stem Cell&quot;              
+<pre><code> [1] &quot;Day0_Myofibroblast&quot;            &quot;Day0_Hematopoietic Stem Cell&quot;  &quot;Day0_Dendritic Cell&quot;          
+ [4] &quot;Day0_Monocyte&quot;                 &quot;Day0_B cell&quot;                   &quot;Day0_Platelet&quot;                
+ [7] &quot;Day0_Smooth muscle cell&quot;       &quot;Day0_Stem Cell&quot;                &quot;Day0_Pericyte&quot;                
+[10] &quot;Day0_Fibroblast&quot;               &quot;Day0_Unknown&quot;                  &quot;Day0_T Cell&quot;                  
+[13] &quot;Day0_Infl. Macrophage&quot;         &quot;Day7_Hematopoietic Stem Cell&quot;  &quot;Day7_Dendritic Cell&quot;          
+[16] &quot;Day7_Monocyte&quot;                 &quot;Day7_Pericyte&quot;                 &quot;Day7_Myofibroblast&quot;           
+[19] &quot;Day7_Platelet&quot;                 &quot;Day7_Infl. Macrophage&quot;         &quot;Day7_Smooth muscle cell&quot;      
+[22] &quot;Day7_Stem Cell&quot;                &quot;Day7_Fibroblast&quot;               &quot;Day7_B cell&quot;                  
+[25] &quot;Day7_T Cell&quot;                   &quot;Day7_Unknown&quot;                  &quot;Day21_Smooth muscle cell&quot;     
+[28] &quot;Day21_Dendritic Cell&quot;          &quot;Day21_Monocyte&quot;                &quot;Day21_Myofibroblast&quot;          
+[31] &quot;Day21_Pericyte&quot;                &quot;Day21_Hematopoietic Stem Cell&quot; &quot;Day21_Fibroblast&quot;             
+[34] &quot;Day21_Platelet&quot;                &quot;Day21_T Cell&quot;                  &quot;Day21_Stem Cell&quot;              
 [37] &quot;Day21_Infl. Macrophage&quot;        &quot;Day21_Unknown&quot;                 &quot;Day21_B cell&quot;                 </code></pre>
 <pre class="r"><code># Reset cell identities to the combined condition + celltype label
 Idents(geo_so) = &#39;day.celltype&#39;</code></pre>
@@ -792,10 +798,10 @@ write_csv(de_cell_pericyte_D21_vs_D7,
 
 # summarize diffex results
 table(de_cell_pericyte_D21_vs_D7$p_val_adj &lt; 0.05 &amp; 
-        abs(de_cell_pericyte_D21_vs_D7$avg_log2FC) &gt; 1.5)</code></pre>
+        abs(de_cell_pericyte_D21_vs_D7$avg_log2FC) &gt; log2(1.5))</code></pre>
 <pre><code>
 FALSE  TRUE 
- 9178   535 </code></pre>
+ 7800  1913 </code></pre>
 <p>In the first 3 lines of the above code block we can see the changes
 to the schematic:</p>
 <div class="float">
@@ -828,12 +834,16 @@ Crispld1 8.254509e-153  -7.185990 0.010 0.449 1.689533e-148</code></pre>
 # Add rownames for D7 v D0 results
 de_cell_pericyte_D7_vs_D0$gene = rownames(de_cell_pericyte_D7_vs_D0)
 
+# save to file
+write_csv(de_cell_pericyte_D7_vs_D0, 
+          file = &#39;results/tables/de_standard_pericyte_D7_vs_D0.csv&#39;)
+
 # summarize results
 table(de_cell_pericyte_D7_vs_D0$p_val_adj &lt; 0.05 &amp; 
-        abs(de_cell_pericyte_D7_vs_D0$avg_log2FC) &gt; 1.5)</code></pre>
+        abs(de_cell_pericyte_D7_vs_D0$avg_log2FC) &gt; log2(1.5))</code></pre>
 <pre><code>
 FALSE  TRUE 
-10814  1104 </code></pre>
+10594  1324 </code></pre>
 <p>This same approach can be extended to run pairwise comparisons
 between conditions for each annotated cluster of interest.</p>
 <!-- add code to loop through all clusters and generate comparisons -->
@@ -896,14 +906,14 @@ write_csv(de_pseudo_pericyte_D21_vs_D7,
 
 # review pseudobulk results, using the same thresholds
 table(de_pseudo_pericyte_D21_vs_D7$p_val_adj &lt; 0.05 &amp; 
-        abs(de_pseudo_pericyte_D21_vs_D7$avg_log2FC) &gt; 1.5)</code></pre>
+        abs(de_pseudo_pericyte_D21_vs_D7$avg_log2FC) &gt; log2(1.5))</code></pre>
 <pre><code>
 FALSE  TRUE 
-23553    55 </code></pre>
+23124   483 </code></pre>
 <p>Since we’re working with pseudobulk data, unlike in the marker
-identification section, there is no percentage of cells expressing to
-need to represent so we can summarize our DE results with a volcano
-plot:</p>
+identification section, there is no percentage of cells expressing that
+needs to be represented, so we can summarize our DE results with a
+volcano plot:</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Make a volcano plot of pseudobulk diffex results
 pseudo_pericyte_D21_vs_D7_volcano = 
@@ -961,9 +971,9 @@ section.</p>
 # (Ok since we saved the plots as we went along.)
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
-Ncells  10031555  535.8   18242232  974.3   18242232  974.3
-Vcells 349454088 2666.2  985378641 7517.9 1231723272 9397.4</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
+Ncells   9904498  529.0   18162970  970.1   18162970   970.1
+Vcells 349278299 2664.8 1135410568 8662.5 1772131429 13520.3</code></pre>
 <p>We’ll save a copy of the final Seurat object to final.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Save Seurat object
