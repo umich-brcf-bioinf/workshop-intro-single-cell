@@ -60,22 +60,39 @@ step back for a moment and consider some key questions.
 
 ---
 
-### PCs vs genes?
+# PCs vs genes?
 
 **Why do we cluster on Principle Components (PC) instead of genes?**
 
-* Most genes show little variance at all; those that do often behave 
-  in concert (regulating up and down in a coherent experssion program). Because
-  of this behavior, **clustering directly on genes doesn't work very well 
-  mathematically.** (Because in 20k dimensions, the notion of distance breaks down;
-  everything is too far from everything else.)
+* It's **much much faster** to cluster 15 PCs than 20k genes.
 * PCs naturally diminish noise and aggregate signal in expression patterns 
    across related genes; this makes patterns clearer.
-* It's **much much faster** to cluster 15 PCs than 20k genes.
+* Clustering on genes means clustering in ~20k dimensions. That doesn't work very 
+  well mathematically because in high dimensional space, the notion of distance 
+  breaks down - put another way, in 20k dimensions everything is too far from 
+  everything else. This is sometimes called the [curse of dimensionality](https://en.wikipedia.org/wiki/Curse_of_dimensionality#){target="_blank"}.
+  
+  Consider this 2d plot that shows two clusters. The clusters are well-seperated
+  i.e. the *within cluster distainces* are small but *between cluster distances* 
+  are large.
+
+![](images/clusters_faq/curse_of_dimensionality_cluster2d.png)
+
+  If we take these two clusters and start adding dimensions, the 
+  *within cluster distances* and *between cluster distances* begin apart 
+  (i.e. the cluster is well separated in lower dimensions) but quickly merge 
+  together in higher dimensions. Most points become equidistant in higher 
+  dimensions; as distance becomes uniform, it becomes difficult to create 
+  distinct clusters.
+
+![](images/clusters_faq/curse_of_dimensionality.png)
+
+So, we reduce ~20k genes to a handful of PCs and then cluster those PCs. This 
+avoids the curse of dimensionality while preserving most of the original signal.
 
 ---
 
-### Just a few PCs?
+# Just a few PCs?
 
 **How can such a small number of PCs faithfully represent so many genes? Aren't we throwing away a ton of information?**
 
@@ -95,7 +112,7 @@ step back for a moment and consider some key questions.
 
 ---
 
-### Resolution? PCs?
+# Resolution? PCs?
 
 **So, what's the correct resolution and number of PCs?**
 
@@ -114,7 +131,7 @@ step back for a moment and consider some key questions.
   
 ---
 
-### A little help?
+## A little help?
 
 **Couldn't the computer figure out the best PCs and resolution?**
 
@@ -125,7 +142,7 @@ doesn't understand the cell biology**.
 
 ---
 
-### Resolution, PCs, and clusters
+# Resolution, PCs, and clusters
 
 **So how do we pick the right PCs and resolution to get the right clusters?**
 
@@ -150,7 +167,7 @@ doesn't understand the cell biology**.
 
 ---
 
-### Resolution, PCs, and UMAPs
+# Resolution, PCs, and UMAPs
 
 **What do the cluster UMAPs look like at different PCs and resolutions?**
 
@@ -207,7 +224,7 @@ df %>%
     });
 ```
 
-### Don't stop yet!
+# Don't stop yet!
 
 **But these are all still just ... clusters - how do I know if they are biologically accurate?**
 
