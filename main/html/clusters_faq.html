@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-08-11" />
+<meta name="date" content="2025-10-15" />
 
 <title>Clusters, PCs, and Resolutions: FAQ</title>
 
@@ -442,7 +442,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Clusters, PCs, and Resolutions: FAQ</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-08-11</h4>
+<h4 class="date">2025-10-15</h4>
 
 </div>
 
@@ -479,26 +479,41 @@ represent the different cell types or cell states. As we get started,
 it’s useful to step back for a moment and consider some key
 questions.</p>
 <hr />
-<div id="pcs-vs-genes" class="section level3">
-<h3>PCs vs genes?</h3>
+<div id="pcs-vs-genes" class="section level1">
+<h1>PCs vs genes?</h1>
 <p><strong>Why do we cluster on Principle Components (PC) instead of
 genes?</strong></p>
 <ul>
-<li>Most genes show little variance at all; those that do often behave
-in concert (regulating up and down in a coherent experssion program).
-Because of this behavior, <strong>clustering directly on genes doesn’t
-work very well mathematically.</strong> (Because in 20k dimensions, the
-notion of distance breaks down; everything is too far from everything
-else.)</li>
-<li>PCs naturally diminish noise and aggregate signal in expression
-patterns across related genes; this makes patterns clearer.</li>
-<li>It’s <strong>much much faster</strong> to cluster 15 PCs than 20k
-genes.</li>
+<li><p>It’s <strong>much much faster</strong> to cluster 15 PCs than 20k
+genes.</p></li>
+<li><p>PCs naturally diminish noise and aggregate signal in expression
+patterns across related genes; this makes patterns clearer.</p></li>
+<li><p>Clustering on genes means clustering in ~20k dimensions. That
+doesn’t work very well mathematically because in high dimensional space,
+the notion of distance breaks down - put another way, in 20k dimensions
+everything is too far from everything else. This is sometimes called the
+<a href="https://en.wikipedia.org/wiki/Curse_of_dimensionality#"
+target="_blank">curse of dimensionality</a>.</p>
+<p>Consider this 2d plot that shows two clusters. The clusters are
+well-seperated i.e. the <em>within cluster distainces</em> are small but
+<em>between cluster distances</em> are large.</p></li>
 </ul>
+<p><img
+src="images/clusters_faq/curse_of_dimensionality_cluster2d.png" /></p>
+<p>If we take these two clusters and start adding dimensions, the
+<em>within cluster distances</em> and <em>between cluster distances</em>
+begin apart (i.e. the cluster is well separated in lower dimensions) but
+quickly merge together in higher dimensions. Most points become
+equidistant in higher dimensions; as distance becomes uniform, it
+becomes difficult to create distinct clusters.</p>
+<p><img src="images/clusters_faq/curse_of_dimensionality.png" /></p>
+<p>So, we reduce ~20k genes to a handful of PCs and then cluster those
+PCs. This avoids the curse of dimensionality while preserving most of
+the original signal.</p>
 <hr />
 </div>
-<div id="just-a-few-pcs" class="section level3">
-<h3>Just a few PCs?</h3>
+<div id="just-a-few-pcs" class="section level1">
+<h1>Just a few PCs?</h1>
 <p><strong>How can such a small number of PCs faithfully represent so
 many genes? Aren’t we throwing away a ton of information?</strong></p>
 <ul>
@@ -533,8 +548,8 @@ captured in the first handful of PCs. In our example dataset, the first
 </ul>
 <hr />
 </div>
-<div id="resolution-pcs" class="section level3">
-<h3>Resolution? PCs?</h3>
+<div id="resolution-pcs" class="section level1">
+<h1>Resolution? PCs?</h1>
 <p><strong>So, what’s the correct resolution and number of
 PCs?</strong></p>
 <ul>
@@ -553,9 +568,8 @@ expect.</strong> And the answer to that depends on:</p>
 about 20 cell types.</p></li>
 </ul>
 <hr />
-</div>
-<div id="a-little-help" class="section level3">
-<h3>A little help?</h3>
+<div id="a-little-help" class="section level2">
+<h2>A little help?</h2>
 <p><strong>Couldn’t the computer figure out the best PCs and
 resolution?</strong></p>
 <ul>
@@ -567,8 +581,9 @@ the cell biology</strong>.</li>
 </ul>
 <hr />
 </div>
-<div id="resolution-pcs-and-clusters" class="section level3">
-<h3>Resolution, PCs, and clusters</h3>
+</div>
+<div id="resolution-pcs-and-clusters" class="section level1">
+<h1>Resolution, PCs, and clusters</h1>
 <p><strong>So how do we pick the right PCs and resolution to get the
 right clusters?</strong></p>
 <ul>
@@ -607,8 +622,8 @@ resolution has a strong effect on the number of clusters.</li>
 </table>
 <hr />
 </div>
-<div id="resolution-pcs-and-umaps" class="section level3">
-<h3>Resolution, PCs, and UMAPs</h3>
+<div id="resolution-pcs-and-umaps" class="section level1">
+<h1>Resolution, PCs, and UMAPs</h1>
 <p><strong>What do the cluster UMAPs look like at different PCs and
 resolutions?</strong></p>
 <ul>
@@ -748,8 +763,8 @@ resolution
     });
 </script>
 </div>
-<div id="dont-stop-yet" class="section level3">
-<h3>Don’t stop yet!</h3>
+<div id="dont-stop-yet" class="section level1">
+<h1>Don’t stop yet!</h1>
 <p><strong>But these are all still just … clusters - how do I know if
 they are biologically accurate?</strong></p>
 <ul>
