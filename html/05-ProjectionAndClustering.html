@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-10-05" />
+<meta name="date" content="2025-10-16" />
 
 <title>Clustering and Projection</title>
 
@@ -425,7 +425,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Clustering and Projection</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-10-05</h4>
+<h4 class="date">2025-10-16</h4>
 
 </div>
 
@@ -692,8 +692,8 @@ ggsave(filename = &#39;results/figures/optimal_pcs.png&#39;,
 rm(alt_pcs)
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
-Ncells   9433686  503.9   18242232  974.3   18242232  974.3
-Vcells 379680997 2896.8 1231723301 9397.4 1231723272 9397.4</code></pre>
+Ncells   9328995  498.3   18162970  970.1   18162970  970.1
+Vcells 379496400 2895.4 1231877092 9398.5 1231876864 9398.5</code></pre>
 <p>Again, this number is likely a starting point and may need to be
 revised depending on the outcome of the downstream steps.</p>
 <p>While outside the scope of this workshop, there are community efforts
@@ -842,7 +842,7 @@ Number of edges: 1024599
 Running Louvain algorithm...
 Maximum modularity in 10 random starts: 0.9441
 Number of communities: 18
-Elapsed time: 5 seconds</code></pre>
+Elapsed time: 4 seconds</code></pre>
 <div
 style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:100%; overflow-x: scroll; width:1000px; ">
 <table class="table table-condensed" style="font-size: 12px; font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
@@ -2542,9 +2542,9 @@ plots = c(&quot;pre_integration_umap_plot_day&quot;,
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
-Ncells   9498531  507.3   18242232  974.3   18242232  974.3
-Vcells 388338894 2962.8 1231723301 9397.4 1231723272 9397.4</code></pre>
+<pre><code>            used   (Mb) gc trigger    (Mb)   max used   (Mb)
+Ncells   9367096  500.3   18162970   970.1   18162970  970.1
+Vcells 749958123 5721.8 1478332510 11278.8 1231876864 9398.5</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">

@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-10-08" />
+<meta name="date" content="2025-10-16" />
 
 <title>PCA and Integration</title>
 
@@ -423,7 +423,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">PCA and Integration</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-10-08</h4>
+<h4 class="date">2025-10-16</h4>
 
 </div>
 
@@ -680,7 +680,7 @@ geo_so</code></pre>
 Active assay: SCT (20468 features, 3000 variable features)
  3 layers present: counts, data, scale.data
  1 other assay present: RNA
- 2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca</code></pre>
+ 1 dimensional reduction calculated: unintegrated.sct.pca</code></pre>
 <p>After running the command in the console, we should see that
 <code>geo_so</code> has a new reduction added to that slot in the Seurat
 object as shown in the schematic:</p>
@@ -961,9 +961,9 @@ plots = c(&quot;heatmap_1&quot;)
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   6602733  352.7   12268101  655.2  12268101  655.2
-Vcells 374264530 2855.5  794858478 6064.3 784631261 5986.3</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
+Ncells   9315638  497.6   18162970  970.1   18162970  970.1
+Vcells 379549538 2895.8 1231877092 9398.5 1231876864 9398.5</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">
