@@ -549,7 +549,11 @@ way to evaluate how many PCs explain the majority of the variation is by
 generating an elbow plot, which shows the percent variance explained by
 successive PCs. We’ll use the <code>ElbowPlot()</code> function to do
 this, specifying that the first 50 PCs be plotted.</p>
-<pre class="r"><code># -------------------------------------------------------------------------
+<pre class="r"><code># =========================================================================
+# Clustering and Projection
+# =========================================================================
+
+# -------------------------------------------------------------------------
 # Visualize how many PCs to include using an elbow plot
 ElbowPlot(geo_so, ndims = 50, reduction = &#39;unintegrated.sct.pca&#39;)
 ggsave(filename = &#39;results/figures/qc_sct_elbow_plot.png&#39;,
@@ -573,11 +577,7 @@ href="https://hbctraining.github.io/scRNA-seq/lessons/elbow_plot_metric.html"
 target="_blank">HBC training materials</a> to our data to help select a
 good starting point for the number of PCs to include for clustering.
 <!--- revised function name per discussion with Raymond ---></p>
-<pre class="r"><code># =========================================================================
-# Clustering and Projection
-# =========================================================================
-
-# -------------------------------------------------------------------------
+<pre class="r"><code># -------------------------------------------------------------------------
 # Estimate the number of PCs to use for clustering with a function
 check_pcs = function(so, reduction) {
     # quantitative check for number of PCs to include
@@ -691,9 +691,9 @@ ggsave(filename = &#39;results/figures/optimal_pcs.png&#39;,
 
 rm(alt_pcs)
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
-Ncells   9328995  498.3   18162970  970.1   18162970  970.1
-Vcells 379496400 2895.4 1231877092 9398.5 1231876864 9398.5</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
+Ncells   9981416  533.1   17984245  960.5   17984245   960.5
+Vcells 381235071 2908.6 1062319855 8104.9 1314242571 10026.9</code></pre>
 <p>Again, this number is likely a starting point and may need to be
 revised depending on the outcome of the downstream steps.</p>
 <p>While outside the scope of this workshop, there are community efforts
@@ -842,7 +842,7 @@ Number of edges: 1024599
 Running Louvain algorithm...
 Maximum modularity in 10 random starts: 0.9441
 Number of communities: 18
-Elapsed time: 4 seconds</code></pre>
+Elapsed time: 5 seconds</code></pre>
 <div
 style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:100%; overflow-x: scroll; width:1000px; ">
 <table class="table table-condensed" style="font-size: 12px; font-family: &quot;Arial Narrow&quot;, arial, helvetica, sans-serif; margin-left: auto; margin-right: auto;">
@@ -1284,7 +1284,10 @@ any of the UMAP structure:
 clusters_counts_condition &lt;- geo_so@meta.data %&gt;% 
   select(time, integrated.sct.rpca.clusters) %&gt;%
   summarise(counts = n(), .by = c(time, integrated.sct.rpca.clusters)) %&gt;% 
-  pivot_wider(names_from = integrated.sct.rpca.clusters, values_from = counts, names_sort=TRUE) %&gt;%
+  pivot_wider(names_from = integrated.sct.rpca.clusters, 
+              values_from = counts,
+              names_sort = TRUE,
+              values_fill = 0) %&gt;%
   bind_rows(summarise_all(., ~if(is.numeric(.)) sum(.) else &quot;TOTAL&quot;))
 clusters_counts_condition 
 
@@ -1292,7 +1295,10 @@ clusters_counts_condition
 clusters_counts_sample &lt;- geo_so@meta.data %&gt;% 
   select(orig.ident, integrated.sct.rpca.clusters) %&gt;%
   summarise(counts = n(), .by = c(orig.ident, integrated.sct.rpca.clusters)) %&gt;% 
-  pivot_wider(names_from = integrated.sct.rpca.clusters, values_from = counts, names_sort=TRUE) %&gt;%
+  pivot_wider(names_from = integrated.sct.rpca.clusters, 
+              values_from = counts,
+              names_sort = TRUE,
+              values_fill = 0) %&gt;%
   bind_rows(summarise_all(., ~if(is.numeric(.)) sum(., na.rm = TRUE) else &quot;TOTAL&quot;))
 clusters_counts_sample</code></pre>
 <div
@@ -1753,7 +1759,7 @@ HODay0replicate2
 35
 </td>
 <td style="text-align:right;">
-NA
+0
 </td>
 <td style="text-align:right;">
 55
@@ -1830,7 +1836,7 @@ HODay0replicate3
 5
 </td>
 <td style="text-align:right;">
-NA
+0
 </td>
 <td style="text-align:right;">
 59
@@ -1889,7 +1895,7 @@ HODay0replicate4
 7
 </td>
 <td style="text-align:right;">
-NA
+0
 </td>
 <td style="text-align:right;">
 42
@@ -1939,7 +1945,7 @@ HODay7replicate1
 83
 </td>
 <td style="text-align:right;">
-NA
+0
 </td>
 <td style="text-align:right;">
 174
@@ -1948,7 +1954,7 @@ NA
 212
 </td>
 <td style="text-align:right;">
-NA
+0
 </td>
 <td style="text-align:right;">
 68
@@ -1998,7 +2004,7 @@ HODay7replicate2
 106
 </td>
 <td style="text-align:right;">
-NA
+0
 </td>
 <td style="text-align:right;">
 183
@@ -2007,7 +2013,7 @@ NA
 164
 </td>
 <td style="text-align:right;">
-NA
+0
 </td>
 <td style="text-align:right;">
 93
@@ -2057,7 +2063,7 @@ HODay7replicate3
 141
 </td>
 <td style="text-align:right;">
-NA
+0
 </td>
 <td style="text-align:right;">
 174
@@ -2066,7 +2072,7 @@ NA
 165
 </td>
 <td style="text-align:right;">
-NA
+0
 </td>
 <td style="text-align:right;">
 104
@@ -2542,9 +2548,9 @@ plots = c(&quot;pre_integration_umap_plot_day&quot;,
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger    (Mb)   max used   (Mb)
-Ncells   9367096  500.3   18162970   970.1   18162970  970.1
-Vcells 749958123 5721.8 1478332510 11278.8 1231876864 9398.5</code></pre>
+<pre><code>            used   (Mb) gc trigger    (Mb)   max used    (Mb)
+Ncells   9983070  533.2   17984245   960.5   17984245   960.5
+Vcells 751623658 5734.5 1327939098 10131.4 1314253543 10027.0</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">
