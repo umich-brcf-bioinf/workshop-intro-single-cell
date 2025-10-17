@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-10-13" />
+<meta name="date" content="2025-10-16" />
 
 <title>Marker identification and visualization</title>
 
@@ -57,7 +57,7 @@ https://favicon.io/emoji-favicons/dna/
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="stylesheet" href="dist/css/dbox.min.css">
+<link rel="stylesheet" href="dist/css/dbox.css">
 
 <script src="dist/js/dbox.min.js" defer></script>
 
@@ -445,7 +445,7 @@ div.tocify {
 <h1 class="title toc-ignore">Marker identification and
 visualization</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-10-13</h4>
+<h4 class="date">2025-10-16</h4>
 
 </div>
 
@@ -521,9 +521,8 @@ iterated.</p>
 <div id="cluster-markers-and-characterization" class="section level1">
 <h1>Cluster markers and characterization</h1>
 <p>After generating clusters, we need to perform differential expression
-analysis to identify the genes that distinguish those clusters (<a
-href="https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes">source</a>).
-This should allow us to get visibility on some key questions for our
+analysis to identify the genes that distinguish those clusters. This
+should allow us to get visibility on some key questions for our
 clusters, as <a
 href="https://hbctraining.github.io/Intro-to-scRNAseq/lessons/09_merged_SC_marker_identification.html">highlighted
 by the HBC materials</a>, namely:</p>
@@ -553,10 +552,8 @@ scRNA-seq data. However in our and others’ experience, the default
 Wilcoxon test is often sufficient for simple pairwise DE comparisons,
 while edgeR (<a
 href="https://pubmed.ncbi.nlm.nih.gov/19910308/">Robinson, McCarthy, and
-Smyth 2010</a>) is recommended by the <a
-href="%5BOuyang%5D(https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes)">Ouyang
-Lab</a> for more complex comparison designs, such as those that include
-covariates.</p>
+Smyth 2010</a>) is recommended for more complex comparison designs, such
+as those that include covariates.</p>
 <div class="float">
 <img
 src="images/curriculum/06-MarkerVisualization/Ouyang_clust-deCompare.png"
@@ -855,9 +852,9 @@ plots = c(&quot;top_5_sct_dot_plot&quot;,
 # Only remove plots that actually exist in the environment
 rm(list=Filter(exists, plots))
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used   (Mb)
-Ncells   6843501  365.5   12576900  671.7   12576900  671.7
-Vcells 335101419 2556.7 1109866478 8467.7 1109863500 8467.6</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells   6727229  359.3   12351777  659.7  12351777  659.7
+Vcells 334889141 2555.1  795005255 6065.5 792577216 6046.9</code></pre>
 </div>
 </div>
 </div>

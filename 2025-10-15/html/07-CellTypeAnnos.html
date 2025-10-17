@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-10-08" />
+<meta name="date" content="2025-10-16" />
 
 <title>Cell Type Annotation</title>
 
@@ -425,7 +425,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Cell Type Annotation</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-10-08</h4>
+<h4 class="date">2025-10-16</h4>
 
 </div>
 
@@ -514,11 +514,8 @@ and often is more challenging for less characterized tissues. <br/></p>
 the expression patterns in our dataset and large numbers of reference
 datasets or databases at a scale that is not feasible to do
 manually.</p>
-<p>As described <a
-href="https://ouyanglab.com/singlecell/clust.html#annotating-clusters">in
-more detail by the Ouyang Lab</a> and summarized in the figure below,
-there are many computational tools that aim to assign cell type labels
-for single-cell data. These methods generally fall into three
+<p>There are many computational tools that aim to assign cell type
+labels for single-cell data. These methods generally fall into three
 categories:</p>
 <ol style="list-style-type: decimal">
 <li>Marker based approaches that use gene sets drawn from the
@@ -530,9 +527,9 @@ reference atlas.</li>
 </ol>
 <p><img
 src="images/curriculum/07-CellTypeAnnotation/Ouyang_clust-celltype.png"
-style="height:50.0%"
-alt="Image: Diagram of types of cell annotation approaches (from Oyang materials)." /><br />
-<br/></p>
+style="height:50.0%" alt="Cell annotation approaches" /><br />
+From <a href="https://pubmed.ncbi.nlm.nih.gov/33613863/">Automated
+methods for cell type annotation on scRNA-seq data</a> <br/></p>
 <p>However, across any of these approaches the quality of the reference
 data (and reliability of the authors labels) and relevancy to your
 specific tissue/experiment (and the resolution of your biological
@@ -1551,8 +1548,8 @@ question or use the same labels for clusters that don’t seems to share
 similar expression programs
 <img src="images/curriculum/07-CellTypeAnnotation/07-catch_umap_plots-1.png" width="1152" style="display: block; margin: auto;" /></p>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   7089556  378.7   10314907  550.9  10314907  550.9
-Vcells 339911455 2593.4  500168916 3816.0 440487123 3360.7</code></pre>
+Ncells   6929089  370.1   12351778  659.7  12351778  659.7
+Vcells 339445783 2589.8  795005255 6065.5 792577216 6046.9</code></pre>
 </details>
 <p><br> <br/></p>
 <hr />
@@ -1567,8 +1564,8 @@ Vcells 339911455 2593.4  500168916 3816.0 440487123 3360.7</code></pre>
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   7045813  376.3   10314907  550.9  10314907  550.9
-Vcells 337218377 2572.8  500168916 3816.0 440487123 3360.7</code></pre>
+Ncells   6885314  367.8   12351778  659.7  12351778  659.7
+Vcells 336752638 2569.3  795005255 6065.5 792577216 6046.9</code></pre>
 <p>We’ll save the scCATCH object and our updated Seurat object with cell
 type annotations.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
