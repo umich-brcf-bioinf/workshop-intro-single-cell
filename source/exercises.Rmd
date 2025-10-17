@@ -73,57 +73,74 @@ Build on the content and analysis steps covered in the workshop sessions by work
 
 :::
 
-<br/>
 
 ## Day 1
 
-<!-- Add Rmd version of exercises with smaller code blocks --> 
 
 ```{r day1_exercise, child='exercises/day1_ex.Rmd'}
 ```
 
-<!-- Use R script as key in hidden dropdown --> 
+
+## Day 1 solutions
 
 <details>
-    <summary>*Example Solutions - Day 1*</summary>
+    <summary>**Scripts**</summary>
 ```{r day1, file='exercises/day1.R', eval=FALSE}
 ```
 </details>
+
+<details>
+<summary>**Full output**</summary>
+```{r day1_output, file='exercises/day1.R', eval=TRUE, cache = TRUE, cache.lazy = FALSE}
+```
+</details>
+
 <br>
 
 ----
 
 ## Day 2
 
-<!-- link out to `clusters_faq.Rmd` to show examples? -->
-
 ```{r day2_exercise, child='exercises/day2_ex.Rmd'}
 ```
 
-<!-- Use R script as key in hidden dropdown --> 
+## Day 2 solutions
 
 <details>
-    <summary>*Example Solutions - Day 2*</summary>
-```{r day2_solution, file='exercises/day2.R', eval=FALSE}
+    <summary>**Scripts**</summary>
+```{r day2, file='exercises/day2.R', eval=FALSE}
 ```
 </details>
-<br>
 
-----
+<details>
+<summary>**Full output**</summary>
+```{r day2_output, file='exercises/day2.R', eval=TRUE, cache = TRUE, cache.lazy = FALSE}
+```
+</details>
 
-## Day 3
+<br/>
 
-<!-- Add Rmd version of exercises with smaller code blocks --> 
+---
+
+## Day 3 
+
 
 ```{r day3_exercise, child='exercises/day3_ex.Rmd'}
 ```
 
-<!-- Use R script as key in hidden dropdown --> 
+## Day 3 solutions
 
 <details>
-    <summary>*Example Solutions - Day 3*</summary>
+    <summary>**Scripts**</summary>
 ```{r day3, file='exercises/day3.R', eval=FALSE}
 ```
+</details>
 
+<details>
+<summary>**Full output**</summary>
+```{r day3_output, file='exercises/day3.R', eval=TRUE, cache = TRUE, cache.lazy = FALSE}
+```
 </details>
 <br>
+
+---

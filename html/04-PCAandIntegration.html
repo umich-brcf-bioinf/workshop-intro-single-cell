@@ -11,7 +11,7 @@
 
 <meta name="author" content="UM Bioinformatics Core Workshop Team" />
 
-<meta name="date" content="2025-10-08" />
+<meta name="date" content="2025-10-16" />
 
 <title>PCA and Integration</title>
 
@@ -423,7 +423,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">PCA and Integration</h1>
 <h4 class="author">UM Bioinformatics Core Workshop Team</h4>
-<h4 class="date">2025-10-08</h4>
+<h4 class="date">2025-10-16</h4>
 
 </div>
 
@@ -597,8 +597,8 @@ both “sparse” and “noisy”. Sparse in the sense that many genes will
 either not be expressed or not measured in many of the cells and have
 zero values. Noisy due to biological variability and technical
 variability due to the practical limitations of both capture and
-sequencing depth <a
-href="https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr">(source)</a>.</p>
+sequencing depth.
+<!-- 404? [(source)](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr).--></p>
 <blockquote>
 <p><em>Note on zero “inflation” of single-cell data</em></p>
 <p>Single-cell data is sometimes described as “zero inflated”, however
@@ -627,12 +627,8 @@ href="https://bioconductor.org/books/3.12/OSCA/dimensionality-reduction.html#pri
 <summary>
 <em>More detail on dimensionality reduction </em>
 </summary>
-The <a
-href="https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr">Ouyang
-Lab has a “gentle introduction” section of their materials</a> that goes
-into greater details on dimensionality reduction including how similar
-strategies are used in deep learning models. Additionaly, the OSCA book
-has a <a
+<!-- 404?    The [Ouyang Lab has a "gentle introduction" section of their materials](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr) that goes into greater details on dimensionality reduction including how similar strategies are used in deep learning models. -->
+The OSCA book has a <a
 href="https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html">chapter
 on Dimensionality reduction</a> that has useful context.
 </details>
@@ -658,16 +654,14 @@ components analysis</a> includes a more descriptive overview.</p>
 <div id="run-pca-on-our-dataset" class="section level1">
 <h1>Run PCA on our dataset</h1>
 <!--- Add introduction to function, including link to documentation --->
-<p>Since PCA is sensitive to scale, we will use the SCT normalized assay
-(<a
-href="https://ouyanglab.com/singlecell/basic.html#pca-principal-component-analysis">reference</a>).
-We will name the reduction in an informative way to keep them clear for
-us in the future. In this case, our data has not yet been integrated,
-but it has been SCT normalized. So we will name the reduction
-<code>unintegrated.sct.pca</code>. Note that <code>SCTTransform()</code>
-returned a set of highly variable genes, and the <code>RunPCA()</code>
-function will use this subset to determine the PCs and genes associated
-with those PCs.</p>
+<p>Since PCA is sensitive to scale, we will use the SCT normalized
+assay. We will name the reduction in an informative way to keep them
+clear for us in the future. In this case, our data has not yet been
+integrated, but it has been SCT normalized. So we will name the
+reduction <code>unintegrated.sct.pca</code>. Note that
+<code>SCTTransform()</code> returned a set of highly variable genes, and
+the <code>RunPCA()</code> function will use this subset to determine the
+PCs and genes associated with those PCs.</p>
 <pre class="r"><code># =========================================================================
 # PCA and Integration
 # =========================================================================
@@ -680,7 +674,7 @@ geo_so</code></pre>
 Active assay: SCT (20468 features, 3000 variable features)
  3 layers present: counts, data, scale.data
  1 other assay present: RNA
- 2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca</code></pre>
+ 1 dimensional reduction calculated: unintegrated.sct.pca</code></pre>
 <p>After running the command in the console, we should see that
 <code>geo_so</code> has a new reduction added to that slot in the Seurat
 object as shown in the schematic:</p>
@@ -962,8 +956,8 @@ plots = c(&quot;heatmap_1&quot;)
 rm(list=Filter(exists, plots))
 gc()</code></pre>
 <pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
-Ncells   6602733  352.7   12268101  655.2  12268101  655.2
-Vcells 374264530 2855.5  794858478 6064.3 784631261 5986.3</code></pre>
+Ncells   6617674  353.5   12351777  659.7  12351777  659.7
+Vcells 374293824 2855.7  795005255 6065.5 760364303 5801.2</code></pre>
 </div>
 </div>
 <div id="save-our-progress" class="section level1">

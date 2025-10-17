@@ -62,7 +62,7 @@ knitr_fig_path("XX")
 
 ## Seurat tutorials/workflows:
 
-- [Single-cell Analysis - Ouyang Lab](https://ouyanglab.com/singlecell/) - materials last updated in January 2023
+<!-- 404? - [Single-cell Analysis - Ouyang Lab](https://ouyanglab.com/singlecell/) - materials last updated in January 2023 -->
 - [scRNA-seq workshop - HBC training](https://github.com/hbctraining.github.io/Intro-to-scRNAseq) - lastest release of materials is from March 2023
 	- To cite materials from the HBC course, please use: `Mary Piper, Meeta Mistry, Jihe Liu, William Gammerdinger, & Radhika Khetani. (2022, January 6). hbctraining.github.io/Intro-to-scRNAseq: scRNA-seq Lessons from HCBC (first release). Zenodo. [https://doi.org/10.5281/zenodo.5826256](https://doi.org/10.5281/zenodo.5826256)`
 - [Analysis using Seurat - Ho Lab](https://holab-hku.github.io/Fundamental-scRNA/downstream.html) - materials last updated in 2021
@@ -84,7 +84,7 @@ knitr_fig_path("XX")
 - [Ming Tang's scRNA analysis notes repository](https://github.com/crazyhottommy/scRNAseq-analysis-notes)
 - [Sean Davis' list of single-cell packages](https://github.com/seandavi/awesome-single-cell)
 - [Mikhail Dozmorov's compilation of single-cell analysis tools and papers](https://github.com/mdozmorov/scRNA-seq_notes)
-- [Ouyang Lab's "Useful resources"](https://ouyanglab.com/singlecell/appendix.html#useful-resources)
+<!-- 404?- [Ouyang Lab's "Useful resources"](https://ouyanglab.com/singlecell/appendix.html#useful-resources) -->
 
 
 ## Deep-dive single-cell tutorials and guides:

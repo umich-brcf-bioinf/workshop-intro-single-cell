@@ -65,22 +65,24 @@ Our final Seurat object:
 
 # Key decision points in analysis and methodology
 
-<br/> We've successfully analyzed our single-cell RNA-seq data, running the follow steps:
+<br/> We've successfully analyzed our single-cell RNA-seq data, running the following steps.
 
-<!--- revise into table format to list steps and related parameters/tools used -->
+Note that the parameters we selected for the workshop are **in bold**. When 
+running a different dataset, you will need to review and adjust these choices as 
+appropriate.
 
 | Step | Goal | Parameters/tools used in workshop &nbsp; &nbsp; &nbsp;|
 |:----------------|:-----------------------|:-----------------------|
-| Secondary QC filtering | Identify healthy, single-cells for downstream analysis | `nFeature_RNA < 300` (genes per cell), max `percent.mt` (% mitochondrial genes per cell) |
-| Normalization | Separate biological effects from technical effects | `SCTransform` with default parameters |
-| Integration | Remove batch effects between individual or groups of samples | `IntegrateLayers` function, using `RPCAIntegration` as the method |
-| Clustering | Group populations of cells with similar expression programs that correspond to cell-types and/or sub-types of interest | `FindNeighbors` and `FindClusters` using default Louvain algorithm with 10 PCs and 0.4 resolution |
-| Annotation | Identify cell-types present in data | `scCATCH` to generate predicted cell-types and expression plots of marker genes manually pulled from the literature to finalize the annotations |
-| Differential expression comparisons | Identify genes that are impacted by the experimental groups/condition within a given cell-type | `FindMarkers` with `wilcox` as the statistical test used for the standard comparisons and `DESeq` used for the psuedobulk comparisons |
+| [Loading data](01-GettingStarted.html#Read_in_data) | Initialize Seurat object | `Read10x()`: you will need to specify the **paths to CellRanger directories** that contain the feature_barcode_matrix "triples" |
+| [Secondary QC filtering](02-QCandFiltering.html#Removing_low-quality_cells) | Identify healthy, single-cells for downstream analysis | **nFeature_RNA < 300** (genes per cell), **max `percent.mt` < 15** (% mitochondrial genes per cell) |
+| [Normalization](03-Normalization.html#Normalization) | Separate biological effects from technical effects | `SCTransform` with default parameters |
+| [Integration](04-PCAandIntegration.html#Integrate_Layers) | Remove batch effects between individual or groups of samples | `IntegrateLayers` function, using `RPCAIntegration` as the method |
+| [Clustering](05-ProjectionAndClustering.html#Choosing_the_number_of_PCs_to_represent_our_data) | Group populations of cells with similar expression programs that correspond to cell-types and/or sub-types of interest | `FindNeighbors` and `FindClusters` using default Louvain algorithm with **10 PCs** and **0.4 resolution** |
+| [Annotation](https://umich-brcf-bioinf.github.io/workshop-intro-single-cell/release/html/07-CellTypeAnnos.html#Using_scCATCH) | Identify cell-types present in data | `scCATCH` to generate predicted cell-types and expression plots of marker genes **manually pulled from the literature to finalize the annotations** |
+| [Differential expression comparisons](08-DifferentialExpression.html#Differential_Expression) | Identify genes that are impacted by the experimental groups/condition within a given cell-type | `FindMarkers` **with `wilcox` as the statistical test** used for the standard comparisons **and `DESeq` used for the psuedobulk comparisons** |
 
 Organizing the tools and parameters used in our analysis can also be helpful for creating a more descriptive methods summary, like what would be included in a paper.
 
-<!--- then show descriptive methods (moved form wrap-up section) -->
 
 # Example publication style methods
 
@@ -201,7 +203,7 @@ Although outside the scope of the workshop, there are many other possible avenue
 
 -   Subclustering clusters of interest - see [HBC's summary on subclustering](https://hbctraining.github.io/Intro-to-scRNAseq/lessons/seurat_subclustering.html), [Seurat's findSubcCluster documentation](https://satijalab.org/seurat/reference/findsubcluster) and [this related issue thread](https://github.com/satijalab/seurat/issues/1883)
 
--   Trajectory or Pseudotime analysis - see [the Ouyang Lab's trajectory analysis](https://ouyanglab.com/singlecell/dimrd.html) or [Broad Institute's materials on trajectory analysis](https://broadinstitute.github.io/2020_scWorkshop/trajectory-analysis.html)
+-   Trajectory or Pseudotime analysis - see [Single Cell Best Practices: Inferring Trajectories](https://www.sc-best-practices.org/trajectories/pseudotemporal.html) or [Broad Institute's materials on trajectory analysis](https://broadinstitute.github.io/2020_scWorkshop/trajectory-analysis.html)
 
 -   Cell - Cell communication network inference, see [review by Wilk et al (2023)](https://www.nature.com/articles/s41587-023-01782-z)
 

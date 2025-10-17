@@ -164,7 +164,8 @@ In contrast to bulk RNA-seq, where the majority of the variance is usually expla
 
 ### Sparsity in single-cell data
 
-In addition to being "high-dimensional", we expect the data to be both "sparse" and "noisy". Sparse in the sense that many genes will either not be expressed or not measured in many of the cells and have zero values. Noisy due to biological variability and technical variability due to the practical limitations of both capture and sequencing depth [(source)](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr).
+In addition to being "high-dimensional", we expect the data to be both "sparse" and "noisy". Sparse in the sense that many genes will either not be expressed or not measured in many of the cells and have zero values. Noisy due to biological variability and technical variability due to the practical limitations of both capture and sequencing depth. 
+<!-- 404? [(source)](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr).-->
 
 > *Note on zero "inflation" of single-cell data*
 >
@@ -175,7 +176,8 @@ For sparse, high-dimensional, _biological_ data, we expect many genes to have co
 
 <details>
     <summary>*More detail on dimensionality reduction *</summary>
-    The [Ouyang Lab has a "gentle introduction" section of their materials](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr) that goes into greater details on dimensionality reduction including how similar strategies are used in deep learning models. Additionaly, the OSCA book has a [chapter on Dimensionality reduction](https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html) that has useful context. 
+<!-- 404?    The [Ouyang Lab has a "gentle introduction" section of their materials](https://ouyanglab.com/singlecell/basic.html#a-gentle-introduction-to-dr) that goes into greater details on dimensionality reduction including how similar strategies are used in deep learning models. -->
+The OSCA book has a [chapter on Dimensionality reduction](https://bioconductor.org/books/3.15/OSCA.basic/dimensionality-reduction.html) that has useful context. 
 </details>
 <br>
 <br>
@@ -193,7 +195,7 @@ For sparse, high-dimensional, _biological_ data, we expect many genes to have co
 
 <!--- Add introduction to function, including link to documentation --->
 
-Since PCA is sensitive to scale, we will use the SCT normalized assay ([reference](https://ouyanglab.com/singlecell/basic.html#pca-principal-component-analysis)). We will name the reduction in an informative way to keep them clear for us in the future. In this case, our data has not yet been integrated, but it has been SCT normalized. So we will name the reduction `unintegrated.sct.pca`. Note that `SCTTransform()` returned a set of highly variable genes, and the `RunPCA()` function will use this subset to determine the PCs and genes associated with those PCs.
+Since PCA is sensitive to scale, we will use the SCT normalized assay. We will name the reduction in an informative way to keep them clear for us in the future. In this case, our data has not yet been integrated, but it has been SCT normalized. So we will name the reduction `unintegrated.sct.pca`. Note that `SCTTransform()` returned a set of highly variable genes, and the `RunPCA()` function will use this subset to determine the PCs and genes associated with those PCs.
 
 
 ```{r, run_pca, warning = FALSE, message = FALSE}
