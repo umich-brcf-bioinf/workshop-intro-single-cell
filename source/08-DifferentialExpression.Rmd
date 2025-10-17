@@ -103,7 +103,7 @@ For cell-level comparisons, simpler statistical methods like a t-test or the Wil
 
 As mentioned earlier, many of the tools developed for bulk RNA-seq have been shown to have good performance for single-cell data, such as EdgeR or DESeq2, particularly when the count data is aggregated into sample-level "pseudobulk" values for each cluster [source](https://www.sc-best-practices.org/conditions/differential_gene_expression.html). 
 
-As discussed in the [single-cell best practices book](https://www.sc-best-practices.org/conditions/differential_gene_expression.html) and in the [Ouyang Lab's marker gene identification materials](https://ouyanglab.com/singlecell/clust.html#sec:diffexpr), there are active benchmarking efforts and threshold considerations for single-cell data.
+As discussed in the [single-cell best practices book](https://www.sc-best-practices.org/conditions/differential_gene_expression.html) there are active benchmarking efforts and threshold considerations for single-cell data.
 
 <!-- add more in depth model comparisons options later?
 ## Model options

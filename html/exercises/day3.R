@@ -9,7 +9,7 @@ library(tidyverse)
 library(scCATCH)
 
 # Load in seurat object with alternative clustering results from yesterday's exercises
-exso3 = readRDS('results/rdata/geo_so_sct_integrated_exercise.rds')
+exso3 = readRDS('results/rdata/geo_so_sct_clustered_exercise.rds')
 exso3 # check that object loaded
 
 ## NOTE - BEFORE STOPPING WORK ON THE EXERCISES REMEMBER TO POWER DOWN AND RESTART R SESSION !!!!

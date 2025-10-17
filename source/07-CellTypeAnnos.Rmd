@@ -113,14 +113,16 @@ if(!exists('geo_markers')) {
 
 Automated tools have the advantage of being able to compare between the expression patterns in our dataset and large numbers of reference datasets or databases at a scale that is not feasible to do manually.
 
-As described [in more detail by the Ouyang Lab](https://ouyanglab.com/singlecell/clust.html#annotating-clusters) and summarized in the figure below, there are many computational tools that aim to assign cell type labels for single-cell data. These methods generally fall into three categories: 
+There are many computational tools that aim to assign cell type labels for single-cell data. These methods generally fall into three categories: 
 
 1. Marker based approaches that use gene sets drawn from the literature, including previous single-cell studies, 
 2. Correlation based approaches that estimate the similarity between the cells or clusters in the input data and some reference data
 3. Machine learning approaches that include training on a single-cell reference atlas. 
 
-![Image: Diagram of types of cell annotation approaches (from Oyang materials).](./images/curriculum/07-CellTypeAnnotation/Ouyang_clust-celltype.png){height=50%}     
+![Cell annotation approaches](./images/curriculum/07-CellTypeAnnotation/Ouyang_clust-celltype.png){height=50%}     
+From [Automated methods for cell type annotation on scRNA-seq data](https://pubmed.ncbi.nlm.nih.gov/33613863/)
 <br/>
+
 
 However, across any of these approaches the quality of the reference data (and reliability of the authors labels) and relevancy to your specific tissue/experiment (and the resolution of your biological question) is crucial. Additionally, it's important to consider that rare or novel cell populations may not be present or well-characterized in available references and that even after filtering, some clusters might correspond to stressed or dying cells and not a particular cell-type or subtype. Therefore, any prediction should be reviewed and considered in the context both marker gene expression for the dataset and knowledge of the biological system and broader literature. 
 

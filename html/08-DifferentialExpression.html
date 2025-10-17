@@ -520,11 +520,8 @@ sample-level “pseudobulk” values for each cluster <a
 href="https://www.sc-best-practices.org/conditions/differential_gene_expression.html">source</a>.</p>
 <p>As discussed in the <a
 href="https://www.sc-best-practices.org/conditions/differential_gene_expression.html">single-cell
-best practices book</a> and in the <a
-href="https://ouyanglab.com/singlecell/clust.html#sec:diffexpr">Ouyang
-Lab’s marker gene identification materials</a>, there are active
-benchmarking efforts and threshold considerations for single-cell
-data.</p>
+best practices book</a> there are active benchmarking efforts and
+threshold considerations for single-cell data.</p>
 <!-- add more in depth model comparisons options later?
 ## Model options
 
@@ -547,19 +544,14 @@ and condition identities before running our comparison using
 geo_so$day.celltype = paste(geo_so$time, geo_so$cell_type, sep = &#39;_&#39;)
 # check labels
 unique(geo_so$day.celltype)</code></pre>
-<pre><code> [1] &quot;Day0_Myofibroblast&quot;            &quot;Day0_Hematopoietic Stem Cell&quot;  &quot;Day0_Dendritic Cell&quot;          
- [4] &quot;Day0_Monocyte&quot;                 &quot;Day0_B cell&quot;                   &quot;Day0_Platelet&quot;                
- [7] &quot;Day0_Smooth muscle cell&quot;       &quot;Day0_Stem Cell&quot;                &quot;Day0_Pericyte&quot;                
-[10] &quot;Day0_Fibroblast&quot;               &quot;Day0_Unknown&quot;                  &quot;Day0_T Cell&quot;                  
-[13] &quot;Day0_Infl. Macrophage&quot;         &quot;Day7_Hematopoietic Stem Cell&quot;  &quot;Day7_Dendritic Cell&quot;          
-[16] &quot;Day7_Monocyte&quot;                 &quot;Day7_Pericyte&quot;                 &quot;Day7_Myofibroblast&quot;           
-[19] &quot;Day7_Platelet&quot;                 &quot;Day7_Infl. Macrophage&quot;         &quot;Day7_Smooth muscle cell&quot;      
-[22] &quot;Day7_Stem Cell&quot;                &quot;Day7_Fibroblast&quot;               &quot;Day7_B cell&quot;                  
-[25] &quot;Day7_T Cell&quot;                   &quot;Day7_Unknown&quot;                  &quot;Day21_Smooth muscle cell&quot;     
-[28] &quot;Day21_Dendritic Cell&quot;          &quot;Day21_Monocyte&quot;                &quot;Day21_Myofibroblast&quot;          
-[31] &quot;Day21_Pericyte&quot;                &quot;Day21_Hematopoietic Stem Cell&quot; &quot;Day21_Fibroblast&quot;             
-[34] &quot;Day21_Platelet&quot;                &quot;Day21_T Cell&quot;                  &quot;Day21_Stem Cell&quot;              
-[37] &quot;Day21_Infl. Macrophage&quot;        &quot;Day21_Unknown&quot;                 &quot;Day21_B cell&quot;                 </code></pre>
+<pre><code> [1] &quot;Day0_Myofibroblast&quot;            &quot;Day0_Hematopoietic Stem Cell&quot;  &quot;Day0_Dendritic Cell&quot;           &quot;Day0_Monocyte&quot;                 &quot;Day0_B cell&quot;                  
+ [6] &quot;Day0_Platelet&quot;                 &quot;Day0_Smooth muscle cell&quot;       &quot;Day0_Stem Cell&quot;                &quot;Day0_Pericyte&quot;                 &quot;Day0_Fibroblast&quot;              
+[11] &quot;Day0_Unknown&quot;                  &quot;Day0_T Cell&quot;                   &quot;Day0_Infl. Macrophage&quot;         &quot;Day7_Hematopoietic Stem Cell&quot;  &quot;Day7_Dendritic Cell&quot;          
+[16] &quot;Day7_Monocyte&quot;                 &quot;Day7_Pericyte&quot;                 &quot;Day7_Myofibroblast&quot;            &quot;Day7_Platelet&quot;                 &quot;Day7_Infl. Macrophage&quot;        
+[21] &quot;Day7_Smooth muscle cell&quot;       &quot;Day7_Stem Cell&quot;                &quot;Day7_Fibroblast&quot;               &quot;Day7_B cell&quot;                   &quot;Day7_T Cell&quot;                  
+[26] &quot;Day7_Unknown&quot;                  &quot;Day21_Smooth muscle cell&quot;      &quot;Day21_Dendritic Cell&quot;          &quot;Day21_Monocyte&quot;                &quot;Day21_Myofibroblast&quot;          
+[31] &quot;Day21_Pericyte&quot;                &quot;Day21_Hematopoietic Stem Cell&quot; &quot;Day21_Fibroblast&quot;              &quot;Day21_Platelet&quot;                &quot;Day21_T Cell&quot;                 
+[36] &quot;Day21_Stem Cell&quot;               &quot;Day21_Infl. Macrophage&quot;        &quot;Day21_Unknown&quot;                 &quot;Day21_B cell&quot;                 </code></pre>
 <pre class="r"><code># Reset cell identities to the combined condition + celltype label
 Idents(geo_so) = &#39;day.celltype&#39;</code></pre>
 <div
@@ -971,9 +963,9 @@ section.</p>
 # (Ok since we saved the plots as we went along.)
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()</code></pre>
-<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
-Ncells   9904498  529.0   18162970  970.1   18162970   970.1
-Vcells 349278299 2664.8 1135410568 8662.5 1772131429 13520.3</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)  max used   (Mb)
+Ncells   9492623  507.0   17984245  960.5  12351778  659.7
+Vcells 348315415 2657.5  795005255 6065.5 792577216 6046.9</code></pre>
 <p>We’ll save a copy of the final Seurat object to final.</p>
 <pre class="r"><code># -------------------------------------------------------------------------
 # Save Seurat object

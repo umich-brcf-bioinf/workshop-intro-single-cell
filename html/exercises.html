@@ -500,10 +500,8 @@ save the Seurat object and “power down” your session. <br/></li>
 <p>This simple pattern will make your code more reproducible and your
 RStudio session more reliable.</p>
 </div>
-<p><br/></p>
 <div id="day-1" class="section level2">
 <h2>Day 1</h2>
-<!-- Add Rmd version of exercises with smaller code blocks -->
 <p>You don’t need to have a fresh environment for these exercises. All
 variable names will be different from the lessons. Load the libraries
 (it’s okay if they’re already loaded) and the unfiltered Seurat object
@@ -554,10 +552,13 @@ remain?</p>
 <h3>Day 1 Exercise 4</h3>
 <p>Subset <code>exso</code> so that each of the previous three
 conditions are satisfied. How many cells remain?</p>
-<!-- Use R script as key in hidden dropdown -->
+</div>
+</div>
+<div id="day-1-solutions" class="section level2">
+<h2>Day 1 solutions</h2>
 <details>
 <summary>
-<em>Example Solutions - Day 1</em>
+<strong>Scripts</strong>
 </summary>
 <pre class="r"><code># =========================================================================
 # Independent Exercise - Day 1 Startup
@@ -600,13 +601,105 @@ exso = subset(exso, nFeature_RNA &gt;= 1000 &amp; nCount_RNA &gt;= 1000 &amp; pe
 ex4 = exso@meta.data %&gt;% count(orig.ident, name = &#39;postfilter_cells&#39;)
 ex4</code></pre>
 </details>
+<details>
+<summary>
+<strong>Full output</strong>
+</summary>
+<pre class="r"><code># =========================================================================
+# Independent Exercise - Day 1 Startup
+# =========================================================================
+
+# After restarting our R session, load the required libraries &amp; input data
+library(Seurat)
+library(BPCells)
+library(tidyverse)
+
+# Load the unfiltered version and give it a new variable name
+exso = readRDS(&#39;./inputs/prepared_data/rdata/geo_so_unfiltered.rds&#39;)
+
+# Add percent.mt column to meta.data
+exso$percent.mt = PercentageFeatureSet(exso, pattern = &#39;^mt-&#39;)
+
+## NOTE - BEFORE STOPPING WORK ON THE EXERCISES REMEMBER TO POWER DOWN AND RESTART R SESSION !!!!
+
+# Exercise 1
+exso = subset(exso, nFeature_RNA &gt;= 1000)
+
+ex1 = exso@meta.data %&gt;% count(orig.ident, name = &#39;postfilter_cells&#39;)
+ex1</code></pre>
+<pre><code>          orig.ident postfilter_cells
+1   HODay0replicate1              937
+2   HODay0replicate2              545
+3   HODay0replicate3              992
+4   HODay0replicate4              833
+5  HODay21replicate1             1854
+6  HODay21replicate2             1094
+7  HODay21replicate3             1093
+8  HODay21replicate4             2288
+9   HODay7replicate1             3756
+10  HODay7replicate2             4212
+11  HODay7replicate3             4207
+12  HODay7replicate4             3445</code></pre>
+<pre class="r"><code># Exercise 2
+exso = subset(exso, nCount_RNA &gt;= 1000)
+
+ex2 = exso@meta.data %&gt;% count(orig.ident, name = &#39;postfilter_cells&#39;)
+ex2</code></pre>
+<pre><code>          orig.ident postfilter_cells
+1   HODay0replicate1              937
+2   HODay0replicate2              545
+3   HODay0replicate3              992
+4   HODay0replicate4              833
+5  HODay21replicate1             1854
+6  HODay21replicate2             1094
+7  HODay21replicate3             1093
+8  HODay21replicate4             2288
+9   HODay7replicate1             3756
+10  HODay7replicate2             4212
+11  HODay7replicate3             4207
+12  HODay7replicate4             3445</code></pre>
+<pre class="r"><code># Exercise 3
+exso = subset(exso, percent.mt &lt; 10)
+
+ex3 = exso@meta.data %&gt;% count(orig.ident, name = &#39;postfilter_cells&#39;)
+ex3</code></pre>
+<pre><code>          orig.ident postfilter_cells
+1   HODay0replicate1              886
+2   HODay0replicate2              535
+3   HODay0replicate3              976
+4   HODay0replicate4              821
+5  HODay21replicate1             1793
+6  HODay21replicate2             1059
+7  HODay21replicate3             1052
+8  HODay21replicate4             2179
+9   HODay7replicate1             3574
+10  HODay7replicate2             4057
+11  HODay7replicate3             4069
+12  HODay7replicate4             3299</code></pre>
+<pre class="r"><code># Exercise 4
+exso = subset(exso, nFeature_RNA &gt;= 1000 &amp; nCount_RNA &gt;= 1000 &amp; percent.mt &lt; 10)
+
+ex4 = exso@meta.data %&gt;% count(orig.ident, name = &#39;postfilter_cells&#39;)
+ex4</code></pre>
+<pre><code>          orig.ident postfilter_cells
+1   HODay0replicate1              886
+2   HODay0replicate2              535
+3   HODay0replicate3              976
+4   HODay0replicate4              821
+5  HODay21replicate1             1793
+6  HODay21replicate2             1059
+7  HODay21replicate3             1052
+8  HODay21replicate4             2179
+9   HODay7replicate1             3574
+10  HODay7replicate2             4057
+11  HODay7replicate3             4069
+12  HODay7replicate4             3299</code></pre>
+</details>
 <p><br></p>
 <hr />
 </div>
-</div>
 <div id="day-2" class="section level2">
 <h2>Day 2</h2>
-<!-- link out to `clusters_faq.Rmd` to show examples? -->
 <p>Since we are working with larger object sizes, it’s best to start
 with a fresh session. All variable names will be different from the
 lessons. Load the libraries (it’s okay if they’re already loaded) and
@@ -718,10 +811,13 @@ saveRDS(exso2, file = paste0(&#39;results/rdata/geo_so_sct_integrated_exercise.r
 rm(exso2)
 gc()</code></pre>
 <p><br/> <br/></p>
-<!-- Use R script as key in hidden dropdown -->
+</div>
+</div>
+<div id="day-2-solutions" class="section level2">
+<h2>Day 2 solutions</h2>
 <details>
 <summary>
-<em>Example Solutions - Day 2</em>
+<strong>Scripts</strong>
 </summary>
 <pre class="r"><code># =========================================================================
 # Independent Exercise - Day 2 Startup
@@ -833,13 +929,247 @@ saveRDS(exso2, file = paste0(&#39;results/rdata/geo_so_sct_clustered_exercise.rd
 rm(exso2)
 gc()</code></pre>
 </details>
-<p><br></p>
+<details>
+<summary>
+<strong>Full output</strong>
+</summary>
+<pre class="r"><code># =========================================================================
+# Independent Exercise - Day 2 Startup
+# =========================================================================
+
+# After restarting our R session, load the required libraries &amp; input data
+library(Seurat)
+library(BPCells)
+library(tidyverse)
+
+# Use provided copy of integrated data
+exso2 = readRDS(&#39;inputs/prepared_data/rdata/geo_so_sct_integrated.rds&#39;)
+exso2 # check that object loaded</code></pre>
+<pre><code>An object of class Seurat 
+46957 features across 31559 samples within 2 assays 
+Active assay: SCT (20468 features, 3000 variable features)
+ 3 layers present: counts, data, scale.data
+ 1 other assay present: RNA
+ 2 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca</code></pre>
+<pre class="r"><code>### Day 2 Exercise 1 - Clustering with reduced number of PCs
+# -------------------------------------------------------------------------
+# Testing fewer PCs for clustering 
+
+# look at elbow plot to check PCs and consider alternatives to the number selected for main materials
+ElbowPlot(exso2, ndims = 50, reduction = &#39;unintegrated.sct.pca&#39;)</code></pre>
+<p><img src="images/curriculum/XXday2_output-1.png" width="816" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># select alternative value to try (can choose a number &lt;10 or &gt;10 PCs)
+pcs = 6
+
+# generate nearest neighbor (graph), using selected number of PCs
+exso2 = FindNeighbors(exso2, dims = 1:pcs, reduction = &#39;integrated.sct.rpca&#39;)</code></pre>
+<pre><code>Computing nearest neighbor graph</code></pre>
+<pre><code>Computing SNN</code></pre>
+<pre class="r"><code># -------------------------------------------------------------------------
+# start with one resolution
+res = 0.2
+
+# generate clusters, using `pcs` and `res` to make a custom cluster name that will be added to the metadata
+exso2 = FindClusters(exso2, resolution = res, 
+                     cluster.name = paste0(&#39;int.sct.rpca.clusters&#39;, res))</code></pre>
+<pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 31559
+Number of edges: 950342
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9612
+Number of communities: 12
+Elapsed time: 3 seconds</code></pre>
+<pre class="r"><code># look at meta.data to see cluster labels
+head(exso2@meta.data)</code></pre>
+<pre><code>                                          orig.ident nCount_RNA nFeature_RNA condition time  replicate percent.mt nCount_SCT nFeature_SCT int.sct.rpca.clusters0.2 seurat_clusters
+HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1      10234         3226        HO Day0 replicate1   1.240962       6062         2867                        0               0
+HODay0replicate1_AAACCTGGTCATGCAT-1 HODay0replicate1       3158         1499        HO Day0 replicate1   7.536415       4607         1509                        0               0
+HODay0replicate1_AAACCTGTCAGAGCTT-1 HODay0replicate1      13464         4102        HO Day0 replicate1   3.112002       5314         2370                        0               0
+HODay0replicate1_AAACGGGAGAGACTTA-1 HODay0replicate1        577          346        HO Day0 replicate1   1.559792       3877         1031                        7               7
+HODay0replicate1_AAACGGGAGGCCCGTT-1 HODay0replicate1       1189          629        HO Day0 replicate1   3.700589       4166          915                        0               0
+HODay0replicate1_AAACGGGCAACTGGCC-1 HODay0replicate1       7726         2602        HO Day0 replicate1   2.938131       5865         2588                        0               0</code></pre>
+<pre class="r"><code># run UMAP reduction to prepare for plotting
+exso2 = RunUMAP(exso2, dims = 1:pcs, 
+                reduction = &#39;integrated.sct.rpca&#39;, 
+                reduction.name = paste0(&#39;umap.integrated.sct.rpca_alt&#39;, res))</code></pre>
+<pre><code>Warning: The default method for RunUMAP has changed from calling Python UMAP via reticulate to the R-native UWOT using the cosine metric
+To use Python UMAP via reticulate, set umap.method to &#39;umap-learn&#39; and metric to &#39;correlation&#39;
+This message will be shown once per session</code></pre>
+<pre><code>21:30:02 UMAP embedding parameters a = 0.9922 b = 1.112</code></pre>
+<pre><code>21:30:02 Read 31559 rows and found 6 numeric columns</code></pre>
+<pre><code>21:30:02 Using Annoy for neighbor search, n_neighbors = 30</code></pre>
+<pre><code>21:30:02 Building Annoy index with metric = cosine, n_trees = 50</code></pre>
+<pre><code>0%   10   20   30   40   50   60   70   80   90   100%</code></pre>
+<pre><code>[----|----|----|----|----|----|----|----|----|----|</code></pre>
+<pre><code>**************************************************|
+21:30:06 Writing NN index file to temp file /tmp/Rtmp0Y5yMq/file124dae097d3
+21:30:06 Searching Annoy index using 1 thread, search_k = 3000
+21:30:19 Annoy recall = 100%
+21:30:20 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+21:30:22 Initializing from normalized Laplacian + noise (using RSpectra)
+21:30:25 Commencing optimization for 200 epochs, with 1214176 positive edges
+21:30:25 Using rng type: pcg
+21:30:38 Optimization finished</code></pre>
+<pre class="r"><code># check object to see if named reduction was added
+exso2</code></pre>
+<pre><code>An object of class Seurat 
+46957 features across 31559 samples within 2 assays 
+Active assay: SCT (20468 features, 3000 variable features)
+ 3 layers present: counts, data, scale.data
+ 1 other assay present: RNA
+ 3 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca, umap.integrated.sct.rpca_alt0.2</code></pre>
+<pre class="r"><code>## Challenge 1 - solution option
+# -------------------------------------------------------------------------
+# use for loop to generate clustering with alternative resolutions
+for(i in c(0.4, 0.8, 1.0)){
+  exso2 = FindClusters(exso2, resolution = i, 
+                       cluster.name = paste0(&#39;int.sct.rpca.clusters&#39;, i))
+  
+  # look at meta.data to see cluster labels
+  head(exso2@meta.data)
+  
+  # run UMAP reduction to prepare for plotting
+  exso2 = RunUMAP(exso2, dims = 1:pcs, 
+                  reduction = &#39;integrated.sct.rpca&#39;, 
+                  reduction.name = paste0(&#39;umap.integrated.sct.rpca_alt&#39;, i))
+  
+  # check object to see if multiple cluster resolutions are added
+  head(exso2@meta.data)
+}</code></pre>
+<pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 31559
+Number of edges: 950342
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9428
+Number of communities: 20
+Elapsed time: 3 seconds</code></pre>
+<pre><code>21:30:42 UMAP embedding parameters a = 0.9922 b = 1.112
+21:30:42 Read 31559 rows and found 6 numeric columns
+21:30:42 Using Annoy for neighbor search, n_neighbors = 30
+21:30:42 Building Annoy index with metric = cosine, n_trees = 50
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+21:30:46 Writing NN index file to temp file /tmp/Rtmp0Y5yMq/file124da1abc6065
+21:30:46 Searching Annoy index using 1 thread, search_k = 3000
+21:30:59 Annoy recall = 100%
+21:31:00 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+21:31:02 Initializing from normalized Laplacian + noise (using RSpectra)
+21:31:05 Commencing optimization for 200 epochs, with 1214176 positive edges
+21:31:05 Using rng type: pcg
+21:31:18 Optimization finished</code></pre>
+<pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 31559
+Number of edges: 950342
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9216
+Number of communities: 28
+Elapsed time: 3 seconds</code></pre>
+<pre><code>21:31:22 UMAP embedding parameters a = 0.9922 b = 1.112
+21:31:22 Read 31559 rows and found 6 numeric columns
+21:31:22 Using Annoy for neighbor search, n_neighbors = 30
+21:31:22 Building Annoy index with metric = cosine, n_trees = 50
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+21:31:26 Writing NN index file to temp file /tmp/Rtmp0Y5yMq/file124da9655b50
+21:31:26 Searching Annoy index using 1 thread, search_k = 3000
+21:31:39 Annoy recall = 100%
+21:31:39 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+21:31:41 Initializing from normalized Laplacian + noise (using RSpectra)
+21:31:44 Commencing optimization for 200 epochs, with 1214176 positive edges
+21:31:44 Using rng type: pcg
+21:31:58 Optimization finished</code></pre>
+<pre><code>Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck
+
+Number of nodes: 31559
+Number of edges: 950342
+
+Running Louvain algorithm...
+Maximum modularity in 10 random starts: 0.9136
+Number of communities: 30
+Elapsed time: 3 seconds</code></pre>
+<pre><code>21:32:02 UMAP embedding parameters a = 0.9922 b = 1.112
+21:32:02 Read 31559 rows and found 6 numeric columns
+21:32:02 Using Annoy for neighbor search, n_neighbors = 30
+21:32:02 Building Annoy index with metric = cosine, n_trees = 50
+0%   10   20   30   40   50   60   70   80   90   100%
+[----|----|----|----|----|----|----|----|----|----|
+**************************************************|
+21:32:06 Writing NN index file to temp file /tmp/Rtmp0Y5yMq/file124da3bc483b2
+21:32:06 Searching Annoy index using 1 thread, search_k = 3000
+21:32:19 Annoy recall = 100%
+21:32:19 Commencing smooth kNN distance calibration using 1 thread with target n_neighbors = 30
+21:32:21 Initializing from normalized Laplacian + noise (using RSpectra)
+21:32:24 Commencing optimization for 200 epochs, with 1214176 positive edges
+21:32:24 Using rng type: pcg
+21:32:37 Optimization finished</code></pre>
+<pre class="r"><code>### Day 2 Exercise 2 - Plotting alternative clustering results
+# -------------------------------------------------------------------------
+# plot clustering results
+post_integration_umap_clusters_testing = 
+  DimPlot(exso2, group.by = paste0(&#39;int.sct.rpca.clusters&#39;, res), label = TRUE, 
+          reduction = paste0(&#39;umap.integrated.sct.rpca_alt&#39;, res)) + NoLegend()
+post_integration_umap_clusters_testing # look at plot</code></pre>
+<p><img src="images/curriculum/XXday2_output-2.png" width="816" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># output to file, including the number of PCs and resolution used to generate results
+ggsave(filename = paste0(&#39;results/figures/umap_int_sct_clusters_exercise_&#39;, 
+                         pcs,&#39;PC.&#39;,res,&#39;res&#39;,&#39;.png&#39;),
+       plot = post_integration_umap_clusters_testing, 
+       width = 8, height = 6, units = &#39;in&#39;)
+
+
+## Challenge 2 - solution option
+# -------------------------------------------------------------------------
+# use for loop to visualize clustering across tested resolutions
+post_integration_umap_plots &lt;- c()
+for(i in c(0.4, 0.8, 1.0)){
+  res_type = paste0(&quot;res_&quot;, i)
+  post_integration_umap_plots[[res_type]] = 
+    DimPlot(exso2, group.by = paste0(&#39;int.sct.rpca.clusters&#39;, i), label = TRUE, 
+            reduction = paste0(&#39;umap.integrated.sct.rpca_alt&#39;, i)) + NoLegend()
+}
+
+# look at plots for each resolution stored in list
+post_integration_umap_plots</code></pre>
+<pre><code>$res_0.4</code></pre>
+<p><img src="images/curriculum/XXday2_output-3.png" width="816" style="display: block; margin: auto;" /></p>
+<pre><code>
+$res_0.8</code></pre>
+<p><img src="images/curriculum/XXday2_output-4.png" width="816" style="display: block; margin: auto;" /></p>
+<pre><code>
+$res_1</code></pre>
+<p><img src="images/curriculum/XXday2_output-5.png" width="816" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># remove plot list to clean up session 
+rm(post_integration_umap_plots)
+
+
+## ----------------------------------------------------------
+## Clean up session, including any plot objects
+rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot)))));
+gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
+Ncells   6967048  372.1   10752860  574.3   10752860   574.3
+Vcells 384220421 2931.4 1067030484 8140.8 1333787743 10176.0</code></pre>
+<pre class="r"><code>## Save copy of Seurat object in current state to file
+saveRDS(exso2, file = paste0(&#39;results/rdata/geo_so_sct_clustered_exercise.rds&#39;))
+rm(exso2)
+gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
+Ncells   6967076  372.1   10752860  574.3   10752860   574.3
+Vcells 384236240 2931.5 1067030484 8140.8 1333787743 10176.0</code></pre>
+</details>
+<p><br/></p>
 <hr />
-</div>
 </div>
 <div id="day-3" class="section level2">
 <h2>Day 3</h2>
-<!-- Add Rmd version of exercises with smaller code blocks -->
 <p>Since we are working with larger object sizes, it’s best to start
 with a fresh session. All variable names will be different from the
 lessons. Load the libraries (it’s okay if they’re already loaded) and a
@@ -994,10 +1324,13 @@ gc()
 ```
 -->
 <p></br> <br/></p>
-<!-- Use R script as key in hidden dropdown -->
+</div>
+</div>
+<div id="day-3-solutions" class="section level2">
+<h2>Day 3 solutions</h2>
 <details>
 <summary>
-<em>Example Solutions - Day 3</em>
+<strong>Scripts</strong>
 </summary>
 <pre class="r"><code># =========================================================================
 # Independent Exercise - Day 3 Startup
@@ -1010,7 +1343,7 @@ library(tidyverse)
 library(scCATCH)
 
 # Load in seurat object with alternative clustering results from yesterday&#39;s exercises
-exso3 = readRDS(&#39;results/rdata/geo_so_sct_integrated_exercise.rds&#39;)
+exso3 = readRDS(&#39;results/rdata/geo_so_sct_clustered_exercise.rds&#39;)
 exso3 # check that object loaded
 
 ## NOTE - BEFORE STOPPING WORK ON THE EXERCISES REMEMBER TO POWER DOWN AND RESTART R SESSION !!!!
@@ -1096,8 +1429,196 @@ gc()
 
 ## BEFORE PROCEEDING TO THE NEXT SECTION or closing window - POWER DOWN AND RESTART R SESSION</code></pre>
 </details>
+<details>
+<summary>
+<strong>Full output</strong>
+</summary>
+<pre class="r"><code># =========================================================================
+# Independent Exercise - Day 3 Startup
+# =========================================================================
+
+# After restarting our R session, load the required libraries
+library(Seurat)
+library(BPCells)
+library(tidyverse)
+library(scCATCH)
+
+# Load in seurat object with alternative clustering results from yesterday&#39;s exercises
+exso3 = readRDS(&#39;results/rdata/geo_so_sct_clustered_exercise.rds&#39;)
+exso3 # check that object loaded</code></pre>
+<pre><code>An object of class Seurat 
+46957 features across 31559 samples within 2 assays 
+Active assay: SCT (20468 features, 3000 variable features)
+ 3 layers present: counts, data, scale.data
+ 1 other assay present: RNA
+ 6 dimensional reductions calculated: unintegrated.sct.pca, integrated.sct.rpca, umap.integrated.sct.rpca_alt0.2, umap.integrated.sct.rpca_alt0.4, umap.integrated.sct.rpca_alt0.8, umap.integrated.sct.rpca_alt1</code></pre>
+<pre class="r"><code>## NOTE - BEFORE STOPPING WORK ON THE EXERCISES REMEMBER TO POWER DOWN AND RESTART R SESSION !!!!
+
+
+### Day 3 Exercise 1 - examine marker genes and cell type predictions for alternative clustering
+## ----------------------------------------------------------
+# Check what identities are set
+Idents(exso3) %&gt;% head()</code></pre>
+<pre><code>HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1_AAACCTGGTCATGCAT-1 HODay0replicate1_AAACCTGTCAGAGCTT-1 HODay0replicate1_AAACGGGAGAGACTTA-1 HODay0replicate1_AAACGGGAGGCCCGTT-1 
+                                  3                                   3                                   1                                  23                                   9 
+HODay0replicate1_AAACGGGCAACTGGCC-1 
+                                  3 
+Levels: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29</code></pre>
+<pre class="r"><code>## use same values as previous exercise
+pcs = 6
+res = 0.2 
+
+## Set identities to clustering for selected resolution
+exso3 = SetIdent(exso3, value = paste0(&#39;int.sct.rpca.clusters&#39;, res))
+Idents(exso3) %&gt;% head()</code></pre>
+<pre><code>HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1_AAACCTGGTCATGCAT-1 HODay0replicate1_AAACCTGTCAGAGCTT-1 HODay0replicate1_AAACGGGAGAGACTTA-1 HODay0replicate1_AAACGGGAGGCCCGTT-1 
+                                  0                                   0                                   0                                   7                                   0 
+HODay0replicate1_AAACGGGCAACTGGCC-1 
+                                  0 
+Levels: 0 1 2 3 4 5 6 7 8 9 10 11</code></pre>
+<pre class="r"><code>## ----------------------------------------------------------
+## Generate cluster markers to see how that changes with new parameters 
+exso3 = PrepSCTFindMarkers(exso3, assay = &quot;SCT&quot;) # NOTE - this step will take some time to run</code></pre>
+<pre><code>Found 12 SCT models. Recorrecting SCT counts using minimum median counts: 3675.5</code></pre>
+<pre class="r"><code>exso3_markers = FindAllMarkers(exso3, only.pos = TRUE)</code></pre>
+<pre><code>Calculating cluster 0</code></pre>
+<pre><code>Calculating cluster 1</code></pre>
+<pre><code>Calculating cluster 2</code></pre>
+<pre><code>Calculating cluster 3</code></pre>
+<pre><code>Calculating cluster 4</code></pre>
+<pre><code>Calculating cluster 5</code></pre>
+<pre><code>Calculating cluster 6</code></pre>
+<pre><code>Calculating cluster 7</code></pre>
+<pre><code>Calculating cluster 8</code></pre>
+<pre><code>Calculating cluster 9</code></pre>
+<pre><code>Calculating cluster 10</code></pre>
+<pre><code>Calculating cluster 11</code></pre>
+<pre class="r"><code>head(exso3)</code></pre>
+<pre><code>                                          orig.ident nCount_RNA nFeature_RNA condition time  replicate percent.mt nCount_SCT nFeature_SCT int.sct.rpca.clusters0.2 seurat_clusters
+HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1      10234         3226        HO Day0 replicate1   1.240962       6062         2867                        0               3
+HODay0replicate1_AAACCTGGTCATGCAT-1 HODay0replicate1       3158         1499        HO Day0 replicate1   7.536415       4607         1509                        0               3
+HODay0replicate1_AAACCTGTCAGAGCTT-1 HODay0replicate1      13464         4102        HO Day0 replicate1   3.112002       5314         2370                        0               1
+HODay0replicate1_AAACGGGAGAGACTTA-1 HODay0replicate1        577          346        HO Day0 replicate1   1.559792       3877         1031                        7              23
+HODay0replicate1_AAACGGGAGGCCCGTT-1 HODay0replicate1       1189          629        HO Day0 replicate1   3.700589       4166          915                        0               9
+HODay0replicate1_AAACGGGCAACTGGCC-1 HODay0replicate1       7726         2602        HO Day0 replicate1   2.938131       5865         2588                        0               3
+HODay0replicate1_AAACGGGGTCCGAATT-1 HODay0replicate1       5165         2362        HO Day0 replicate1   9.196515       5162         2348                        6              11
+HODay0replicate1_AAACGGGGTCGGATCC-1 HODay0replicate1       2379         1381        HO Day0 replicate1   2.564103       4682         1400                        6              11
+HODay0replicate1_AAACGGGTCAGCTGGC-1 HODay0replicate1      12160         3646        HO Day0 replicate1   2.023026       5765         2604                        0               8
+HODay0replicate1_AAACGGGTCCGTACAA-1 HODay0replicate1       9864         2800        HO Day0 replicate1   2.139092       6033         2570                        0               3
+                                    int.sct.rpca.clusters0.4 int.sct.rpca.clusters0.8 int.sct.rpca.clusters1
+HODay0replicate1_AAACCTGAGAGAACAG-1                        4                        5                      3
+HODay0replicate1_AAACCTGGTCATGCAT-1                        4                        5                      3
+HODay0replicate1_AAACCTGTCAGAGCTT-1                        0                        1                      1
+HODay0replicate1_AAACGGGAGAGACTTA-1                       17                       13                     23
+HODay0replicate1_AAACGGGAGGCCCGTT-1                        1                        0                      9
+HODay0replicate1_AAACGGGCAACTGGCC-1                        4                        1                      3
+HODay0replicate1_AAACGGGGTCCGAATT-1                        8                       11                     11
+HODay0replicate1_AAACGGGGTCGGATCC-1                        8                       11                     11
+HODay0replicate1_AAACGGGTCAGCTGGC-1                        1                        0                      8
+HODay0replicate1_AAACGGGTCCGTACAA-1                        4                        5                      3</code></pre>
+<pre class="r"><code># Create table of top 5 markers per cluster (using default ranking)
+top_5 = exso3_markers %&gt;% filter(p_val_adj &lt; 0.01) %&gt;% group_by(cluster) %&gt;% slice_head(n = 5)
+head(top_5, n = 10) # look at results</code></pre>
+<pre><code># A tibble: 10 × 7
+# Groups:   cluster [2]
+   p_val avg_log2FC pct.1 pct.2 p_val_adj cluster gene    
+   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;fct&gt;   &lt;chr&gt;   
+ 1     0       5.36 0.826 0.066         0 0       Clec3b  
+ 2     0       3.37 0.883 0.159         0 0       Dpt     
+ 3     0       3.39 0.957 0.244         0 0       Serping1
+ 4     0       3.63 0.778 0.117         0 0       Col14a1 
+ 5     0       3.27 0.757 0.103         0 0       C1s1    
+ 6     0       4.22 0.921 0.135         0 1       Col12a1 
+ 7     0       4.09 0.833 0.1           0 1       Tnc     
+ 8     0       3.75 0.885 0.156         0 1       Thbs2   
+ 9     0       2.99 0.894 0.169         0 1       Lox     
+10     0       4.97 0.756 0.064         0 1       Col11a1 </code></pre>
+<pre class="r"><code>write_csv(top_5, file = paste0(&#39;results/tables/top5_marker_genes_exercise.csv&#39;))
+
+
+#### Day 3 Exercise 2 - Generate predictions for alternative clustering 
+## ----------------------------------------------------
+## Next - run scCATCH predictions for alternative clustering results
+exso3_catch = createscCATCH(data = exso3@assays$SCT@counts, cluster = as.character(Idents(exso3)))
+catch_markers = exso3_markers %&gt;% rename(&#39;logfc&#39; = &#39;avg_log2FC&#39;)
+exso3_catch@markergene = exso3_markers
+exso3_catch@marker = cellmatch[cellmatch$species == &#39;Mouse&#39; &amp; cellmatch$tissue %in% c(&#39;Blood&#39;, &#39;Peripheral Blood&#39;, &#39;Muscle&#39;, &#39;Skeletal muscle&#39;, &#39;Epidermis&#39;, &#39;Skin&#39;), ]
+exso3_catch = findcelltype(exso3_catch)</code></pre>
+<pre><code></code></pre>
+<pre><code>[+++++++&gt;----------------------] Finished: 25% Time 00:00:00[+++++++++&gt;--------------------] Finished: 33% Time 00:00:00[+++++++++++&gt;------------------] Finished: 42% Time 00:00:00[++++++++++++++&gt;---------------] Finished: 50% Time 00:00:00[+++++++++++++++++&gt;------------] Finished: 58% Time 00:00:01[+++++++++++++++++++&gt;----------] Finished: 67% Time 00:00:01[+++++++++++++++++++++&gt;--------] Finished: 75% Time 00:00:01[++++++++++++++++++++++++&gt;-----] Finished: 83% Time 00:00:01[+++++++++++++++++++++++++++&gt;--] Finished: 92% Time 00:00:02[++++++++++++++++++++++++++++++] Finished:100% Time 00:00:02</code></pre>
+<pre class="r"><code># Check predictions
+exso3_catch@celltype %&gt;% select(cluster, cell_type, celltype_score)</code></pre>
+<pre><code>   cluster               cell_type celltype_score
+1        0 Hematopoietic Stem Cell           0.87
+2        1               Stem Cell           0.83
+3        2              Macrophage           0.83
+4        3              Neutrophil           0.81
+5        4          Dendritic Cell           0.86
+6        5  Germinal Center B Cell           0.88
+7        6 Hematopoietic Stem Cell           0.91
+8        7 Hematopoietic Stem Cell           0.90
+9        8 Hematopoietic Stem Cell           0.88
+10       9   Muscle Satellite Cell           0.95
+11      10             CD8+ T Cell           0.90
+12      11            Stromal Cell           0.66</code></pre>
+<pre class="r"><code>#### Day 3 Exercise 3 - Add predictions to Seurat object
+## ------------------------------------------------------
+## Use predictions to label clusters and UMAP plot
+catch_celltypes = exso3_catch@celltype %&gt;% select(cluster, cell_type)
+colnames(catch_celltypes)[2] = paste0(&#39;cell_type.&#39;,pcs,&#39;PC.&#39;,res,&#39;res&#39;)
+new_metadata = exso3@meta.data %&gt;% 
+  left_join(catch_celltypes, 
+            by = c(&#39;seurat_clusters&#39; = &#39;cluster&#39;)) # using `seurat_clusters`, which will store the most recently generated cluster labels for each cell
+rownames(new_metadata) = rownames(exso3@meta.data) #  We are implicitly relying on the same row order!
+exso3@meta.data = new_metadata # Replace the meta.data
+head(exso3@meta.data)</code></pre>
+<pre><code>                                          orig.ident nCount_RNA nFeature_RNA condition time  replicate percent.mt nCount_SCT nFeature_SCT int.sct.rpca.clusters0.2 seurat_clusters
+HODay0replicate1_AAACCTGAGAGAACAG-1 HODay0replicate1      10234         3226        HO Day0 replicate1   1.240962       6062         2867                        0               3
+HODay0replicate1_AAACCTGGTCATGCAT-1 HODay0replicate1       3158         1499        HO Day0 replicate1   7.536415       4607         1509                        0               3
+HODay0replicate1_AAACCTGTCAGAGCTT-1 HODay0replicate1      13464         4102        HO Day0 replicate1   3.112002       5314         2370                        0               1
+HODay0replicate1_AAACGGGAGAGACTTA-1 HODay0replicate1        577          346        HO Day0 replicate1   1.559792       3877         1031                        7              23
+HODay0replicate1_AAACGGGAGGCCCGTT-1 HODay0replicate1       1189          629        HO Day0 replicate1   3.700589       4166          915                        0               9
+HODay0replicate1_AAACGGGCAACTGGCC-1 HODay0replicate1       7726         2602        HO Day0 replicate1   2.938131       5865         2588                        0               3
+                                    int.sct.rpca.clusters0.4 int.sct.rpca.clusters0.8 int.sct.rpca.clusters1  cell_type.6PC.0.2res
+HODay0replicate1_AAACCTGAGAGAACAG-1                        4                        5                      3            Neutrophil
+HODay0replicate1_AAACCTGGTCATGCAT-1                        4                        5                      3            Neutrophil
+HODay0replicate1_AAACCTGTCAGAGCTT-1                        0                        1                      1             Stem Cell
+HODay0replicate1_AAACGGGAGAGACTTA-1                       17                       13                     23                  &lt;NA&gt;
+HODay0replicate1_AAACGGGAGGCCCGTT-1                        1                        0                      9 Muscle Satellite Cell
+HODay0replicate1_AAACGGGCAACTGGCC-1                        4                        1                      3            Neutrophil</code></pre>
+<pre class="r"><code>#### Day 3 Exercise 4 - Plot UMAP with new cluster labels
+## ------------------------------------------------------
+catch_umap_plot = DimPlot(exso3, group.by = paste0(&#39;cell_type.&#39;,pcs,&#39;PC.&#39;,res,&#39;res&#39;), 
+                          label = TRUE, reduction = paste0(&#39;umap.integrated.sct.rpca_alt&#39;, res))
+catch_umap_plot</code></pre>
+<p><img src="images/curriculum/XXday3_output-1.png" width="816" style="display: block; margin: auto;" /></p>
+<pre class="r"><code># Save the plot to file
+# output to file, including the number of PCs and resolution used to generate results
+ggsave(filename = paste0(&#39;results/figures/umap_int_catch-labeled_&#39;, 
+                         pcs,&#39;PC.&#39;,res,&#39;res&#39;,&#39;.png&#39;),
+       plot = catch_umap_plot, 
+       width = 8, height = 6, units = &#39;in&#39;)
+
+
+## ----------------------------------------------------------
+## Clean up session 
+rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
+rm(catch_celltypes, catch_markers, exso3_catch, exso3_markers, new_metadata, top_5); 
+gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
+Ncells   6944763  370.9   10752860  574.3   10752860   574.3
+Vcells 338468682 2582.4 1229359917 9379.3 1534788602 11709.6</code></pre>
+<pre class="r"><code>## (Optional) - Save copy of exso3
+saveRDS(exso3, file = paste0(&#39;results/rdata/geo_so_sct_integrated_with_markers_exercise.rds&#39;))
+rm(exso3)
+gc()</code></pre>
+<pre><code>            used   (Mb) gc trigger   (Mb)   max used    (Mb)
+Ncells   6944784  370.9   10752860  574.3   10752860   574.3
+Vcells 338468716 2582.4  983487934 7503.5 1534788602 11709.6</code></pre>
+<pre class="r"><code>## BEFORE PROCEEDING TO THE NEXT SECTION or closing window - POWER DOWN AND RESTART R SESSION</code></pre>
+</details>
 <p><br></p>
-</div>
+<hr />
 </div>
 </div>
 

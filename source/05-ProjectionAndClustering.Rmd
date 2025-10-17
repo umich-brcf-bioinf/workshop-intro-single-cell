@@ -123,6 +123,10 @@ Related - how important is that decision to the downstream impact (e.g. how much
 In addition to the heatmaps we generated in the last module, another way to evaluate how many PCs explain the majority of the variation is by generating an elbow plot, which shows the percent variance explained by successive PCs. We'll use the `ElbowPlot()` function to do this, specifying that the first 50 PCs be plotted. 
 
 ```{r, elbow_plot, fig.show='hold', out.width='80%'}
+# =========================================================================
+# Clustering and Projection
+# =========================================================================
+
 # -------------------------------------------------------------------------
 # Visualize how many PCs to include using an elbow plot
 ElbowPlot(geo_so, ndims = 50, reduction = 'unintegrated.sct.pca')
@@ -139,10 +143,6 @@ Instead of choosing based on the elbow plot by sight alone, we can try to  quant
 <!--- revised function name per discussion with Raymond --->
 
 ```{r, check_pcs}
-# =========================================================================
-# Clustering and Projection
-# =========================================================================
-
 # -------------------------------------------------------------------------
 # Estimate the number of PCs to use for clustering with a function
 check_pcs = function(so, reduction) {
@@ -507,7 +507,10 @@ Another approach is to evaluate the number of cells per cluster using the `table
 clusters_counts_condition <- geo_so@meta.data %>% 
   select(time, integrated.sct.rpca.clusters) %>%
   summarise(counts = n(), .by = c(time, integrated.sct.rpca.clusters)) %>% 
-  pivot_wider(names_from = integrated.sct.rpca.clusters, values_from = counts, names_sort=TRUE) %>%
+  pivot_wider(names_from = integrated.sct.rpca.clusters, 
+              values_from = counts,
+              names_sort = TRUE,
+              values_fill = 0) %>%
   bind_rows(summarise_all(., ~if(is.numeric(.)) sum(.) else "TOTAL"))
 clusters_counts_condition 
 
@@ -515,7 +518,10 @@ clusters_counts_condition
 clusters_counts_sample <- geo_so@meta.data %>% 
   select(orig.ident, integrated.sct.rpca.clusters) %>%
   summarise(counts = n(), .by = c(orig.ident, integrated.sct.rpca.clusters)) %>% 
-  pivot_wider(names_from = integrated.sct.rpca.clusters, values_from = counts, names_sort=TRUE) %>%
+  pivot_wider(names_from = integrated.sct.rpca.clusters, 
+              values_from = counts,
+              names_sort = TRUE,
+              values_fill = 0) %>%
   bind_rows(summarise_all(., ~if(is.numeric(.)) sum(., na.rm = TRUE) else "TOTAL"))
 clusters_counts_sample
   
@@ -527,7 +533,10 @@ clusters_counts_sample
 clusters_counts_condition <- geo_so@meta.data %>% 
   select(time, integrated.sct.rpca.clusters) %>%
   summarise(counts = n(), .by = c(time, integrated.sct.rpca.clusters)) %>% 
-  pivot_wider(names_from = integrated.sct.rpca.clusters, values_from = counts, names_sort=TRUE) %>%
+  pivot_wider(names_from = integrated.sct.rpca.clusters,
+              values_from = counts,
+              names_sort=TRUE,
+              values_fill = 0) %>%
   bind_rows(summarise_all(., ~if(is.numeric(.)) sum(.) else "TOTAL"))
 
 clusters_counts_condition  %>%
@@ -545,7 +554,10 @@ clusters_counts_condition  %>%
 clusters_counts_sample <- geo_so@meta.data %>% 
   select(orig.ident, integrated.sct.rpca.clusters) %>%
   summarise(counts = n(), .by = c(orig.ident, integrated.sct.rpca.clusters)) %>% 
-  pivot_wider(names_from = integrated.sct.rpca.clusters, values_from = counts, names_sort=TRUE) %>%
+  pivot_wider(names_from = integrated.sct.rpca.clusters, 
+              values_from = counts, 
+              names_sort=TRUE,
+              values_fill = 0) %>%
   bind_rows(summarise_all(., ~if(is.numeric(.)) sum(., na.rm = TRUE) else "TOTAL"))
 
 clusters_counts_sample %>%
