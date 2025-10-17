@@ -91,7 +91,7 @@ if(!exists('geo_so')) {
 
 # Cluster markers and characterization
 
-After generating clusters, we need to perform differential expression analysis to identify the genes that distinguish those clusters ([source](https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes)).  This should allow us to get visibility on some key questions for our clusters, as [highlighted by the HBC materials](https://hbctraining.github.io/Intro-to-scRNAseq/lessons/09_merged_SC_marker_identification.html), namely:
+After generating clusters, we need to perform differential expression analysis to identify the genes that distinguish those clusters. This should allow us to get visibility on some key questions for our clusters, as [highlighted by the HBC materials](https://hbctraining.github.io/Intro-to-scRNAseq/lessons/09_merged_SC_marker_identification.html), namely:
 
 - Are there are biologically meaningful gene expression differences between the clusters? 
 - Does the gene expression of the generated clusters correspond to expected cell-types or sub-types? 
@@ -101,7 +101,7 @@ After generating clusters, we need to perform differential expression analysis t
 The Wilcoxon test is often sufficient for simple pairwise DE comparisons. More complex models may require a more sophisticated tool (e.g. edgeR). Some alternative approaches are detailed below.
 <details>
     <summary>*Alternative tools for differential expression*</summary>
-Many of the differential expression (DE) tools designed for bulk RNA-seq samples have been benchmarked for performance on scRNA-seq in [Soneson and Robinson (2018)](https://pubmed.ncbi.nlm.nih.gov/29481549/) and there are also dedicated DE tools for scRNA-seq, like [MAST](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0844-5), that use models that account for the expected sparse structure of scRNA-seq data. However in our and others' experience, the default Wilcoxon test is often sufficient for simple pairwise DE comparisons, while edgeR ([Robinson, McCarthy, and Smyth 2010](https://pubmed.ncbi.nlm.nih.gov/19910308/)) is recommended by the [Ouyang Lab]([Ouyang](https://ouyanglab.com/singlecell/clust.html#identifying-marker-genes)) for more complex comparison designs, such as those that include covariates.
+Many of the differential expression (DE) tools designed for bulk RNA-seq samples have been benchmarked for performance on scRNA-seq in [Soneson and Robinson (2018)](https://pubmed.ncbi.nlm.nih.gov/29481549/) and there are also dedicated DE tools for scRNA-seq, like [MAST](https://genomebiology.biomedcentral.com/articles/10.1186/s13059-015-0844-5), that use models that account for the expected sparse structure of scRNA-seq data. However in our and others' experience, the default Wilcoxon test is often sufficient for simple pairwise DE comparisons, while edgeR ([Robinson, McCarthy, and Smyth 2010](https://pubmed.ncbi.nlm.nih.gov/19910308/)) is recommended for more complex comparison designs, such as those that include covariates.
 
 ![Image: Comparison of the performance of DE methods applied to scRNA-seq datasets. Methods are ranked by their average performance across all the listed criteria. Image taken from Soneson and Robinson (2018).](./images/curriculum/06-MarkerVisualization/Ouyang_clust-deCompare.png)
 </details>
