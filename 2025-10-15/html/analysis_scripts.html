@@ -447,19 +447,6 @@ body, td {
 <h2>Day 1</h2>
 <pre class="r"><code>3 + 2
 
-2^3
-
-# =========================================================================
-# Getting Started with Seurat
-# =========================================================================
-
-# -------------------------------------------------------------------------
-# Get current working directory
-getwd()
-
-# Set working directory to ISC_R
-setwd(&#39;~/ISC_R&#39;)
-
 # -------------------------------------------------------------------------
 # Create directory structure
 
@@ -468,7 +455,8 @@ dir.create(&#39;results/figures&#39;, recursive = TRUE, showWarnings = FALSE)
 dir.create(&#39;results/tables&#39;, recursive = TRUE, showWarnings = FALSE)
 dir.create(&#39;results/rdata&#39;, recursive = TRUE, showWarnings = FALSE)
 
-# Load the necessary libraries
+# -------------------------------------------------------------------------
+# Load libraries
 library(Seurat)
 library(BPCells)
 library(tidyverse)
@@ -500,28 +488,44 @@ sample_dirs = list(
 #   Read10X needs a *vector* instead of a *list*, so we use *unlist* to convert
 geo_mat = Read10X(data.dir = unlist(sample_dirs))
 
-# Build the BPCells input directory and write the sparse matrix to disk
+# -------------------------------------------------------------------------
+# Build BPCells input dir
+# To use BPCells (to save some memory), you can transform 
+# the expression matrix data structure above into BPCells files.
+# BPCells uses these files for processing, but you typically never look at 
+# their contents directly
 write_matrix_dir(mat = geo_mat, dir = &#39;~/ISC_R/bpcells&#39;, overwrite = TRUE)
 
-# Cleanup and garbage collection
+# -------------------------------------------------------------------------
+# Cleanup
+# Since we&#39;ll now be reading in from BPCells files, we will remove geo_mat
+# from the environment and then prompt RStudio to run a &quot;garbage collection&quot;
+# to free up unused memory
 rm(geo_mat)
 gc()
 
-# Read BPCells version of the count matrix
+# -------------------------------------------------------------------------
+# Create expression matrix and Seurat object from BPCells files
 geo_mat = open_matrix_dir(dir = &#39;~/ISC_R/bpcells&#39;)
 
-# Create the Seurat object from geo_mat
-geo_so = CreateSeuratObject(count = geo_mat, min.cells = 1, min.features = 50)
+# -------------------------------------------------------------------------
+# Create seurat object
+geo_so = CreateSeuratObject(counts = geo_mat, min.cells = 1, min.features = 50)
 geo_so
 
-# Examine the meta.data slot of the Seurat
+# Examine Seurat meta.data
 head(geo_so@meta.data)
 
+# -------------------------------------------------------------------------
+# Separate sample data into layers
+geo_so[[&#39;RNA&#39;]] = split(geo_so[[&#39;RNA&#39;]], f = geo_so$orig.ident)
+geo_so
+
+# -------------------------------------------------------------------------
 # Save the Seurat object
 saveRDS(geo_so, file = &#39;results/rdata/geo_so_unfiltered.rds&#39;)
 
-# We practiced powering down the session to clear our memory usage, now restart
-# Let&#39;s load everything again
+# We powered down our session and want to rehydrate it
 # -------------------------------------------------------------------------
 # Load libraries
 library(Seurat)
@@ -529,18 +533,23 @@ library(BPCells)
 library(tidyverse)
 options(future.globals.maxSize = 1e9)
 
-setwd(&quot;~/ISC_R/&quot;)
-
 # -------------------------------------------------------------------------
 # Load the Seurat object
 geo_so = readRDS(&#39;results/rdata/geo_so_unfiltered.rds&#39;)
 
-# Peek at the first few rows of meta.data
+# Structure function str()
+str(geo_so)
+# Here is an example of how to access the RNA assay of a Seurat object
+geo_so@assays$RNA
+# There are also accessor functions built into Seurat
+
 head(geo_so@meta.data)
 
-# Read in the prepared phenotype file and add it to meta.data
+# -------------------------------------------------------------------------
+# Read sample attributes
+# Load the expanded phenotype columns (condition, day, and replicate)
 phenos = read.csv(&#39;inputs/prepared_data/phenos.csv&#39;)
-phenos
+head(phenos, 3)
 
 # -------------------------------------------------------------------------
 # Make a temp table that joins Seurat loaded metadata with expanded phenotype columns
@@ -552,20 +561,22 @@ tmp_meta = geo_so@meta.data %&gt;%
   mutate(time = factor(time, unique(phenos$time))) %&gt;%
   column_to_rownames(&#39;tmp_rowname&#39;)
 
-head(tmp_meta)
+View(head(tmp_meta))
 
-# Check that the number of rows is the same
-dim(tmp_meta)
-dim(geo_so@meta.data)
-
-# Reassign meta.data to be tmp_meta
+# -------------------------------------------------------------------------
+# Assign tmp_meta back to geo_so@meta.data and 
+# reset the default identity cell name
 geo_so@meta.data = tmp_meta
 Idents(geo_so) = &#39;orig.ident&#39;
 
-# Verify that the substitution worked
 head(geo_so@meta.data)
 
-# Let&#39;s take a look at the number of cells per sample
+# Three key metrics
+# nCount_RNA
+# nFeature_RNA
+# percentMT
+
+# -------------------------------------------------------------------------
 cell_counts_pre_tbl = geo_so@meta.data %&gt;% count(orig.ident, name = &#39;prefilter_cells&#39;)
 cell_counts_pre_tbl
 
@@ -573,16 +584,15 @@ cell_counts_pre_tbl
 # Review feature violin plots
 VlnPlot(geo_so, features = &#39;nFeature_RNA&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + 
   NoLegend() + 
-  geom_hline(yintercept = 500) + 
-  geom_hline(yintercept = 400) + 
-  geom_hline(yintercept = 300) + 
-  geom_hline(yintercept = 200)
+  geom_hline(yintercept = c(500, 400, 300, 200))
 ggsave(filename = &#39;results/figures/qc_nFeature_violin.png&#39;,
        width = 12, height = 6, units = &#39;in&#39;)
 
 # -------------------------------------------------------------------------
 # Review count violin plots
-VlnPlot(geo_so, features = &#39;nCount_RNA&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + 
+# Note: To make it easier to see the distributions, we set the alpha to 0.4;
+# this makes opacity of the dots 40% (i.e. 60% transparent).
+VlnPlot(geo_so, features = &#39;nCount_RNA&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;, alpha=0.4) + 
   NoLegend()
 ggsave(filename = &#39;results/figures/qc_nCount_violin.png&#39;,
        width = 12, height = 6, units = &#39;in&#39;)
@@ -592,30 +602,26 @@ ggsave(filename = &#39;results/figures/qc_nCount_violin.png&#39;,
 # We use &quot;mt&quot; because this is mouse, depending on the organism, this might need to be changed
 geo_so$percent.mt = PercentageFeatureSet(geo_so, pattern = &#39;^mt-&#39;)
 
+head(geo_so@meta.data)
+
 # Use summary() to quickly check the range of values
 summary(geo_so$percent.mt)
 
 # -------------------------------------------------------------------------
 # Review mitochondrial violin plots
-VlnPlot(geo_so, features = &#39;percent.mt&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;) + 
+VlnPlot(geo_so, features = &#39;percent.mt&#39;, assay = &#39;RNA&#39;, layer = &#39;counts&#39;, alpha=0.3) + 
   NoLegend() + 
-  geom_hline(yintercept = 25) + 
-  geom_hline(yintercept = 20) + 
-  geom_hline(yintercept = 15) + 
-  geom_hline(yintercept = 10)
+  geom_hline(yintercept = c(20, 15, 10))
 ggsave(filename = &#39;results/figures/qc_mito_violin.png&#39;,
        width = 12, height = 6, units = &#39;in&#39;)
 
-# Based on the filtering in the paper how many cells would remain?
-# nFeature_RNA &gt; 500 and percent.mt &lt; 25
-geo_so@meta.data %&gt;% filter(nFeature_RNA &gt; 500 &amp; percent.mt &lt; 25) %&gt;% count(orig.ident)
-
-cell_counts_pre_tbl
-
-# Let&#39;s subset our geo_so so that nFeature_RNA &gt; 300 &amp; percent.mt &lt; 15
+# -------------------------------------------------------------------------
+# Filter to exclude suspect cells and assign to new Seurat object
 geo_so = subset(geo_so, subset = nFeature_RNA &gt; 300 &amp; percent.mt &lt; 15)
 geo_so
 
+# -------------------------------------------------------------------------
+# Examine remaining cell counts
 cell_counts_post_tbl = geo_so@meta.data %&gt;% count(orig.ident, name = &#39;postfilter_cells&#39;)
 cell_counts_post_tbl
 
@@ -625,39 +631,17 @@ cell_counts_tbl = cell_counts_pre_tbl %&gt;% left_join(cell_counts_post_tbl, by 
 cell_counts_tbl
 
 # -------------------------------------------------------------------------
+write_csv(cell_counts_tbl, file = &#39;results/tables/cell_filtering_counts.csv&#39;)
+
+# -------------------------------------------------------------------------
 # Save the current Seurat object
-saveRDS(geo_so, file = &#39;results/rdata/geo_so_filtered.rds&#39;)
-
-# =========================================================================
-# Normalization
-# =========================================================================
-
-# -------------------------------------------------------------------------
-# Separate sample data into layers
-geo_so[[&#39;RNA&#39;]] = split(geo_so[[&#39;RNA&#39;]], f = geo_so$orig.ident)
-geo_so
-
-# -------------------------------------------------------------------------
-# Normalize the data with SCTransform
-geo_so = SCTransform(geo_so)
-geo_so
-
-# -------------------------------------------------------------------------
-# Save Seurat object
-saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_normalized.rds&#39;)</code></pre>
+saveRDS(geo_so, file = &#39;results/rdata/geo_so_filtered.rds&#39;)</code></pre>
 </div>
 <div id="day-2" class="section level2">
 <h2>Day 2</h2>
 <pre class="r"><code># =========================================================================
 # Day 2 set up
 # =========================================================================
-
-# -------------------------------------------------------------------------
-# Set working directory
-# Confirm you are in the right working directory; should be ~/ISC_R
-getwd()
-# Reset if necessary
-setwd(&quot;~/ISC_R&quot;)
 
 # -------------------------------------------------------------------------
 # Load libraries
@@ -668,11 +652,25 @@ options(future.globals.maxSize = 1e9)
 
 
 # Load data  ---------------------------------------------------
-geo_so = readRDS(&#39;~/ISC_R/inputs/prepared_data/rdata/geo_so_sct_normalized.rds&#39;)
+geo_so = readRDS(&#39;~/ISC_R/inputs/prepared_data/rdata/geo_so_filtered.rds&#39;)
 geo_so
 
-# Alternatively, this starts from the data you saved yesterday
-#geo_so = readRDS(&#39;~/ISC_R/results/rdata/geo_so_sct_normalized.rds&#39;)
+
+# =========================================================================
+# Normalization
+# =========================================================================
+
+# -------------------------------------------------------------------------
+# Normalize the data with SCTransform
+geo_so = SCTransform(geo_so)
+
+# See the new SC
+Assays(geo_so)
+
+# -------------------------------------------------------------------------
+# Save Seurat object
+saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_normalized.rds&#39;)
+gc()
 
 # =========================================================================
 # PCA and Integration
@@ -703,44 +701,32 @@ png(filename = &#39;results/figures/qc_pca_heatmap-pc1-18.png&#39;, width = 12, 
 DimHeatmap(geo_so, dims=1:18, cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;)
 dev.off()
 
-# ------------------------------------------------------------
-# Plot cell by gene heatmaps for a subset of dimensions 
-DimHeatmap(geo_so, dims=c(1,5,10,20,30,50), cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;, nfeatures=20)
-
-png(filename = &#39;results/figures/qc_pca_heatmap-select.png&#39;, width = 12, height = 10, units = &#39;in&#39;, res = 300)
-DimHeatmap(geo_so, dims=c(1,5,10,20,30,50), cells=500, balanced=TRUE, reduction = &#39;unintegrated.sct.pca&#39;, nfeatures=20)
-dev.off()
-
-# Use the ? to see the documentation page for a function
-?DimPlot
-
 # -------------------------------------------------------------------------
 # Visualize PCA (PC1 and PC2, unintegrated)
 # first label by sample
 DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;orig.ident&#39;) 
 
 # then label by day, which looks more useful
-head(geo_so@meta.data)
 DimPlot(geo_so, reduction = &#39;unintegrated.sct.pca&#39;, group.by = &#39;time&#39;)
 
 # save plot labeled by day
 ggsave(filename = &#39;results/figures/qc_pca_plot_unintegrated_sct_day.png&#39;,
        width = 7, height = 6, units = &#39;in&#39;)
 
-# Check documentation for integrate layers command
-?IntegrateLayers
-
 # -------------------------------------------------------------------------
 # Load integrated data from prepared file
 geo_so = readRDS(&#39;inputs/prepared_data/rdata/geo_so_sct_integrated.rds&#39;)
-geo_so
+
+# -------------------------------------------------------------------------
+# Check our updated object that we&#39;ve read in from file
+# Observe that we now have a new reduction, `integrated.sct.rpca`
+geo_so 
 
 # -------------------------------------------------------------------------
 # Visualize PCA (PC1 and PC2, integrated)
 DimPlot(geo_so, reduction = &#39;integrated.sct.rpca&#39;, group.by = &#39;time&#39;)
 ggsave(filename = &#39;results/figures/qc_pca_plot_integrated_sct_day.png&#39;, 
        width = 7, height = 6, units = &#39;in&#39;)
-
 
 # -------------------------------------------------------------------------
 # Remove plot variables from the environment to avoid excessive memory usage
@@ -754,13 +740,28 @@ gc()
 # Save updated seurat object to file
 saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_integrated.rds&#39;)
 
-## Clustering and Projection
+
+# ------------ Reset R session with power button
+# After restarting our R session, load the required libraries &amp; input data
+library(Seurat)
+library(BPCells)
+library(tidyverse)
+
+# ADDED - ensure larger R objects are allowed
+options(future.globals.maxSize = 1e9)
+
+# Use provided copy of integrated data
+geo_so = readRDS(&#39;inputs/prepared_data/rdata/geo_so_sct_integrated.rds&#39;)
 
 # -------------------------------------------------------------------------
 # Visualize how many PCs to include using an elbow plot
 ElbowPlot(geo_so, ndims = 50, reduction = &#39;unintegrated.sct.pca&#39;)
 ggsave(filename = &#39;results/figures/qc_sct_elbow_plot.png&#39;,
        width = 8, height = 8, units = &#39;in&#39;)
+
+# =========================================================================
+# Clustering and Projection
+# =========================================================================
 
 # -------------------------------------------------------------------------
 # Estimate the number of PCs to use for clustering with a function
@@ -783,9 +784,8 @@ pcs
 # Based some behind the scenes testing, we&#39;ll modify the number of PCs to use for clustering
 pcs = 10
 
-# =========================================================================
-# Clustering and Projection
-# =========================================================================
+# -----------------------------------------------------------------------
+# Find neighbors and clusters
 
 # Create KNN graph for PCs with `FindNeighbors()`
 geo_so = FindNeighbors(geo_so, dims = 1:pcs, reduction = &#39;integrated.sct.rpca&#39;)
@@ -796,8 +796,7 @@ geo_so = FindClusters(geo_so,
                       cluster.name = &#39;integrated.sct.rpca.clusters&#39;)
 
 # look at meta.data to see cluster labels
-head(geo_so@meta.data)
-
+View(head(geo_so@meta.data))
 
 # -------------------------------------------------------------------------
 # Create UMAP reduction
@@ -808,9 +807,6 @@ geo_so = RunUMAP(geo_so,
 
 # Note a third reduction has been added: `umap.integrated.sct.rpca`
 geo_so 
-
-# Check parameters for `dim`
-1:pcs
 
 # -------------------------------------------------------------------------
 # Visualize UMAP clusters: ID labels
@@ -826,6 +822,7 @@ ggsave(filename = &#39;results/figures/umap_integrated_sct_clusters.png&#39;,
        plot = post_integration_umap_plot_clusters,
        width = 6, height = 6, units = &#39;in&#39;)
 
+
 # -------------------------------------------------------------------------
 # Visualize UMAP clusters: clusters with labels, split by condition
 post_integration_umap_plot_split_clusters = 
@@ -840,22 +837,6 @@ post_integration_umap_plot_split_clusters
 ggsave(filename = &#39;results/figures/umap_integrated_sct_split_clusters.png&#39;,
        plot = post_integration_umap_plot_split_clusters, 
        width = 14, height = 6, units = &#39;in&#39;)
-
-# -------------------------------------------------------------------------
-# Visualize UMAP clusters: day labels
-post_integration_umap_plot_day = 
-  DimPlot(geo_so,
-          group.by = &#39;time&#39;,
-          label = FALSE,
-          combine = FALSE,
-          reduction = &#39;umap.integrated.sct.rpca&#39;)[[1]] + 
-  ggtitle(&quot;Post-integration clustering, by timepoint&quot;)
-post_integration_umap_plot_day
-
-ggsave(filename = &#39;results/figures/umap_integrated_sct_day.png&#39;,
-       plot = post_integration_umap_plot_day,
-       width = 8, height = 6, units = &#39;in&#39;)
-
 
 # -------------------------------------------------------------------------
 # Make tables of cell counts
@@ -874,6 +855,7 @@ clusters_counts_sample &lt;- geo_so@meta.data %&gt;%
   bind_rows(summarise_all(., ~if(is.numeric(.)) sum(., na.rm = TRUE) else &quot;TOTAL&quot;))
 clusters_counts_sample
 
+
 # -------------------------------------------------------------------------
 # Remove plot variables from the environment to manage memory usage
 plots = c(&quot;pre_integration_umap_plot_day&quot;, 
@@ -891,16 +873,8 @@ saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_clustered.rds&#39;)</code><
 </div>
 <div id="day-3" class="section level2">
 <h2>Day 3</h2>
-<pre class="r"><code># =========================================================================
-# Day 3 set up
+<pre class="r"><code># Day 3 set up
 # =========================================================================
-
-# -------------------------------------------------------------------------
-# Set working directory
-# Confirm you are in the right working directory; should be ~/ISC_R
-getwd()
-# Reset if necessary
-setwd(&quot;~/ISC_R&quot;)
 
 # -------------------------------------------------------------------------
 # Load libraries
@@ -910,15 +884,9 @@ library(tidyverse)
 options(future.globals.maxSize = 1e9)
 
 
-# -------------------------------------------------------------------------
-# Set number of principal components
-pcs = 10
-
-# -------------------------------------------------------------------------
-# Load seurat object
+# Load data  ---------------------------------------------------
 geo_so = readRDS(&#39;~/ISC_R/inputs/prepared_data/rdata/geo_so_sct_clustered.rds&#39;)
 geo_so
-
 
 # =========================================================================
 # Marker identification and visualization
@@ -926,7 +894,6 @@ geo_so
 
 # Prep for cluster comparisons to find empirical markers
 geo_so = SetIdent(geo_so, value = &#39;integrated.sct.rpca.clusters&#39;)
-?PrepSCTFindMarkers
 geo_so = PrepSCTFindMarkers(geo_so)
 
 # Run comparisons for each cluster to generate markers
@@ -937,6 +904,7 @@ write_csv(geo_markers, file = &#39;results/tables/marker_genes_PC10-0.4res.csv&#
 
 # Take a look at the first few rows of the result
 head(geo_markers)
+tail(geo_markers)
 
 # -------------------------------------------------------------------------
 # Identify marker genes for each cluster
@@ -945,6 +913,7 @@ top_5 = geo_markers %&gt;% filter(p_val_adj &lt; 0.01) %&gt;% group_by(cluster) 
 
 # Look at results
 head(top_5, n = 10)
+tail(top_5, n = 10)
 
 # -------------------------------------------------------------------------
 # Visualize top marker genes as dot plot
@@ -959,16 +928,11 @@ ggsave(filename = &#39;results/figures/markers_top_5_sct_dot_plot.png&#39;,
        plot = top_5_sct_dot_plot, 
        width = 8, height = 18, units = &#39;in&#39;) 
 
+
 # -------------------------------------------------------------------------
 # Check mitochondrial gene expression
 percent_mito_plot = FeaturePlot(geo_so, features=&#39;percent.mt&#39;)
 percent_mito_plot
-
-
-# ---------------------------
-# ADDED - check an example marker gene
-FeaturePlot(geo_so, features=&#39;Acod1&#39;)
-
 
 # save to file
 ggsave(filename = &#39;results/figures/percent_umap_mito_plot.png&#39;, 
@@ -1009,18 +973,21 @@ geo_catch = createscCATCH(data = geo_so@assays$SCT@counts, cluster = as.characte
 # add marker genes to use for predictions
 geo_catch@markergene = geo_markers
 
+# -------------------------------------------------------------------------
 # specify tissues/cell-types from the scCATCH reference
 tissues_of_interest = c(&#39;Blood&#39;, &#39;Peripheral Blood&#39;, &#39;Muscle&#39;, &#39;Skeletal muscle&#39;, &#39;Epidermis&#39;, &#39;Skin&#39;)
 species_tissue_mask = cellmatch$species == &#39;Mouse&#39; &amp; cellmatch$tissue %in% tissues_of_interest
 geo_catch@marker = cellmatch[species_tissue_mask, ]
 
+# -------------------------------------------------------------------------
 # run scCATCH to generate predictions
-?findcelltype
 geo_catch = findcelltype(geo_catch)
-head(geo_catch) # whole object
-head(geo_catch@celltype) # cell type prediction slot
 
 # look at the predictions
+View(head(geo_catch@celltype))
+
+# -------------------------------------------------------------------------
+# cleanup predictions
 sc_pred_tbl = geo_catch@celltype %&gt;% 
   select(cluster, cell_type, celltype_score) %&gt;%
   rename(cell_type_prediction = cell_type)
@@ -1030,63 +997,68 @@ sc_pred_tbl
 # Write scCATCH predictions to file
 write_csv(sc_pred_tbl, file = &#39;results/tables/scCATCH_cluster_predictions.csv&#39;)
 
-# -------------------------------------------------------------------------
-# Create lists of immune cells and associated gene markers
-immune_markers = list()
-immune_markers[[&#39;Inflam. Macrophage&#39;]] = c(&#39;Cd14&#39;, &#39;Cxcl2&#39;) # Cd14 a- monocyte/macrophage cells
-immune_markers[[&#39;Platelet&#39;]] = c(&#39;Pf4&#39;)
-immune_markers[[&#39;Mast cells&#39;]] = c(&#39;Gata2&#39;, &#39;Kit&#39;)
-immune_markers[[&#39;NK cells&#39;]] = c(&#39;Nkg7&#39;, &#39;Klrd1&#39;)
-immune_markers[[&#39;B-cell&#39;]] = c( &#39;Ly6d&#39;, &#39;Cd19&#39;, &#39;Cd79b&#39;, &#39;Ms4a1&#39;)
-immune_markers[[&#39;T-cell&#39;]] = c( &#39;Cd3d&#39;,&#39;Cd3e&#39;,&#39;Cd3g&#39;) # also Thy1
-
 
 # -------------------------------------------------------------------------
-# Plot other immune to assist with cluster identification
-immune_markers_plot = DotPlot(geo_so, features = immune_markers, assay = &#39;SCT&#39;)  +
-  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
-immune_markers_plot
+# Create a **named list** of immune cells and associated gene markers
 
-# save to file
-ggsave(filename = &#39;results/figures/immune_markers_sct_dot_plot.png&#39;, 
-       plot = immune_markers_plot, width = 10, height = 5, units = &#39;in&#39;)
+immune_markers = list(
+  &#39;Inflam. Macrophage&#39; = c(&#39;Cd14&#39;, &#39;Cxcl2&#39;),
+  &#39;Platelet&#39; = c(&#39;Pf4&#39;),
+  &#39;Mast cells&#39; = c(&#39;Gata2&#39;, &#39;Kit&#39;),
+  &#39;NK cells&#39; = c(&#39;Nkg7&#39;, &#39;Klrd1&#39;),
+  &#39;B-cell&#39;= c( &#39;Ly6d&#39;, &#39;Cd19&#39;, &#39;Cd79b&#39;, &#39;Ms4a1&#39;),
+  &#39;T-cell&#39; = c( &#39;Cd3d&#39;,&#39;Cd3e&#39;,&#39;Cd3g&#39;)
+) 
+immune_markers
+
+# -------------------------------------------------------------------------
+# Make a dot plot of immune markers to refine cluster identification
+# Since this dot plot is based on known markers instead of empirical markers,
+# we&#39;ll cue that by using red instead of the default blue. 
+immune_markers_plot_basic = DotPlot(geo_so,
+                                    features = immune_markers,
+                                    assay = &#39;SCT&#39;,
+                                    cols = c(&quot;lightgrey&quot;, &quot;darkred&quot;))
+
+immune_markers_plot_basic
 
 
 # -------------------------------------------------------------------------
-# Create lists of other cells and associated gene markers
-other_markers = list()
-other_markers[[&#39;Pericyte&#39;]] = c(&#39;Acan&#39;,&#39;Sox9&#39;)
-other_markers[[&#39;SMC&#39;]] = c(&#39;Acta2&#39;, &#39;Myh11&#39;) # SMC = mesenchymal smooth-muscle cell/mesenchymal lineage
-other_markers[[&#39;Keratinocytes&#39;]] = c(&#39;Thy1&#39;, &#39;Dlk1&#39;) # fibro progenitors aso=Thy1
-other_markers[[&#39;Myofibroblasts&#39;]] = c(&#39;Tmem100&#39;, &#39;Cd34&#39;, &#39;Ly6c1&#39;) # hematopoetic stem/activated fibroblast=Cd34
-other_markers[[&#39;Fibroblast&#39;]] = c(&#39;Dpt&#39;, &#39;Fn1&#39;, &#39;Col3a1&#39;)  # activated fib = Fn1
-other_markers[[&#39;Endothelial&#39;]] = c(&#39;Pecam1&#39;, &#39;Cd38&#39;) # from wound healing; Pecam1 also exp in endothelial
-other_markers[[&#39;HSC&#39;]] = c(&#39;Ltb&#39;, &#39;Cd74&#39;) # less well defined/conflicting definitions
-other_markers[[&#39;Erythroid&#39;]] = c(&#39;Hba-a1&#39;)
+# Start with the plot above but reduce the font size and rotate the gene labels 
+
+immune_markers_plot_better = immune_markers_plot_basic + 
+  theme(text=element_text(size=10),
+        axis.text.x = element_text(angle = 45, vjust = 0.5))
+
+immune_markers_plot_better
 
 # -------------------------------------------------------------------------
-# Plot known cell-type markers
-other_markers_dot_plot = DotPlot(geo_so, features = other_markers, assay = &#39;SCT&#39;) +
-  theme(text=element_text(size=10), axis.text.x = element_text(angle = 45, vjust = 0.5))
-other_markers_dot_plot
+# Continuing adjustments to plot above
 
-# save to file
-ggsave(filename = &#39;results/figures/other_markers_sct_dot_plot.png&#39;, 
-       plot = other_markers_dot_plot, width = 12, height = 5, units = &#39;in&#39;)
-
-# NOT IN SHOWNOTES - how to add labels for long version of DotPlot()
-immune_markers_plot + coord_flip() +
+immune_markers_plot_best = immune_markers_plot_better +
+  coord_flip() +
   facet_grid(rows = vars(feature.groups),
-             scales = &#39;free&#39;, space = &#39;free&#39;, switch =&#39;y&#39;) +
+             scales = &#39;free&#39;,
+             space = &#39;free&#39;,
+             switch =&#39;y&#39;) +
   theme(strip.placement = &#39;outside&#39;,
         strip.text.y.left = element_text(angle = 0))
+immune_markers_plot_best
+
+# -------------------------------------------------------------------------
+# save dot plot to file
+
+ggsave(filename = &#39;results/figures/immune_markers_sct_dot_plot.png&#39;, 
+       plot = immune_markers_plot_best,
+       width = 10, height = 5, units = &#39;in&#39;)
+
+# Skipped execution of code to create &quot;other markers&quot; list and plot and instead referenced the show notes to see the patterns
 
 # -------------------------------------------------------------------------
 # Load the revised annotations from prepared file
 celltype_annos = read_csv(&#39;inputs/prepared_data/revised_cluster_annotations.csv&#39;) %&gt;%
   mutate(cluster=factor(cluster))
 head(celltype_annos)
-View(celltype_annos)
 
 # -------------------------------------------------------------------------
 # Merge cell types in but as a new table to slide into @meta.data
@@ -1095,12 +1067,11 @@ new_metadata = copy_metadata %&gt;%
   left_join(celltype_annos, by = c(&#39;integrated.sct.rpca.clusters&#39; = &#39;cluster&#39;))
 #  We are implicitly relying on the same row order!
 rownames(new_metadata) = rownames(geo_so@meta.data)
-head(new_metadata)
 
 # Replace the meta.data
 geo_so@meta.data = new_metadata 
 
-head(geo_so@meta.data)
+View(head(geo_so@meta.data))
 
 # -------------------------------------------------------------------------
 # Make a labeled UMAP plot of clusters
@@ -1111,6 +1082,7 @@ annos_umap_plot
 ggsave(filename = &#39;results/figures/umap_integrated_annotated.png&#39;, 
        plot =  annos_umap_plot,
        width = 8, height = 6, units = &#39;in&#39;)
+
 
 # -------------------------------------------------------------------------
 # Repeat, splitting by day
@@ -1132,7 +1104,6 @@ ggsave(filename = &#39;results/figures/umap_integrated_annotated_byCondition.png
 rm(list=names(which(unlist(eapply(.GlobalEnv, is.ggplot))))); 
 gc()
 
-
 # -------------------------------------------------------------------------
 # Save Seurat object and annotations
 saveRDS(geo_so, file = &#39;results/rdata/geo_so_sct_integrated_with_annos.rds&#39;)
@@ -1148,9 +1119,7 @@ geo_so$day.celltype = paste(geo_so$time, geo_so$cell_type, sep = &#39;_&#39;)
 unique(geo_so$day.celltype)
 
 # Reset cell identities to the combined condition + celltype label
-head(Idents(geo_so))
 Idents(geo_so) = &#39;day.celltype&#39;
-head(Idents(geo_so))
 
 # -------------------------------------------------------------------------
 # Consider pericyte cluster D21 v D7 &amp; run DE comparison using wilcoxon test
@@ -1173,7 +1142,8 @@ write_csv(de_cell_pericyte_D21_vs_D7,
 
 # summarize diffex results
 table(de_cell_pericyte_D21_vs_D7$p_val_adj &lt; 0.05 &amp; 
-        abs(de_cell_pericyte_D21_vs_D7$avg_log2FC) &gt; 1.5)
+        abs(de_cell_pericyte_D21_vs_D7$avg_log2FC) &gt; log2(1.5))
+
 
 # -------------------------------------------------------------------------
 # Compare pericyte cluster D7 v D0
@@ -1188,9 +1158,13 @@ head(de_cell_pericyte_D7_vs_D0)
 # Add rownames for D7 v D0 results
 de_cell_pericyte_D7_vs_D0$gene = rownames(de_cell_pericyte_D7_vs_D0)
 
+# save to file
+write_csv(de_cell_pericyte_D7_vs_D0, 
+          file = &#39;results/tables/de_standard_pericyte_D7_vs_D0.csv&#39;)
+
 # summarize results
 table(de_cell_pericyte_D7_vs_D0$p_val_adj &lt; 0.05 &amp; 
-        abs(de_cell_pericyte_D7_vs_D0$avg_log2FC) &gt; 1.5)
+        abs(de_cell_pericyte_D7_vs_D0$avg_log2FC) &gt; log2(1.5))
 
 
 # -------------------------------------------------------------------------
@@ -1206,7 +1180,7 @@ pseudo_catch_so$day.celltype = paste(pseudo_catch_so$time, pseudo_catch_so$cell_
 Idents(pseudo_catch_so) = &#39;day.celltype&#39;
 
 # -------------------------------------------------------------------------
-# Run pseudobulk comparison between Day 21 and Day 0, using DESeq2
+# Run pseudobulk comparison between Day 21 and Day 7, using DESeq2
 de_pseudo_pericyte_D21_vs_D7 = FindMarkers(
   object = pseudo_catch_so, 
   ident.1 = &#39;Day21_Pericyte&#39;, ident.2 = &#39;Day7_Pericyte&#39;, 
@@ -1225,24 +1199,25 @@ write_csv(de_pseudo_pericyte_D21_vs_D7,
 
 # review pseudobulk results, using the same thresholds
 table(de_pseudo_pericyte_D21_vs_D7$p_val_adj &lt; 0.05 &amp; 
-        abs(de_pseudo_pericyte_D21_vs_D7$avg_log2FC) &gt; 1.5)
+        abs(de_pseudo_pericyte_D21_vs_D7$avg_log2FC) &gt; log2(1.5))
 
-# DEMO - volcano plot
+
 # -------------------------------------------------------------------------
 # Make a volcano plot of pseudobulk diffex results
 pseudo_pericyte_D21_vs_D7_volcano = 
-  ggplot(de_pseudo_pericyte_D21_vs_D7, aes(x = avg_log2FC, y = -log10(p_val_adj))) + 
+  ggplot(de_pseudo_pericyte_D21_vs_D7, aes(x = avg_log2FC, y = -log10(p_val))) + 
   geom_point()
-pseudo_pericyte_D21_vs_D7_volcano
 
 ggsave(filename = &#39;results/figures/volcano_de_pseudo_pericyte_D21_vs_D0.png&#39;, 
        plot = pseudo_pericyte_D21_vs_D7_volcano,
        width = 7, height = 7, units = &#39;in&#39;)
 
+pseudo_pericyte_D21_vs_D7_volcano
+
+
 # -------------------------------------------------------------------------
 # UMAP feature plot of Cd55 gene
 FeaturePlot(geo_so, features = &quot;Cd55&quot;, split.by = &quot;time&quot;)
-
 
 # -------------------------------------------------------------------------
 # Discard all ggplot objects currently in environment
