@@ -248,9 +248,9 @@ See detailed [installation instructions](https://www.10xgenomics.com/support/sof
 # -------------------------------------------------------------------------
 # Install the basic packages
 
-if (!requireNamespace(\"BiocManager\", quietly = TRUE)) {\
-    install.packages(\"BiocManager\")\
-    requireNamespace(\"BiocManager\", quietly = TRUE)
+if (!requireNamespace("BiocManager", quietly = TRUE)) {
+    install.packages("BiocManager")
+    requireNamespace("BiocManager", quietly = TRUE)
 }
 
 basic_packages = c("sessioninfo", "here", "tidyverse", "ggrepel", "RColorBrewer")
